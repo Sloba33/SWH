@@ -1,0 +1,350 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7931413483860181539
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5797363398457871611}
+  - component: {fileID: 8094870643325222405}
+  - component: {fileID: 6656235093544023273}
+  - component: {fileID: -3313989233069312248}
+  - component: {fileID: -7731099308077460660}
+  - component: {fileID: -6132169985761858375}
+  - component: {fileID: -9035140463361821979}
+  - component: {fileID: 301140161198457575}
+  m_Layer: 8
+  m_Name: BetonKocka
+  m_TagString: Obstacle
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5797363398457871611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: 3.47, y: 2.2, z: -2.5991793}
+  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &8094870643325222405
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  m_Mesh: {fileID: 6163357941915963767, guid: ac8832464791f7944af94e54e660ea2f, type: 3}
+--- !u!23 &6656235093544023273
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 7b56e2d721df5fb459baaf3886109736, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-3313989233069312248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 301140161198457575}
+  _networkObjectCache: {fileID: 301140161198457575}
+  fallIndicator: {fileID: 0}
+  MoveOverride: 0
+  wasSucked: 0
+  animator: {fileID: 0}
+  jitbParticles: {fileID: 0}
+  aiLerp: {fileID: 0}
+  aSTarAI: {fileID: 0}
+  obstacleType: 0
+  obstacleModifier: 0
+  Weight: 25
+  tile: {fileID: 0}
+  fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
+    type: 3}
+  playerController: {fileID: 0}
+  rend: {fileID: 0}
+  obstacleForward: 0
+  obstacleBack: 0
+  obstacleLeft: 0
+  obstacleRight: 0
+  obstacleUp: 0
+  isPushable: 1
+  isPullable: 0
+  isBeingPushed: 0
+  isBeingPulled: 0
+  wasRecentlyPushed: 0
+  wasRecentlyPulled: 0
+  isFalling: 0
+  isPositioned: 0
+  isHeightPositioned: 0
+  grounded: 0
+  boxObstacleForward: []
+  boxObstacleBack: []
+  boxOsbtacleLeft: []
+  boxObstacleRight: []
+  boxObstacleUp: []
+  _rb: {fileID: 0}
+  forwardOffset: 0.34
+  backOffset: 0
+  leftOffset: 0
+  rightOffset: 0
+  obstacleCheckerRadius: 0.003
+  distanceOfSphere: 0.504
+  upOffset: 0.89
+  upSphereDistance: 0
+  _boxHitCollider: 0
+  FallTimer: 0
+  forwardOffset_1: {x: -0.4, y: 0.4, z: 0.51}
+  forwardOffset_2: {x: -0.4, y: -0.4, z: 0.51}
+  forwardOffset_3: {x: 0.4, y: 0.4, z: 0.51}
+  forwardOffset_4: {x: 0.4, y: -0.4, z: 0.51}
+  backOffset_1: {x: -0.4, y: 0.4, z: -0.51}
+  backOffset_2: {x: -0.4, y: -0.4, z: -0.51}
+  backOffset_3: {x: 0.4, y: 0.4, z: -0.51}
+  backOffset_4: {x: 0.4, y: -0.4, z: -0.51}
+  leftOffset_1: {x: -0.51, y: 0.4, z: -0.4}
+  leftOffset_2: {x: -0.51, y: -0.4, z: -0.4}
+  leftOffset_3: {x: -0.51, y: 0.4, z: 0.4}
+  leftOffset_4: {x: -0.51, y: -0.4, z: 0.4}
+  rightOffset_1: {x: 0.51, y: 0.4, z: -0.4}
+  rightOffset_2: {x: 0.51, y: -0.4, z: -0.4}
+  rightOffset_3: {x: 0.51, y: 0.4, z: 0.4}
+  rightOffset_4: {x: 0.51, y: -0.4, z: 0.4}
+  hasFallStarted: 0
+  _obstacleForward:
+  - {fileID: 0}
+  _obstacleBack:
+  - {fileID: 0}
+  _obstacleLeft:
+  - {fileID: 0}
+  _obstacleRight:
+  - {fileID: 0}
+  _obstacleUp:
+  - {fileID: 0}
+  _grounded:
+  - {fileID: 0}
+  _boxCollider:
+  - {fileID: 0}
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 256
+  isMoving: 0
+  Moving: 0
+  fallRayDistance: 50
+  fallOffset: {x: 0, y: -0.6, z: 0}
+  blackHoleTileTest: {fileID: 0}
+  startPos: {x: 0, y: 0, z: 0}
+  targetPos: {x: 0, y: 0, z: 0}
+  beingSucked: 0
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1280
+  _grounderOffset: -0.22
+  _grounderRadius: -0.46
+  BoxOffset: {x: 0, y: -0.525, z: 0}
+  BoxSize: {x: 1, y: 0.05, z: 1}
+  HalfExtents: {x: 0.489, y: 0.02, z: 0.489}
+  priority: 0
+  hasPriority: 0
+  recentlyPulled: 0
+  pushableAfterPull: 0
+  pullTimer: 0
+  pullCoyoteTime: 2
+  pushabilityDelayed: 0
+  fallSpeed: 0.003
+  startFallPosition: {x: 0, y: 0, z: 0}
+  playerPushPosition: {x: 0, y: 0, z: 0}
+  recentlyFallen: 0
+  explosionMinForce: 5
+  explosionMaxForce: 100
+  explosionForceRadius: 20
+  destructionParticleSystem: {fileID: 6688987740940162931, guid: b977a3024c659eb4cb4f5da94568dab9,
+    type: 3}
+  queuedForDestruction: 0
+  galaxyForward: 0
+  galaxyBack: 0
+  galaxyLeft: 0
+  galaxyRight: 0
+  threeOfAKind: 0
+  spawningBlackHole: 0
+  jitbForward: 0
+  jitbBack: 0
+  jitbLeft: 0
+  jitbRight: 0
+  spawningJitb: 0
+  obstacleF: {fileID: 0}
+  obstacleB: {fileID: 0}
+  obstacleL: {fileID: 0}
+  obstacleR: {fileID: 0}
+  jitbF: {fileID: 0}
+  jitbB: {fileID: 0}
+  jitbL: {fileID: 0}
+  jitbR: {fileID: 0}
+--- !u!65 &-7731099308077460660
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  m_Material: {fileID: 13400000, guid: 50c9027403b776c41863989e4dd79d42, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9900031, y: 0.9976478, z: 0.9941194}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-6132169985761858375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 481e22fcd3995164392d2a293b5556a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  rayLength: 1
+  Obstacle: {fileID: 0}
+  currentTile: {fileID: 0}
+  hasGameStarted: 0
+  groundObject: {fileID: 0}
+  previousGroundObject: {fileID: 0}
+  verticalList: []
+  horizontalList: []
+  updownList: []
+  ObstacleListForward: []
+  ObstacleListBackward: []
+  ObstacleListLeft: []
+  ObstacleListRight: []
+  ObstacleListUp: []
+  ObstacleListDown: []
+  currentRayLength: 1
+  typeToLookFor: 0
+--- !u!54 &-9035140463361821979
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  serializedVersion: 4
+  m_Mass: 10
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 3
+--- !u!114 &301140161198457575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931413483860181539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  _networkBehaviours:
+  - {fileID: -3313989233069312248}
+  <ParentNetworkObject>k__BackingField: {fileID: 0}
+  <ChildNetworkObjects>k__BackingField: []
+  SerializedTransformProperties:
+    Position: {x: 3.47, y: 2.2, z: -2.5991793}
+    Rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+    LocalScale: {x: 100, y: 100, z: 100}
+  _isNetworked: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  <PrefabId>k__BackingField: 0
+  <SpawnableCollectionId>k__BackingField: 0
+  _scenePathHash: 0
+  <SceneId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 13618435979190233425
