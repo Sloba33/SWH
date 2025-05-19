@@ -14,20 +14,21 @@ public class SceneLoader : MonoBehaviour
 
     private void Start()
     {
-
+        Debug.Log("Loading scene");
         currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
         if (currentLevelIndex == 0) isLoadingScene = true;
         else isLoadingScene = false;
         nextLevelIndex = currentLevelIndex + 1;
-
+        Debug.Log("Current level index :" + currentLevelIndex);
         // nextLevelIndex = currentLevelIndex + 1;
         // if (nextLevelIndex > SceneManager.loadedSceneCount) nextLevelIndex = currentLevelIndex;
-        if (isLoadingScene && PlayerPrefs.GetInt("FirstTime") != 0)
+        int firstTime = PlayerPrefs.GetInt("FirstTime", 0);
+        if (isLoadingScene && firstTime != 0)
         {
             Debug.Log("its a loading scene so we load main menu");
             StartCoroutine(LoadLevelWithIndex(1));
         }
-        else if (PlayerPrefs.GetInt("FirstTime", 0) == 0 && isLoadingScene)
+        else if (firstTime == 0 && isLoadingScene)
         {
 
             StartCoroutine(LoadLevelWithIndex(2));
@@ -48,6 +49,7 @@ public class SceneLoader : MonoBehaviour
             loadingBarFill.fillAmount = progressValue;
             yield return null;
         }
+        Debug.Log("Loading scene with index " + index);
     }
 
     public void LoadScene()

@@ -6,9 +6,12 @@ using UnityEngine.SceneManagement;
 
 
 using Cinemachine;
+using Fusion;
 public class GameManager : MonoBehaviour
 {
+    public bool IsMultiplayer;
     public CharacterCollection characterCollection;
+    public CharacterCollection multiplayerCharacterCollection;
     public bool Recording, DarkLevel;
     public GameObject playerDefaultPrefab;
     public Transform playerSpawnPoint;
@@ -43,6 +46,7 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+        IsMultiplayer = FindFirstObjectByType<NetworkRunner>() != null;
         if (Application.isMobilePlatform)
         {
             int wid = Screen.width;
@@ -51,13 +55,14 @@ public class GameManager : MonoBehaviour
             Screen.SetResolution(wid, hei, FullScreenMode.ExclusiveFullScreen, new RefreshRate() { numerator = 60, denominator = 1 });
         }
         start = true;
-        if (spawn)
-            InvokeRepeating("SpawnObstacle", 1, 7);
 
-        levelGoal = FindObjectOfType<LevelGoal>();
-        if (characterCollection != null)
+        levelGoal = FindFirstObjectByType<LevelGoal>();
+        if (IsMultiplayer && multiplayerCharacterCollection != null)
         {
-            Debug.Log("We got colors");
+            Instantiate(multiplayerCharacterCollection.Characters[0], playerSpawnPoint.position, multiplayerCharacterCollection.Characters[0].transform.rotation);
+        }
+        else if (characterCollection != null)
+        {
             Instantiate(characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)], playerSpawnPoint.position, characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)].transform.rotation);
         }
         else if (playerDefaultPrefab != null && !playerDefaultPrefab.GetComponent<PlayerController>().AI)
@@ -80,7 +85,7 @@ public class GameManager : MonoBehaviour
 
     }
     public float fragScaleFactor = 1;
-   
+
 
 
 
