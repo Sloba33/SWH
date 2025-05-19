@@ -35,9 +35,13 @@ public class PlayerAttack : MonoBehaviour
         _anim = GetComponent<Animator>();
         headSmashCollider.playerController = playerController;
         SpawnWeapon();
-        backWeapon = Instantiate(weapon.gameObject, backWeaponSlot.transform);
-        backWeapon.GetComponent<Weapon>().WeaponStandard.gameObject.SetActive(true);
-        backWeapon.GetComponent<Weapon>().WeaponDown.gameObject.SetActive(false);
+        if (backWeaponSlot != null)
+        {
+
+            backWeapon = Instantiate(weapon.gameObject, backWeaponSlot.transform);
+            backWeapon.GetComponent<Weapon>().WeaponStandard.gameObject.SetActive(true);
+            backWeapon.GetComponent<Weapon>().WeaponDown.gameObject.SetActive(false);
+        }
         // PlayerPrefs.SetInt(weapon.weaponType.ToString(),1);
         CheckWeaponAvailability();
 

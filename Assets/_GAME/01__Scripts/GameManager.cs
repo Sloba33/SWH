@@ -57,18 +57,22 @@ public class GameManager : MonoBehaviour
         start = true;
 
         levelGoal = FindFirstObjectByType<LevelGoal>();
-        if (IsMultiplayer && multiplayerCharacterCollection != null)
+        // if (IsMultiplayer && multiplayerCharacterCollection != null)
+        // {
+        //     Instantiate(multiplayerCharacterCollection.Characters[0], playerSpawnPoint.position, multiplayerCharacterCollection.Characters[0].transform.rotation);
+        // }
+        if (!IsMultiplayer)
         {
-            Instantiate(multiplayerCharacterCollection.Characters[0], playerSpawnPoint.position, multiplayerCharacterCollection.Characters[0].transform.rotation);
-        }
-        else if (characterCollection != null)
-        {
-            Instantiate(characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)], playerSpawnPoint.position, characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)].transform.rotation);
-        }
-        else if (playerDefaultPrefab != null && !playerDefaultPrefab.GetComponent<PlayerController>().AI)
-        {
-            Debug.Log("We got no AI");
-            Instantiate(playerDefaultPrefab, playerSpawnPoint.position, playerDefaultPrefab.transform.rotation);
+
+            if (characterCollection != null)
+            {
+                Instantiate(characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)], playerSpawnPoint.position, characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)].transform.rotation);
+            }
+            else if (playerDefaultPrefab != null && !playerDefaultPrefab.GetComponent<PlayerController>().AI)
+            {
+                Debug.Log("We got no AI");
+                Instantiate(playerDefaultPrefab, playerSpawnPoint.position, playerDefaultPrefab.transform.rotation);
+            }
         }
         goalSetters = FindObjectsByType<GoalSetter>(FindObjectsSortMode.None);
         if (levelGoal.DualLevel)

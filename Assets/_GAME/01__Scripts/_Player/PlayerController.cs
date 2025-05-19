@@ -5,10 +5,12 @@ using TetraCreations.Attributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Fusion;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
 
+    private PlayerInput playerInputMP;
     public bool AI;
     [Title("Player References", TitleColor.Violet, TitleColor.Violet, 2f, 20f)]
     Player player;
@@ -135,6 +137,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public PlayerControls playerControls;
     public GameObject playerCamera;
+
     private void Update()
     {
         if (!AI)
@@ -159,7 +162,7 @@ public class PlayerController : MonoBehaviour
             // }       
         }
     }
-    private void FixedUpdate()
+    public override void FixedUpdateNetwork()
     {
         HandleGrounded();
         HandleWalking();
@@ -174,6 +177,15 @@ public class PlayerController : MonoBehaviour
     #endregion
     public Vector2 inputValues;
     #region Inputs
+
+    public GameplayInput CurrentInput => _input;
+    private GameplayInput _input;
+    public struct GameplayInput
+    {
+        public float X, Z;
+       
+
+    }
     private void HandleInput()
     {
 
@@ -203,6 +215,8 @@ public class PlayerController : MonoBehaviour
             {
                 _inputs.X = inputValues.x;
                 _inputs.Z = inputValues.y;
+                _input.X = inputValues.x;
+                _input.Z = inputValues.y;
                 _inputs.RawX = (int)inputValues.x;
                 _inputs.RawZ = (int)inputValues.y;
             }
