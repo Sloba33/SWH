@@ -329,7 +329,7 @@ public class Obstacle : MonoBehaviour
                 {
                     if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
                     _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
-                    CheckThreeOfAKind();
+                   
                 }
                 else
                 {
@@ -353,7 +353,7 @@ public class Obstacle : MonoBehaviour
             _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
             // _playerRigidbody.MovePosition(_playerRigidbody.transform.position + dir * speed * Time.fixedDeltaTime); /*this one doesn't get stuck in cyllinders*/
             if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
-            CheckThreeOfAKind();
+            // CheckThreeOfAKind();
             controllerCleared = false;
         }
         else
@@ -644,78 +644,8 @@ public class Obstacle : MonoBehaviour
     }
 
     public bool galaxyForward, galaxyBack, galaxyLeft, galaxyRight, threeOfAKind, spawningBlackHole;
-    private const float CenterThreshold = 0.05f;
+    private const float CenterThreshold = 0.05f;  
 
-
-    public void CheckThreeOfAKind()
-    {
-        if (obstacleType != ObstacleType.Galaxy)
-        {
-
-            return;
-        }
-
-        if (galaxyLeft && galaxyRight)
-        {
-            Debug.Log("Horizontal center alignment");
-            CheckCenteredAlignment(_obstacleLeft[0].GetComponent<Obstacle>(), this, _obstacleRight[0].GetComponent<Obstacle>(), true);
-        }
-        else if (galaxyForward && galaxyBack)
-        {
-            Debug.Log("Vertical center alignment");
-            CheckCenteredAlignment(_obstacleBack[0].GetComponent<Obstacle>(), this, _obstacleForward[0].GetComponent<Obstacle>(), false);
-        }
-        else if (galaxyLeft)
-        {
-            CheckEndAlignment(this, Vector3.left);
-        }
-        else if (galaxyRight)
-        {
-            CheckEndAlignment(this, Vector3.right);
-        }
-        else if (galaxyForward)
-        {
-            CheckEndAlignment(this, Vector3.forward);
-        }
-        else if (galaxyBack)
-        {
-            CheckEndAlignment(this, Vector3.back);
-        }
-    }
-
-    private void CheckCenteredAlignment(Obstacle left, Obstacle center, Obstacle right, bool isHorizontal)
-    {
-        Vector3 midPoint = isHorizontal ? (left.transform.position + right.transform.position) / 2 : (center.transform.position + right.transform.position) / 2;
-        midPoint.y = 0;
-
-        Vector3 targetPosition = isHorizontal ? new Vector3(transform.position.x, transform.position.y, midPoint.z) : new Vector3(midPoint.x, transform.position.y, transform.position.z);
-
-        float distance = Vector3.Distance(transform.position, targetPosition);
-
-        Debug.Log($"Checking Centered Alignment. Distance: {distance}, Threshold: {CenterThreshold}");
-
-        bool leftAlignment = (_obstacleLeft[0] != null && _obstacleLeft[0].GetComponent<Obstacle>().obstacleType == ObstacleType.Galaxy);
-        Debug.Log($"Left Alignment: {leftAlignment}");
-        bool rightAlignment = (_obstacleRight[0] != null && _obstacleRight[0].GetComponent<Obstacle>().obstacleType == ObstacleType.Galaxy);
-        Debug.Log($"Right Alignment: {rightAlignment}");
-        bool forwardAlignment = (_obstacleForward[0] != null && _obstacleForward[0].GetComponent<Obstacle>().obstacleType == ObstacleType.Galaxy);
-        Debug.Log($"Forward Alignment: {forwardAlignment}");
-        bool backAlignment = (_obstacleBack[0] != null && _obstacleBack[0].GetComponent<Obstacle>().obstacleType == ObstacleType.Galaxy);
-        Debug.Log($"Back Alignment: {backAlignment}");
-        Obstacle[] obstacles = new Obstacle[3];
-        if (distance < CenterThreshold && ((leftAlignment && rightAlignment) || (forwardAlignment && backAlignment)))
-        {
-            obstacles[0] = left;
-            obstacles[1] = this;
-            obstacles[2] = right;
-            Debug.Log("Centered Alignment Detected. Triggering HandleBlackHole.");
-            HandleBlackHole(obstacles, true);
-        }
-        else
-        {
-            Debug.Log("Centered Alignment Not Detected. Distance too far or left/right not aligned.");
-        }
-    }
     public bool onDestroy;
     public GameObject objectToTurnOff;
     public GameObject objectToTurnOn;
@@ -738,105 +668,8 @@ public class Obstacle : MonoBehaviour
         }
     }
 
-    private void CheckEndAlignment(Obstacle endObstacle, Vector3 direction)
-    {
-        // Set the ray direction based on flags
-
-        int counter = 0;
-        // Set the ray starting position at the endObstacle's position
-        Vector3 rayStart = endObstacle.transform.position;
-
-        // Shoot the ray in the specified direction
-        Ray ray = new Ray(rayStart, direction);
-
-        // Perform the raycast and get all hits along the ray
-        RaycastHit[] hits = Physics.RaycastAll(ray, 2f);
-
-        // Check each hit for 3-of-a-kind alignment
-        if (hits.Length < 2) { Debug.Log("not enough obstacles"); return; }
-        foreach (var hit in hits)
-        {
-            Obstacle hitObstacle = hit.collider.GetComponent<Obstacle>();
-            if (hitObstacle != null && hitObstacle.obstacleType == ObstacleType.Galaxy)
-            {
-
-                counter++;
-
-
-                Debug.Log($"Obstacle name : {hitObstacle} Counter is: {counter}");
-
-            }
-            else
-            {
-                // Stop checking if a non-Galaxy obstacle is hit
-                counter = 0;
-                break;
-            }
-        }
-        if (counter == 2)
-        {
-            Obstacle[] obstacles = new Obstacle[hits.Length];
-            for (int i = 0; i < hits.Length; i++)
-            {
-                obstacles[i] = hits[i].collider.GetComponent<Obstacle>();
-            }
-            HandleBlackHole(obstacles, false);
-            // float distance = Vector3.Distance(center.transform.position, targetPosition);
-        }
-    }
-
-
-    private void HandleBlackHole(Obstacle[] hitObstacles, bool center)
-    {
-
-        StartCoroutine(WaitAndSpawnBlackHole(hitObstacles[1].transform));
-    }
-
-    private IEnumerator WaitAndSpawnBlackHole(Transform center)
-    {
-        yield return new WaitForEndOfFrame();
-        StartCoroutine(SpawnBlackHole(center));
-    }
-
-
-
-
-    IEnumerator SpawnBlackHole(Transform center)
-    {
-        Debug.Log("Center: " + center.transform.position);
-        Obstacle[] holes = GameManager.Instance.blackHoleObstacles.ToArray();
-        for (int i = 0; i < holes.Length; i++)
-        {
-            holes[i].GetComponent<Rigidbody>().useGravity = false;
-            holes[i].transform.DOScale(holes[i].transform.localScale / 2, 1).Play();
-            holes[i].transform.DOMove(center.position + Vector3.up / 2, 1f).Play();
-            holes[i].transform.DOShakeRotation(2, 25, 2, 35).Play();
-        }
-        yield return new WaitForSeconds(1f);
-        for (int i = 0; i < holes.Length; i++)
-        {
-            holes[i].transform.DOMove(holes[i].transform.position - new Vector3(0, 0.5f, 0), 1f).Play();
-        }
-
-        yield return new WaitForSeconds(1f);
-        for (int i = 0; i < holes.Length; i++)
-        {
-            holes[i].transform.DOMove(holes[i].transform.position - Vector3.up, 1f).Play();
-        }
-        yield return new WaitForSeconds(0.5f);
-        Destroy(center.GetComponent<Obstacle>().tile.gameObject);
-        for (int i = 0; i < holes.Length; i++)
-        {
-            Destroy(holes[i].gameObject);
-        }
-        Vector3 spawnPos = new Vector3(center.position.x, -0.56f, center.position.z);
-        GameObject blackHole = Instantiate(GameManager.Instance.blackHolePrefab, spawnPos, Quaternion.identity);
-        blackHole.name = " BLACK HOLE OBEJCT";
-
-        GameManager.Instance.blackHolePrefab = blackHole;
-        GameManager.Instance.blackHole = true;
-
-    }
+   
+ 
     public Color startColor, endColor;
     public float blinkDuration = 1f;
     public float blinkTime = 5.0f;

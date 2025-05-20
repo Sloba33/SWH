@@ -13,14 +13,14 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput playerInputMP;
     public bool AI;
     [Title("Player References", TitleColor.Violet, TitleColor.Violet, 2f, 20f)]
-    Player player;
-    PlayerAttack playerAttack;
-    public PlayerObstacleController playerObstacleController;
-    PlayerInput playerInput;
+    [SerializeField] private Player player;
+    [SerializeField] private PlayerAttack playerAttack;
+    [HideInInspector] public PlayerObstacleController playerObstacleController;
+    [SerializeField] PlayerInput playerInput;
     Rigidbody _rb;
     private Animator _anim;
     CapsuleCollider playerCollider;
-    public ParticleSystem jumpParticle;
+    [SerializeField] private ParticleSystem jumpParticle;
 
     public GameObject camerasPrefab;
     public Camera playerRegularCamera;
@@ -183,7 +183,6 @@ public class PlayerController : NetworkBehaviour
     public struct GameplayInput
     {
         public float X, Z;
-       
 
     }
     private void HandleInput()
@@ -277,11 +276,9 @@ public class PlayerController : NetworkBehaviour
     LayerMask _tileObstacleMask;
 
     [Header("Player Grounded Offsets")]
-    [SerializeField]
-    private Vector3 _grounderOffset;
 
-    [SerializeField]
-    private float _grounderRadius;
+    private Vector3 _grounderOffset = new Vector3(0, -0.47f, 0);
+    private float _grounderRadius = 0.1f;
 
     [Header("Player Obstacle Offsets")]
     [Header("Detection Flags")]
@@ -303,19 +300,17 @@ public class PlayerController : NetworkBehaviour
     private Collider[] _wall = new Collider[1];
     private Collider[] _bombDetector = new Collider[1];
 
-    [SerializeField]
-    private float _wallCheckOffset;
+
+    private float _wallCheckOffset = 0.45f;
+    private float _bombCheckOffset = 0.89f;
 
     [SerializeField]
-    private float _bombCheckOffset;
+    private float _wallCheckRadius = 0.12f;
 
     [SerializeField]
-    private float _wallCheckRadius;
-
-    [SerializeField]
-    private float _bombCheckRadius;
-    public Vector3 WallDetectionOffset;
-    public Vector3 BombDetectionOffset;
+    private float _bombCheckRadius = 0.1f;
+    public Vector3 WallDetectionOffset = new Vector3(0, -0.12f, 0);
+    public Vector3 BombDetectionOffset = new Vector3(0, -0.12f, 0);
 
     [Header("Objects")]
     [SerializeField]
@@ -342,7 +337,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public float rayDistance = 0.95f;
+    public float rayDistance = 0.99f; // was 0.95f
     public LayerMask tileLayer;
 
     public Vector3 FindNeighbouringTile()
@@ -475,7 +470,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     public float _walkSpeed = 2;
 
-    public float obstacleAvoidanceRange = 2f;
+    public float obstacleAvoidanceRange = 0.06f;
 
     [NaughtyAttributes.ReadOnly]
     public Vector3 _dir;
@@ -499,9 +494,9 @@ public class PlayerController : NetworkBehaviour
 
     public float avoidanceMultiplier;
     public float raycastAngle;
-    public Vector3 leftEyeOffset,
-        rightEyeOffset,
-        climbRayOffset,
+    public Vector3 leftEyeOffset = new Vector3(0.025f, 0, 0),
+        rightEyeOffset = new Vector3(-0.025f, 0, 0),
+        climbRayOffset = new Vector3(0, 0.45f, 0),
         behindObstacleOffset;
     public bool pullObstacleFlag;
     public LayerMask _behindObstacleMask;
@@ -746,7 +741,7 @@ public class PlayerController : NetworkBehaviour
     float nudgeDistance;
 
     [SerializeField]
-    float _jumpForce;
+    float _jumpForce = 5.8f;
 
     [NaughtyAttributes.ReadOnly]
     [SerializeField]
@@ -756,7 +751,7 @@ public class PlayerController : NetworkBehaviour
     float jumpTimer = 0;
 
     [SerializeField]
-    float jumpCoyoteTime = 0.15f;
+    float jumpCoyoteTime = 0.14f;
 
     [NaughtyAttributes.ReadOnly]
     [SerializeField]
@@ -937,13 +932,13 @@ public class PlayerController : NetworkBehaviour
             obstacleBackwards = null;
     }
 
-    public Vector3 forwardOffset,
-        backOffset,
+    public Vector3 forwardOffset = new Vector3(0, 0.48f, 0),
+        backOffset = new Vector3(0, 0.48f, 0),
         leftOffset,
         rightOffset;
-    public float frontoffs,
-        backoffs;
-    public float slideCheckerRadius;
+    public float frontoffs = 0.3f,
+        backoffs = -0.3f;
+    public float slideCheckerRadius = 0.025f;
     private Vector3 Front =>
         (_anim.transform.position - forwardOffset) + _anim.transform.forward * frontoffs;
     private Vector3 Back =>
@@ -960,12 +955,12 @@ public class PlayerController : NetworkBehaviour
         slideBack,
         slideLeft,
         slideRight;
-    public float slideForce;
+    public float slideForce = 65f;
     public Collider[] _slideForward = new Collider[1];
     public Collider[] _slideBack = new Collider[1];
     public Collider[] _slideLeft = new Collider[1];
     public Collider[] _slideRight = new Collider[1];
-    public float slideAngle = 60f;
+    public float slideAngle = 25f;
 
     public void SlideFlags()
     {
@@ -1049,17 +1044,3 @@ public enum MovementType
     FreeMove
 }
 
-public enum JumpType
-{
-    Force,
-    Velocity,
-    MoveDirection,
-    MovePosition
-}
-
-public static class Helpers
-{
-    private static Matrix4x4 _isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, -45, 0));
-
-    public static Vector3 ToIso(this Vector3 input) => _isoMatrix.MultiplyPoint3x4(input);
-}

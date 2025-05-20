@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Obstacles;
-
-public class Tile : MonoBehaviour
+using Fusion;
+public class Tile : NetworkBehaviour
 {
     public List<Tile> neighbourList = new();
     public bool hasObject;
@@ -74,14 +74,14 @@ public class Tile : MonoBehaviour
                     if (obstacle._obstacleBack[0] != null) obstacle._obstacleBack[0].GetComponent<Obstacle>().SphereFlags();
                     if (obstacle._obstacleLeft[0] != null) obstacle._obstacleLeft[0].GetComponent<Obstacle>().SphereFlags();
                     if (obstacle._obstacleRight[0] != null) obstacle._obstacleRight[0].GetComponent<Obstacle>().SphereFlags();
-                    obstacle.CheckThreeOfAKind();
+                    // obstacle.CheckThreeOfAKind();
                 }
             }
         }
         if (obstacle.obstacleType == ObstacleType.Galaxy || obstacle.obstacleType == ObstacleType.Cardboard)
         {
             obstacle.SphereFlags();
-            obstacle.CheckThreeOfAKind();
+            // obstacle.CheckThreeOfAKind();
         }
 
     }

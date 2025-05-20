@@ -456,6 +456,8 @@ GameObject:
   - component: {fileID: 5731561177521164155}
   - component: {fileID: 7085507206775425596}
   - component: {fileID: -2319087708481551118}
+  - component: {fileID: 7979745234381550664}
+  - component: {fileID: 6539849510780845228}
   m_Layer: 7
   m_Name: Player_Male_Standard_Gameplay_FUSION
   m_TagString: Player
@@ -616,7 +618,7 @@ MonoBehaviour:
   spotlight: {fileID: 4130482877464360193}
   floatingJoystick: {fileID: 0}
   dynamicJoystick: {fileID: 0}
-  controls: 0
+  controls: 2
   movementType: 0
   playerControls: {fileID: 0}
   playerCamera: {fileID: 3242656931235162317}
@@ -1026,6 +1028,8 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 4049543763410288958}
   - {fileID: -2319087708481551118}
+  - {fileID: 7979745234381550664}
+  - {fileID: 6539849510780845228}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-2319087708481551118
 MonoBehaviour:
@@ -1044,6 +1048,75 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &7979745234381550664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051776569072472735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868bfb2a67b87af4297a5e55d8066c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _walkSpeed: 2
+  _movementType: 0
+  _jumpForce: 5.8
+  _jumpParticle: {fileID: 6808812054988748476}
+  jumpCoyoteTime: 0.14
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1288
+  _IsGrounded:
+    _value: 0
+  _IsJumping:
+    _value: 0
+  _RecentlyJumped:
+    _value: 0
+  _IsFalling:
+    _value: 0
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _bombObstacleMask:
+    serializedVersion: 2
+    m_Bits: 393472
+  _tileObstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
+  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
+  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
+  __isAgainstWall:
+    _value: 0
+  __isBombBlocked:
+    _value: 0
+  raycastDistance: 1
+  avoidanceMultiplier: 0
+  raycastAngle: 0
+  leftEyeOffset: {x: 0, y: 0, z: 0}
+  rightEyeOffset: {x: 0, y: 0, z: 0}
+  __currentMoveDirection: {x: 0, y: 0, z: 0}
+  _tileLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  tileRayLength: 50
+  _CurrentTile: {fileID: 0}
+  forwardOffset: {x: 0, y: 0.48, z: 0}
+  backOffset: {x: 0, y: 0.48, z: 0}
+--- !u!114 &6539849510780845228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051776569072472735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0628cfda9d275434097dfc2b6657539c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentAnimState: 0
 --- !u!1 &1179067297764220063
 GameObject:
   m_ObjectHideFlags: 0
