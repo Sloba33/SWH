@@ -14,7 +14,6 @@ public class PlayerMovement : NetworkBehaviour
 
     [Header("Movement Settings")]
     [SerializeField] private float _walkSpeed = 2f;
-    [SerializeField] private MovementType _movementType; // Your existing enum
     public float _jumpForce = 5.8f;
     [SerializeField] private ParticleSystem _jumpParticle; // Assign in inspector
 
@@ -41,8 +40,8 @@ public class PlayerMovement : NetworkBehaviour
     private float _bombCheckRadius = 0.1f;
     [HideInInspector] public Vector3 WallDetectionOffset = new Vector3(0, -0.12f, 0);
     [HideInInspector] public Vector3 BombDetectionOffset = new Vector3(0, -0.12f, 0);
-    [Networked] public NetworkBool _isAgainstWall { get; set; }
-    [Networked] public NetworkBool _isBombBlocked { get; set; }
+    [Networked] public NetworkBool IsAgainstWall { get; set; }
+    [Networked] public NetworkBool IsBombBlocked { get; set; }
 
     [Header("Raycast Settings")]
     public float raycastDistance = 1.0f;
@@ -54,8 +53,8 @@ public class PlayerMovement : NetworkBehaviour
 
     // Internal state for movement
     // Make this networked if precise movement direction is critical for animation or other networked logic
-    [Networked] public Vector3 _currentMoveDirection { get; set; }
-    private bool _canMove = true; // This might be controlled by other components (e.g., PlayerInteraction)
+    [Networked] public Vector3 CurrentMoveDirection { get; set; }
+    public bool _canMove = true; // This might be controlled by other components (e.g., PlayerInteraction)
 
     [Header("Tile Detection")]
     [SerializeField] public LayerMask _tileLayer; // Make sure this is assigned in inspector
@@ -91,10 +90,10 @@ public class PlayerMovement : NetworkBehaviour
         IsJumping = false;
         RecentlyJumped = false;
         IsFalling = false;
-        _isAgainstWall = false;
-        _isBombBlocked = false;
+        IsAgainstWall = false;
+        IsBombBlocked = false;
         CurrentTile = null;
-        _currentMoveDirection = Vector3.zero; // Initialize networked property
+        CurrentMoveDirection = Vector3.zero; // Initialize networked property
     }
 
     public override void FixedUpdateNetwork()
@@ -129,11 +128,11 @@ public class PlayerMovement : NetworkBehaviour
         if (inputMoveDirection != Vector3.zero)
         {
             transform.forward = inputMoveDirection;
-            _currentMoveDirection = inputMoveDirection; // Update networked move direction
+            CurrentMoveDirection = inputMoveDirection; // Update networked move direction
         }
         else
         {
-            _currentMoveDirection = Vector3.zero; // Ensure it's zero when no input
+            CurrentMoveDirection = Vector3.zero; // Ensure it's zero when no input
         }
 
         Vector3 avoidanceVector = Vector3.zero;
@@ -176,10 +175,10 @@ public class PlayerMovement : NetworkBehaviour
             avoidObstacle = true;
         }
 
-        Vector3 finalMovement = _currentMoveDirection;
-        if (avoidObstacle && !IsFalling && _currentMoveDirection != Vector3.zero)
+        Vector3 finalMovement = CurrentMoveDirection;
+        if (avoidObstacle && !IsFalling && CurrentMoveDirection != Vector3.zero)
         {
-            finalMovement = _currentMoveDirection + avoidanceVector * avoidanceMultiplier;
+            finalMovement = CurrentMoveDirection + avoidanceVector * avoidanceMultiplier;
         }
 
         if (_rb != null)
@@ -228,14 +227,14 @@ public class PlayerMovement : NetworkBehaviour
         }
 
         // Update wall/bomb blocked states (these could be networked if relevant for gameplay)
-        _isAgainstWall = Physics.OverlapSphereNonAlloc(
+        IsAgainstWall = Physics.OverlapSphereNonAlloc(
             WallDetectPosition,
             _wallCheckRadius,
             new Collider[1],
             _obstacleMask
         ) > 0;
 
-        _isBombBlocked = Physics.OverlapSphereNonAlloc(
+        IsBombBlocked = Physics.OverlapSphereNonAlloc(
             BombDetectPosition,
             _bombCheckRadius,
             new Collider[1],
@@ -311,7 +310,7 @@ public class PlayerMovement : NetworkBehaviour
         bool slideForward = Physics.OverlapSphereNonAlloc(Front, slideCheckerRadius, new Collider[1], _obstacleMask) > 0;
         bool slideBack = Physics.OverlapSphereNonAlloc(Back, slideCheckerRadius, new Collider[1], _obstacleMask) > 0;
 
-        if ((slideForward || slideBack) && !IsGrounded && IsFalling && _currentMoveDirection == Vector3.zero)
+        if ((slideForward || slideBack) && !IsGrounded && IsFalling && CurrentMoveDirection == Vector3.zero)
         {
             Vector3 slideDirection = Vector3.zero;
             Vector3 forceDirection = Quaternion.Euler(slideAngle, 0f, 0f) * transform.forward;

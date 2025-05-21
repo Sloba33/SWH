@@ -15,7 +15,7 @@ public class PlayerAnimation : NetworkBehaviour
     private bool IsGrounded => _playerMovement.IsGrounded;
     private bool IsJumping => _playerMovement.IsJumping; // Corrected from _playerMovement.IsJumping
     private bool IsFalling => _playerMovement.IsFalling;
-    private Vector3 CurrentMoveDirection => _playerMovement._currentMoveDirection;
+    private Vector3 CurrentMoveDirection => _playerMovement.CurrentMoveDirection;
     private float MoveSpeed => _player.MoveSpeed;
 
     public override void Spawned()
@@ -65,43 +65,50 @@ public class PlayerAnimation : NetworkBehaviour
     }
 
     private PlayerAnimState DetermineAnimationState()
+{
+    // These now come from PlayerMovement and PlayerInteraction
+    bool isMoving = _playerMovement.CurrentMoveDirection != Vector3.zero;
+    bool isRunning = isMoving && _playerMovement.IsGrounded && _player.MoveSpeed >= 3;
+    bool isWalking = isMoving && _playerMovement.IsGrounded && _player.MoveSpeed < 3;
+    // Check interaction states as well
+    // bool isInteracting = _playerInteraction.IsPulling || _playerInteraction.IsPushing;
+
+    // Prioritize airborne states
+    if (IsJumping)
     {
-        bool isMoving = CurrentMoveDirection != Vector3.zero;
-        bool isRunning = isMoving && IsGrounded && MoveSpeed >= 3;
-        bool isWalking = isMoving && IsGrounded && MoveSpeed < 3;
-        bool isAFK = !isMoving && IsGrounded && !IsJumping && !IsFalling;
-
-        if (IsJumping)
-        {
-            return PlayerAnimState.Jump;
-        }
-        else if (IsFalling && !IsGrounded) // Ensure falling only when not grounded
-        {
-            return PlayerAnimState.Fall;
-        }
-        else if (IsGrounded) // If grounded
-        {
-            if (isRunning)
-            {
-                return PlayerAnimState.Run;
-            }
-            else if (isWalking)
-            {
-                return PlayerAnimState.Walk;
-            }
-            else if (isAFK)
-            {
-                return PlayerAnimState.AFK; // You might map AFK to a specific idle variant
-            }
-            else // Not moving, grounded, not jumping, not falling
-            {
-                return PlayerAnimState.Idle;
-            }
-        }
-
-        // Fallback to current state if no explicit transition
-        return _currentAnimState;
+        return PlayerAnimState.Jump;
     }
+    else if (IsFalling && !IsGrounded)
+    {
+        return PlayerAnimState.Fall;
+    }
+    else if (IsGrounded)
+    {
+        // Prioritize interaction over movement if interacting
+       
+        if (isRunning)
+        {
+            return PlayerAnimState.Run;
+        }
+        else if (isWalking)
+        {
+            return PlayerAnimState.Walk;
+        }
+        else // Not moving, grounded, not jumping, not falling, not interacting
+        {
+            // If the player is supposed to go AFK after a period of idle,
+            // this might be handled by a timer in PlayerController, which then
+            // sets PlayerAnimation.SetAFK(true)
+            // if (_playerMovement.IsAFK) // Assuming PlayerMovement has an IsAFK networked property
+            // {
+            //     return PlayerAnimState.AFK;
+            // }
+            return PlayerAnimState.Idle;
+        }
+    }
+
+    return _currentAnimState; // Fallback
+}
 
     private void EnterState(PlayerAnimState state)
     {
@@ -162,5 +169,7 @@ public enum PlayerAnimState
     AFK,
     Hit,
     HitDown,
-    Dead
+    Dead,
+    Pull, // Add for pulling animation state
+    Push // Add for pushing animation state
 }

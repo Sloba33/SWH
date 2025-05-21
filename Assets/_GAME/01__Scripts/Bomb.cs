@@ -81,7 +81,7 @@ public class Bomb : MonoBehaviour
                 PlayerController playerController = collider.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
-                    playerController.ShakeCamera(); // Replace with your function
+                    // playerController.ShakeCamera(); // Replace with your function
                 }
             }
         }
