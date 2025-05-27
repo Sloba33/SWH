@@ -10,8 +10,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-
-    private PlayerInput playerInputMP;
+    public PlayerMovement playerMovement;
     public bool AI;
     [Title("Player References", TitleColor.Violet, TitleColor.Violet, 2f, 20f)]
     [SerializeField] private Player player;
@@ -55,10 +54,10 @@ public class PlayerController : MonoBehaviour
         if (!AI)
         {
 
-            playerControls = FindObjectOfType<PlayerControls>();
+            playerControls = FindFirstObjectByType<PlayerControls>();
             playerControls.playerController = this;
             playerControls.playerCamera = camerasPrefab;
-            Settings settings = FindObjectOfType<Settings>();
+            Settings settings = FindFirstObjectByType<Settings>();
             settings.playerController = this;
             settings.cameraController = camerasPrefab.GetComponent<CameraController>();
             // controls.SetReferences();
@@ -82,6 +81,9 @@ public class PlayerController : MonoBehaviour
         }
         previousFlashlightDirection = transform.forward;
         if (!AI) female = player.characterStats.female;
+        playerMovement = GetComponent<PlayerMovement>();
+        if(playerMovement!=null)
+        playerMovement.Initialize(player, _rb, playerCollider);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -167,7 +169,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleGrounded();
         HandleWalking();
-        // GetFacingDirection();
+        // GetFacingDirection();1
         //IF CHARACTER MOVEMENT BAD UNCOMMENT THE FACING DIRECTION
         DrawRaycasts();
         if (!AI)
@@ -1162,13 +1164,13 @@ public enum MovementType
 //         // UI & Game Manager References
 //         if (!AI)
 //         {
-//             playerControls = FindObjectOfType<PlayerControls>();
+//             playerControls = FindFirstObjectByType<PlayerControls>();
 //             if (playerControls != null)
 //             {
 //                 playerControls.playerController = this;
 //                 playerControls.playerCamera = camerasPrefab;
 //             }
-//             Settings settings = FindObjectOfType<Settings>();
+//             Settings settings = FindFirstObjectByType<Settings>();
 //             if (settings != null)
 //             {
 //                 settings.playerController = this;

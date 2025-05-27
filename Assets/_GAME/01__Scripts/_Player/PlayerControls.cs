@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-using Fusion;
+
 public class PlayerControls : MonoBehaviour
 {
     public List<ConsumableSlot> consumableSlots = new();
@@ -60,7 +60,7 @@ public class PlayerControls : MonoBehaviour
         _isInteractable = true;
         levelGoal = FindObjectOfType<LevelGoal>();
         yield return new WaitForSeconds(0.5f);
-
+       
         // playerController.joystick = dynamicJoystick;
         Invoke(nameof(SetReferences), 1f);
         if (levelGoal.Tutorial)
@@ -172,20 +172,22 @@ public class PlayerControls : MonoBehaviour
     }
     public void OnPointerDownDelegatePull(PointerEventData eventData)
     {
-        MobileInput.Instance.OnPullButtonDown();
+        playerController.StartPull();
         isPulling = true;
-        if (hintPull != null) hintPull.SetActive(false);
+
+        if (hintPull != null) hintPull.gameObject.SetActive(false);
     }
     public void OnPointerUpDelegatePull(PointerEventData eventData)
     {
-        MobileInput.Instance.OnPullButtonUp();
+        playerController.StopPull();
         isPulling = false;
-        if (levelGoal?.Tutorial == true && hintPull != null)
-            hintPull.SetActive(true);
+        if (!levelGoal.Tutorial) return;
+        if (hintPull != null) hintPull.gameObject.SetActive(true);
+
     }
     public void OnPointerDownDelegateJump(PointerEventData eventData)
     {
-        MobileInput.Instance.OnJumpButtonDown();
+        playerController.HandleJump();
         if (handJump != null) handJump.gameObject.SetActive(false);
         else if (levelGoal != null && levelGoal.Tutorial && levelGoal.jumpHint != null) levelGoal.jumpHint.gameObject.SetActive(false);
         Debug.Log("Jumping");
@@ -227,9 +229,9 @@ public class PlayerControls : MonoBehaviour
         {
             return;
         }
-        if (playerController.playerMovement.IsBombBlocked || playerController.isPushing)
+        if (playerController._isBombBlocked || playerController.isPushing)
         {
-            Debug.Log("Bomb not placeable " + playerController.playerMovement.IsBombBlocked);
+            Debug.Log("Bomb not placeable " + playerController._isBombBlocked);
 
             GameObject bomb = Instantiate(bprefab, playerController.transform.position + new Vector3(0, 0.02f, 0), bprefab.transform.rotation);
             if (bomb.GetComponent<Bomb>() != null && bomb.GetComponent<Bomb>().isColored)
@@ -320,7 +322,7 @@ public class PlayerControls : MonoBehaviour
             }
         }
 
-
+        
     }
     public void RemoveBomb(ConsumableSlot consumableSlot)
     {

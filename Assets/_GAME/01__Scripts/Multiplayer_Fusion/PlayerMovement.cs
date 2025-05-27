@@ -1,13 +1,13 @@
 using UnityEngine;
-using Fusion;
+
 // Removed using System.ComponentModel; as it's likely not needed
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     private Player _player;
     private Rigidbody _rb;
-    // REMOVED: private Animator _anim; // Animator reference is moved to PlayerAnimation
+
     private CapsuleCollider _playerCollider;
     private RigidbodyConstraints _originalConstraints; // Store original constraints
     private PlayerAnimation _playerAnimation; // New reference to PlayerAnimation
@@ -19,16 +19,18 @@ public class PlayerMovement : NetworkBehaviour
 
     [SerializeField] float jumpCoyoteTime = 0.14f; // Duration for the coyote time
 
-    [Networked] TickTimer _coyoteTimer { get; set; }
+    public Vector3 InputDirection { get; set; }
+    private Vector3 _currentMoveDir;
+    public float MoveSpeed { get; private set; } = 0f;
 
     [Header("Grounding Detection")]
     [SerializeField] private LayerMask _groundMask;
     private Vector3 _grounderOffset = new Vector3(0, -0.47f, 0.01f);
     private float _grounderRadius = 0.1f;
-    [Networked] public NetworkBool IsGrounded { get; set; } // Networked state
-    [Networked] public NetworkBool IsJumping { get; set; } // Networked state
-    [Networked] public NetworkBool RecentlyJumped { get; set; } // Networked state (for coyote time)
-    [Networked] public NetworkBool IsFalling { get; set; } // Networked state
+    public bool IsGrounded { get; set; } // Networked state
+    public bool IsJumping { get; set; } // Networked state
+    public bool RecentlyJumped { get; set; } // Networked state (for coyote time)
+    public bool IsFalling { get; set; } // Networked state
 
     [Header("Obstacle Detection")]
     [SerializeField] public LayerMask _obstacleMask;
@@ -40,8 +42,8 @@ public class PlayerMovement : NetworkBehaviour
     private float _bombCheckRadius = 0.1f;
     [HideInInspector] public Vector3 WallDetectionOffset = new Vector3(0, -0.12f, 0);
     [HideInInspector] public Vector3 BombDetectionOffset = new Vector3(0, -0.12f, 0);
-    [Networked] public NetworkBool IsAgainstWall { get; set; }
-    [Networked] public NetworkBool IsBombBlocked { get; set; }
+    public bool IsAgainstWall { get; set; }
+    public bool IsBombBlocked { get; set; }
 
     [Header("Raycast Settings")]
     public float raycastDistance = 1.0f;
@@ -53,13 +55,13 @@ public class PlayerMovement : NetworkBehaviour
 
     // Internal state for movement
     // Make this networked if precise movement direction is critical for animation or other networked logic
-    [Networked] public Vector3 CurrentMoveDirection { get; set; }
+    public Vector3 CurrentMoveDirection { get; set; }
     public bool _canMove = true; // This might be controlled by other components (e.g., PlayerInteraction)
 
     [Header("Tile Detection")]
     [SerializeField] public LayerMask _tileLayer; // Make sure this is assigned in inspector
     [HideInInspector] public float tileRayLength = 50f;
-    [Networked] public Tile CurrentTile { get; set; } // Networked if other clients need to know player's current tile
+    public Tile CurrentTile { get; set; } // Networked if other clients need to know player's current tile
 
     // Slide Flags
     private float slideCheckerRadius = 0.025f;
@@ -69,7 +71,7 @@ public class PlayerMovement : NetworkBehaviour
     [HideInInspector] public Vector3 backOffset = new Vector3(0, 0.48f, 0);
     private float slideForce = 65f;
     private float slideAngle = 25f;
-
+    private PlayerInputHandler _inputHandler;
 
     public void Initialize(Player player, Rigidbody rb, CapsuleCollider collider)
     {
@@ -94,33 +96,55 @@ public class PlayerMovement : NetworkBehaviour
         IsBombBlocked = false;
         CurrentTile = null;
         CurrentMoveDirection = Vector3.zero; // Initialize networked property
+        _inputHandler = GetComponent<PlayerInputHandler>();
     }
 
-    public override void FixedUpdateNetwork()
+    public void FixedUpdate()
     {
-        // Update the current tile every tick
+
         UpdateCurrentTile();
-
-        // Check coyote timer
-        if (_coyoteTimer.Expired(Runner))
-        {
-            RecentlyJumped = false;
-            _coyoteTimer = TickTimer.None; // Reset timer once expired
-        }
-
-        // Handle ground status
         HandleGrounded();
-
-        // Handle fall status
         Fall();
-
-        // Handle slide flags (if needed in FixedUpdateNetwork for deterministic physics)
         SlideFlags();
 
-        // Input handling and movement application logic should be called from PlayerController's FixedUpdateNetwork
-    }
+        Vector2 input = _inputHandler.MoveInput;
+        Vector3 moveDirection = new Vector3(input.x, 0f, input.y);
+        _rb.linearVelocity = moveDirection * _player.MoveSpeed;
+        // Check coyote timer
+        // if (_coyoteTimer.Expired(Runner))
+        // {
+        //     RecentlyJumped = false;
+        //     _coyoteTimer = TickTimer.None; // Reset timer once expired
+        // }
 
-    public void HandleMovement(Vector3 inputMoveDirection, NetworkBool jumpInput)
+
+    }
+    public void Move(Vector2 input)
+    {
+        // Restrict movement to one axis at a time (horizontal OR vertical)
+        if (Mathf.Abs(input.x) > Mathf.Abs(input.y))
+            input.y = 0;
+        else
+            input.x = 0;
+
+        Vector3 moveDir = new Vector3(input.x, 0, input.y);
+        CurrentMoveDirection = moveDir.normalized;
+
+        // Determine speed (e.g. walking or running)
+        MoveSpeed = moveDir.magnitude > 0 ? _walkSpeed : 0f;
+
+        Vector3 velocity = CurrentMoveDirection * MoveSpeed;
+
+        // Simple movement using Rigidbody velocity
+        Vector3 newVelocity = new Vector3(velocity.x, _rb.linearVelocity.y, velocity.z);
+        _rb.linearVelocity = newVelocity;
+
+        // Update grounded / jumping / falling status here (example logic)
+        IsGrounded = HandleGrounded();
+        IsJumping = !IsGrounded && _rb.linearVelocity.y > 0.1f;
+        IsFalling = !IsGrounded && _rb.linearVelocity.y < -0.1f;
+    }
+    public void HandleMovement(Vector3 inputMoveDirection, bool jumpInput)
     {
         if (!_canMove) return;
 
@@ -195,8 +219,28 @@ public class PlayerMovement : NetworkBehaviour
             Jump();
         }
     }
+    public Vector3 ComputeAvoidanceVector()
+    {
+        Vector3 avoidance = Vector3.zero;
+        bool leftHit = Physics.Raycast(transform.position + leftEyeOffset, transform.forward, out RaycastHit leftHitInfo, raycastDistance, _tileObstacleMask);
+        bool rightHit = Physics.Raycast(transform.position + rightEyeOffset, transform.forward, out RaycastHit rightHitInfo, raycastDistance, _tileObstacleMask);
 
-    public void HandleGrounded()
+        if (leftHit && rightHit)
+        {
+            avoidance = (Vector3.Cross(leftHitInfo.normal, Vector3.up) + Vector3.Cross(rightHitInfo.normal, Vector3.up)).normalized;
+        }
+        else if (leftHit)
+        {
+            avoidance = Vector3.Cross(leftHitInfo.normal, Vector3.up).normalized;
+        }
+        else if (rightHit)
+        {
+            avoidance = Vector3.Cross(rightHitInfo.normal, Vector3.up).normalized;
+        }
+
+        return avoidance;
+    }
+    public bool HandleGrounded()
     {
         bool newGrounded = Physics.OverlapSphereNonAlloc(
             transform.position + _grounderOffset,
@@ -240,6 +284,7 @@ public class PlayerMovement : NetworkBehaviour
             new Collider[1],
             _bombObstacleMask
         ) > 0;
+        return newGrounded;
     }
 
     public void Fall()
@@ -254,11 +299,11 @@ public class PlayerMovement : NetworkBehaviour
         // When IsGrounded becomes true, HandleGrounded will set IsFalling to false.
     }
 
-    private void Jump()
+    public void Jump()
     {
         IsJumping = true;
         RecentlyJumped = true; // Mark as recently jumped for coyote time
-        _coyoteTimer = TickTimer.CreateFromSeconds(Runner, jumpCoyoteTime);
+        // _coyoteTimer = TickTimer.CreateFromSeconds(Runner, jumpCoyoteTime);
         _jumpParticle.Play(); // Particle effects are usually visual, fine to keep here.
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
         // REMOVED: _anim.SetBool("Jumping", true); // PlayerAnimation handles this based on IsJumping state

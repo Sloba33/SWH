@@ -1,132 +1,94 @@
 using UnityEngine;
-using Fusion;
 
-
-public class PlayerAnimation : NetworkBehaviour
+public class PlayerAnimation : MonoBehaviour
 {
     private Animator _anim;
     private PlayerMovement _playerMovement;
-    private Player _player; // Reference to the Player script
+    private Player _player;
 
-    // The current animation state
-    public PlayerAnimState _currentAnimState = PlayerAnimState.Idle; // Start with a default state
+    public PlayerAnimState CurrentAnimState { get; private set; } = PlayerAnimState.Idle;
 
-    // Helper to get networked states easily
-    private bool IsGrounded => _playerMovement.IsGrounded;
-    private bool IsJumping => _playerMovement.IsJumping; // Corrected from _playerMovement.IsJumping
-    private bool IsFalling => _playerMovement.IsFalling;
-    private Vector3 CurrentMoveDirection => _playerMovement.CurrentMoveDirection;
-    private float MoveSpeed => _player.MoveSpeed;
+    private bool IsGrounded => _playerMovement != null && _playerMovement.IsGrounded;
+    private bool IsJumping => _playerMovement != null && _playerMovement.IsJumping;
+    private bool IsFalling => _playerMovement != null && _playerMovement.IsFalling;
+    private Vector3 CurrentMoveDirection => _playerMovement != null ? _playerMovement.CurrentMoveDirection : Vector3.zero;
+    private float MoveSpeed => _player != null ? _player.MoveSpeed : 0f;
 
-    public override void Spawned()
+    private void Awake()
     {
         _anim = GetComponent<Animator>();
-        if (_anim == null)
-        {
-            Debug.LogError("PlayerAnimation: Animator component not found on this GameObject.");
-            return;
-        }
-
         _playerMovement = GetComponent<PlayerMovement>();
-        _player = GetComponent<Player>(); // Assuming Player script is also on the same GameObject
-        if (_playerMovement == null)
-        {
-            Debug.LogError("PlayerAnimation: PlayerMovement component not found on this GameObject.");
-        }
-        if (_player == null)
-        {
-            Debug.LogError("PlayerAnimation: Player component not found on this GameObject.");
-        }
+        _player = GetComponent<Player>();
 
-        // Initialize to the correct starting state
-        UpdateAnimationState();
+        if (_anim == null) Debug.LogError("PlayerAnimation: Animator component missing.");
+        if (_playerMovement == null) Debug.LogError("PlayerAnimation: PlayerMovement component missing.");
+        if (_player == null) Debug.LogError("PlayerAnimation: Player component missing.");
     }
 
-    public override void Render()
+    private void Update()
     {
         if (_anim == null || _playerMovement == null || _player == null) return;
 
-        UpdateAnimationState(); // Always update state based on current networked data
+        UpdateAnimationState();
     }
 
     private void UpdateAnimationState()
     {
-        PlayerAnimState newState = DetermineAnimationState();
+        var newState = DetermineAnimationState();
 
-        if (newState != _currentAnimState)
+        if (newState != CurrentAnimState)
         {
-            // Transition to the new state
-            ExitState(_currentAnimState); // Optional: clean up old state's parameters
-            _currentAnimState = newState;
-            EnterState(_currentAnimState); // Set new state's parameters
+            ExitState(CurrentAnimState);
+            CurrentAnimState = newState;
+            EnterState(CurrentAnimState);
         }
-        // If you had continuous state logic (e.g., blend tree parameter updates), it would go here:
-        // ExecuteState(_currentAnimState);
     }
 
     private PlayerAnimState DetermineAnimationState()
-{
-    // These now come from PlayerMovement and PlayerInteraction
-    bool isMoving = _playerMovement.CurrentMoveDirection != Vector3.zero;
-    bool isRunning = isMoving && _playerMovement.IsGrounded && _player.MoveSpeed >= 3;
-    bool isWalking = isMoving && _playerMovement.IsGrounded && _player.MoveSpeed < 3;
-    // Check interaction states as well
-    // bool isInteracting = _playerInteraction.IsPulling || _playerInteraction.IsPushing;
+    {
+        bool isMoving = CurrentMoveDirection != Vector3.zero;
+        Debug.Log("Is moving" + isMoving + " | Move Speed: " + MoveSpeed);
+        bool isRunning = isMoving && IsGrounded && MoveSpeed >= 3f;
+        bool isWalking = isMoving && IsGrounded && MoveSpeed < 3f;
 
-    // Prioritize airborne states
-    if (IsJumping)
-    {
-        return PlayerAnimState.Jump;
-    }
-    else if (IsFalling && !IsGrounded)
-    {
-        return PlayerAnimState.Fall;
-    }
-    else if (IsGrounded)
-    {
-        // Prioritize interaction over movement if interacting
-       
-        if (isRunning)
+        if (IsJumping)
+            return PlayerAnimState.Jump;
+
+        if (IsFalling && !IsGrounded)
+            return PlayerAnimState.Fall;
+
+        if (IsGrounded)
         {
-            return PlayerAnimState.Run;
-        }
-        else if (isWalking)
-        {
-            return PlayerAnimState.Walk;
-        }
-        else // Not moving, grounded, not jumping, not falling, not interacting
-        {
-            // If the player is supposed to go AFK after a period of idle,
-            // this might be handled by a timer in PlayerController, which then
-            // sets PlayerAnimation.SetAFK(true)
-            // if (_playerMovement.IsAFK) // Assuming PlayerMovement has an IsAFK networked property
-            // {
-            //     return PlayerAnimState.AFK;
-            // }
+            if (isRunning)
+                return PlayerAnimState.Run;
+            if (isWalking)
+                return PlayerAnimState.Walk;
+
             return PlayerAnimState.Idle;
         }
-    }
 
-    return _currentAnimState; // Fallback
-}
+        // Fallback to current state
+        return CurrentAnimState;
+    }
 
     private void EnterState(PlayerAnimState state)
     {
-        // Reset all relevant animation booleans to ensure clean transitions
+        // Reset all animation flags before setting the new one
         _anim.SetBool("Grounded", false);
         _anim.SetBool("Jumping", false);
         _anim.SetBool("Falling", false);
         _anim.SetBool("Running", false);
         _anim.SetBool("Walking", false);
         _anim.SetBool("AFK", false);
+        _anim.SetBool("Hit", false);
+        _anim.SetBool("Dead", false);
+        _anim.SetBool("Pull", false);
+        _anim.SetBool("Push", false);
 
-        // Set the boolean for the entering state
         switch (state)
         {
             case PlayerAnimState.Idle:
-                _anim.SetBool("Grounded", true); // Idle implies grounded
-                _anim.SetBool("Walking", false); // Explicitly ensure movement is off
-                _anim.SetBool("Running", false); // Explicitly ensure movement is off
+                _anim.SetBool("Grounded", true);
                 break;
             case PlayerAnimState.Walk:
                 _anim.SetBool("Grounded", true);
@@ -138,27 +100,35 @@ public class PlayerAnimation : NetworkBehaviour
                 break;
             case PlayerAnimState.Jump:
                 _anim.SetBool("Jumping", true);
-                // No need to set grounded here, as it's a jump
                 break;
             case PlayerAnimState.Fall:
                 _anim.SetBool("Falling", true);
-                // No need to set grounded here
                 break;
             case PlayerAnimState.AFK:
                 _anim.SetBool("Grounded", true);
                 _anim.SetBool("AFK", true);
                 break;
-                // Add cases for other states
+            case PlayerAnimState.Hit:
+                _anim.SetBool("Hit", true);
+                break;
+            case PlayerAnimState.Dead:
+                _anim.SetBool("Dead", true);
+                break;
+            case PlayerAnimState.Pull:
+                _anim.SetBool("Pull", true);
+                break;
+            case PlayerAnimState.Push:
+                _anim.SetBool("Push", true);
+                break;
         }
     }
 
     private void ExitState(PlayerAnimState state)
     {
-        // For simple boolean-driven states, EnterState's resetting logic might be enough.
-        // But if you had specific triggers or complex clean-up, it would go here.
-        // For example, if you had a "Landing" trigger, you might trigger it on exit from Fall.
+        // If you want to handle any cleanup or triggers when leaving a state, do it here
     }
 }
+
 public enum PlayerAnimState
 {
     Idle,
@@ -168,8 +138,7 @@ public enum PlayerAnimState
     Fall,
     AFK,
     Hit,
-    HitDown,
     Dead,
-    Pull, // Add for pulling animation state
-    Push // Add for pushing animation state
+    Pull,
+    Push
 }

@@ -454,12 +454,11 @@ GameObject:
   - component: {fileID: 114188024279773276}
   - component: {fileID: 5015789071245045519}
   - component: {fileID: 5731561177521164155}
-  - component: {fileID: 7085507206775425596}
-  - component: {fileID: -2319087708481551118}
-  - component: {fileID: 7979745234381550664}
-  - component: {fileID: 6539849510780845228}
+  - component: {fileID: -1705422272152329897}
+  - component: {fileID: -1246409493482050951}
+  - component: {fileID: 7719408155564070817}
   m_Layer: 7
-  m_Name: Player_Male_Standard_Gameplay_FUSION
+  m_Name: Player_Male_Standard_Gameplay_TESTING
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -622,7 +621,7 @@ MonoBehaviour:
   spotlight: {fileID: 4130482877464360193}
   floatingJoystick: {fileID: 0}
   dynamicJoystick: {fileID: 0}
-  controls: 2
+  controls: 0
   movementType: 0
   playerControls: {fileID: 0}
   playerCamera: {fileID: 3242656931235162317}
@@ -1009,43 +1008,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.3, y: 1.5802814, z: 2.762488}
   m_Center: {x: 0, y: 0.2901407, z: 1.881244}
---- !u!114 &7085507206775425596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1051776569072472735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SortKey: 3963589395
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: -2319087708481551118}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &-2319087708481551118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1051776569072472735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
---- !u!114 &7979745234381550664
+--- !u!114 &-1705422272152329897
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1059,7 +1022,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _walkSpeed: 2
   _jumpForce: 5.8
-  _jumpParticle: {fileID: 6808812054988748476}
+  _jumpParticle: {fileID: 6808812054988748476, guid: b6fbc467c14a340499ee5aae55a3519c,
+    type: 3}
   jumpCoyoteTime: 0.14
   _groundMask:
     serializedVersion: 2
@@ -1076,10 +1040,10 @@ MonoBehaviour:
   WallDetectionOffset: {x: 0, y: -0.12, z: 0}
   BombDetectionOffset: {x: 0, y: -0.12, z: 0}
   raycastDistance: 1
-  avoidanceMultiplier: 0
-  raycastAngle: 0
-  leftEyeOffset: {x: 0, y: 0, z: 0}
-  rightEyeOffset: {x: 0, y: 0, z: 0}
+  avoidanceMultiplier: 1
+  raycastAngle: 5
+  leftEyeOffset: {x: 0.025, y: 0, z: 0}
+  rightEyeOffset: {x: -0.025, y: 0, z: 0}
   _canMove: 1
   _tileLayer:
     serializedVersion: 2
@@ -1087,7 +1051,7 @@ MonoBehaviour:
   tileRayLength: 50
   forwardOffset: {x: 0, y: 0.48, z: 0}
   backOffset: {x: 0, y: 0.48, z: 0}
---- !u!114 &6539849510780845228
+--- !u!114 &-1246409493482050951
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1100,6 +1064,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentAnimState: 0
+--- !u!114 &7719408155564070817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051776569072472735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe50128d80046b409c8e47d0a907974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1179067297764220063
 GameObject:
   m_ObjectHideFlags: 0

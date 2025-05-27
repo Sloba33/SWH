@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-
-
 using Cinemachine;
 using Fusion;
 public class GameManager : MonoBehaviour
@@ -37,6 +34,10 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
+
+
+
+
     private void Awake()
     {
         Debug.Log("Framerate set");
@@ -44,6 +45,7 @@ public class GameManager : MonoBehaviour
         _instance = this;
 
     }
+    public bool Testing;
     private void Start()
     {
         IsMultiplayer = FindFirstObjectByType<NetworkRunner>() != null;
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour
         if (!IsMultiplayer)
         {
 
-            if (characterCollection != null)
+            if (characterCollection != null && !Testing)
             {
                 Instantiate(characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)], playerSpawnPoint.position, characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)].transform.rotation);
             }
