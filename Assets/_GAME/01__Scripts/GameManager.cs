@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
-using Fusion;
+
 public class GameManager : MonoBehaviour
 {
     public bool IsMultiplayer;
@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
     public bool Testing;
     private void Start()
     {
-        IsMultiplayer = FindFirstObjectByType<NetworkRunner>() != null;
+        // IsMultiplayer = FindFirstObjectByType<NetworkRunner>() != null;
         if (Application.isMobilePlatform)
         {
             int wid = Screen.width;

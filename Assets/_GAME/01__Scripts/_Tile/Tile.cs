@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Obstacles;
-using Fusion;
-public class Tile : NetworkBehaviour
+
+public class Tile : MonoBehaviour
 {
     public List<Tile> neighbourList = new();
     public bool hasObject;
