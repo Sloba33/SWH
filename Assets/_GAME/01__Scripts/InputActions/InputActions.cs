@@ -796,6 +796,33 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Hit"",
+                    ""type"": ""Button"",
+                    ""id"": ""fed7dde6-a04e-4a3f-acf9-7094c9788169"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HitDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""6e430015-6f5e-41f5-967a-b9d5e30af4a2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Special"",
+                    ""type"": ""Button"",
+                    ""id"": ""0d16c28d-2227-48f5-94e1-7b4b1e661a3f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -875,6 +902,83 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c6ff890b-51aa-4b35-991a-84280fa0de16"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""604cfa39-d4c2-4ee0-95f5-bd6224676fd6"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fc2c4a60-29d9-42df-ae78-d22d24d6a51f"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee60e85d-c54f-4704-8cc7-6e65f55c9f01"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HitDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2c3eb504-c109-468e-9bea-df2e90889f76"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HitDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""060ee41e-7578-4b06-9edd-f5c349cb058b"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Special"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1015f612-81f3-4776-9706-b5e579560954"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Special"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -906,6 +1010,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Hit = m_Player.FindAction("Hit", throwIfNotFound: true);
+        m_Player_HitDown = m_Player.FindAction("HitDown", throwIfNotFound: true);
+        m_Player_Special = m_Player.FindAction("Special", throwIfNotFound: true);
     }
 
     ~@InputActions()
@@ -1475,6 +1582,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Hit;
+    private readonly InputAction m_Player_HitDown;
+    private readonly InputAction m_Player_Special;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1494,6 +1604,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Jump".
         /// </summary>
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Hit".
+        /// </summary>
+        public InputAction @Hit => m_Wrapper.m_Player_Hit;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/HitDown".
+        /// </summary>
+        public InputAction @HitDown => m_Wrapper.m_Player_HitDown;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Special".
+        /// </summary>
+        public InputAction @Special => m_Wrapper.m_Player_Special;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1526,6 +1648,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Hit.started += instance.OnHit;
+            @Hit.performed += instance.OnHit;
+            @Hit.canceled += instance.OnHit;
+            @HitDown.started += instance.OnHitDown;
+            @HitDown.performed += instance.OnHitDown;
+            @HitDown.canceled += instance.OnHitDown;
+            @Special.started += instance.OnSpecial;
+            @Special.performed += instance.OnSpecial;
+            @Special.canceled += instance.OnSpecial;
         }
 
         /// <summary>
@@ -1543,6 +1674,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Hit.started -= instance.OnHit;
+            @Hit.performed -= instance.OnHit;
+            @Hit.canceled -= instance.OnHit;
+            @HitDown.started -= instance.OnHitDown;
+            @HitDown.performed -= instance.OnHitDown;
+            @HitDown.canceled -= instance.OnHitDown;
+            @Special.started -= instance.OnSpecial;
+            @Special.performed -= instance.OnSpecial;
+            @Special.canceled -= instance.OnSpecial;
         }
 
         /// <summary>
@@ -1720,5 +1860,26 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Hit" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHit(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "HitDown" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHitDown(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Special" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpecial(InputAction.CallbackContext context);
     }
 }

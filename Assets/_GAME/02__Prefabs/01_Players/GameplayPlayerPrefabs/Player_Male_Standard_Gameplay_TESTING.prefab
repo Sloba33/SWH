@@ -771,7 +771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: f09821a8dbdb39b41a0b617949fe635e,
+  m_Actions: {fileID: -944628639613478452, guid: 47a6042df8c6088478a5af663301c38a,
     type: 3}
   m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
@@ -787,67 +787,67 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 21d7ee72-0f9d-4319-a317-440209f10659
+    m_ActionId: 8a1e24cd-1449-494c-b970-2463feb5e54b
     m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: e07d5d02-a1ad-44a2-a7d4-8c5ca2f220a3
+    m_ActionId: 44c28fbc-c7c6-4796-ba37-3788a109ee0f
     m_ActionName: 'UI/Submit[/Keyboard/enter]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 412b9828-9a91-4f9c-ba34-63befa2df74e
+    m_ActionId: 15e74156-0cb0-4043-a5b1-1aa56b4b071a
     m_ActionName: 'UI/Cancel[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: baa39dbe-d8ce-453f-bd32-53d9f9dfe5fc
+    m_ActionId: 6d00f991-4ccb-4991-8dfc-0f7150aec14d
     m_ActionName: 'UI/Point[/Mouse/position]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: bb9cab79-e0f2-4de3-b2ee-a4cf533f3686
+    m_ActionId: b2ec6d75-6063-45bf-bccd-461e13cfa05a
     m_ActionName: 'UI/Click[/Mouse/leftButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 20c34d4e-5c25-4cdb-9b1f-56bf632d9f72
+    m_ActionId: aeeda640-c90f-4560-b1d5-952057e30f3b
     m_ActionName: 'UI/ScrollWheel[/Mouse/scroll]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 39c2edff-38c4-4b3f-8346-341991203781
+    m_ActionId: c0994ba0-d848-4f8c-b2a6-f0593367cb5d
     m_ActionName: 'UI/MiddleClick[/Mouse/middleButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 36a49901-c3fb-4150-baae-5c210c47f40d
+    m_ActionId: b1454bc7-213e-4ff0-b5bc-00dcd2749d96
     m_ActionName: 'UI/RightClick[/Mouse/rightButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 6083c583-a20f-482d-a88a-a4607e13d8d1
+    m_ActionId: 896a5f0b-7775-4af7-883c-8ebd2059b4d9
     m_ActionName: UI/TrackedDevicePosition
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 4e418cfb-8caf-426b-a55e-05a231245346
+    m_ActionId: cea24266-bba7-45cd-8bb3-2d6a937aa54c
     m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4049543763410288958}
-        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: HandleJump
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 9785ed7a-fe12-4b90-8b6a-67fb331155c7
-    m_ActionName: 'PlayerController/Jump[/Keyboard/o]'
+      m_Calls: []
+    m_ActionId: c848174d-451e-4d18-bc9a-513c7f9a5767
+    m_ActionName: 'Move/New action[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 584e43f5-ef04-4124-b34f-8d2857430407
-    m_ActionName: PlayerController/Move
+    m_ActionId: ee4cabaf-6441-4884-8b94-dcef99ad5c8f
+    m_ActionName: 'Jump/New action[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0900f35a-909a-46b5-9a0f-a268518d10df
+    m_ActionName: Interact/New action
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 60289f8a-b0da-4818-80c8-ddc4f040c62b
+    m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d22710c3-6bc7-4395-ae35-03115a8a53a6
+    m_ActionName: 'Player/Jump[/Keyboard/space]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: PlayerController
+  m_DefaultActionMap: ffe58eb7-6cbb-43b6-9da5-04442da6fe89
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &54848946358295858
@@ -1024,7 +1024,6 @@ MonoBehaviour:
   _jumpForce: 5.8
   _jumpParticle: {fileID: 6808812054988748476, guid: b6fbc467c14a340499ee5aae55a3519c,
     type: 3}
-  jumpCoyoteTime: 0.14
   _groundMask:
     serializedVersion: 2
     m_Bits: 1288
@@ -1044,7 +1043,6 @@ MonoBehaviour:
   raycastAngle: 5
   leftEyeOffset: {x: 0.025, y: 0, z: 0}
   rightEyeOffset: {x: -0.025, y: 0, z: 0}
-  _canMove: 1
   _tileLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -1063,7 +1061,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0628cfda9d275434097dfc2b6657539c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentAnimState: 0
 --- !u!114 &7719408155564070817
 MonoBehaviour:
   m_ObjectHideFlags: 0

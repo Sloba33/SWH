@@ -11,6 +11,9 @@ public class PlayerInputHandler : MonoBehaviour
         inputActions = new InputActions();
         inputActions.Player.Move.performed += ctx => OnMove(ctx.ReadValue<Vector2>());
         inputActions.Player.Move.canceled += _ => MoveInput = Vector2.zero;
+
+        // No need to set up specific event handlers for these in PlayerInputHandler.
+        // WasPressedThisFrame() handles the single-frame detection automatically.
     }
 
     private void OnEnable() => inputActions.Enable();
@@ -32,5 +35,27 @@ public class PlayerInputHandler : MonoBehaviour
             MoveInput = Vector2.zero;
         }
     }
-}
 
+    // New methods to check if attack buttons were pressed this frame
+    public bool GetJumpPressedThisFrame()
+    {
+        return inputActions.Player.Jump.WasPressedThisFrame();
+    }
+
+    public bool GetHitPressedThisFrame()
+    {
+        return inputActions.Player.Hit.WasPressedThisFrame(); // Assuming "Hit" action for C key
+    }
+
+    public bool GetHitDownPressedThisFrame()
+    {
+        return inputActions.Player.HitDown.WasPressedThisFrame(); // Assuming "HitDown" action for X key
+    }
+
+    // You might need a "Special" action in your InputActions for keyboard/gamepad special attack
+    public bool GetSpecialAttackPressedThisFrame()
+    {
+        // Assuming you add a "Special" action (e.g., bound to 'V' key from PlayerControls)
+        return inputActions.Player.Special.WasPressedThisFrame();
+    }
+}

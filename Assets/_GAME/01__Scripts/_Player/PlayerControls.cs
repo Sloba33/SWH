@@ -4,349 +4,395 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem; // Keep this for Input System usage if any remains
 
 public class PlayerControls : MonoBehaviour
 {
-    public List<ConsumableSlot> consumableSlots = new();
+    public List<ConsumableSlot> consumableSlots = new(); //
 
-    public Image pullFrame, pullHand;
-    public Color interactableColor, uninteractableColor;
-    public TextMeshProUGUI bombCountText;
-    public int bombCounter;
-    public PlayerController playerController;
-    public GameObject playerCamera;
-    public Camera playerRegularCamera;
-    public GameObject bombPrefab;
-    public Button pullButton, jumpButton, hitButton, hitDownButton, bombButton;
-    public Image hitFill, hitDownFill;
-    public RectTransform joystickHolder;
-    public PlayerAttack playerAttack;
+    public Image pullFrame, pullHand; //
+    public Color interactableColor, uninteractableColor; //
+    public TextMeshProUGUI bombCountText; //
+    public int bombCounter; //
+    public PlayerController playerController; //
+    public GameObject playerCamera; //
+    public Camera playerRegularCamera; //
+    public GameObject bombPrefab; //
+    public Button pullButton, jumpButton, hitButton, hitDownButton, bombButton; //
+    public Image hitFill, hitDownFill; //
+    public RectTransform joystickHolder; //
+    public PlayerAttack playerAttack; //
 
-    public LevelGoal levelGoal;
-    public Image handJoystick, handJump;
-    public GameObject hintPull;
-    public bool isPulling;
-    public TutorialHandler tutorialHandler;
-    public Button specialButton;
-    // Start is called before the first frame update
+    public LevelGoal levelGoal; //
+    public Image handJoystick, handJump; //
+    public GameObject hintPull; //
+    public bool isPulling; //
+    public TutorialHandler tutorialHandler; //
+    public Button specialButton; //
 
-    private void Update()
+    // Removed the Update method for keyboard input for attacks.
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.V))
+    //     {
+    //         PlaceBombViaBind();
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.Z))
+    //     {
+    //         playerController.StartPull();
+    //     }
+    //     else if (Input.GetKeyUp(KeyCode.Z))
+    //     {
+    //         playerController.StopPull();
+    //     }
+    // }
+
+    public void AssignControls() //
     {
-
-        if (Input.GetKeyDown(KeyCode.V))
+        playerController = FindObjectOfType<PlayerController>(); //
+        if (playerController != null) // Safety check
         {
-            PlaceBombViaBind();
+            playerAttack = playerController.GetComponent<PlayerAttack>(); //
+            Player playerComponent = playerController.GetComponent<Player>(); //
+            if (playerComponent != null) // Safety check
+            {
+                playerComponent.hitFillImage = hitFill; //
+                playerComponent.hitDownFillImage = hitDownFill; //
+            }
         }
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            playerController.StartPull();
-        }
-        else if (Input.GetKeyUp(KeyCode.Z))
-        {
-            playerController.StopPull();
-        }
-
     }
 
-    public void AssignControls()
+    private void OnMobileJumpButtonClicked() //
     {
-        playerController = FindObjectOfType<PlayerController>();
-        playerAttack = playerController.GetComponent<PlayerAttack>();
-        playerController.GetComponent<Player>().hitFillImage = hitFill;
-        playerController.GetComponent<Player>().hitDownFillImage = hitDownFill;
+        GameEvents.OnJumpButtonPressed.Invoke(); //
+        Debug.Log("GameEvents.OnJumpButtonPressed invoked from UI button."); //
     }
-    private IEnumerator Start()
+
+    private IEnumerator Start() //
     {
-        _isInteractable = true;
-        levelGoal = FindObjectOfType<LevelGoal>();
-        yield return new WaitForSeconds(0.5f);
-       
-        // playerController.joystick = dynamicJoystick;
-        Invoke(nameof(SetReferences), 1f);
-        if (levelGoal.Tutorial)
+        _isInteractable = true; //
+        levelGoal = FindObjectOfType<LevelGoal>(); //
+        yield return new WaitForSeconds(0.5f); //
+
+        // Only add listener if jumpButton is assigned
+        if (jumpButton != null) //
         {
+            jumpButton.onClick.AddListener(OnMobileJumpButtonClicked); //
+        }
+        else
+        {
+            Debug.LogWarning("Jump Button not assigned in PlayerControls. Ensure it's hooked up in the Inspector."); //
+        }
 
-            if (levelGoal.levelType == LevelGoal.LevelType.Move)
-            {
+        Invoke(nameof(SetReferences), 1f); //
 
-                tutorialHandler.shouldGuide = true;
-                handJoystick.gameObject.SetActive(true);
-            }
-            // if (levelGoal.levelType == LevelGoal.LevelType.Pull)
-            // {
-            //     Debug.Log("Enabling pull");
-            //     handPull.gameObject.SetActive(true);
-            // }
-            if (levelGoal.levelType == LevelGoal.LevelType.Bomb)
+        // --- All tutorial-related UI active/inactive logic is fine as is ---
+        if (levelGoal != null && levelGoal.Tutorial) //
+        {
+            if (levelGoal.levelType == LevelGoal.LevelType.Move && tutorialHandler != null) //
             {
-                hintPull.gameObject.SetActive(false);
-                handJump.gameObject.SetActive(false);
-                // handJoystick.gameObject.SetActive(false);
-                tutorialHandler.shouldGuide = false;
+                tutorialHandler.shouldGuide = true; //
+                if (handJoystick != null) handJoystick.gameObject.SetActive(true); //
             }
-
-            if (levelGoal.bombCount == 0 && !levelGoal.bombs)
+            if (levelGoal.levelType == LevelGoal.LevelType.Bomb) //
             {
-                bombButton.gameObject.SetActive(false);
-            }
-            else if (levelGoal.bombs && levelGoal.bombCount == 0)
-            {
-                bombButton.gameObject.SetActive(false);
-            }
-            if (!levelGoal.weapons)
-            {
-                hitButton.gameObject.SetActive(false);
-                hitDownButton.gameObject.SetActive(false);
-            }
-            if (!levelGoal.jump)
-            {
-                jumpButton.gameObject.SetActive(false);
+                if (hintPull != null) hintPull.gameObject.SetActive(false); //
+                if (handJump != null) handJump.gameObject.SetActive(false); //
+                if (tutorialHandler != null) tutorialHandler.shouldGuide = false; //
             }
 
-            if (!levelGoal.pull)
+            if (levelGoal.bombCount == 0 && !levelGoal.bombs) //
             {
-                pullButton.gameObject.SetActive(false);
+                if (bombButton != null) bombButton.gameObject.SetActive(false); //
             }
-            // interactableColor = new Color(pullFrame.color.r, pullFrame.color.g, pullFrame.color.b, 1f);
-
-            // uninteractableColor = new Color(pullFrame.color.r, pullFrame.color.g, pullFrame.color.b, 0.3f);
-            // // uninteractableColor.a = 0.3f;
-
+            else if (levelGoal.bombs && levelGoal.bombCount == 0) //
+            {
+                if (bombButton != null) bombButton.gameObject.SetActive(false); //
+            }
+            if (!levelGoal.weapons) //
+            {
+                if (hitButton != null) hitButton.gameObject.SetActive(false); //
+                if (hitDownButton != null) hitDownButton.gameObject.SetActive(false); //
+            }
+            if (!levelGoal.jump) //
+            {
+                if (jumpButton != null) jumpButton.gameObject.SetActive(false); //
+            }
+            if (!levelGoal.pull) //
+            {
+                if (pullButton != null) pullButton.gameObject.SetActive(false); //
+            }
         }
     }
-    public bool _isInteractable;
-    public void Interactable(bool interactable)
+
+    public bool _isInteractable; //
+    public void Interactable(bool interactable) //
     {
-        if (interactable && !_isInteractable)
+        if (pullFrame == null || pullHand == null) return; // Safety check
+
+        if (interactable && !_isInteractable) //
         {
-            _isInteractable = true;
-            pullFrame.color = interactableColor;
-            pullHand.color = interactableColor;
+            _isInteractable = true; //
+            pullFrame.color = interactableColor; //
+            pullHand.color = interactableColor; //
         }
-        else if (!interactable && _isInteractable)
+        else if (!interactable && _isInteractable) //
         {
-            _isInteractable = false;
-            pullFrame.color = uninteractableColor;
-            pullHand.color = uninteractableColor;
+            _isInteractable = false; //
+            pullFrame.color = uninteractableColor; //
+            pullHand.color = uninteractableColor; //
         }
     }
-    public void SetReferences()
-    {
-        if (playerController == null) return;
-        playerRegularCamera = playerController.playerRegularCamera;
 
-        playerCamera = playerController.camerasPrefab;
-        hitButton.onClick.AddListener(() =>
+    public void SetReferences() //
+    {
+        if (playerController == null) return; //
+        playerRegularCamera = playerController.playerRegularCamera; //
+        playerCamera = playerController.camerasPrefab; //
+
+        // UI Button Listeners for Attack actions
+        if (hitButton != null) // Safety check
         {
-            playerAttack.Hit();
-        });
-        if (!levelGoal.Tutorial)
-            specialButton.onClick.AddListener(() =>
-            {
-                playerAttack.SpecialAttack();
+            hitButton.onClick.AddListener(() => {
+                if (playerAttack != null) playerAttack.Hit(); // Call Hit method on PlayerAttack
             });
-        hitDownButton.onClick.AddListener(() =>
-        {
-            playerAttack.HitDown();
-        });
-        EventTrigger.Entry pointerDownEntry = new EventTrigger.Entry();
-        pointerDownEntry.eventID = EventTriggerType.PointerDown;
-        pointerDownEntry.callback.AddListener((data) => { OnPointerDownDelegatePull((PointerEventData)data); });
-        pullButton.GetComponent<EventTrigger>().triggers.Add(pointerDownEntry);
-
-        EventTrigger.Entry pointerUpEntry = new EventTrigger.Entry();
-        pointerUpEntry.eventID = EventTriggerType.PointerUp;
-        pointerUpEntry.callback.AddListener((data) => { OnPointerUpDelegatePull((PointerEventData)data); });
-        pullButton.GetComponent<EventTrigger>().triggers.Add(pointerUpEntry);
-
-        EventTrigger.Entry jump = new EventTrigger.Entry();
-        jump.eventID = EventTriggerType.PointerDown;
-        jump.callback.AddListener((data) => { OnPointerDownDelegateJump((PointerEventData)data); });
-        jumpButton.GetComponent<EventTrigger>().triggers.Add(jump);
-
-        // EventTrigger.Entry bomb = new EventTrigger.Entry();
-        // bomb.eventID = EventTriggerType.PointerDown;
-        // bomb.callback.AddListener((data) => { OnPointerDownDelegateBomb((PointerEventData)data); });
-        // bombButton.GetComponent<EventTrigger>().triggers.Add(bomb);
-
-    }
-    public void OnPointerDownDelegatePull(PointerEventData eventData)
-    {
-        playerController.StartPull();
-        isPulling = true;
-
-        if (hintPull != null) hintPull.gameObject.SetActive(false);
-    }
-    public void OnPointerUpDelegatePull(PointerEventData eventData)
-    {
-        playerController.StopPull();
-        isPulling = false;
-        if (!levelGoal.Tutorial) return;
-        if (hintPull != null) hintPull.gameObject.SetActive(true);
-
-    }
-    public void OnPointerDownDelegateJump(PointerEventData eventData)
-    {
-        playerController.HandleJump();
-        if (handJump != null) handJump.gameObject.SetActive(false);
-        else if (levelGoal != null && levelGoal.Tutorial && levelGoal.jumpHint != null) levelGoal.jumpHint.gameObject.SetActive(false);
-        Debug.Log("Jumping");
-    }
-    private void PlaceBomb()
-    {
-        if (bombCounter > 0)
-        {
-            Debug.Log("Placing bomb");
-            Vector3 position = playerController.FindNeighbouringTile();
-            position.y = Mathf.Round(playerController.transform.position.y);
-            GameObject bomb = Instantiate(bombPrefab, position, bombPrefab.transform.rotation);
-            bomb.GetComponent<Bomb>().playerCamera = playerCamera;
-            bombCounter--;
-            bombCountText.text = bombCounter.ToString();
-            RemoveBomb(consumableSlots[0]);
-
-        }
-        else
-        {
-            Debug.Log("No bombs left to place.");
         }
 
-    }
-    private void PlaceBombViaBind()
-    {
-        Debug.Log("Placing bomb");
-        Vector3 position = playerController.FindNeighbouringTile();
-        position.y = Mathf.Round(playerController.transform.position.y);
-        GameObject bomb = Instantiate(bombPrefab, position, bombPrefab.transform.rotation);
-        bomb.GetComponent<Bomb>().playerCamera = playerCamera;
-        bombCounter--;
-        // bombCountText.text = bombCounter.ToString();
-        RemoveBomb(consumableSlots[0]);
-    }
-    public void OnPointerDownDelegateBomb(PointerEventData eventData, GameObject bprefab, ConsumableSlot consumableSlot)
-    {
-        if (consumableSlot.counter < 1)
+        if (specialButton != null && levelGoal != null && !levelGoal.Tutorial) // Safety check and tutorial condition
         {
-            return;
+            specialButton.onClick.AddListener(() => {
+                if (playerAttack != null) playerAttack.SpecialAttack(); // Call SpecialAttack on PlayerAttack
+            });
         }
-        if (playerController._isBombBlocked || playerController.isPushing)
-        {
-            Debug.Log("Bomb not placeable " + playerController._isBombBlocked);
 
-            GameObject bomb = Instantiate(bprefab, playerController.transform.position + new Vector3(0, 0.02f, 0), bprefab.transform.rotation);
-            if (bomb.GetComponent<Bomb>() != null && bomb.GetComponent<Bomb>().isColored)
+        if (hitDownButton != null) // Safety check
+        {
+            hitDownButton.onClick.AddListener(() => {
+                if (playerAttack != null) playerAttack.HitDown(); // Call HitDown method on PlayerAttack
+            });
+        }
+
+        // Pull button EventTriggers (already setup correctly)
+        EventTrigger.Entry pointerDownEntry = new EventTrigger.Entry(); //
+        pointerDownEntry.eventID = EventTriggerType.PointerDown; //
+        pointerDownEntry.callback.AddListener((data) => { OnPointerDownDelegatePull((PointerEventData)data); }); //
+        if (pullButton != null && pullButton.GetComponent<EventTrigger>() != null) // Safety check
+        {
+            pullButton.GetComponent<EventTrigger>().triggers.Add(pointerDownEntry); //
+        }
+
+
+        EventTrigger.Entry pointerUpEntry = new EventTrigger.Entry(); //
+        pointerUpEntry.eventID = EventTriggerType.PointerUp; //
+        pointerUpEntry.callback.AddListener((data) => { OnPointerUpDelegatePull((PointerEventData)data); }); //
+        if (pullButton != null && pullButton.GetComponent<EventTrigger>() != null) // Safety check
+        {
+            pullButton.GetComponent<EventTrigger>().triggers.Add(pointerUpEntry); //
+        }
+
+        // Removed direct Jump and Bomb EventTriggers here, as they are handled elsewhere (Jump by GameEvents, Bomb by AddConsumable)
+    }
+
+    public void OnPointerDownDelegatePull(PointerEventData eventData) //
+    {
+        if (playerController != null) playerController.StartPull(); //
+        isPulling = true; //
+        if (hintPull != null) hintPull.gameObject.SetActive(false); //
+    }
+
+    public void OnPointerUpDelegatePull(PointerEventData eventData) //
+    {
+        if (playerController != null) playerController.StopPull(); //
+        isPulling = false; //
+        if (!levelGoal.Tutorial) return; //
+        if (hintPull != null) hintPull.gameObject.SetActive(true); //
+    }
+
+    // This method is now redundant for general jump, as Jump is handled by GameEvents
+    // public void OnPointerDownDelegateJump(PointerEventData eventData)
+    // {
+    //     playerController.HandleJump();
+    //     if (handJump != null) handJump.gameObject.SetActive(false);
+    //     else if (levelGoal != null && levelGoal.Tutorial && levelGoal.jumpHint != null) levelGoal.jumpHint.gameObject.SetActive(false);
+    //     Debug.Log("Jumping");
+    // }
+
+    private void PlaceBomb() //
+    {
+        if (bombCounter > 0) //
+        {
+            Debug.Log("Placing bomb"); //
+            if (playerController == null) { Debug.LogError("PlayerController is null for bomb placement."); return; } // Safety check
+            Vector3 position = playerController.FindNeighbouringTile(); //
+            position.y = Mathf.Round(playerController.transform.position.y); //
+            GameObject bomb = Instantiate(bombPrefab, position, bombPrefab.transform.rotation); //
+            Bomb bombComponent = bomb.GetComponent<Bomb>(); //
+            if (bombComponent != null) // Safety check
             {
-                bomb.GetComponent<Bomb>().boxCollider.enabled = false;
+                bombComponent.playerCamera = playerCamera; //
             }
-            Bomb bombComponent = bomb.GetComponent<Bomb>();
-            bombComponent.playerCamera = playerCamera;
-            bombComponent.IgnorePlayerCollision(playerController.GetComponent<Collider>());
-            AudioSource.PlayClipAtPoint(bombComponent.spawnSound, transform.position);
-            RemoveBomb(consumableSlot);
+            bombCounter--; //
+            if (bombCountText != null) bombCountText.text = bombCounter.ToString(); //
+            RemoveBomb(consumableSlots[0]); //
         }
         else
         {
-
-            Debug.Log("Bomb IS placeable");
-            Vector3 position = playerController.FindNeighbouringTile();
-            position.y = Mathf.Round(playerController.transform.position.y);
-            GameObject bomb = Instantiate(bprefab, position, bprefab.transform.rotation);
-            Bomb bombComponent = bomb.GetComponent<Bomb>();
-            bombComponent.playerCamera = playerCamera;
-            AudioSource.PlayClipAtPoint(bombComponent.spawnSound, transform.position);
-            RemoveBomb(consumableSlot);
+            Debug.Log("No bombs left to place."); //
         }
-        // Debug.Log(playerController.WallDetectPosition);
     }
-    public void AddConsumable(CollectibleItem collectibleItem)
-    {
-        if (!collectibleItem.isConsumable) return;
 
-        bool slotFound = false;
+    private void PlaceBombViaBind() //
+    {
+        Debug.Log("Placing bomb"); //
+        if (playerController == null) { Debug.LogError("PlayerController is null for bomb placement via bind."); return; } // Safety check
+        Vector3 position = playerController.FindNeighbouringTile(); //
+        position.y = Mathf.Round(playerController.transform.position.y); //
+        GameObject bomb = Instantiate(bombPrefab, position, bombPrefab.transform.rotation); //
+        Bomb bombComponent = bomb.GetComponent<Bomb>(); //
+        if (bombComponent != null) // Safety check
+        {
+            bombComponent.playerCamera = playerCamera; //
+        }
+        bombCounter--; //
+        // bombCountText.text = bombCounter.ToString(); // // Commented out in original
+        RemoveBomb(consumableSlots[0]); //
+    }
+
+    public void OnPointerDownDelegateBomb(PointerEventData eventData, GameObject bprefab, ConsumableSlot consumableSlot) //
+    {
+        if (consumableSlot == null) { Debug.LogError("ConsumableSlot is null for bomb delegate."); return; } // Safety check
+        if (playerController == null) { Debug.LogError("PlayerController is null for bomb delegate."); return; } // Safety check
+
+        if (consumableSlot.counter < 1) //
+        {
+            return; //
+        }
+        if (playerController._isBombBlocked || playerController.isPushing) //
+        {
+            Debug.Log("Bomb not placeable " + playerController._isBombBlocked); //
+
+            GameObject bomb = Instantiate(bprefab, playerController.transform.position + new Vector3(0, 0.02f, 0), bprefab.transform.rotation); //
+            Bomb bombComponent = bomb.GetComponent<Bomb>(); //
+            if (bombComponent != null && bombComponent.isColored) //
+            {
+                if (bombComponent.boxCollider != null) bombComponent.boxCollider.enabled = false; //
+            }
+            if (bombComponent != null) //
+            {
+                bombComponent.playerCamera = playerCamera; //
+                if (playerController.GetComponent<Collider>() != null) bombComponent.IgnorePlayerCollision(playerController.GetComponent<Collider>()); //
+            }
+            AudioSource.PlayClipAtPoint(bombComponent.spawnSound, transform.position); //
+            RemoveBomb(consumableSlot); //
+        }
+        else
+        {
+            Debug.Log("Bomb IS placeable"); //
+            Vector3 position = playerController.FindNeighbouringTile(); //
+            position.y = Mathf.Round(playerController.transform.position.y); //
+            GameObject bomb = Instantiate(bprefab, position, bprefab.transform.rotation); //
+            Bomb bombComponent = bomb.GetComponent<Bomb>(); //
+            if (bombComponent != null) //
+            {
+                bombComponent.playerCamera = playerCamera; //
+            }
+            AudioSource.PlayClipAtPoint(bombComponent.spawnSound, transform.position); //
+            RemoveBomb(consumableSlot); //
+        }
+    }
+
+    public void AddConsumable(CollectibleItem collectibleItem) //
+    {
+        if (collectibleItem == null || !collectibleItem.isConsumable) return; // Safety check
+
+        bool slotFound = false; //
 
         // Check for an existing active slot with the same type or a universal type
-        for (int i = 0; i < consumableSlots.Count; i++)
+        for (int i = 0; i < consumableSlots.Count; i++) //
         {
-            if (consumableSlots[i].gameObject.activeSelf && (consumableSlots[i].slotType == collectibleItem.GetComponent<BombCollectible>().bombType || consumableSlots[i].slotType == BombCollectible.BombType.None))
+            if (consumableSlots[i].gameObject.activeSelf && (consumableSlots[i].slotType == collectibleItem.GetComponent<BombCollectible>().bombType || consumableSlots[i].slotType == BombCollectible.BombType.None)) //
             {
-                consumableSlots[i].SetConsumable(collectibleItem);
-                Debug.Log("Added bomb to existing slot : " + collectibleItem.name + " to slot :" + consumableSlots[i].name + " with bomb prefab : " + consumableSlots[i].bombPrefab.gameObject);
+                consumableSlots[i].SetConsumable(collectibleItem); //
+                Debug.Log("Added bomb to existing slot : " + collectibleItem.name + " to slot :" + consumableSlots[i].name + " with bomb prefab : " + consumableSlots[i].bombPrefab.gameObject); //
 
-                if (consumableSlots[i].counter <= 1)
+                if (consumableSlots[i].counter <= 1) //
                 {
-                    consumableSlots[i].counterText.text = "";
-                    consumableSlots[i].bombBackgroundImage.enabled = false;
-                    Debug.Log("Turning off");
+                    consumableSlots[i].counterText.text = ""; //
+                    consumableSlots[i].bombBackgroundImage.enabled = false; //
+                    Debug.Log("Turning off"); //
                 }
-                else if (consumableSlots[i].counter > 1)
+                else if (consumableSlots[i].counter > 1) //
                 {
-                    consumableSlots[i].bombBackgroundImage.enabled = true;
+                    consumableSlots[i].bombBackgroundImage.enabled = true; //
                 }
 
-                slotFound = true;
-                break;
+                slotFound = true; //
+                break; //
             }
         }
 
         // If no active slot found, look for an inactive slot to activate and add the consumable
-        if (!slotFound)
+        if (!slotFound) //
         {
-            for (int i = 0; i < consumableSlots.Count; i++)
+            for (int i = 0; i < consumableSlots.Count; i++) //
             {
-                if (!consumableSlots[i].gameObject.activeSelf)
+                if (!consumableSlots[i].gameObject.activeSelf) //
                 {
-                    ConsumableSlot slot = consumableSlots[i];
-                    slot.gameObject.SetActive(true);
-                    slot.SetConsumable(collectibleItem);
+                    ConsumableSlot slot = consumableSlots[i]; //
+                    slot.gameObject.SetActive(true); //
+                    slot.SetConsumable(collectibleItem); //
 
-                    EventTrigger.Entry bomb = new EventTrigger.Entry();
-                    bomb.eventID = EventTriggerType.PointerDown;
-                    bomb.callback.AddListener((data) => { OnPointerDownDelegateBomb((PointerEventData)data, slot.bombPrefab.gameObject, slot); });
-                    slot.btn.GetComponent<EventTrigger>().triggers.Add(bomb);
-
-                    Debug.Log("Added bomb to new slot : " + collectibleItem.name + " to slot :" + slot.name + " with bomb prefab : " + slot.bombPrefab.gameObject);
-
-                    if (slot.counter <= 1)
+                    EventTrigger.Entry bomb = new EventTrigger.Entry(); //
+                    bomb.eventID = EventTriggerType.PointerDown; //
+                    bomb.callback.AddListener((data) => { OnPointerDownDelegateBomb((PointerEventData)data, slot.bombPrefab.gameObject, slot); }); //
+                    if (slot.btn != null && slot.btn.GetComponent<EventTrigger>() != null) // Safety check
                     {
-                        slot.counterText.text = "";
-                        if (slot.bombBackgroundImage != null) slot.bombBackgroundImage.enabled = false;
-                        Debug.Log("Turning off");
-                    }
-                    else if (slot.counter > 1)
-                    {
-                        slot.bombBackgroundImage.enabled = true;
+                        slot.btn.GetComponent<EventTrigger>().triggers.Add(bomb); //
                     }
 
-                    break;
+                    Debug.Log("Added bomb to new slot : " + collectibleItem.name + " to slot :" + slot.name + " with bomb prefab : " + slot.bombPrefab.gameObject); //
+
+                    if (slot.counter <= 1) //
+                    {
+                        if (slot.counterText != null) slot.counterText.text = ""; //
+                        if (slot.bombBackgroundImage != null) slot.bombBackgroundImage.enabled = false; //
+                        Debug.Log("Turning off"); //
+                    }
+                    else if (slot.counter > 1) //
+                    {
+                        if (slot.bombBackgroundImage != null) slot.bombBackgroundImage.enabled = true; //
+                    }
+                    break; //
                 }
             }
         }
-
-        
     }
-    public void RemoveBomb(ConsumableSlot consumableSlot)
+
+    public void RemoveBomb(ConsumableSlot consumableSlot) //
     {
-        consumableSlot.counter--;
-        consumableSlot.counterText.text = consumableSlot.counter + "";
-        if (consumableSlot.counter > 1)
+        if (consumableSlot == null) { Debug.LogError("ConsumableSlot is null for bomb removal."); return; } // Safety check
+
+        consumableSlot.counter--; //
+        if (consumableSlot.counterText != null) consumableSlot.counterText.text = consumableSlot.counter + ""; //
+        if (consumableSlot.counter > 1) //
         {
-            Debug.Log("Turning off");
-            consumableSlot.bombBackgroundImage.enabled = true;
-            consumableSlot.counterText.text = consumableSlot.counter + "";
+            Debug.Log("Turning off"); //
+            if (consumableSlot.bombBackgroundImage != null) consumableSlot.bombBackgroundImage.enabled = true; //
+            if (consumableSlot.counterText != null) consumableSlot.counterText.text = consumableSlot.counter + ""; //
         }
-        if (consumableSlot.counter == 1)
+        if (consumableSlot.counter == 1) //
         {
-
-            consumableSlot.counterText.text = "";
-            consumableSlot.bombBackgroundImage.enabled = false;
-            Debug.Log("Turning off");
-
-
+            if (consumableSlot.counterText != null) consumableSlot.counterText.text = ""; //
+            if (consumableSlot.bombBackgroundImage != null) consumableSlot.bombBackgroundImage.enabled = false; //
+            Debug.Log("Turning off"); //
         }
-        else if (consumableSlot.counter <= 0)
+        else if (consumableSlot.counter <= 0) //
         {
-            consumableSlot.btn.GetComponent<EventTrigger>().triggers.Clear();
-            consumableSlot.ClearSlot();
+            if (consumableSlot.btn != null && consumableSlot.btn.GetComponent<EventTrigger>() != null) //
+            {
+                consumableSlot.btn.GetComponent<EventTrigger>().triggers.Clear(); //
+            }
+            consumableSlot.ClearSlot(); //
         }
     }
 }

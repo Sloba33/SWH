@@ -5,9 +5,13 @@ public class PlayerAnimation : MonoBehaviour
     private Animator _anim;
     private PlayerMovement _playerMovement;
     private Player _player;
+    private PlayerController _playerController; // Assuming you have this reference now
 
+    // Change this line:
+    [field: SerializeField] // This attribute makes the public property visible in the Inspector
     public PlayerAnimState CurrentAnimState { get; private set; } = PlayerAnimState.Idle;
 
+    // Helper properties to keep code clean and readable
     private bool IsGrounded => _playerMovement != null && _playerMovement.IsGrounded;
     private bool IsJumping => _playerMovement != null && _playerMovement.IsJumping;
     private bool IsFalling => _playerMovement != null && _playerMovement.IsFalling;
@@ -19,15 +23,17 @@ public class PlayerAnimation : MonoBehaviour
         _anim = GetComponent<Animator>();
         _playerMovement = GetComponent<PlayerMovement>();
         _player = GetComponent<Player>();
+        _playerController = GetComponent<PlayerController>();
 
         if (_anim == null) Debug.LogError("PlayerAnimation: Animator component missing.");
         if (_playerMovement == null) Debug.LogError("PlayerAnimation: PlayerMovement component missing.");
         if (_player == null) Debug.LogError("PlayerAnimation: Player component missing.");
+        if (_playerController == null) Debug.LogError("PlayerAnimation: PlayerController component missing.");
     }
 
     private void Update()
     {
-        if (_anim == null || _playerMovement == null || _player == null) return;
+        if (_anim == null || _playerMovement == null || _player == null || _playerController == null) return;
 
         UpdateAnimationState();
     }
@@ -39,7 +45,7 @@ public class PlayerAnimation : MonoBehaviour
         if (newState != CurrentAnimState)
         {
             ExitState(CurrentAnimState);
-            CurrentAnimState = newState;
+            CurrentAnimState = newState; // This update will now be visible in the Inspector
             EnterState(CurrentAnimState);
         }
     }
@@ -47,9 +53,14 @@ public class PlayerAnimation : MonoBehaviour
     private PlayerAnimState DetermineAnimationState()
     {
         bool isMoving = CurrentMoveDirection != Vector3.zero;
-        Debug.Log("Is moving" + isMoving + " | Move Speed: " + MoveSpeed);
         bool isRunning = isMoving && IsGrounded && MoveSpeed >= 3f;
         bool isWalking = isMoving && IsGrounded && MoveSpeed < 3f;
+
+        // Prioritize states
+        if (_playerController.isPushing)
+            return PlayerAnimState.Push;
+        if (_playerController.isPulling)
+            return PlayerAnimState.Pull;
 
         if (IsJumping)
             return PlayerAnimState.Jump;
@@ -64,23 +75,25 @@ public class PlayerAnimation : MonoBehaviour
             if (isWalking)
                 return PlayerAnimState.Walk;
 
-            return PlayerAnimState.Idle;
+            if (!isMoving && !_playerController.isPushing && !_playerController.isPulling)
+            {
+                return PlayerAnimState.Idle;
+            }
         }
 
-        // Fallback to current state
-        return CurrentAnimState;
+        return CurrentAnimState; // Fallback
     }
 
     private void EnterState(PlayerAnimState state)
     {
-        // Reset all animation flags before setting the new one
-        _anim.SetBool("Grounded", false);
-        _anim.SetBool("Jumping", false);
-        _anim.SetBool("Falling", false);
+        _anim.SetBool("Grounded", IsGrounded);
+        _anim.SetBool("Jumping", IsJumping);
+        _anim.SetBool("Falling", IsFalling);
         _anim.SetBool("Running", false);
         _anim.SetBool("Walking", false);
         _anim.SetBool("AFK", false);
         _anim.SetBool("Hit", false);
+        _anim.SetBool("HitDown", false);
         _anim.SetBool("Dead", false);
         _anim.SetBool("Pull", false);
         _anim.SetBool("Push", false);
@@ -88,14 +101,11 @@ public class PlayerAnimation : MonoBehaviour
         switch (state)
         {
             case PlayerAnimState.Idle:
-                _anim.SetBool("Grounded", true);
                 break;
             case PlayerAnimState.Walk:
-                _anim.SetBool("Grounded", true);
                 _anim.SetBool("Walking", true);
                 break;
             case PlayerAnimState.Run:
-                _anim.SetBool("Grounded", true);
                 _anim.SetBool("Running", true);
                 break;
             case PlayerAnimState.Jump:
@@ -105,11 +115,14 @@ public class PlayerAnimation : MonoBehaviour
                 _anim.SetBool("Falling", true);
                 break;
             case PlayerAnimState.AFK:
-                _anim.SetBool("Grounded", true);
                 _anim.SetBool("AFK", true);
+                LookAnimation(); // Only call if AFK animation specifically requires this
                 break;
             case PlayerAnimState.Hit:
                 _anim.SetBool("Hit", true);
+                break;
+            case PlayerAnimState.HitDown:
+                _anim.SetBool("HitDown", true);
                 break;
             case PlayerAnimState.Dead:
                 _anim.SetBool("Dead", true);
@@ -125,7 +138,42 @@ public class PlayerAnimation : MonoBehaviour
 
     private void ExitState(PlayerAnimState state)
     {
-        // If you want to handle any cleanup or triggers when leaving a state, do it here
+        // No specific exit logic implemented yet
+    }
+
+    public void LookAnimation()
+    {
+        if (_playerController == null || _playerController.playerCamera == null) return;
+
+        Vector3 cameraDirection = _playerController.playerCamera.transform.position - transform.position;
+        cameraDirection.y = 0;
+        if (cameraDirection == Vector3.zero) return;
+
+        Vector3 localCameraDirection = transform.InverseTransformDirection(cameraDirection);
+
+        if (Vector3.Dot(transform.forward, cameraDirection.normalized) > 0.5f)
+        {
+            if (localCameraDirection.x >= 0.1f)
+            {
+                _anim.SetBool("LookLeft", false);
+                _anim.SetBool("LookRight", true);
+            }
+            else if (localCameraDirection.x <= -0.1f)
+            {
+                _anim.SetBool("LookLeft", true);
+                _anim.SetBool("LookRight", false);
+            }
+            else
+            {
+                _anim.SetBool("LookLeft", false);
+                _anim.SetBool("LookRight", false);
+            }
+        }
+        else
+        {
+            _anim.SetBool("LookLeft", false);
+            _anim.SetBool("LookRight", false);
+        }
     }
 }
 
@@ -138,6 +186,7 @@ public enum PlayerAnimState
     Fall,
     AFK,
     Hit,
+    HitDown,
     Dead,
     Pull,
     Push

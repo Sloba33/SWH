@@ -82,8 +82,8 @@ public class PlayerController : MonoBehaviour
         previousFlashlightDirection = transform.forward;
         if (!AI) female = player.characterStats.female;
         playerMovement = GetComponent<PlayerMovement>();
-        if(playerMovement!=null)
-        playerMovement.Initialize(player, _rb, playerCollider);
+        if (playerMovement != null)
+            playerMovement.Initialize(player, _rb, playerCollider);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -165,7 +165,7 @@ public class PlayerController : MonoBehaviour
             // }       
         }
     }
-    private  void FixedUpdate()
+    private void FixedUpdate()
     {
         HandleGrounded();
         HandleWalking();
@@ -1537,7 +1537,7 @@ public enum MovementType
 //         else
 //             return tile.transform.position + facingDirection;
 //     }
- 
+
 // }
 
 // // Enums - ensure these are accessible (e.g., in their own file or a common namespace)
