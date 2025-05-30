@@ -608,114 +608,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccc0b4389dd70b489f8020285537b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMovement: {fileID: 0}
   AI: 0
-  player: {fileID: 0}
-  playerAttack: {fileID: 0}
+  _movement: {fileID: 0}
   playerObstacleController: {fileID: 0}
-  playerInput: {fileID: 0}
-  jumpParticle: {fileID: 6808812054988748476}
-  camerasPrefab: {fileID: 3242656931235162317}
-  playerRegularCamera: {fileID: 6968579611282920195}
+  _playerControls: {fileID: 0}
+  pullButtonHeld: 0
+  pullButtonReleased: 0
+  flashlightEnabled: 0
   flashlight: {fileID: 5595244717260839662}
   spotlight: {fileID: 4130482877464360193}
-  floatingJoystick: {fileID: 0}
-  dynamicJoystick: {fileID: 0}
-  controls: 0
-  movementType: 0
-  playerControls: {fileID: 0}
-  playerCamera: {fileID: 3242656931235162317}
-  inputValues: {x: 0, y: 0}
-  _groundMask:
-    serializedVersion: 2
-    m_Bits: 1288
-  _obstacleMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _bombObstacleMask:
-    serializedVersion: 2
-    m_Bits: 393472
-  _tileObstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _isAgainstWall: 0
-  _isBombBlocked: 0
-  IsGrounded: 0
-  grounded: 0
-  isFalling: 0
-  hasRecentlyFallen: 0
-  _ground:
-  - {fileID: 0}
-  _wallCheckRadius: 0.12
-  _bombCheckRadius: 0.1
-  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
-  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
-  tile: {fileID: 0}
-  obstacle: {fileID: 0}
-  fallHeight: 0
-  forceApplied: 0
-  rayDistance: 1
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  canMove: 1
-  _walkSpeed: 2
-  obstacleAvoidanceRange: 0.06
-  _dir: {x: 0, y: 0, z: 0}
-  raycastDistance: 1
-  avoidanceMultiplier: 1
-  raycastAngle: 5
-  leftEyeOffset: {x: 0.025, y: 0, z: 0}
-  rightEyeOffset: {x: -0.025, y: 0, z: 0}
-  climbRayOffset: {x: 0, y: 0.45, z: 0}
-  behindObstacleOffset: {x: 0, y: 0, z: 0}
-  pullObstacleFlag: 0
-  _behindObstacleMask:
-    serializedVersion: 2
-    m_Bits: 524544
-  collectibleMask:
-    serializedVersion: 2
-    m_Bits: 131072
-  previousMoveDirection: {x: 0, y: 0, z: 0}
-  currentMoveDirection: {x: 0, y: 0, z: 0}
-  nudgeDistance: 0
-  _jumpForce: 5.8
-  _isJumping: 1
-  jumpTimer: 0
-  jumpCoyoteTime: 0.14
-  _hasRecentlyJumped: 1
-  isPushing: 0
-  canPush: 1
+  followCamera: {fileID: 46321911127104630}
+  playerCamera: {fileID: 6968579611282920195}
+  cameraFollowTarget: {fileID: 419812897239369765}
   isPulling: 0
-  isAgainstWall: 0
-  recentlyHitWall: 0
-  obstacleBehind: 0
-  _pullButtonHeld: 0
-  _pullButtonReleased: 0
-  tileRayLength: 50
-  forwardOffset: {x: 0, y: 0.48, z: 0}
-  backOffset: {x: 0, y: 0.48, z: 0}
-  leftOffset: {x: 0, y: 0, z: 0}
-  rightOffset: {x: 0, y: 0, z: 0}
-  frontoffs: 0.3
-  backoffs: -0.3
-  slideCheckerRadius: 0.025
-  slideForward: 0
-  slideBack: 0
-  slideLeft: 0
-  slideRight: 0
-  slideForce: 65
-  _slideForward:
-  - {fileID: 0}
-  _slideBack:
-  - {fileID: 0}
-  _slideLeft:
-  - {fileID: 0}
-  _slideRight:
-  - {fileID: 0}
-  slideAngle: 25
-  changedToJump: 0
-  changedToGround: 0
+  isPushing: 0
 --- !u!114 &465992519024109052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -845,11 +751,27 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: d22710c3-6bc7-4395-ae35-03115a8a53a6
     m_ActionName: 'Player/Jump[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fed7dde6-a04e-4a3f-acf9-7094c9788169
+    m_ActionName: 'Player/Hit[/Keyboard/c]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6e430015-6f5e-41f5-967a-b9d5e30af4a2
+    m_ActionName: 'Player/HitDown[/Keyboard/x]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0d16c28d-2227-48f5-94e1-7b4b1e661a3f
+    m_ActionName: 'Player/Special[/Keyboard/v]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 039eadb7-9630-4b4a-8c45-6128081b4960
+    m_ActionName: 'Player/Pull[/Keyboard/f]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: ffe58eb7-6cbb-43b6-9da5-04442da6fe89
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 6968579611282920195}
 --- !u!114 &54848946358295858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -932,7 +854,6 @@ MonoBehaviour:
   toolDown: {fileID: 0}
   hitRayOffset: {x: 0, y: 0, z: 0}
   hitRayDistance: 0.95
-  canHit: 1
   hittingDown: 0
   player: {fileID: 0}
   weaponSpecialRadius: 0
@@ -1024,9 +945,11 @@ MonoBehaviour:
   _jumpForce: 5.8
   _jumpParticle: {fileID: 6808812054988748476, guid: b6fbc467c14a340499ee5aae55a3519c,
     type: 3}
+  hasRecentlyFallen: 0
   _groundMask:
     serializedVersion: 2
     m_Bits: 1288
+  fallHeight: 0
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 256
@@ -1049,6 +972,19 @@ MonoBehaviour:
   tileRayLength: 50
   forwardOffset: {x: 0, y: 0.48, z: 0}
   backOffset: {x: 0, y: 0.48, z: 0}
+  CanPush: 0
+  groundHits:
+  - {fileID: 0}
+  wallHits:
+  - {fileID: 0}
+  pullObstacleFlag: 0
+  obstacleBehind: 0
+  _behindObstacleMask:
+    serializedVersion: 2
+    m_Bits: 524544
+  _collectibleMask:
+    serializedVersion: 2
+    m_Bits: 131072
 --- !u!114 &-1246409493482050951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1061,6 +997,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0628cfda9d275434097dfc2b6657539c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <CurrentAnimState>k__BackingField: 0
 --- !u!114 &7719408155564070817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11503,7 +11440,7 @@ GameObject:
   - component: {fileID: 3600509000249284702}
   - component: {fileID: 4016918740049481675}
   m_Layer: 7
-  m_Name: TopLight
+  m_Name: SpotLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19516,17 +19453,17 @@ PrefabInstance:
     - target: {fileID: 2541525750024214882, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.3650167
+      value: 0.36501667
       objectReference: {fileID: 0}
     - target: {fileID: 2541525750024214882, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.35154906
+      value: -0.3515491
       objectReference: {fileID: 0}
     - target: {fileID: 2541525750024214882, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.15119486
+      value: 0.15119489
       objectReference: {fileID: 0}
     - target: {fileID: 2560981893906485376, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -19751,12 +19688,12 @@ PrefabInstance:
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.826343
+      value: 0.82634294
       objectReference: {fileID: 0}
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.41317147
+      value: 0.4131715
       objectReference: {fileID: 0}
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -19766,7 +19703,7 @@ PrefabInstance:
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.17114124
+      value: 0.17114127
       objectReference: {fileID: 0}
     - target: {fileID: 5241993521637383547, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -20031,12 +19968,12 @@ PrefabInstance:
     - target: {fileID: 8203458038950240448, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.38917494
+      value: 0.389175
       objectReference: {fileID: 0}
     - target: {fileID: 8203458038950240448, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.34707448
+      value: -0.3470745
       objectReference: {fileID: 0}
     - target: {fileID: 8203458038950240448, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -20131,18 +20068,12 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 2535244010831514870}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3242656931235162317}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 319d2fe34a804e245819465c9505ea59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &3242656931235162317 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1021971536677332027, guid: 5c21289d0c49116489e2503846dec22b,
-    type: 3}
-  m_PrefabInstance: {fileID: 2535244010831514870}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4413495413302110919 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2166544021558437425, guid: 5c21289d0c49116489e2503846dec22b,
@@ -20377,12 +20308,6 @@ PrefabInstance:
 --- !u!4 &3422665118401882296 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7239184321669955831, guid: eb1b099d2feaf184bb43e21ee217532e,
-    type: 3}
-  m_PrefabInstance: {fileID: 5406852843267287119}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6808812054988748476 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1546074422471925491, guid: eb1b099d2feaf184bb43e21ee217532e,
     type: 3}
   m_PrefabInstance: {fileID: 5406852843267287119}
   m_PrefabAsset: {fileID: 0}

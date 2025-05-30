@@ -175,7 +175,7 @@ public class PlayerAttack : MonoBehaviour
 
     public IEnumerator FinishSpecial()
     {
-        if (playerMovement != null) playerController.HitJump(); // HIT JUMP NEEDS MOVING TO PLAYERMOVEMENT
+        // if (playerMovement != null) playerController.HitJump(); // HIT JUMP NEEDS MOVING TO PLAYERMOVEMENT
         yield return new WaitForSeconds(delayBeforeSwing); 
 
         yield return new WaitForSeconds(delayAfterSwing); 
@@ -275,11 +275,11 @@ public class PlayerAttack : MonoBehaviour
         if (canHit && playerMovement.IsGrounded ) 
         {
             playerMovement.CanMove = false; 
-            playerController.canPush = false; 
+            playerController._movement.CanPush = false; 
             canHit = false; 
 
       
-            if (playerController.IsGrounded) 
+            if (playerController._movement.IsGrounded) 
             {
                 hittingDown = true; 
                 if (!playerController.AI) 
@@ -288,7 +288,7 @@ public class PlayerAttack : MonoBehaviour
                     {
                       
                         playerMovement.CanMove = true;
-                        playerController.canPush = true;
+                        playerController._movement.CanPush = true;
                         canHit = true;
                         hittingDown = false;
                         return; 
@@ -297,9 +297,9 @@ public class PlayerAttack : MonoBehaviour
                 }
 
               
-                if (playerController._ground.Length > 0 && playerController._ground[0] != null) 
+                if (playerController._movement.groundHits.Length > 0 && playerController._movement.groundHits[0] != null) 
                 {
-                    Vector3 directionToCenter = playerController._ground[0].transform.position - transform.position; 
+                    Vector3 directionToCenter = playerController._movement.groundHits[0].transform.position - transform.position; 
                     directionToCenter.y = 0;
                     float distanceToCenter = directionToCenter.magnitude; 
                     float deadzoneRadius = 0.25f; 
@@ -319,15 +319,15 @@ public class PlayerAttack : MonoBehaviour
                 Debug.LogWarning("PlayerAttack.HitDown: Player not grounded, cannot perform HitDown.");
               
                 playerMovement.CanMove = true;
-                playerController.canPush = true;
+                playerController._movement.CanPush = true;
                 canHit = true;
                 hittingDown = false;
                 return;
             }
 
         
-            ObstacleToHit = (playerController._ground.Length > 0 && playerController._ground[0] != null)
-                ? playerController._ground[0].transform.GetComponent<Obstacle>()
+            ObstacleToHit = (playerController._movement.groundHits.Length > 0 && playerController._movement.groundHits[0] != null)
+                ? playerController._movement.groundHits[0].transform.GetComponent<Obstacle>()
                 : null;
 
             _anim.SetBool("HitDown", true); 
@@ -385,7 +385,7 @@ public class PlayerAttack : MonoBehaviour
         if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(true); 
         if (playerController != null) playerMovement.CanMove = true; 
         canHit = true; //
-        if (playerController != null) playerController.canPush = true; 
+        if (playerController != null) playerController._movement.CanPush = true; 
         hittingDown = false; //
     }
 

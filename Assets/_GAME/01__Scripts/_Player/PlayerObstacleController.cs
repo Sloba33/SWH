@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Multiplayer.Tools.MetricTypes;
 using UnityEngine;
 
@@ -31,18 +32,18 @@ public class PlayerObstacleController : MonoBehaviour
     private void FixedUpdate()
     {
 
-        movementDirection = playerController._dir;
+        movementDirection = playerController._movement.CurrentMoveDirection;
         if (!playerController.isPushing && previousPushObstacle != null)
         {
             previousPushObstacle.ResetObstacle();
             previousPushObstacle = null;
         }
         HandlePush();
-        playerController.SetPullConstraints(pullObstacle);
-        if (playerController._pullButtonHeld && !playerController._pullButtonReleased)
+        playerController._movement.SetPullConstraints(pullObstacle);
+        if (playerController.isPulling && !playerController.pullButtonReleased)
             HandlePull();
         // Debug.Log(" Constraints Reset : " + pullConstraintsReset + " - Pull button held : " + playerController._pullButtonHeld + " Pull button released: " + playerController._pullButtonReleased);
-        if (!pullConstraintsReset && !playerController._pullButtonHeld && playerController._pullButtonReleased)
+        if (!pullConstraintsReset && !playerController.pullButtonHeld && playerController.pullButtonReleased)
         {
             Debug.Log("Pull stopped");
             pullConstraintsReset = true;
@@ -54,14 +55,14 @@ public class PlayerObstacleController : MonoBehaviour
     {
         if (playerController.isPulling) return;
 
-        if (!playerController._isAgainstWall || movementDirection == Vector3.zero)
+        if (!playerController._movement.IsAgainstWall || movementDirection == Vector3.zero)
         {
             previousPushDirection = Vector3.zero;
             if (pushObstacle != null) pushObstacle.ResetObstacle();
             StopPush();
             return;
         }
-        else if (playerController._isAgainstWall && movementDirection != Vector3.zero)
+        else if (playerController._movement.IsAgainstWall && movementDirection != Vector3.zero)
         {
             // Debug.Log("Pushing");
             pushObstacle = playerController.FindObstacle();
@@ -88,14 +89,14 @@ public class PlayerObstacleController : MonoBehaviour
             bool Moveable = pushObstacle.CheckObstaclesAround(movementDirection);
             // Debug.Log("fall height is : " + playerController.fallHeight);
             // diff = playerController.fallHeight - 0.1f > pushObstacle.transform.position.y
-            if (playerController.hasRecentlyFallen)
+            if (playerController._movement.hasRecentlyFallen)
             {
-                diff = Mathf.Round(playerController.fallHeight) - pushObstacle.transform.position.y > 0;
+                diff = Mathf.Round(playerController._movement.fallHeight) - pushObstacle.transform.position.y > 0;
                 // Debug.Log("Testing fall - Fall height :" + playerController.fallHeight + " obstacle height " + pushObstacle.transform.position.y);
             }
             else diff = true;
             // Debug.Log("Should the obstacle be pushable :" + (playerController.fallHeight - 0.1f) + " obstacle height" + pushObstacle.transform.position.y);
-            if (pushObstacle != null && movementDirection != Vector3.zero && playerController.canPush && Moveable && diff && !pushObstacle.pushabilityDelayed)
+            if (pushObstacle != null && movementDirection != Vector3.zero && playerController._movement.CanPush && Moveable && diff && !pushObstacle.pushabilityDelayed)
             {
                 // Debug.Log("Should the obstacle be pushable INSIDE :" + diff);
                 Vector3 direction = pushObstacle.transform.position - transform.position;
@@ -125,7 +126,7 @@ public class PlayerObstacleController : MonoBehaviour
                 }
 
                 // Check for direction change and set flag
-                if (currentMoveDirection != previousMoveDirection && pushObstacle != null && playerController.canPush && pushObstacle.Movable(movementDirection))
+                if (currentMoveDirection != previousMoveDirection && pushObstacle != null && playerController._movement.CanPush && pushObstacle.Movable(movementDirection))
                 {
                     pushDirectionChanged = true;
                     if (pushDirectionChanged)
@@ -136,7 +137,7 @@ public class PlayerObstacleController : MonoBehaviour
                     }
                 }
 
-                if (pushObstacle != null && playerController.canPush && Moveable && currentMoveDirection == previousMoveDirection)
+                if (pushObstacle != null && Moveable && currentMoveDirection == previousMoveDirection && playerController._movement.CanPush)
                 {
                     // Debug.Log("Code 1");
                     Push();
@@ -149,7 +150,7 @@ public class PlayerObstacleController : MonoBehaviour
                 // Update previousMoveDirection
                 previousMoveDirection = currentMoveDirection;
             }
-            else if (!pushObstacle.grounded && pushObstacle.isFalling && !playerController.IsGrounded)
+            else if (!pushObstacle.grounded && pushObstacle.isFalling && !playerController._movement.IsGrounded)
             {
                 // Debug.Log("Code 2");
                 Push();
@@ -180,23 +181,44 @@ public class PlayerObstacleController : MonoBehaviour
             pushDirectionChanged = false;
             return;
         }
-     
-        // Debug.Log("Starting Push");
+
         playerController.isPushing = true;
         pushObstacle.isBeingPushed = true;
         pushObstacle.wasRecentlyPushed = true;
-        Vector3 dir = new(movementDirection.x, pushObstacle.transform.position.y, movementDirection.z);
-     
-        playerController._walkSpeed = pushSpeed;
-        if (pushObstacle != null && !playerController.AI) pushObstacle.currentlyUsedPlayerConrtoller = playerController;
-        if (pushObstacle.tile != null)
-        {
-            pushObstacle.isPositioned = false;
-            pushObstacle.isHeightPositioned = false;
-        }
-        pushObstacle.PushObstacle(dir, player.PushAndPullSpeed(pushObstacle.Weight));
+
+        // Don't let individual movement systems handle this
+        // Instead, use a coordinated movement approach
+        StartCoroutine(CoordinatedPushMovement());
+
         _anim.SetBool("Push", true);
         _anim.SetBool("Idle", false);
+    }
+    private IEnumerator CoordinatedPushMovement()
+    {
+        while (playerController.isPushing && pushObstacle != null)
+        {
+            Vector3 moveDirection = movementDirection.normalized;
+            float speed = player.PushAndPullSpeed(pushObstacle.Weight);
+
+            if (moveDirection != Vector3.zero)
+            {
+                // Move both together in FixedUpdate timing
+                yield return new WaitForFixedUpdate();
+
+                Vector3 deltaMovement = moveDirection * speed * Time.fixedDeltaTime;
+
+                // Move player
+                _rb.MovePosition(transform.position + deltaMovement);
+
+                // Move obstacle (maintaining relative position)
+                if (pushObstacle != null)
+                    pushObstacle._rb.MovePosition(pushObstacle.transform.position + deltaMovement);
+            }
+            else
+            {
+                yield return null;
+            }
+        }
     }
     public void StopPush()
     {
@@ -211,140 +233,12 @@ public class PlayerObstacleController : MonoBehaviour
         previousPushDirection = Vector3.zero;
         previousMoveDirection = Vector3.zero; // Reset previousMoveDirection
         playerController.isPushing = false;
-        if (!player.blackHoleDebuff) playerController._walkSpeed = player.StartingMoveSpeed;
+        if (!player.blackHoleDebuff) player.MoveSpeed = player.StartingMoveSpeed;
         // Debug.Log("Stopping push");'
         pushDirectionChanged = false;
         return;
     }
-    // public void HandlePush()
-    // {
-    //     if (playerController.isPulling) return;
 
-    //     // If the player is not against the wall or not moving, reset the push state
-    //     if (!playerController._isAgainstWall || movementDirection == Vector3.zero)
-    //     {
-    //         previousPushDirection = Vector3.zero;
-    //         if (pushObstacle != null) pushObstacle.ResetObstacle();
-    //         StopPush();
-    //         return;
-    //     }
-
-    //     // If the player is against the wall and moving
-    //     if (playerController._isAgainstWall && movementDirection != Vector3.zero)
-    //     {
-    //         // Detect the obstacle if not already set
-    //         if (pushObstacle == null)
-    //         {
-    //             if (playerController != null)
-    //                 pushObstacle = playerController.FindObstacle();
-    //         }
-
-    //         if (pushObstacle != null) pushObstacle.SphereFlags();
-    //         // If the obstacle is not pushable, reset and stop pushing
-    //         if (pushObstacle == null || !pushObstacle.isPushable)
-    //         {
-    //             previousPushDirection = Vector3.zero;
-    //             if (pushObstacle != null) pushObstacle.ResetObstacle();
-    //             StopPush();
-    //             return;
-    //         }
-
-    //         // Handle obstacle change and reset previous obstacle if needed
-    //         if (previousPushObstacle != pushObstacle)
-    //         {
-    //             if (previousPushObstacle != null) previousPushObstacle.ResetObstacle();
-    //             previousPushObstacle = pushObstacle;
-    //         }
-
-    //         pushObstacle.SphereFlags();
-    //         Debug.Log("Called sphere check");
-    //         bool moveable = pushObstacle.CheckObstaclesAround(movementDirection);
-
-    //         // Check if player recently fell and adjust the diff flag
-    //         if (playerController.hasRecentlyFallen)
-    //         {
-    //             diff = Mathf.Round(playerController.fallHeight) - pushObstacle.transform.position.y > 0;
-    //         }
-    //         else
-    //         {
-    //             diff = true;
-    //         }
-
-    //         // Validate pushing conditions
-    //         if (pushObstacle != null && playerController.canPush && moveable && diff && !pushObstacle.pushabilityDelayed)
-    //         {
-    //             Vector3 directionToObstacle = (pushObstacle.transform.position - transform.position).normalized;
-    //             float dotProduct = Vector3.Dot(directionToObstacle, movementDirection);
-
-    //             if (dotProduct > 0.5f) // Ensure player is moving towards the obstacle
-    //             {
-    //                 if (previousPushDirection == Vector3.zero) 
-    //                 {
-    //                     // if (!playerController._isJumping)
-    //                     // {
-
-    //                     //     previousPushDirection = movementDirection;
-    //                     //     Vector3 testSide = pushObstacle.transform.position * pushObstacle.transform.GetComponent<Collider>().bounds.extents.magnitude;
-    //                     //     Vector3 cubeSideCenter = pushObstacle.transform.position - pushObstacle.transform.GetComponent<Collider>().bounds.extents.magnitude * movementDirection;
-    //                     //     transform.position = cubeSideCenter;
-
-    //                     // }
-
-    //                     Push();
-    //                 }
-    //                 else if (previousPushDirection == movementDirection)
-    //                 {
-    //                     // if (!playerController._isJumping)
-    //                     // {
-    //                     //     Vector3 testSide = pushObstacle.transform.position * pushObstacle.transform.GetComponent<Collider>().bounds.extents.magnitude;
-    //                     //     Vector3 cubeSideCenter = pushObstacle.transform.position - pushObstacle.transform.GetComponent<Collider>().bounds.extents.magnitude * movementDirection;
-    //                     //     transform.position = cubeSideCenter;
-    //                     // }
-    //                     Push();
-    //                 }
-    //                 else
-    //                 {
-    //                     StopPush();
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 StopPush();
-    //             }
-    //         }
-    //         else
-    //         {
-    //             pushObstacle?.ResetObstacle();
-    //             StopPush();
-    //         }
-    //     }
-    // }
-
-    // private void Push()
-    // {
-    //     Debug.Log("Calling PUSH on obstacle");
-    //     playerController.isPushing = true;
-    //     pushObstacle.isBeingPushed = true;
-    //     pushObstacle.wasRecentlyPushed = true;
-    //     Vector3 pushDirection = new Vector3(movementDirection.x, 0, movementDirection.z);
-    //     pushObstacle.PushObstacle(pushDirection, player.PushAndPullSpeed(pushObstacle.Weight));
-    //     _anim.SetBool("Push", true);
-    //     _anim.SetBool("Idle", false);
-    // }
-
-    // private void StopPush()
-    // {
-    //     AudioManager.Instance.StopSound(2);
-    //     AudioManager.Instance.StopSound(3);
-    //     _anim.SetBool("Push", false);
-    //     if (pushObstacle != null) pushObstacle.ResetObstacle();
-    //     pushObstacle = null;
-    //     previousPushObstacle = null;
-    //     previousPushDirection = Vector3.zero;
-    //     playerController.isPushing = false;
-    //     if (!player.blackHoleDebuff) playerController._walkSpeed = player.StartingMoveSpeed;
-    //     return;
-    // }
 
     public float delayTimer;
     private bool started, ended;
@@ -353,9 +247,8 @@ public class PlayerObstacleController : MonoBehaviour
     {
         // playerController.isPushing = false;
         Ray ray = new Ray(transform.position, transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hitCollectible, 0.5f, playerController.collectibleMask))
+        if (Physics.Raycast(ray, out RaycastHit hitCollectible, 0.5f, playerController._movement._collectibleMask))
         {
-
             if (hitCollectible.transform.TryGetComponent<CollectibleItem>(out var collectibleItem))
             {
                 Debug.Log("Looted collectible");
@@ -363,20 +256,20 @@ public class PlayerObstacleController : MonoBehaviour
             }
         }
         else
-        if (Physics.Raycast(ray, out RaycastHit hit, 0.5f, playerController._obstacleMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, 0.5f, playerController._movement._obstacleMask))
         {
             // Debug.Log("PULL - Obstacle found");
             pullObstacle = hit.transform.GetComponent<Obstacle>();
 
-            if (pullObstacle != null && pullObstacle.grounded && pullObstacle.isPullable && !playerController.recentlyHitWall)
+            if (pullObstacle != null && pullObstacle.grounded && pullObstacle.isPullable)
             {
                 pullObstacle.SphereFlags();
                 if (playerController.isPulling)
                 {
-                    playerController.canMove = false;
+                    playerController._movement.CanMove = false;
                     pullObstacle.playerController = playerController;
-                    pullDirection = -playerController.GetFacingDirection();
-                    if (!playerController.grounded)
+                    pullDirection = -playerController._movement.GetFacingDirection();
+                    if (!playerController._movement.IsGrounded)
                     {
                         // Debug.Log("PULL - player repositioned");
                         float newHeight = pullObstacle.transform.position.y;
@@ -407,14 +300,14 @@ public class PlayerObstacleController : MonoBehaviour
             if (!_anim.GetBool("Pull"))
                 _anim.SetBool("Pull", true);
             _anim.SetBool("Idle", false);
-            if (playerController.obstacleBehind) return;
+            if (playerController._movement.obstacleBehind) return;
             obs.isBeingPulled = true;
             obs.wasRecentlyPushed = true;
             if (obs != null && !playerController.AI) obs.currentlyUsedPlayerConrtoller = playerController;
             float speed = player.PushAndPullSpeed(obs.Weight);
             // Debug.Log("Speed : " + speed);
             // obs.PullObstacle(pullDirection, speed, _rb, playerController.obstacleBehind);
-            obs.PullObstacle(pullDirection, speed, playerController.obstacleBehind);
+            obs.PullObstacle(pullDirection, speed, playerController._movement.obstacleBehind);
             _rb.MovePosition(_rb.transform.position + pullDirection * speed * Time.fixedDeltaTime);
         }
 
@@ -422,7 +315,7 @@ public class PlayerObstacleController : MonoBehaviour
     void StopPull()
     {
         if (!playerController.AI) AudioManager.Instance.StopObstacleSound_Move();
-        playerController.ResetPullConstraints(pullObstacle);
+        playerController._movement.ResetPullConstraints(pullObstacle);
         if (pullObstacle != null) pullObstacle.isBeingPulled = false;
         // pullObstacle.playerController = null;
         if (pullObstacle != null) pullObstacle.currentlyUsedPlayerConrtoller = null;

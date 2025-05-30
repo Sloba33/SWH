@@ -18,7 +18,7 @@ public class HeadSmashCollider : MonoBehaviour
         if (other.transform.CompareTag("Obstacle"))
         {
             Debug.Log("Current helemt durabilaty : " + player.helmet.helmetDurability);
-            if (playerController._isJumping && player.helmet.helmetDurability > 0)
+            if (playerController._movement.IsJumping && player.helmet.helmetDurability > 0)
             {
                 Debug.Log("Helmet is present, destroying obstacle");
                 Obstacle obs = other.transform.GetComponent<Obstacle>();

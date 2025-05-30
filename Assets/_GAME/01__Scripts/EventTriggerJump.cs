@@ -11,7 +11,7 @@ public class EventTriggerJump : MonoBehaviour
             if (other.GetType() == typeof(CapsuleCollider))
             {
                 PlayerController pcontroller = other.GetComponent<PlayerController>();
-                pcontroller.playerControls.handJump.gameObject.SetActive(true);
+                pcontroller._playerControls.handJump.gameObject.SetActive(true);
             }
         }
     }
@@ -22,7 +22,7 @@ public class EventTriggerJump : MonoBehaviour
             if (other.GetType() == typeof(CapsuleCollider))
             {
                 PlayerController pcontroller = other.GetComponent<PlayerController>();
-                pcontroller.playerControls.handJump.gameObject.SetActive(false);
+                pcontroller._playerControls.handJump.gameObject.SetActive(false);
             }
         }
     }

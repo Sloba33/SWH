@@ -3,18 +3,21 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
+    private PlayerController _playerController;
+    private PlayerControls _playerControls;
     private Player _player; //
     private Rigidbody _rb; //
     private CapsuleCollider _playerCollider; //
     private RigidbodyConstraints _originalConstraints; // Store original constraints
     private PlayerInputHandler _inputHandler; // Reference to the input handler
-
+    private PlayerAttack _playerAttack; // Reference to the player attack script
     [Header("Movement Settings")]
     [SerializeField] private float _walkSpeed = 2f; //
     public float _jumpForce = 5.8f; //
     [SerializeField] private ParticleSystem _jumpParticle; // Assign in inspector
 
 
+    [HideInInspector] public bool hasRecentlyFallen;
     [Header("Grounding Detection")]
     [SerializeField] private LayerMask _groundMask; //
     private Vector3 _grounderOffset = new Vector3(0, -0.47f, 0.01f); //
@@ -25,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     public bool IsPushing { get; set; } = false; // To be set by PlayerController
     public bool IsPulling { get; set; } = false; // To be set by PlayerController
     private bool _jumpInputReceivedThisFrame = false; // Internal flag to handle event in FixedUpdate
+    public float fallHeight;
     [Header("Obstacle Detection")]
     [SerializeField] public LayerMask _obstacleMask; //
     [SerializeField] public LayerMask _bombObstacleMask; //
@@ -49,8 +53,25 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 CurrentMoveDirection { get; private set; } // The direction player is trying to move in
     public float CurrentCalculatedMoveSpeed { get; private set; } // The actual speed applied after calculations
     [SerializeField]
-    public bool CanMove { get; set; } = true; // Control movement from other scripts (e.g., PlayerController)
+    private bool canMove = true;
 
+    public bool CanMove
+    {
+        get => canMove;
+        set
+        {
+            if (canMove != value)
+            {
+                canMove = value;
+
+                if (!canMove)
+                {
+                    var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
+                    UnityEngine.Debug.LogWarning($"CanMove was set to FALSE by:\n{stackTrace}");
+                }
+            }
+        }
+    }
     [Header("Tile Detection")]
     [SerializeField] public LayerMask _tileLayer; // Make sure this is assigned in inspector
     [HideInInspector] public float tileRayLength = 50f; //
@@ -64,15 +85,35 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public Vector3 backOffset = new Vector3(0, 0.48f, 0); //
     private float slideForce = 65f; //
     private float slideAngle = 25f; //
+    [SerializeField] private bool canPush = true;
+
+    public bool CanPush
+    {
+        get => canPush;
+        set
+        {
+            if (canPush != value)
+            {
+                canPush = value;
+
+                if (!canPush)
+                {
+                    var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
+                    UnityEngine.Debug.LogWarning($"CanPush was set to FALSE by:\n{stackTrace}");
+                }
+            }
+        }
+    }
 
 
-    public void Initialize(Player player, Rigidbody rb, CapsuleCollider collider)
+    public void Initialize(Player player, Rigidbody rb, CapsuleCollider collider, PlayerController pController, PlayerControls pControls)
     {
         _player = player;
         _rb = rb;
         _playerCollider = collider;
         _originalConstraints = _rb.constraints;
-
+        _playerController = pController;
+        _playerControls = pControls;
         _inputHandler = GetComponent<PlayerInputHandler>();
         if (_inputHandler == null)
         {
@@ -87,7 +128,7 @@ public class PlayerMovement : MonoBehaviour
         CurrentTile = null;
         CurrentMoveDirection = Vector3.zero;
         CurrentCalculatedMoveSpeed = 0f;
-
+        CanPush = true;
         GameEvents.OnJumpButtonPressed.AddListener(HandleJumpEvent);
     }
 
@@ -106,7 +147,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // ... (existing movement logic) ...
 
         if (!CanMove)
         {
@@ -121,6 +161,7 @@ public class PlayerMovement : MonoBehaviour
         HandleGrounded();
         Fall();
         SlideFlags();
+        CheckObstaclesBehindAndAhead();
 
         // --- Jump Check in FixedUpdate ---
         // Combine input from keyboard/joystick (via InputHandler) AND mobile button (via internal flag)
@@ -134,7 +175,7 @@ public class PlayerMovement : MonoBehaviour
             _jumpInputReceivedThisFrame = false;
         }
 
-        if (jumpInputDetected && IsGrounded && !IsJumping && !IsPulling && !IsPushing)
+        if (jumpInputDetected && IsGrounded && !IsJumping && !IsPulling)
         {
             // Debug.Log("Conditions met for Jump!"); // Debugging
             Jump();
@@ -149,27 +190,25 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!CanMove)
             return;
-        // Use the already processed 4-directional input
+
         Vector3 desiredMoveDirection = new Vector3(input.x, 0f, input.y);
 
-        // Update player's forward direction only if there's input
         if (desiredMoveDirection != Vector3.zero)
         {
             transform.forward = desiredMoveDirection;
-            CurrentMoveDirection = desiredMoveDirection; // Update public property
+            CurrentMoveDirection = desiredMoveDirection;
         }
         else
         {
-            CurrentMoveDirection = Vector3.zero; // No movement input
+            CurrentMoveDirection = Vector3.zero;
         }
 
-        Vector3 avoidanceVector = ComputeAvoidanceVector(); // Calculate avoidance
+        Vector3 avoidanceVector = ComputeAvoidanceVector();
         Vector3 finalMovementDirection = CurrentMoveDirection;
 
-        // Apply avoidance if moving and not falling
-        if (CurrentMoveDirection != Vector3.zero && !IsFalling)
+        // Apply avoidance if moving and not falling and not pushing
+        if (CurrentMoveDirection != Vector3.zero && !IsFalling && !_playerController.isPushing)
         {
-            // Only apply avoidance if there's an actual obstacle hit, not just for raycast debug
             bool leftEyeHitObstacle = Physics.Raycast(transform.position + leftEyeOffset, Quaternion.Euler(0, -raycastAngle, 0) * transform.forward, raycastDistance, _tileObstacleMask);
             bool rightEyeHitObstacle = Physics.Raycast(transform.position + rightEyeOffset, Quaternion.Euler(0, raycastAngle, 0) * transform.forward, raycastDistance, _tileObstacleMask);
 
@@ -179,60 +218,86 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Apply velocity
         CurrentCalculatedMoveSpeed = (_player != null && CurrentMoveDirection != Vector3.zero) ? _player.MoveSpeed : 0f;
-        Vector3 targetVelocity = finalMovementDirection * CurrentCalculatedMoveSpeed;
-        _rb.linearVelocity = new Vector3(targetVelocity.x, _rb.linearVelocity.y, targetVelocity.z);
+
+        // Use different movement methods based on whether pushing or not
+        if (_playerController.isPushing)
+        {
+            // Use MovePosition when pushing (same as obstacle)
+            Vector3 targetPosition = transform.position + finalMovementDirection * CurrentCalculatedMoveSpeed * Time.fixedDeltaTime;
+            _rb.MovePosition(targetPosition);
+        }
+        else
+        {
+            // Use velocity for normal movement
+            Vector3 targetVelocity = finalMovementDirection * CurrentCalculatedMoveSpeed;
+            _rb.linearVelocity = new Vector3(targetVelocity.x, _rb.linearVelocity.y, targetVelocity.z);
+        }
     }
 
-    private void HandleJumpInput(bool jumpInput)
+    public Vector3 GetFacingDirection()
     {
-        if (jumpInput && IsGrounded && !IsJumping)
-        {
-            Jump(); // Call the Jump method
-        }
+        float currentRotation = transform.eulerAngles.y;
+        if (currentRotation == 270)
+            return new Vector3(-1, 0, 0);
+        if (currentRotation == 90)
+            return new Vector3(1, 0, 0);
+        if (currentRotation == 0)
+            return new Vector3(0, 0, 1);
+        if (currentRotation == 180)
+            return new Vector3(0, 0, -1);
+        else
+            return Vector3.zero;
+    }
+    public bool HasChangedDirection(Vector3 previousDirection)
+    {
+        return CurrentMoveDirection != previousDirection && CurrentMoveDirection != Vector3.zero;
+    }
+    public void StopMovement()
+    {
+        _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
+        CurrentMoveDirection = Vector3.zero;
+        CurrentCalculatedMoveSpeed = 0f;
+    }
+    public void SetMovementEnabled(bool enabled)
+    {
+        CanMove = enabled;
+        if (!enabled)
+            StopMovement();
     }
     public void Jump()
     {
-        // Debug.Log("Executing Jump!"); // Debugging
+        if (IsPulling) return;
         IsJumping = true;
         IsGrounded = false; // Player is no longer grounded when jumping
         if (_jumpParticle != null) // Safety check
         {
             _jumpParticle.Play();
         }
+        if (_playerController.isPushing)
+        {
+            Debug.Log("It's currently pushing");
+            if (_playerController.playerObstacleController.pushObstacle != null)
+            {
+                _playerController.playerObstacleController.pushObstacle.isBeingPushed = false;
+                _playerController.playerObstacleController.pushObstacle = null;
+                Debug.Log("Cleaning obstacle before push jump");
+            }
+        }
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
         Friction(false);
 
-       
         if (_player != null && AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayJumpSound(_player.characterStats.female, transform.position);
         }
     }
-    // public void Jump()
-    // {
-    //     // Only allow jump if currently grounded and not already jumping
-    //     if (IsGrounded && !IsJumping)
-    //     {
-    //         IsJumping = true;
-    //         IsGrounded = false; // Player is no longer grounded when jumping
-    //         _jumpParticle.Play(); // Play particle effect
-    //         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z); // Apply jump force
-    //         Friction(false); // Remove friction during jump
-
-    //         // Play jump sound, assuming AudioManager is a singleton accessible here
-    //         // if (_player != null && AudioManager.Instance != null)
-    //         // {
-    //         //     AudioManager.Instance.PlayJumpSound(_player.characterStats.female, transform.position);
-    //         // }
-    //     }
-    // }
-
+    public Collider[] groundHits = new Collider[1];
+    [HideInInspector] public Collider[] wallHits = new Collider[1];
     public bool HandleGrounded()
     {
         // OverlapSphereNonAlloc is more performant than OverlapSphere if used in FixedUpdate
-        Collider[] groundHits = new Collider[1]; // Use a small array to reduce garbage
+        // Use a small array to reduce garbage
         bool newGrounded = Physics.OverlapSphereNonAlloc(
             transform.position + _grounderOffset,
             _grounderRadius,
@@ -250,6 +315,7 @@ public class PlayerMovement : MonoBehaviour
         else if (IsGrounded && !newGrounded)
         {
             IsGrounded = false;
+            hasRecentlyFallen = false;
             // Only set to falling if not jumping (just walked off a ledge)
             if (!IsJumping && _rb.linearVelocity.y < -0.1f) // Added velocity check to ensure actual fall
             {
@@ -258,7 +324,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Update wall/bomb blocked states (these could be networked if relevant for gameplay)
-        Collider[] wallHits = new Collider[1];
+
         IsAgainstWall = Physics.OverlapSphereNonAlloc(
             WallDetectPosition,
             _wallCheckRadius,
@@ -273,8 +339,8 @@ public class PlayerMovement : MonoBehaviour
             bombHits,
             _bombObstacleMask
         ) > 0;
-        if (IsAgainstWall && IsJumping)
-            CanMove = false;
+        // if (IsAgainstWall && IsJumping)
+        //     CanMove = false;
         return newGrounded;
     }
 
@@ -285,6 +351,8 @@ public class PlayerMovement : MonoBehaviour
         {
             IsFalling = true;
             Friction(false); // Remove friction while falling
+            hasRecentlyFallen = true; // Set flag to indicate player has fallen recently
+            fallHeight = transform.position.y; // Calculate fall height from grounder offset
         }
         // IsFalling will be set to false by HandleGrounded when landing
     }
@@ -336,8 +404,47 @@ public class PlayerMovement : MonoBehaviour
 
     // Helpers for Gizmos (Editor only)
     [HideInInspector] public Vector3 WallDetectPosition => (_playerCollider.transform.position - WallDetectionOffset) + _playerCollider.transform.forward * _wallCheckOffset; //
-    [HideInInspector] public Vector3 BombDetectPosition => (_playerCollider.transform.position - BombDetectionOffset) + _playerCollider.transform.forward * _bombCheckOffset; //
+    [HideInInspector] public Vector3 BombDetectPosition => (_playerCollider.transform.position - BombDetectionOffset) + _playerCollider.transform.forward * _bombCheckOffset;
+    public bool pullObstacleFlag, obstacleBehind;
+    [SerializeField] LayerMask _behindObstacleMask;
+    [SerializeField] public LayerMask _collectibleMask;
+    private void CheckObstaclesBehindAndAhead()
+    {
 
+        Vector3 obstacleBehindWhilePulling = Quaternion.Euler(0, 0, 0) * (transform.forward * -1);
+#if UNITY_EDITOR
+        Debug.DrawRay(
+            transform.position,
+            obstacleBehindWhilePulling * raycastDistance,
+            Color.red
+        );
+#endif
+        Ray rayBack = new Ray(transform.position, transform.forward * -1);
+        RaycastHit hitBack;
+        obstacleBehind = Physics.Raycast(rayBack, out hitBack, 0.6f, _behindObstacleMask);
+        if (obstacleBehind) Debug.Log("Theres an obstacle behind");
+        /**
+       **Forward Cast
+       */
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+
+        if (_playerController.AI)
+            return;
+        pullObstacleFlag =
+            Physics.Raycast(ray, out hit, 0.5f, _obstacleMask)
+            || Physics.Raycast(ray, out hit, 0.5f, _collectibleMask);
+        // Debug.Log("pullObstacleFlag : " + pullObstacleFlag);
+        _playerControls.Interactable(pullObstacleFlag);
+        if (_playerControls == null) Debug.LogError("Playercontrols are null");
+        if (_playerControls.levelGoal == null) Debug.LogError("PlayerLevelGoal is null");
+        if (_playerControls == null) Debug.LogError("Playercontrols are null");
+        if (_playerControls != null &&
+            !_playerControls.isPulling
+            && _playerControls.levelGoal.levelType == LevelGoal.LevelType.Pull
+        )
+            _playerControls.hintPull.gameObject.SetActive(pullObstacleFlag);
+    }
     // Draw Gizmos for debugging in editor
     private void OnDrawGizmos()
     {
@@ -454,4 +561,55 @@ public class PlayerMovement : MonoBehaviour
         }
         return null; //
     }
+
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody>();
+        _originalConstraints = _rb.constraints;
+        _playerAttack = GetComponent<PlayerAttack>();
+        // playerController = GetComponent<PlayerController>();
+    }
+
+    /// <summary>
+    /// Applies constraints and disables movement during pull.
+    /// </summary>
+    public void SetPullConstraints(Obstacle obstacle = null)
+    {
+        if (obstacle != null && obstacle.grounded)
+        {
+            IsPulling = true;
+            IsPushing = false;
+            CanMove = false;
+            _rb.isKinematic = true;
+            _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+        }
+    }
+
+    /// <summary>
+    /// Resets constraints and restores movement after pull ends.
+    /// </summary>
+    public void ResetPullConstraints(Obstacle obstacle = null)
+    {
+        if (!IsPulling) return;
+
+        if (_player != null)
+        {
+            _player.MoveSpeed = _player.hasSpeedBuff ? _player.buffedSpeed : _player.StartingMoveSpeed;
+        }
+
+        if (!_playerAttack.hittingDown) // Assuming playerAttack is available
+            CanMove = true;
+
+        IsPulling = false;
+        _rb.isKinematic = false;
+        _rb.constraints = _originalConstraints;
+
+        if (obstacle != null)
+        {
+            obstacle.recentlyPulled = true;
+            obstacle.ResetObstacle(); // if method exists
+        }
+    }
+
 }

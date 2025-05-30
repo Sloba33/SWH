@@ -57,9 +57,9 @@ public class PlayerAnimation : MonoBehaviour
         bool isWalking = isMoving && IsGrounded && MoveSpeed < 3f;
 
         // Prioritize states
-        if (_playerController.isPushing)
+        if (_playerMovement.IsPushing)
             return PlayerAnimState.Push;
-        if (_playerController.isPulling)
+        if (_playerMovement.IsPulling)
             return PlayerAnimState.Pull;
 
         if (IsJumping)
@@ -75,7 +75,7 @@ public class PlayerAnimation : MonoBehaviour
             if (isWalking)
                 return PlayerAnimState.Walk;
 
-            if (!isMoving && !_playerController.isPushing && !_playerController.isPulling)
+            if (!isMoving && !_playerMovement.IsPushing && !_playerMovement.IsPulling)
             {
                 return PlayerAnimState.Idle;
             }
@@ -114,7 +114,7 @@ public class PlayerAnimation : MonoBehaviour
                 break;
             case PlayerAnimState.Idle:
                 _anim.SetBool("Idle", true);
-                LookAnimation(); // Only call if Idle animation specifically requires this
+                LookAnimation();
                 break;
             case PlayerAnimState.Hit:
                 _anim.SetBool("Hit", true);
@@ -141,9 +141,9 @@ public class PlayerAnimation : MonoBehaviour
 
     public void LookAnimation()
     {
-        if (_playerController == null || _playerController.playerCamera == null) return;
+        if (_playerController == null || _playerController.followCamera == null) return;
 
-        Vector3 cameraDirection = _playerController.playerCamera.transform.position - transform.position;
+        Vector3 cameraDirection = _playerController.followCamera.transform.position - transform.position;
         cameraDirection.y = 0;
         if (cameraDirection == Vector3.zero) return;
 
