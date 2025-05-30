@@ -91,7 +91,7 @@ public class PlayerAnimation : MonoBehaviour
         _anim.SetBool("Falling", IsFalling);
         _anim.SetBool("Running", false);
         _anim.SetBool("Walking", false);
-        _anim.SetBool("AFK", false);
+        _anim.SetBool("Idle", false);
         _anim.SetBool("Hit", false);
         _anim.SetBool("HitDown", false);
         _anim.SetBool("Dead", false);
@@ -100,8 +100,6 @@ public class PlayerAnimation : MonoBehaviour
 
         switch (state)
         {
-            case PlayerAnimState.Idle:
-                break;
             case PlayerAnimState.Walk:
                 _anim.SetBool("Walking", true);
                 break;
@@ -114,9 +112,9 @@ public class PlayerAnimation : MonoBehaviour
             case PlayerAnimState.Fall:
                 _anim.SetBool("Falling", true);
                 break;
-            case PlayerAnimState.AFK:
-                _anim.SetBool("AFK", true);
-                LookAnimation(); // Only call if AFK animation specifically requires this
+            case PlayerAnimState.Idle:
+                _anim.SetBool("Idle", true);
+                LookAnimation(); // Only call if Idle animation specifically requires this
                 break;
             case PlayerAnimState.Hit:
                 _anim.SetBool("Hit", true);
@@ -184,7 +182,6 @@ public enum PlayerAnimState
     Run,
     Jump,
     Fall,
-    AFK,
     Hit,
     HitDown,
     Dead,

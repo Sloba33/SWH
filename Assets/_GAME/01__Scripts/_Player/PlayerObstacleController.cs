@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerObstacleController : MonoBehaviour
 {
     // separate obstacle shit a bit more
-
+    private PlayerMovement playerMovement;
     PlayerController playerController;
     Player player;
     [SerializeField] Vector3 movementDirection;
@@ -25,6 +25,7 @@ public class PlayerObstacleController : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         player = GetComponent<Player>();
         pushSpeed = player.StartingMoveSpeed / 2;
+        playerMovement = GetComponent<PlayerMovement>();
     }
     private bool pullConstraintsReset;
     private void FixedUpdate()
@@ -195,7 +196,7 @@ public class PlayerObstacleController : MonoBehaviour
         }
         pushObstacle.PushObstacle(dir, player.PushAndPullSpeed(pushObstacle.Weight));
         _anim.SetBool("Push", true);
-        _anim.SetBool("AFK", false);
+        _anim.SetBool("Idle", false);
     }
     public void StopPush()
     {
@@ -328,7 +329,7 @@ public class PlayerObstacleController : MonoBehaviour
     //     Vector3 pushDirection = new Vector3(movementDirection.x, 0, movementDirection.z);
     //     pushObstacle.PushObstacle(pushDirection, player.PushAndPullSpeed(pushObstacle.Weight));
     //     _anim.SetBool("Push", true);
-    //     _anim.SetBool("AFK", false);
+    //     _anim.SetBool("Idle", false);
     // }
 
     // private void StopPush()
@@ -405,7 +406,7 @@ public class PlayerObstacleController : MonoBehaviour
         {
             if (!_anim.GetBool("Pull"))
                 _anim.SetBool("Pull", true);
-            _anim.SetBool("AFK", false);
+            _anim.SetBool("Idle", false);
             if (playerController.obstacleBehind) return;
             obs.isBeingPulled = true;
             obs.wasRecentlyPushed = true;
@@ -426,7 +427,7 @@ public class PlayerObstacleController : MonoBehaviour
         // pullObstacle.playerController = null;
         if (pullObstacle != null) pullObstacle.currentlyUsedPlayerConrtoller = null;
         pullObstacle = null;
-        playerController.canMove = true;
+        playerMovement.CanMove = true;
         playerController.StopPull();
         // Debug.Log("PULL - Stopping pull");
         return;

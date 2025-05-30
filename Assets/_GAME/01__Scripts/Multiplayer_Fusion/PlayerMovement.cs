@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public float _jumpForce = 5.8f; //
     [SerializeField] private ParticleSystem _jumpParticle; // Assign in inspector
 
+
     [Header("Grounding Detection")]
     [SerializeField] private LayerMask _groundMask; //
     private Vector3 _grounderOffset = new Vector3(0, -0.47f, 0.01f); //
@@ -47,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
     // Public properties for other scripts to read current state
     public Vector3 CurrentMoveDirection { get; private set; } // The direction player is trying to move in
     public float CurrentCalculatedMoveSpeed { get; private set; } // The actual speed applied after calculations
-
+    [SerializeField]
     public bool CanMove { get; set; } = true; // Control movement from other scripts (e.g., PlayerController)
 
     [Header("Tile Detection")]
@@ -146,6 +147,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMovement(Vector2 input)
     {
+        if (!CanMove)
+            return;
         // Use the already processed 4-directional input
         Vector3 desiredMoveDirection = new Vector3(input.x, 0f, input.y);
 
@@ -201,11 +204,11 @@ public class PlayerMovement : MonoBehaviour
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
         Friction(false);
 
-        // Play jump sound, assuming AudioManager is a singleton accessible here
-        // if (_player != null && AudioManager.Instance != null)
-        // {
-        //     AudioManager.Instance.PlayJumpSound(_player.characterStats.female, transform.position);
-        // }
+       
+        if (_player != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayJumpSound(_player.characterStats.female, transform.position);
+        }
     }
     // public void Jump()
     // {
@@ -270,7 +273,8 @@ public class PlayerMovement : MonoBehaviour
             bombHits,
             _bombObstacleMask
         ) > 0;
-
+        if (IsAgainstWall && IsJumping)
+            CanMove = false;
         return newGrounded;
     }
 
@@ -331,8 +335,8 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Helpers for Gizmos (Editor only)
-    private Vector3 WallDetectPosition => (_playerCollider.transform.position - WallDetectionOffset) + _playerCollider.transform.forward * _wallCheckOffset; //
-    private Vector3 BombDetectPosition => (_playerCollider.transform.position - BombDetectionOffset) + _playerCollider.transform.forward * _bombCheckOffset; //
+    [HideInInspector] public Vector3 WallDetectPosition => (_playerCollider.transform.position - WallDetectionOffset) + _playerCollider.transform.forward * _wallCheckOffset; //
+    [HideInInspector] public Vector3 BombDetectPosition => (_playerCollider.transform.position - BombDetectionOffset) + _playerCollider.transform.forward * _bombCheckOffset; //
 
     // Draw Gizmos for debugging in editor
     private void OnDrawGizmos()

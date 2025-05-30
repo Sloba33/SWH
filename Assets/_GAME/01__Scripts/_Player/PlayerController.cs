@@ -637,7 +637,7 @@ public class PlayerController : MonoBehaviour
                 _anim.SetBool("Walking", _dir != Vector3.zero && IsGrounded);
                 _anim.SetBool("Running", false);
             }
-            _anim.SetBool("AFK", false);
+            _anim.SetBool("Idle", false);
         }
         else
         {
@@ -656,16 +656,16 @@ public class PlayerController : MonoBehaviour
                 _anim.SetBool("Walking", _dir != Vector3.zero && IsGrounded);
                 _anim.SetBool("Running", false);
             }
-            _anim.SetBool("AFK", false);
+            _anim.SetBool("Idle", false);
         }
         if (_dir == Vector3.zero && !_isJumping && !isPushing && !isPulling && !isFalling)
         {
-            _anim.SetBool("AFK", true);
+            _anim.SetBool("Idle", true);
             LookAnimation();
         }
         else
         {
-            _anim.SetBool("AFK", false);
+            _anim.SetBool("Idle", false);
             _anim.SetBool("LookLeft", false);
             _anim.SetBool("LookRight", false);
         }
