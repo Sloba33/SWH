@@ -823,6 +823,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pull"",
+                    ""type"": ""Button"",
+                    ""id"": ""039eadb7-9630-4b4a-8c45-6128081b4960"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -979,6 +988,28 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Special"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""46128602-9562-4773-9548-3284c4cac631"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pull"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af1704c5-5abe-4dc4-b3cd-e7b382bfa896"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pull"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1013,6 +1044,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Player_Hit = m_Player.FindAction("Hit", throwIfNotFound: true);
         m_Player_HitDown = m_Player.FindAction("HitDown", throwIfNotFound: true);
         m_Player_Special = m_Player.FindAction("Special", throwIfNotFound: true);
+        m_Player_Pull = m_Player.FindAction("Pull", throwIfNotFound: true);
     }
 
     ~@InputActions()
@@ -1585,6 +1617,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Hit;
     private readonly InputAction m_Player_HitDown;
     private readonly InputAction m_Player_Special;
+    private readonly InputAction m_Player_Pull;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1616,6 +1649,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Special".
         /// </summary>
         public InputAction @Special => m_Wrapper.m_Player_Special;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Pull".
+        /// </summary>
+        public InputAction @Pull => m_Wrapper.m_Player_Pull;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1657,6 +1694,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Special.started += instance.OnSpecial;
             @Special.performed += instance.OnSpecial;
             @Special.canceled += instance.OnSpecial;
+            @Pull.started += instance.OnPull;
+            @Pull.performed += instance.OnPull;
+            @Pull.canceled += instance.OnPull;
         }
 
         /// <summary>
@@ -1683,6 +1723,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Special.started -= instance.OnSpecial;
             @Special.performed -= instance.OnSpecial;
             @Special.canceled -= instance.OnSpecial;
+            @Pull.started -= instance.OnPull;
+            @Pull.performed -= instance.OnPull;
+            @Pull.canceled -= instance.OnPull;
         }
 
         /// <summary>
@@ -1881,5 +1924,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSpecial(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Pull" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPull(InputAction.CallbackContext context);
     }
 }

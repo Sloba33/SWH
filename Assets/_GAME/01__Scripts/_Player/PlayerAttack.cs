@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
+    private PlayerMovement playerMovement;
     public ParticleSystem weaponHitParticle;
     public ParticleSystem weaponSwingParticle;
     public ParticleSystem weaponSpecialSwingParticle;
@@ -19,21 +20,21 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] GameObject tool, toolDown;
     [SerializeField] Vector3 hitRayOffset;
     [SerializeField] float hitRayDistance = 1f;
-    public bool canHit = true; // Default to true, player can hit
-    public bool hittingDown; // Exposed for PlayerAnimation
+    private bool canHit = true;
+    public bool hittingDown; 
     private PlayerController playerController;
     public Player player;
     LevelGoal levelGoal;
     private Animator _anim;
     public WeaponSpecialRadius weaponSpecialRadius;
 
-    private PlayerInputHandler _inputHandler; // New reference to PlayerInputHandler
+    private PlayerInputHandler _inputHandler; 
 
     private IEnumerator Start()
     {
-        levelGoal = FindObjectOfType<LevelGoal>();
+        levelGoal = FindFirstObjectByType<LevelGoal>();
         yield return new WaitForSeconds(0.1f);
-
+        playerMovement = GetComponent<PlayerMovement>();
         playerController = GetComponent<PlayerController>();
         player = GetComponent<Player>();
         _anim = GetComponent<Animator>();
@@ -54,25 +55,22 @@ public class PlayerAttack : MonoBehaviour
         CheckWeaponAvailability();
     }
 
-    // New Update method to check for keyboard/gamepad input
+
     private void Update()
     {
         if (_inputHandler == null) return;
 
-        // Handle regular hit
-        if (_inputHandler.GetHitPressedThisFrame()) // Uses Input System's WasPressedThisFrame
+        if (_inputHandler.GetHitPressedThisFrame()) 
         {
             Hit();
         }
 
-        // Handle hit down
-        if (_inputHandler.GetHitDownPressedThisFrame()) // Uses Input System's WasPressedThisFrame
+        if (_inputHandler.GetHitDownPressedThisFrame())
         {
             HitDown();
         }
 
-        // Handle special attack
-        if (_inputHandler.GetSpecialAttackPressedThisFrame()) // Uses Input System's WasPressedThisFrame
+        if (_inputHandler.GetSpecialAttackPressedThisFrame()) 
         {
             SpecialAttack();
         }
@@ -80,7 +78,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void CheckWeaponAvailability()
     {
-        if (weapon == null) return; // Safety check
+        if (weapon == null) return; 
 
         if (PlayerPrefs.GetInt(weapon.weaponType.ToString()) == 1)
         {
@@ -96,13 +94,13 @@ public class PlayerAttack : MonoBehaviour
     public Vector3 hitPoint; //
     public Obstacle FindHitObstacle()
     {
-        // Ensure playerController is not null before accessing its members
-        if (playerController == null)
+       
+        if (playerMovement == null)
         {
-            Debug.LogError("PlayerAttack: playerController is null. Cannot find hit obstacle.");
+            Debug.LogError("PlayerAttack: playerMovement is null. Cannot find hit obstacle.");
             return null;
         }
-        if (Physics.Raycast(transform.position + hitRayOffset, transform.forward, out RaycastHit hitObstacle, hitRayDistance, playerController._obstacleMask))
+        if (Physics.Raycast(transform.position + hitRayOffset, transform.forward, out RaycastHit hitObstacle, hitRayDistance, playerMovement._obstacleMask))
         {
             ObstacleToHit = hitObstacle.transform.GetComponent<Obstacle>();
             hitPoint = hitObstacle.point;
@@ -113,8 +111,8 @@ public class PlayerAttack : MonoBehaviour
 
     public void Hit()
     {
-        // Ensure necessary references are not null before proceeding
-        if (player == null || weapon == null || _anim == null || playerController == null)
+       
+        if (player == null || weapon == null || _anim == null || playerMovement == null)
         {
             Debug.LogError("PlayerAttack.Hit: Missing required references. Cannot perform attack.");
             return;
@@ -124,34 +122,34 @@ public class PlayerAttack : MonoBehaviour
         {
             if (!playerController.AI) //
             {
-                if (player.Energy < weapon.energyConsumption) return; //
-                else player.SpendEnergy(weapon.energyConsumption); //
+                if (player.Energy < weapon.energyConsumption) return; 
+                else player.SpendEnergy(weapon.energyConsumption);
             }
             Debug.Log("Hitting");
             canHit = false; //
-            if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(false); //
-            if (weapon.WeaponStandard != null) weapon.WeaponStandard.SetActive(true); //
+            if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(false); 
+            if (weapon.WeaponStandard != null) weapon.WeaponStandard.SetActive(true); 
 
             ObstacleToHit = FindHitObstacle(); //
-            if (ObstacleToHit != null && levelGoal != null && !levelGoal.Tutorial) //
+            if (ObstacleToHit != null && levelGoal != null && !levelGoal.Tutorial) 
             {
-                player.specialCharges++; //
+                player.specialCharges++; 
                 if (player.specialCharges >= player.specialChargesMax && player.pc != null && player.pc.specialButton != null) //
                 {
-                    player.pc.specialButton.gameObject.SetActive(true); //
+                    player.pc.specialButton.gameObject.SetActive(true); 
                 }
             }
 
             _anim.SetBool("Hit", true); //
-            // AudioManager.Instance.PlayPlayerSound("hit", transform.position); //
+           
             StartCoroutine(FinishHit()); //
         }
     }
 
     public void SpecialAttack()
     {
-        // Ensure necessary references are not null before proceeding
-        if (player == null || weapon == null || _anim == null || playerController == null)
+        
+        if (player == null || weapon == null || _anim == null || playerMovement == null)
         {
             Debug.LogError("PlayerAttack.SpecialAttack: Missing required references. Cannot perform special attack.");
             return;
@@ -159,157 +157,156 @@ public class PlayerAttack : MonoBehaviour
 
         if (canHit)
         {
-            if (!playerController.AI) //
+            if (!playerController.AI) 
             {
                 if (player.specialCharges < player.specialChargesMax) return; //
                 else
                 {
-                    player.specialCharges = 0; //
+                    player.specialCharges = 0; 
                     if (player.pc != null && player.pc.specialButton != null) player.pc.specialButton.gameObject.SetActive(false); //
                 }
             }
             canHit = false; //
-            _anim.SetBool("HitSpecial", true); //
-            if (weapon.WeaponStandard != null) weapon.WeaponStandard.SetActive(true); //
-            StartCoroutine(FinishSpecial()); //
+            _anim.SetBool("HitSpecial", true); 
+            if (weapon.WeaponStandard != null) weapon.WeaponStandard.SetActive(true); 
+            StartCoroutine(FinishSpecial());
         }
     }
 
     public IEnumerator FinishSpecial()
     {
-        if (playerController != null) playerController.HitJump(); // Ensure playerController is not null
-        yield return new WaitForSeconds(delayBeforeSwing); //
+        // if (playerMovement != null) playerController.HitJump(); // HIT JUMP NEEDS MOVING TO PLAYERMOVEMENT
+        yield return new WaitForSeconds(delayBeforeSwing); 
 
-        yield return new WaitForSeconds(delayAfterSwing); //
-        yield return new WaitForSeconds(0.15f); //
+        yield return new WaitForSeconds(delayAfterSwing); 
+        yield return new WaitForSeconds(0.15f); 
 
-        if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = false; //
+        if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = false; 
 
         if (useTrail) //
         {
-            if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = true; //
+            if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = true; 
         }
         else
         {
-            if (weaponSpecialSwingParticle != null) weaponSpecialSwingParticle.Play(); //
+            if (weaponSpecialSwingParticle != null) weaponSpecialSwingParticle.Play(); 
         }
-        yield return new WaitForSeconds(0.4f); //
+        yield return new WaitForSeconds(0.4f); 
         PerformSpecialAttack(); //
 
-        if (weaponSpecialAOE != null && playerController != null) // Safety checks
+        if (weaponSpecialAOE != null && playerMovement != null) 
         {
-            ParticleSystem ps = Instantiate(weaponSpecialAOE, playerController.WallDetectPosition, weaponSpecialAOE.transform.rotation); //
+            ParticleSystem ps = Instantiate(weaponSpecialAOE, playerMovement.WallDetectPosition, weaponSpecialAOE.transform.rotation); //
             ps.Play(); //
         }
-        yield return new WaitForSeconds(0.1f); //
-        _anim.SetBool("HitSpecial", false); //
-        if (playerController != null) playerController.canMove = true; //
-        if (weapon != null) weapon.WeaponStandard.SetActive(false); //
+        yield return new WaitForSeconds(0.1f); 
+        _anim.SetBool("HitSpecial", false); 
+        if (playerMovement != null) playerMovement.CanMove = true; 
+        if (weapon != null) weapon.WeaponStandard.SetActive(false); 
 
         canHit = true; //
     }
 
-    public List<BoxCollider> weaponRadiusColliders = new(); //
-    public BoxCollider currentSpecialRadiusTrigger; //
+    public List<BoxCollider> weaponRadiusColliders = new(); 
+    public BoxCollider currentSpecialRadiusTrigger; 
     public void PerformSpecialAttack()
     {
-        if (currentSpecialRadiusTrigger == null) return; //
+        if (currentSpecialRadiusTrigger == null) return; 
 
-        // Get all colliders within the trigger area
+      
         Collider[] hitColliders = Physics.OverlapBox(
             currentSpecialRadiusTrigger.bounds.center,
             currentSpecialRadiusTrigger.bounds.extents,
             currentSpecialRadiusTrigger.transform.rotation
         );
-        Debug.Log("" + currentSpecialRadiusTrigger.bounds.center); //
-        // Loop through the colliders and destroy obstacles
-        foreach (Collider col in hitColliders) //
+        Debug.Log("" + currentSpecialRadiusTrigger.bounds.center); 
+   
+        foreach (Collider col in hitColliders) 
         {
-            if (col.CompareTag("Obstacle")) // Assuming obstacles have the tag "Obstacle"
+            if (col.CompareTag("Obstacle")) 
             {
-                Obstacle obs = col.GetComponent<Obstacle>(); //
-                if (obs != null) obs.ParticleDestroy(); //
+                Obstacle obs = col.GetComponent<Obstacle>(); 
+                if (obs != null) obs.ParticleDestroy(); 
             }
         }
     }
 
-    public void SetActiveWeaponSpecialCollider(int index) //
+    public void SetActiveWeaponSpecialCollider(int index) 
     {
-        for (int i = 0; i < weaponRadiusColliders.Count; i++) //
+        for (int i = 0; i < weaponRadiusColliders.Count; i++) 
         {
             if (i == index) //
             {
-                weaponRadiusColliders[i].enabled = true; //
-                currentSpecialRadiusTrigger = weaponRadiusColliders[i]; //
+                weaponRadiusColliders[i].enabled = true; 
+                currentSpecialRadiusTrigger = weaponRadiusColliders[i]; 
             }
-            else weaponRadiusColliders[i].enabled = false; //
+            else weaponRadiusColliders[i].enabled = false; 
         }
     }
 
-    public void SetWeaponSpecial(WeaponSpecialRadius weaponSpecialRadius) //
+    public void SetWeaponSpecial(WeaponSpecialRadius weaponSpecialRadius) 
     {
         switch (weaponSpecialRadius) //
         {
-            case WeaponSpecialRadius.Small: //
-                SetActiveWeaponSpecialCollider(0); //
+            case WeaponSpecialRadius.Small: 
+                SetActiveWeaponSpecialCollider(0); 
                 break;
-            case WeaponSpecialRadius.Medium: //
-                SetActiveWeaponSpecialCollider(1); //
+            case WeaponSpecialRadius.Medium: 
+                SetActiveWeaponSpecialCollider(1); 
                 break;
-            case WeaponSpecialRadius.Large: //
-                SetActiveWeaponSpecialCollider(2); //
+            case WeaponSpecialRadius.Large: 
+                SetActiveWeaponSpecialCollider(2); 
                 break;
             default: //
-                Debug.LogWarning("Unknown weapon special type."); //
+                Debug.LogWarning("Unknown weapon special type."); 
                 break;
         }
     }
 
     public void HitDown()
     {
-        // Ensure necessary references are not null before proceeding
-        if (player == null || weapon == null || _anim == null || playerController == null)
+      
+        if (player == null || weapon == null || _anim == null || playerMovement == null)
         {
             Debug.LogError("PlayerAttack.HitDown: Missing required references. Cannot perform attack.");
             return;
         }
 
-        if (canHit && playerController.grounded) //
+        if (canHit && playerMovement.IsGrounded ) 
         {
-            playerController.canMove = false; //
-            playerController.canPush = false; //
-            canHit = false; //
+            playerMovement.CanMove = false; 
+            playerController._movement.CanPush = false; 
+            canHit = false; 
 
-            // Check if player is grounded using PlayerMovement's IsGrounded
-            if (playerController.IsGrounded) //
+      
+            if (playerController._movement.IsGrounded) 
             {
-                hittingDown = true; //
-                if (!playerController.AI) //
+                hittingDown = true; 
+                if (!playerController.AI) 
                 {
-                    if (player.HitDownEnergy < weapon.energyConsumption) //
+                    if (player.HitDownEnergy < weapon.energyConsumption) 
                     {
-                        // Re-enable movement and hit if energy is insufficient
-                        playerController.canMove = true;
-                        playerController.canPush = true;
+                      
+                        playerMovement.CanMove = true;
+                        playerController._movement.CanPush = true;
                         canHit = true;
-                        hittingDown = false; // Reset hittingDown if attack is aborted
-                        return; //
+                        hittingDown = false;
+                        return; 
                     }
-                    else player.SpendHitDownEnergy(weapon.energyConsumption); //
+                    else player.SpendHitDownEnergy(weapon.energyConsumption); 
                 }
 
-                // Direction and rotation logic for HitDown
-                if (playerController._ground.Length > 0 && playerController._ground[0] != null) // Check if _ground array has an element
+              
+                if (playerController._movement.groundHits.Length > 0 && playerController._movement.groundHits[0] != null) 
                 {
-                    Vector3 directionToCenter = playerController._ground[0].transform.position - transform.position; //
-                    directionToCenter.y = 0; // Project onto the XZ plane
-                    float distanceToCenter = directionToCenter.magnitude; //
-                    float deadzoneRadius = 0.25f; // Adjust this value as needed
-
-                    if (distanceToCenter > deadzoneRadius) //
+                    Vector3 directionToCenter = playerController._movement.groundHits[0].transform.position - transform.position; 
+                    directionToCenter.y = 0;
+                    float distanceToCenter = directionToCenter.magnitude; 
+                    float deadzoneRadius = 0.25f; 
+                    if (distanceToCenter > deadzoneRadius) 
                     {
-                        Quaternion lookRotation = Quaternion.LookRotation(directionToCenter, Vector3.up); //
-                        transform.rotation = Quaternion.Euler(0f, lookRotation.eulerAngles.y, 0f); //
+                        Quaternion lookRotation = Quaternion.LookRotation(directionToCenter, Vector3.up); 
+                        transform.rotation = Quaternion.Euler(0f, lookRotation.eulerAngles.y, 0f); 
                     }
                 }
                 else
@@ -320,75 +317,75 @@ public class PlayerAttack : MonoBehaviour
             else
             {
                 Debug.LogWarning("PlayerAttack.HitDown: Player not grounded, cannot perform HitDown.");
-                // Reset states if HitDown was attempted while not grounded
-                playerController.canMove = true;
-                playerController.canPush = true;
+              
+                playerMovement.CanMove = true;
+                playerController._movement.CanPush = true;
                 canHit = true;
                 hittingDown = false;
                 return;
             }
 
-            // Ensure _ground has an element before trying to access it
-            ObstacleToHit = (playerController._ground.Length > 0 && playerController._ground[0] != null)
-                ? playerController._ground[0].transform.GetComponent<Obstacle>()
+        
+            ObstacleToHit = (playerController._movement.groundHits.Length > 0 && playerController._movement.groundHits[0] != null)
+                ? playerController._movement.groundHits[0].transform.GetComponent<Obstacle>()
                 : null;
 
-            _anim.SetBool("HitDown", true); //
-            if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(false); //
-            if (weapon.WeaponDown != null) weapon.WeaponDown.SetActive(true); //
+            _anim.SetBool("HitDown", true); 
+            if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(false);
+            if (weapon.WeaponDown != null) weapon.WeaponDown.SetActive(true); 
             // AudioManager.Instance.PlayPlayerSound("hit", transform.position); //
             StartCoroutine(FinishHitDown()); //
         }
     }
 
-    public float delayBeforeSwing, delayAfterSwing; //
-    public bool useTrail; //
+    public float delayBeforeSwing, delayAfterSwing; 
+    public bool useTrail; 
     public IEnumerator FinishHit()
     {
-        yield return new WaitForSeconds(delayBeforeSwing); //
+        yield return new WaitForSeconds(delayBeforeSwing); 
 
-        if (useTrail) //
+        if (useTrail) 
         {
-            if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = true; //
+            if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = true; 
         }
         else
         {
-            if (weaponSwingParticle != null) weaponSwingParticle.Play(); //
+            if (weaponSwingParticle != null) weaponSwingParticle.Play(); 
         }
 
-        yield return new WaitForSeconds(delayAfterSwing); //
-        if (ObstacleToHit != null && ObstacleToHit.isHammerable) //
+        yield return new WaitForSeconds(delayAfterSwing); 
+        if (ObstacleToHit != null && ObstacleToHit.isHammerable) 
         {
-            if (weaponHitParticle != null) // Safety check
+            if (weaponHitParticle != null) 
             {
                 ParticleSystem PSHit = Instantiate(weaponHitParticle, hitPoint, weaponHitParticle.transform.rotation); //
             }
-            ObstacleToHit.ParticleDestroy(); // Call directly on the ObstacleToHit instance
+            ObstacleToHit.ParticleDestroy(); 
         }
-        yield return new WaitForSeconds(0.15f); //
-        if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = false; //
-        yield return new WaitForSeconds(0.15f); //
+        yield return new WaitForSeconds(0.15f); 
+        if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = false; 
+        yield return new WaitForSeconds(0.15f); 
         _anim.SetBool("Hit", false); //
-        if (weapon != null) weapon.WeaponStandard.SetActive(false); //
-        if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(true); //
-        if (playerController != null) playerController.canMove = true; //
-        canHit = true; //
+        if (weapon != null) weapon.WeaponStandard.SetActive(false); 
+        if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(true); 
+        if (playerController != null) playerMovement.CanMove = true; 
+        canHit = true; 
     }
 
     public IEnumerator FinishHitDown()
     {
-        yield return new WaitForSeconds(0.2f); //
-        if (ObstacleToHit != null && ObstacleToHit.isHammerable) //
+        yield return new WaitForSeconds(0.2f);
+        if (ObstacleToHit != null && ObstacleToHit.isHammerable)
         {
-            ObstacleToHit.ParticleDestroy(); // Call directly on the ObstacleToHit instance
+            ObstacleToHit.ParticleDestroy();
         }
-        yield return new WaitForSeconds(0.3f); //
-        _anim.SetBool("HitDown", false); //
-        if (weapon != null) weapon.WeaponDown.SetActive(false); //
-        if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(true); //
-        if (playerController != null) playerController.canMove = true; //
+        yield return new WaitForSeconds(0.3f); 
+        _anim.SetBool("HitDown", false); 
+        if (weapon != null) weapon.WeaponDown.SetActive(false); 
+        if (backWeaponSlot != null) backWeaponSlot.gameObject.SetActive(true); 
+        if (playerController != null) playerMovement.CanMove = true; 
         canHit = true; //
-        if (playerController != null) playerController.canPush = true; //
+        if (playerController != null) playerController._movement.CanPush = true; 
         hittingDown = false; //
     }
 

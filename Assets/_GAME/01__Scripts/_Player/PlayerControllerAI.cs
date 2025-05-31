@@ -159,7 +159,7 @@ public class PlayerControllerAI : MonoBehaviour
                 StartCoroutine(Hit());
                 break;
             case TaskType.None:
-                playerController._dir = Vector3.zero;
+                // playerController._movement.CurrentMoveDirection = Vector3.zero; 
                 Debug.Log("Doing nothing");
                 isExecuting = false;
                 ExecuteNextTask();
@@ -223,12 +223,12 @@ public class PlayerControllerAI : MonoBehaviour
                 }
             }
 
-            playerController._dir = direction;
-            playerController.HandleWalking();
+            // playerController._dir = direction;
+            // playerController.HandleWalking();
             yield return null;
         }
 
-        playerController._dir = Vector3.zero;
+        // playerController._dir = Vector3.zero;
         // Debug.Log("Movement done");
         isExecuting = false;
         ExecuteNextTask();
@@ -244,7 +244,7 @@ public class PlayerControllerAI : MonoBehaviour
     {
         // Trigger the jump
         yield return new WaitForSeconds(delay);
-        playerController.HandleJump();
+        // playerController.HandleJump();
 
         // Wait for the jump animation or physics to take effect
         yield return new WaitForSeconds(0.1f); // Adjust the duration as needed
@@ -253,7 +253,7 @@ public class PlayerControllerAI : MonoBehaviour
         Vector3 forwardMove = transform.forward;
         forwardMove.y = 0; // Ensure the movement is horizontal
         forwardMove.Normalize();
-        playerController._dir = forwardMove;
+        // playerController._dir = forwardMove;
 
         // Move forward for a short duration to simulate a jump forward by 1 unit
         float moveDuration = moveDur; // Duration to move forward
@@ -261,13 +261,13 @@ public class PlayerControllerAI : MonoBehaviour
 
         while (elapsedTime < moveDuration)
         {
-            playerController.HandleWalking();
+            // playerController.HandleWalking();
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         // Stop moving forward
-        playerController._dir = Vector3.zero;
+        // playerController._dir = Vector3.zero;
 
         // Proceed to the next task
         // Debug.Log("Jump completed");
@@ -299,8 +299,8 @@ public class PlayerControllerAI : MonoBehaviour
         // playerController._dir = Vector3.zero;
         yield return new WaitForSeconds(pullDelay);
         // Start pulling the obstacle
-        playerController._pullButtonHeld = true;
-        playerController._pullButtonReleased = false;
+        playerController.pullButtonHeld = true;
+        playerController.pullButtonReleased = false;
         playerObstacleController.HandlePull();
 
         // Ensure the player moves backward while pulling
@@ -320,9 +320,9 @@ public class PlayerControllerAI : MonoBehaviour
         }
 
         // Stop pulling the obstacle
-        playerController._pullButtonHeld = false;
-        playerController._pullButtonReleased = true;
-        playerController._dir = Vector3.zero;
+        playerController.pullButtonHeld = false;
+        playerController.pullButtonReleased = true;
+        // playerController._movement.CurrentMoveDirection = Vector3.zero;
 
         isExecuting = false;
         ExecuteNextTask();

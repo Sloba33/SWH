@@ -459,7 +459,7 @@ public class Obstacle : MonoBehaviour
                 // if (playerController == null) Debug.Log("Player controller is null");
                 // if (playerController.IsGrounded) Debug.Log("Player is grounded");
                 // Debug.Log("IsGrounded " + playerController.IsGrounded);
-                if (playerController != null && !playerController.IsGrounded)
+                if (playerController != null && !playerController._movement.IsGrounded)
                 {
                     Debug.Log("Falling with box");
                     playerController.transform.position = Vector3.MoveTowards(playerController.transform.position, new Vector3(playerController.transform.position.x, transform.position.y, playerController.transform.position.z), fallSpeed * 16);

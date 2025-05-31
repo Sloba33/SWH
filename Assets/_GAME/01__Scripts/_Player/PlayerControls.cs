@@ -147,8 +147,8 @@ public class PlayerControls : MonoBehaviour
     public void SetReferences() //
     {
         if (playerController == null) return; //
-        playerRegularCamera = playerController.playerRegularCamera; //
-        playerCamera = playerController.camerasPrefab; //
+        playerRegularCamera = playerController.playerCamera; //
+        playerCamera = playerController.followCamera.gameObject; //
 
         // UI Button Listeners for Attack actions
         if (hitButton != null) // Safety check
@@ -223,7 +223,7 @@ public class PlayerControls : MonoBehaviour
         {
             Debug.Log("Placing bomb"); //
             if (playerController == null) { Debug.LogError("PlayerController is null for bomb placement."); return; } // Safety check
-            Vector3 position = playerController.FindNeighbouringTile(); //
+            Vector3 position = playerController._movement.FindNeighbouringTilePosition(); //
             position.y = Mathf.Round(playerController.transform.position.y); //
             GameObject bomb = Instantiate(bombPrefab, position, bombPrefab.transform.rotation); //
             Bomb bombComponent = bomb.GetComponent<Bomb>(); //
@@ -245,7 +245,7 @@ public class PlayerControls : MonoBehaviour
     {
         Debug.Log("Placing bomb"); //
         if (playerController == null) { Debug.LogError("PlayerController is null for bomb placement via bind."); return; } // Safety check
-        Vector3 position = playerController.FindNeighbouringTile(); //
+        Vector3 position = playerController._movement.FindNeighbouringTilePosition(); //
         position.y = Mathf.Round(playerController.transform.position.y); //
         GameObject bomb = Instantiate(bombPrefab, position, bombPrefab.transform.rotation); //
         Bomb bombComponent = bomb.GetComponent<Bomb>(); //
@@ -267,9 +267,9 @@ public class PlayerControls : MonoBehaviour
         {
             return; //
         }
-        if (playerController._isBombBlocked || playerController.isPushing) //
+        if (playerController._movement.IsBombBlocked || playerController.isPushing) //
         {
-            Debug.Log("Bomb not placeable " + playerController._isBombBlocked); //
+            Debug.Log("Bomb not placeable " + playerController._movement.IsBombBlocked); //
 
             GameObject bomb = Instantiate(bprefab, playerController.transform.position + new Vector3(0, 0.02f, 0), bprefab.transform.rotation); //
             Bomb bombComponent = bomb.GetComponent<Bomb>(); //
@@ -288,7 +288,7 @@ public class PlayerControls : MonoBehaviour
         else
         {
             Debug.Log("Bomb IS placeable"); //
-            Vector3 position = playerController.FindNeighbouringTile(); //
+            Vector3 position = playerController._movement.FindNeighbouringTilePosition(); //
             position.y = Mathf.Round(playerController.transform.position.y); //
             GameObject bomb = Instantiate(bprefab, position, bprefab.transform.rotation); //
             Bomb bombComponent = bomb.GetComponent<Bomb>(); //

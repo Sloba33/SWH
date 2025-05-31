@@ -58,4 +58,11 @@ public class PlayerInputHandler : MonoBehaviour
         // Assuming you add a "Special" action (e.g., bound to 'V' key from PlayerControls)
         return inputActions.Player.Special.WasPressedThisFrame();
     }
+    public bool GetPullPressedThisFrame()
+    {
+        return inputActions.Player.Pull.WasPressedThisFrame();
+    }
+
+
+
 }

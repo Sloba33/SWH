@@ -38,7 +38,7 @@ public class WinScreen : MonoBehaviour
         playerEmoteObject = FindObjectOfType<Player>().gameObject;
         if (playerEmoteObject != null)
         {
-            playerEmoteObject.GetComponent<Animator>().SetBool("AFK", false);
+            playerEmoteObject.GetComponent<Animator>().SetBool("Idle", false);
             Player p = FindObjectOfType<Player>();
             p.EndScreenCamera.SetActive(true);
             playerEmoteObject.GetComponent<Animator>().Play("Victory_2");
