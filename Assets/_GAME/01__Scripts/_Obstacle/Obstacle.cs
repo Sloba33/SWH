@@ -12,7 +12,7 @@ public class Obstacle : MonoBehaviour
     public Material obstacleMaterial;
     public bool MoveOverride;
     public bool wasSucked;
- 
+
     [SerializeField] public Obstacles.ObstacleType obstacleType;
     public ObstacleAudioType obstacleAudioType;
     public ObstacleColor obstacleColor;
@@ -124,7 +124,7 @@ public class Obstacle : MonoBehaviour
     }
 
     public bool beingSucked;
-  
+
 
     private void Start()
     {
@@ -246,14 +246,9 @@ public class Obstacle : MonoBehaviour
     {
         if (obstacleUp || pushabilityDelayed)
         {
-            // Debug.Log("Disabling Pushability 0");
             isPushable = false;
         }
-        else if (spawningBlackHole)
-        {
-            // Debug.Log("Disabling Pushability 1");
-            isPushable = false;
-        }
+
         else if (!MoveOverride) isPushable = true;
     }
     public bool Movable(Vector3 playerDir)
@@ -311,13 +306,13 @@ public class Obstacle : MonoBehaviour
             if (!MoveOverride)
                 isPushable = Movable(dir) && !pushabilityDelayed;
             if (!isPushable) return;
-          
+
             if (currentlyUsedPlayerConrtoller != null && currentlyUsedPlayerConrtoller.playerObstacleController != null && currentlyUsedPlayerConrtoller.playerObstacleController.pushDirectionChanged)
             {
                 _rb.linearVelocity = Vector3.zero;
                 currentlyUsedPlayerConrtoller.playerObstacleController.pushDirectionChanged = false; // Reset the flag
                 AudioManager.Instance.StopObstacleSound_Move();
-                
+
                 return;
             }
             else
@@ -329,7 +324,7 @@ public class Obstacle : MonoBehaviour
                 {
                     if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
                     _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
-                   
+
                 }
                 else
                 {
@@ -644,7 +639,7 @@ public class Obstacle : MonoBehaviour
     }
 
     public bool galaxyForward, galaxyBack, galaxyLeft, galaxyRight, threeOfAKind, spawningBlackHole;
-    private const float CenterThreshold = 0.05f;  
+    private const float CenterThreshold = 0.05f;
 
     public bool onDestroy;
     public GameObject objectToTurnOff;
@@ -668,8 +663,8 @@ public class Obstacle : MonoBehaviour
         }
     }
 
-   
- 
+
+
     public Color startColor, endColor;
     public float blinkDuration = 1f;
     public float blinkTime = 5.0f;
