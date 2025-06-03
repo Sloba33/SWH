@@ -71,9 +71,16 @@ public class PlayerController : MonoBehaviour
 
     private void HandleFlashlightDirection()
     {
-        if (flashlightEnabled || flashlight == null)
+        if (flashlight == null)
             return;
+        if (!flashlightEnabled)
+        {
 
+            flashlight.gameObject.SetActive(false);
+            return;
+        }
+        else
+            flashlight.gameObject.SetActive(true);
         if (_movement.CurrentMoveDirection != Vector3.zero && _movement.CurrentMoveDirection != _previousMoveDirection)
         {
             // Instantiate(flashlight, transform.position, Quaternion.LookRotation(_previousMoveDirection));

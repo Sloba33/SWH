@@ -454,11 +454,8 @@ GameObject:
   - component: {fileID: 114188024279773276}
   - component: {fileID: 5015789071245045519}
   - component: {fileID: 5731561177521164155}
-  - component: {fileID: -3134147292441509843}
-  - component: {fileID: 6581817732809715647}
-  - component: {fileID: 2336115394746904577}
   m_Layer: 7
-  m_Name: Player_Male_Standard_Gameplay
+  m_Name: Player_Male_Standard_Gameplay____BACKUP
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -608,23 +605,114 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccc0b4389dd70b489f8020285537b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMovement: {fileID: 0}
   AI: 0
-  _movement: {fileID: 0}
+  player: {fileID: 0}
+  playerAttack: {fileID: 0}
   playerObstacleController: {fileID: 0}
-  _playerControls: {fileID: 0}
-  pullButtonHeld: 0
-  pullButtonReleased: 0
-  flashlightEnabled: 0
-  flashlight: {fileID: 4130482877464360193}
-  spotlight: {fileID: 5595244717260839662}
-  followCamera: {fileID: 46321911127104630, guid: aef17e33ab1418f4c9f4700634a83c9f,
-    type: 3}
-  playerCamera: {fileID: 6968579611282920195, guid: aef17e33ab1418f4c9f4700634a83c9f,
-    type: 3}
-  cameraFollowTarget: {fileID: 419812897239369765, guid: aef17e33ab1418f4c9f4700634a83c9f,
-    type: 3}
-  isPulling: 0
+  playerInput: {fileID: 0}
+  jumpParticle: {fileID: 6808812054988748476}
+  camerasPrefab: {fileID: 3242656931235162317}
+  playerRegularCamera: {fileID: 6968579611282920195}
+  flashlight: {fileID: 5595244717260839662}
+  spotlight: {fileID: 4130482877464360193}
+  floatingJoystick: {fileID: 0}
+  dynamicJoystick: {fileID: 0}
+  controls: 0
+  movementType: 0
+  playerControls: {fileID: 0}
+  playerCamera: {fileID: 3242656931235162317}
+  inputValues: {x: 0, y: 0}
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1288
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _bombObstacleMask:
+    serializedVersion: 2
+    m_Bits: 393472
+  _tileObstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _isAgainstWall: 0
+  _isBombBlocked: 0
+  IsGrounded: 0
+  grounded: 0
+  isFalling: 0
+  hasRecentlyFallen: 0
+  _ground:
+  - {fileID: 0}
+  _wallCheckRadius: 0.12
+  _bombCheckRadius: 0.1
+  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
+  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
+  tile: {fileID: 0}
+  obstacle: {fileID: 0}
+  fallHeight: 0
+  forceApplied: 0
+  rayDistance: 1
+  tileLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  canMove: 1
+  _walkSpeed: 2
+  obstacleAvoidanceRange: 0.06
+  _dir: {x: 0, y: 0, z: 0}
+  raycastDistance: 1
+  avoidanceMultiplier: 1
+  raycastAngle: 5
+  leftEyeOffset: {x: 0.025, y: 0, z: 0}
+  rightEyeOffset: {x: -0.025, y: 0, z: 0}
+  climbRayOffset: {x: 0, y: 0.45, z: 0}
+  behindObstacleOffset: {x: 0, y: 0, z: 0}
+  pullObstacleFlag: 0
+  _behindObstacleMask:
+    serializedVersion: 2
+    m_Bits: 524544
+  collectibleMask:
+    serializedVersion: 2
+    m_Bits: 131072
+  previousMoveDirection: {x: 0, y: 0, z: 0}
+  currentMoveDirection: {x: 0, y: 0, z: 0}
+  nudgeDistance: 0
+  _jumpForce: 5.8
+  _isJumping: 1
+  jumpTimer: 0
+  jumpCoyoteTime: 0.14
+  _hasRecentlyJumped: 1
   isPushing: 0
+  canPush: 1
+  isPulling: 0
+  isAgainstWall: 0
+  recentlyHitWall: 0
+  obstacleBehind: 0
+  _pullButtonHeld: 0
+  _pullButtonReleased: 0
+  tileRayLength: 50
+  forwardOffset: {x: 0, y: 0.48, z: 0}
+  backOffset: {x: 0, y: 0.48, z: 0}
+  leftOffset: {x: 0, y: 0, z: 0}
+  rightOffset: {x: 0, y: 0, z: 0}
+  frontoffs: 0.3
+  backoffs: -0.3
+  slideCheckerRadius: 0.025
+  slideForward: 0
+  slideBack: 0
+  slideLeft: 0
+  slideRight: 0
+  slideForce: 65
+  _slideForward:
+  - {fileID: 0}
+  _slideBack:
+  - {fileID: 0}
+  _slideLeft:
+  - {fileID: 0}
+  _slideRight:
+  - {fileID: 0}
+  slideAngle: 25
+  changedToJump: 0
+  changedToGround: 0
 --- !u!114 &465992519024109052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -841,6 +929,7 @@ MonoBehaviour:
   toolDown: {fileID: 0}
   hitRayOffset: {x: 0, y: 0, z: 0}
   hitRayDistance: 0.95
+  canHit: 1
   hittingDown: 0
   player: {fileID: 0}
   weaponSpecialRadius: 0
@@ -916,89 +1005,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.3, y: 1.5802814, z: 2.762488}
   m_Center: {x: 0, y: 0.2901407, z: 1.881244}
---- !u!114 &-3134147292441509843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1051776569072472735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 868bfb2a67b87af4297a5e55d8066c4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _walkSpeed: 2
-  _jumpForce: 5.8
-  _jumpParticle: {fileID: 6808812054988748476}
-  justJumpedOutOfPush: 0
-  hasRecentlyFallen: 0
-  _groundMask:
-    serializedVersion: 2
-    m_Bits: 1288
-  fallHeight: 0
-  _obstacleMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _bombObstacleMask:
-    serializedVersion: 2
-    m_Bits: 393472
-  _tileObstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
-  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
-  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
-  raycastDistance: 1
-  avoidanceMultiplier: 1
-  raycastAngle: 5
-  leftEyeOffset: {x: 0.025, y: 0, z: 0}
-  rightEyeOffset: {x: -0.025, y: 0, z: 0}
-  canMove: 1
-  _tileLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  tileRayLength: 50
-  forwardOffset: {x: 0, y: 0.48, z: 0}
-  backOffset: {x: 0, y: 0.48, z: 0}
-  canPush: 1
-  moveDirection: {x: 0, y: 0, z: 0}
-  groundHits:
-  - {fileID: 0}
-  wallHits:
-  - {fileID: 0}
-  pullObstacleFlag: 0
-  obstacleBehind: 0
-  _behindObstacleMask:
-    serializedVersion: 2
-    m_Bits: 524544
-  _collectibleMask:
-    serializedVersion: 2
-    m_Bits: 131072
---- !u!114 &6581817732809715647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1051776569072472735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0628cfda9d275434097dfc2b6657539c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <CurrentAnimState>k__BackingField: 0
---- !u!114 &2336115394746904577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1051776569072472735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebe50128d80046b409c8e47d0a907974, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1179067297764220063
 GameObject:
   m_ObjectHideFlags: 0
@@ -11429,7 +11435,7 @@ GameObject:
   - component: {fileID: 3600509000249284702}
   - component: {fileID: 4016918740049481675}
   m_Layer: 7
-  m_Name: SpotLight
+  m_Name: TopLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19442,17 +19448,17 @@ PrefabInstance:
     - target: {fileID: 2541525750024214882, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.36501667
+      value: 0.3650167
       objectReference: {fileID: 0}
     - target: {fileID: 2541525750024214882, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.3515491
+      value: -0.35154906
       objectReference: {fileID: 0}
     - target: {fileID: 2541525750024214882, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.15119489
+      value: 0.15119486
       objectReference: {fileID: 0}
     - target: {fileID: 2560981893906485376, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -19677,12 +19683,12 @@ PrefabInstance:
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.82634294
+      value: 0.826343
       objectReference: {fileID: 0}
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.4131715
+      value: 0.41317147
       objectReference: {fileID: 0}
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -19692,7 +19698,7 @@ PrefabInstance:
     - target: {fileID: 5210449809797013799, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.17114127
+      value: 0.17114124
       objectReference: {fileID: 0}
     - target: {fileID: 5241993521637383547, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -19957,12 +19963,12 @@ PrefabInstance:
     - target: {fileID: 8203458038950240448, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.389175
+      value: 0.38917494
       objectReference: {fileID: 0}
     - target: {fileID: 8203458038950240448, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.3470745
+      value: -0.34707448
       objectReference: {fileID: 0}
     - target: {fileID: 8203458038950240448, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -20057,12 +20063,18 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 2535244010831514870}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3242656931235162317}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 319d2fe34a804e245819465c9505ea59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3242656931235162317 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1021971536677332027, guid: 5c21289d0c49116489e2503846dec22b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2535244010831514870}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4413495413302110919 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2166544021558437425, guid: 5c21289d0c49116489e2503846dec22b,

@@ -546,32 +546,9 @@ public class Obstacle : MonoBehaviour
             ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
             ps.gameObject.name = " PARTICLE OBJECT";
             gameObject.SetActive(false);
-            // ps.GetComponent<ParticleSystemRenderer>().material = GetComponent<Renderer>().material;
-            // ps.transform.GetChild(0).GetComponent<ParticleSystem>().GetComponent<ParticleSystemRenderer>().material = GetComponent<Renderer>().material;
+           
             ps.Play();
-
-
-            // GameObject audioObject = Instantiate(new GameObject(), transform.position, transform.rotation);
-            // audioObject.name = " AUDIO OBJECT ";
-            // audioObject.AddComponent<AudioSource>();
-            // if (audioClip != null)
-            //     audioObject.GetComponent<AudioSource>().clip = audioClip;
-            // else audioObject.GetComponent<AudioSource>().clip = AudioManager.Instance.SoundAudioSources[0].clip;
-            // audioObject.GetComponent<AudioSource>().volume = 0.40f;
-            // if (obstacleType == ObstacleInfo.ObstacleType.Concrete) audioObject.GetComponent<AudioSource>().volume = 0.65f;
-            // if (obstacleType == ObstacleInfo.ObstacleType.Metal) audioObject.GetComponent<AudioSource>().volume = 0.35f;
-            // Debug.Log("Obstacle name :" + name + " obstacle type : " + obstacleType + " audio volume  :" + audioObject.GetComponent<AudioSource>().volume);
-            // audioObject.GetComponent<AudioSource>().Play();
-            // Destroy(audioObject, audioObject.GetComponent<AudioSource>().clip.length);
-
             AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
-
-            // audioSource = GetComponent<AudioSource>();
-            // audioSource.clip = AudioManager.Instance.SoundAudioSources[0].clip;
-            // // audioClip = audioSource.clip;
-            // audioSource.PlayOneShot(audioSource.clip);
-            // Debug.Log("Playing Sound :" + audioSource.clip.name);
-            // AudioManager.Instance.PlaySoundObstacleDestroy(obstacleAudioType);
             if (fallSprite != null) Destroy(fallSprite);
             if (GameManager.Instance.levelGoal != null)
             {
@@ -623,7 +600,7 @@ public class Obstacle : MonoBehaviour
             }
 
 
-
+            if (playerController != null) playerController.playerObstacleController.pushObstacle = null;
             Destroy(gameObject);
         }
     }

@@ -57,7 +57,6 @@ public class PlayerObstacleController : MonoBehaviour
         if (playerController.isPulling) return;
         if (playerMovement.justJumpedOutOfPush && _rb.linearVelocity.y > 0.1f)
         {
-
             return;
         }
         if (!playerController._movement.IsAgainstWall || movementDirection == Vector3.zero)
@@ -71,6 +70,15 @@ public class PlayerObstacleController : MonoBehaviour
         {
             // Debug.Log("Pushing");
             pushObstacle = playerController.FindObstacle();
+            if (pushObstacle == null)
+            {
+                // The obstacle is no longer there, or a new one wasn't found
+                previousPushDirection = Vector3.zero;
+                // No need to call pushObstacle?.ResetObstacle() here because pushObstacle is null
+                StopPush();
+                return;
+            }
+
             pushObstacle.SphereFlags();
             if (!pushObstacle.isPushable)
             {

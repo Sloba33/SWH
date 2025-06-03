@@ -27,7 +27,7 @@ public class NameSelector : MonoBehaviour
         else
         {
             PlayerPrefs.SetString("playerName", PlayersName);
-            SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
+            SceneLoader sceneLoader = FindAnyObjectByType<SceneLoader>();
             if (sceneLoader == null)
             {
                 Debug.Log("No scene loader"); return;
@@ -35,7 +35,7 @@ public class NameSelector : MonoBehaviour
 
             else
             {
-                StartCoroutine(sceneLoader.LoadLevelWithIndex(1));
+                sceneLoader.LoadLevelWithIndex(1);
                 Debug.Log("Loading");
 
             }

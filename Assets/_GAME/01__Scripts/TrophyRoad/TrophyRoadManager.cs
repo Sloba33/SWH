@@ -166,7 +166,7 @@ public class TrophyRoadManager : MonoBehaviour
         TutorialMenuManager tutorialMenuManager = FindObjectOfType<TutorialMenuManager>();
         if (tutorialMenuManager != null)
         {
-            tutorialMenuManager.BackHint_03();
+            // tutorialMenuManager.BackHint_03();
         }
 
     }
