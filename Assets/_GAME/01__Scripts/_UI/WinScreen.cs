@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using System.Linq;
 using Coffee.UIExtensions;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
 
 public class WinScreen : MonoBehaviour
 {
@@ -166,6 +168,7 @@ public class WinScreen : MonoBehaviour
             Debug.LogError("playerGameObject is not assigned!");
 
         }
+       
     }
 
     public List<QuestType> uniqueQuestType = new();
@@ -195,6 +198,7 @@ public class WinScreen : MonoBehaviour
     }
     public IEnumerator GenerateGains(int xpGains, int trophyGains)
     {
+        Debug.Log("Generating gains and proceednig");
         if (levelGoal.bonusUnlocked)
         {
             trophyGains += levelGoal.BONUS_TROPHIES;
@@ -291,6 +295,7 @@ public class WinScreen : MonoBehaviour
     }
     public IEnumerator ProceedCoroutine()
     {
+        Debug.Log("Generating gains and proceednig");
         proceedButton.SetActive(false);
         if (rewardsPanel != null)
         {

@@ -108,6 +108,14 @@ public class TutorialMenuManager : MonoBehaviour
             if (go != null)
             {
                 allManagedButtonGameObjects.Remove(go);
+                if (go.GetComponent<Button>() != null)
+                {
+                    if (go.GetComponent<CharacterSelector>() != null && go.GetComponent<CharacterSelector>().characterType != CharacterType.Character_Standard)
+                    {
+                        if (PlayerPrefs.GetInt("Level", 0) < 3)
+                            go.GetComponent<Button>().interactable = false; // Disable excluded buttons
+                    }
+                }
             }
         }
 
@@ -136,7 +144,21 @@ public class TutorialMenuManager : MonoBehaviour
             }
             else
             {
-                currentTutorialStep = (MenuTutorialStep)menuTutorialStage;
+                // When initializing, if the saved stage is an internal step, revert to its parent entry point
+                switch ((MenuTutorialStep)menuTutorialStage)
+                {
+                    case MenuTutorialStep.TrophyRoadReward:
+                    case MenuTutorialStep.TrophyRoadBack:
+                        currentTutorialStep = MenuTutorialStep.TrophyRoadButton;
+                        break;
+                    case MenuTutorialStep.UpgradeWorkerButton:
+                    case MenuTutorialStep.WorkersScreenBack:
+                        currentTutorialStep = MenuTutorialStep.WorkersButton;
+                        break;
+                    default:
+                        currentTutorialStep = (MenuTutorialStep)menuTutorialStage;
+                        break;
+                }
             }
             UpdateButtonAndHintVisibility();
         }
@@ -204,9 +226,9 @@ public class TutorialMenuManager : MonoBehaviour
     {
         if (button != null)
         {
-            // button.onClick.RemoveAllListeners();
+
             button.onClick.AddListener(() => OnTutorialButtonClicked(stepName));
-            button.interactable = true;
+            button.interactable = true; // Ensure interactable when it's the current tutorial target
         }
     }
 
@@ -317,8 +339,6 @@ public class TutorialMenuManager : MonoBehaviour
         if (clickedStepName == MenuTutorialStep.WorkButton.ToString())
         {
             OnWorkButtonClickedDuringTutorial?.Invoke();
-            // REMOVED: return; // This was the bug: it prevented ProgressToNextStep() from being called.
-            // We now progress the tutorial state immediately, even if levels are loaded externally.
         }
         else if (clickedStepName == MenuTutorialStep.TrophyRoadButton.ToString())
         {
@@ -336,7 +356,7 @@ public class TutorialMenuManager : MonoBehaviour
         {
         }
 
-        ProgressToNextStep(); // This now always gets called, progressing PREF_INTRO_MENU_TUTORIAL_STAGE
+        ProgressToNextStep();
     }
 
     public void OnSpecificActionCompleted(string actionStepName, int trophyRequirement = 0, TrophyRewardType rewardType = TrophyRewardType.Coins_Small)
@@ -356,24 +376,55 @@ public class TutorialMenuManager : MonoBehaviour
         ProgressToNextStep();
     }
 
-    // This method is no longer used by LevelGoal to trigger progression
-    // as progression happens via ProgressToNextStep() directly.
-    // However, it could be used if you need a specific external trigger to advance
-    // after a level (not the WorkButton click itself).
     public void ContinueTutorialAfterIntroLevels()
     {
-        // This method was originally intended to be called by LevelGoal,
-        // but with the fix to OnTutorialButtonClicked for WorkButton,
-        // this method is now redundant for its original purpose.
-        // If you had other "external" level-completion steps, you might use it.
-        // For now, it's safe to keep it, but it won't be explicitly called for WorkButton progression.
+        // This method is now effectively redundant with the fix to OnTutorialButtonClicked for WorkButton
+        // However, it can remain if you have other scenarios where an external trigger advances the tutorial.
     }
 
     private void ProgressToNextStep()
     {
+        MenuTutorialStep previousStep = currentTutorialStep; // Capture current before updating
         MenuTutorialStep nextStep = GetNextStep(currentTutorialStep);
-        currentTutorialStep = nextStep;
-        PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)currentTutorialStep);
+        currentTutorialStep = nextStep; // currentTutorialStep accurately tracks the *current* state
+
+        // Determine the step to actually save for crash recovery
+        MenuTutorialStep actualStepToSave = currentTutorialStep;
+        switch (currentTutorialStep)
+        {
+            case MenuTutorialStep.TrophyRoadReward:
+            case MenuTutorialStep.TrophyRoadBack:
+                actualStepToSave = MenuTutorialStep.TrophyRoadButton; // Revert to parent entry point
+                break;
+            case MenuTutorialStep.UpgradeWorkerButton:
+            case MenuTutorialStep.WorkersScreenBack:
+                actualStepToSave = MenuTutorialStep.WorkersButton; // Revert to parent entry point
+                break;
+                // For other steps, actualStepToSave remains currentTutorialStep (e.g., WorkButton, TrophyRoadButton, WorkersButton, WorkButton_End, Completed)
+        }
+
+        PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)actualStepToSave);
+        PlayerPrefs.Save(); // Explicitly save PlayerPrefs immediately for crash prevention
+
+        // Generalized logic for disabling buttons after their sequence is complete
+        switch (previousStep)
+        {
+            case MenuTutorialStep.TrophyRoadBack: // Completed Trophy Road sequence
+                Button trophyRoadButton = GetTutorialStepData(MenuTutorialStep.TrophyRoadButton)?.actualButtonComponent;
+                if (trophyRoadButton != null)
+                {
+                    trophyRoadButton.interactable = false;
+                }
+                break;
+            case MenuTutorialStep.WorkersScreenBack: // Completed Workers sequence
+                Button workersButton = GetTutorialStepData(MenuTutorialStep.WorkersButton)?.actualButtonComponent;
+                if (workersButton != null)
+                {
+                    workersButton.interactable = false;
+                }
+                break;
+                // Add more cases here for other sub-menu sequences if needed later
+        }
 
 
         if (currentTutorialStep == MenuTutorialStep.Completed)
@@ -417,6 +468,8 @@ public class TutorialMenuManager : MonoBehaviour
     public void EndMenuTutorial()
     {
         PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)MenuTutorialStep.Completed);
+        PlayerPrefs.Save(); // Ensure completion state is saved
+
         currentTutorialStep = MenuTutorialStep.Completed;
 
         if (uiBlockerPanel != null) uiBlockerPanel.SetActive(false);

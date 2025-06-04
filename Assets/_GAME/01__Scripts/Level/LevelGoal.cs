@@ -75,7 +75,7 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_GAMEPLAY_TUTORIAL_COMPLETED = "GameplayTutorialCompleted";
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
-    private const string PREF_FIRST_TIME = "FirstTime;";
+    private const string PREF_FIRST_TIME = "FirstTime";
 
     private IEnumerator Start()
     {
@@ -300,6 +300,7 @@ public class LevelGoal : MonoBehaviour
 
     public IEnumerator WinLevel(float delay)
     {
+        Debug.Log("Winning Level");
         if (settings == null) settings = FindObjectOfType<Settings>();
         PlayerController pc = FindObjectOfType<PlayerController>();
         settings.gameWon = true;
@@ -325,15 +326,16 @@ public class LevelGoal : MonoBehaviour
                 // as TutorialMenuManager manages it from its side.
             }
 
-            if (GameFlowManager.Instance != null)
-            {
-                GameFlowManager.Instance.LoadScene("01_MainMenu");
-            }
+            // if (GameFlowManager.Instance != null)
+            // {
+            //     GameFlowManager.Instance.LoadScene("01_MainMenu");
+            // }
         }
     }
 
     public IEnumerator WinTutorial(float delay)
     {
+        Debug.Log("Winning Tutorial");
         if (settings == null) settings = FindObjectOfType<Settings>();
         PlayerController pc = FindObjectOfType<PlayerController>();
         settings.gameWon = true;
@@ -346,6 +348,7 @@ public class LevelGoal : MonoBehaviour
         PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)TutorialMenuManager.MenuTutorialStep.None);
         PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, 0);
         PlayerPrefs.SetInt(PREF_FIRST_TIME, 1);
+        
         PlayerPrefs.Save();
 
         // if (GameFlowManager.Instance != null)
