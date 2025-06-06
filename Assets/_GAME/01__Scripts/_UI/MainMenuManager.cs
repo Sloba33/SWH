@@ -413,7 +413,7 @@ public class MainMenuManager : MonoBehaviour
         // The _isSettingsAnimating flag ensures no new clicks interfere until animation is done.
         _isSettingsAnimating = false;
     }
-    private SceneLoader sceneLoader;
+    [SerializeField] private SceneLoader sceneLoader;
     public void HandleMainMenuWorkButton()
     {
         int currentLevel = PlayerPrefs.GetInt("Level", 0); // Get current level, default to 0 if not set

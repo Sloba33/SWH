@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections.Generic;
-using UnityEditor;
-using System.Linq;
-using Coffee.UIExtensions;
-using UnityEditor.SearchService;
 using UnityEngine.SceneManagement;
+using Coffee.UIExtensions;
+
 
 public class WinScreen : MonoBehaviour
 {
@@ -36,6 +34,8 @@ public class WinScreen : MonoBehaviour
 
     private void Start()
     {
+
+
         AudioManager.Instance.BGMVolume = 0;
         playerEmoteObject = FindObjectOfType<Player>().gameObject;
         if (playerEmoteObject != null)
@@ -57,19 +57,11 @@ public class WinScreen : MonoBehaviour
         nextLevelButton.onClick.AddListener(() =>
               {
 
-                  //   NetworkManager.Singleton.Shutdown();
-                  //   if (NetworkManager.Singleton != null)
-                  //   {
-                  //       Destroy(NetworkManager.Singleton.gameObject);
-                  //   }
                   if (GameManager.Instance != null)
                   {
                       Destroy(GameManager.Instance.gameObject);
                   }
-                  //   if (AudioManager.Instance != null)
-                  //   {
-                  //     Destroy(AudioManager.Instance.gameObject);
-                  //   }
+
                   if (!sceneOverride)
                       sceneLoader.LoadSpecificScene(sceneLoader.nextLevelIndex);
                   else sceneLoader.LoadSceneFile(sceneOverrideName);
@@ -111,21 +103,23 @@ public class WinScreen : MonoBehaviour
         {
             Debug.Log("levelGoal.xp : " + levelGoal.xp);
             Debug.Log("levelGoal.trophies  : " + levelGoal.trophies);
-
-            StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
+            if (!CheckIfLevelIsBeaten())
+                StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
+            else
+            {
+                TrophyText.text = levelGoal.trophies + "/" + levelGoal.trophies;
+                XPText.text = levelGoal.xp + "/" + levelGoal.xp;
+            }
         }
-        else
-        {
-            // if (proceedButton != null)
-            // {
-            //     proceedButton.SetActive(true);
-            //     proceedButton.transform.DOPunchScale(new Vector3(proceedButton.transform.localScale.x + 0.03f, proceedButton.transform.localScale.y + 0.03f, proceedButton.transform.localScale.z + 0.03f), 0.3f, 1, 0).Play();
-            // }
 
-        }
         if (QuestRotator.Instance != null && PlayerPrefs.GetInt("FirstTime") != 0 && PlayerPrefs.GetInt("Level") > 30)
             StartCoroutine(SpawnQuestProgressPrefabs(QuestRotator.Instance.updatedQuests));
-        PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level") + 1);
+        string currentLevelName = SceneManager.GetActiveScene().name;
+        if (!CheckIfLevelIsBeaten())
+        {
+            Debug.Log("Increasing Level from " + PlayerPrefs.GetInt("Level") + " to " + (PlayerPrefs.GetInt("Level") + 1));
+            PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level") + 1);
+        }
         if (levelGoal != null && levelGoal.levelProgress != null)
         {
             levelProgress = Instantiate(levelGoal.levelProgress, this.transform);
@@ -142,6 +136,37 @@ public class WinScreen : MonoBehaviour
         if (levelGoal.xp == 0) panelXP.SetActive(false);
         if (levelGoal.trophies == 0) panelTrophies.SetActive(false);
         StartCoroutine(MoveAndScalePlayerEmoteObject());
+
+
+        PlayerPrefs.SetInt(currentLevelName + "_beaten", 1);
+        PlayerPrefs.Save();
+    }
+    private bool CheckIfLevelIsBeaten()
+    {
+
+        {
+            string currentLevelName = SceneManager.GetActiveScene().name;
+
+            // Check if this level has been beaten before
+            if (PlayerPrefs.GetInt(currentLevelName + "_beaten", 0) == 0)
+            {
+                // This is the first time this level is beaten, grant rewards!
+                Debug.Log("Level " + currentLevelName + " beaten for the first time! Granting rewards.");
+                // Grant your rewards here (e.g., coins, XP, unlocks)
+
+
+                return false;
+            }
+            else
+            {
+                // This level has been beaten before, it's a replay. No new rewards.
+                Debug.Log("Level " + currentLevelName + " replayed. No new rewards.");
+                return true;
+            }
+
+            // ... (any other logic for level completion, like loading next scene)
+        }
+
     }
     private Vector3 originalScale;
     public IEnumerator MoveAndScalePlayerEmoteObject()
@@ -168,7 +193,7 @@ public class WinScreen : MonoBehaviour
             Debug.LogError("playerGameObject is not assigned!");
 
         }
-       
+
     }
 
     public List<QuestType> uniqueQuestType = new();
@@ -303,7 +328,7 @@ public class WinScreen : MonoBehaviour
             rewardsPanel.transform.DOPunchScale(new Vector3(rewardsPanel.transform.localScale.x + 0.03f, rewardsPanel.transform.localScale.y + 0.03f, rewardsPanel.transform.localScale.z + 0.03f), 0.3f, 1, 0).Play();
         }
         yield return new WaitForSeconds(1f);
-        if (PlayerPrefs.GetInt("FirstTime") != 0) StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
+        if (PlayerPrefs.GetInt("FirstTime") != 0 && !CheckIfLevelIsBeaten()) StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
         yield return new WaitForSeconds(5f);
         // mainMenuButton.gameObject.SetActive(true);
         // mainMenuButton.transform.DOPunchScale(new Vector3(mainMenuButton.transform.localScale.x + 0.05f, mainMenuButton.transform.localScale.y + 0.05f, mainMenuButton.transform.localScale.z + 0.05f), 0.3f, 1, 0).Play();

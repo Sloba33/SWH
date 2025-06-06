@@ -313,23 +313,11 @@ public class LevelGoal : MonoBehaviour
         {
             int currentIntroLevel = PlayerPrefs.GetInt(PREF_CURRENT_INTRO_LEVEL, 0);
             currentIntroLevel++;
-            PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, currentIntroLevel);
+            // PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, currentIntroLevel);
             PlayerPrefs.Save();
 
-            if (currentIntroLevel >= 3)
-            {
-                // This line is removed: PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)TutorialMenuManager.MenuTutorialStep.TrophyRoadButton);
-                // The TutorialMenuManager will automatically progress from WorkButton to TrophyRoadButton
-                // when it detects that the WorkButton tutorial is complete (which happens when the player returns
-                // to MainMenu after finishing the intro levels).
-                // No explicit PlayerPrefs update here for the menu tutorial stage,
-                // as TutorialMenuManager manages it from its side.
-            }
-
-            // if (GameFlowManager.Instance != null)
-            // {
-            //     GameFlowManager.Instance.LoadScene("01_MainMenu");
-            // }
+          
+          
         }
     }
 

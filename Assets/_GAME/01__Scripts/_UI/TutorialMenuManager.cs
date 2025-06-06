@@ -50,18 +50,19 @@ public class TutorialMenuManager : MonoBehaviour
     private Dictionary<MenuTutorialStep, Button> stepToActualButtonComponent = new Dictionary<MenuTutorialStep, Button>();
 
     public event Action OnWorkButtonClickedDuringTutorial;
-    public event Action<int, TrophyRewardType> OnTrophyRoadRewardClaimedDuringTutorial;
+    public event Action<int, TrophyRewardType> OnTrophyRoadRewardClaimedDuringTutorial; // Assuming TrophyRewardType is defined elsewhere
 
     private const string PREF_GAMEPLAY_TUTORIAL_COMPLETED = "GameplayTutorialCompleted";
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
-    private const string PREF_CURRENT_INTRO_LEVEL = "Level";
 
     private void Awake()
     {
+        // Awake can remain empty or contain very basic initialization not related to scene objects
     }
 
     private void Start()
     {
+        // Initialize stepToActualButtonComponent and populate tutorialStepTargetButtonGameObjects
         foreach (var data in tutorialStepsData)
         {
             if (data.buttonGameObject != null)
@@ -78,14 +79,34 @@ public class TutorialMenuManager : MonoBehaviour
 
         PopulateAllManagedButtonGameObjects();
 
-        foreach (GameObject go in allManagedButtonGameObjects)
+        // Check the tutorial status early to decide behavior
+        int gameplayTutorialStatus = PlayerPrefs.GetInt(PREF_GAMEPLAY_TUTORIAL_COMPLETED, 0);
+        int menuTutorialStage = PlayerPrefs.GetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, 0);
+        bool tutorialIsActive = (gameplayTutorialStatus == 1 && menuTutorialStage < (int)MenuTutorialStep.Completed);
+
+        if (tutorialIsActive)
         {
-            if (go != null) go.SetActive(false);
+            // If the tutorial is active, initially hide all buttons that this manager will control
+            foreach (GameObject go in allManagedButtonGameObjects)
+            {
+                if (go != null) go.SetActive(false);
+            }
+            if (uiBlockerPanel != null) uiBlockerPanel.SetActive(true); // Blocker panel is active during tutorial
         }
-        DeactivateAllHints();
+        else
+        {
+            // If the tutorial is completed (or not yet started/relevant),
+            // ensure all buttons that *might* have been managed are active.
+            // This prevents the tutorial from accidentally hiding them on start.
+            SetAllManagedButtonsActive(true);
+            // RestoreAllButtonColorsToNormal(); // REMOVED: This method is no longer used or is removed entirely to prevent unintended re-enabling of interactability.
+            if (uiBlockerPanel != null) uiBlockerPanel.SetActive(false); // Blocker panel is off if tutorial is not active
+        }
 
-        if (uiBlockerPanel != null) uiBlockerPanel.SetActive(false);
+        DeactivateAllHints(); // Always deactivate hints on start, they are only shown during tutorial steps.
 
+        // Initialize tutorial state, this will proceed with the tutorial flow
+        // or mark it as completed if tutorialIsActive was false.
         InitializeTutorialState();
     }
 
@@ -165,7 +186,7 @@ public class TutorialMenuManager : MonoBehaviour
         else
         {
             currentTutorialStep = MenuTutorialStep.Completed;
-            EndMenuTutorial();
+            EndMenuTutorial(); // Calls EndMenuTutorial, which will now primarily perform cleanup
         }
     }
 
@@ -197,6 +218,7 @@ public class TutorialMenuManager : MonoBehaviour
             }
             else
             {
+                // Debug.LogWarning($"Button GameObject not found for step: {currentTutorialStep}");
             }
 
             if (currentStepData.hintGameObject != null)
@@ -211,6 +233,7 @@ public class TutorialMenuManager : MonoBehaviour
         }
         else
         {
+            // Debug.LogWarning($"TutorialStepData not found for currentTutorialStep: {currentTutorialStep}");
         }
 
         foreach (GameObject go in activePersistentButtonGameObjects)
@@ -226,7 +249,6 @@ public class TutorialMenuManager : MonoBehaviour
     {
         if (button != null)
         {
-
             button.onClick.AddListener(() => OnTutorialButtonClicked(stepName));
             button.interactable = true; // Ensure interactable when it's the current tutorial target
         }
@@ -303,6 +325,7 @@ public class TutorialMenuManager : MonoBehaviour
         }
         else
         {
+            // Debug.LogWarning($"Dynamic button '{data.dynamicTargetButtonName}' not found in container '{data.dynamicTargetContainer.name}' for step: {data.step}");
         }
     }
 
@@ -359,7 +382,7 @@ public class TutorialMenuManager : MonoBehaviour
         ProgressToNextStep();
     }
 
-    public void OnSpecificActionCompleted(string actionStepName, int trophyRequirement = 0, TrophyRewardType rewardType = TrophyRewardType.Coins_Small)
+    public void OnSpecificActionCompleted(string actionStepName, int trophyRequirement = 0, TrophyRewardType rewardType = TrophyRewardType.Coins_Small) // Assuming TrophyRewardType is defined elsewhere
     {
         TutorialStepData currentStepData = GetTutorialStepData(currentTutorialStep);
 
@@ -413,19 +436,18 @@ public class TutorialMenuManager : MonoBehaviour
                 Button trophyRoadButton = GetTutorialStepData(MenuTutorialStep.TrophyRoadButton)?.actualButtonComponent;
                 if (trophyRoadButton != null)
                 {
-                    trophyRoadButton.interactable = false;
+                    // trophyRoadButton.interactable = false; // Interactability is now managed by other systems
                 }
                 break;
             case MenuTutorialStep.WorkersScreenBack: // Completed Workers sequence
                 Button workersButton = GetTutorialStepData(MenuTutorialStep.WorkersButton)?.actualButtonComponent;
                 if (workersButton != null)
                 {
-                    workersButton.interactable = false;
+                    // workersButton.interactable = false; // Interactability is now managed by other systems
                 }
                 break;
                 // Add more cases here for other sub-menu sequences if needed later
         }
-
 
         if (currentTutorialStep == MenuTutorialStep.Completed)
         {
@@ -474,8 +496,10 @@ public class TutorialMenuManager : MonoBehaviour
 
         if (uiBlockerPanel != null) uiBlockerPanel.SetActive(false);
 
-        SetAllManagedButtonsActive(true);
-        RestoreAllButtonColorsToNormal();
+        // REMOVED these two lines as they were causing conflicts:
+        // SetAllManagedButtonsActive(true);
+        // RestoreAllButtonColorsToNormal();
+
         RemoveAllTutorialButtonListeners();
         DeactivateAllHints();
         activePersistentButtonGameObjects.Clear();
@@ -486,7 +510,8 @@ public class TutorialMenuManager : MonoBehaviour
             GameFlowManager.Instance.NotifyTutorialManagerCompleted();
         }
 
-        // Destroy(gameObject); // Uncomment if you want to destroy the TutorialMenuManager GameObject
+        // Keep the GameObject in the scene as requested.
+        // Destroy(gameObject); // Do NOT uncomment
     }
 
     private void SetAllManagedButtonsActive(bool active)
@@ -500,6 +525,8 @@ public class TutorialMenuManager : MonoBehaviour
         }
     }
 
+    // This method is now likely unused or its functionality of setting interactable=true has been removed.
+    // Consider removing it entirely if it's no longer needed.
     private void RestoreAllButtonColorsToNormal()
     {
         foreach (GameObject go in allManagedButtonGameObjects)
@@ -509,7 +536,8 @@ public class TutorialMenuManager : MonoBehaviour
                 Button btn = go.GetComponent<Button>();
                 if (btn != null)
                 {
-                    btn.interactable = true;
+                    // This line was the main problem, removed to prevent unintended re-enabling.
+                    // btn.interactable = true;
                 }
             }
         }

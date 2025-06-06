@@ -74,8 +74,8 @@ public class Player : MonoBehaviour
 
 
 
-        StartingStrenght = 20f;
-        StartingMoveSpeed = 4f;
+        // StartingStrenght = 20f;
+        // StartingMoveSpeed = 4f;
 
     }
     public float newMoveSpeed;

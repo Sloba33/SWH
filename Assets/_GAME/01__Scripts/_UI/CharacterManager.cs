@@ -20,14 +20,26 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     public int characterIndex, weaponIndex, helmetIndex;
     public CustomizationPanelManager customizationPanelManager;
     [SerializeField] private AudioClip audioClip;
-
+    private bool _coinsGranted;
     // private CharacterPickerManager characterPickerManager;
-
+    private void GrantStarterCoins()
+    {
+        _coinsGranted = PlayerPrefs.GetInt("CoinsGranted", 0) != 0;
+        if (!_coinsGranted)
+        {
+            PlayerPrefs.SetInt("CoinsGranted", 1);
+            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + 100);
+        }
+        PlayerPrefs.Save();
+        Debug.Log("Coins Granted: " + _coinsGranted);
+    }
     private void Start()
     {
         // IronSource.Agent.validateIntegration();
+        GrantStarterCoins();
         PlayerPrefs.SetInt("Toby", 1);
         Application.targetFrameRate = 60;
+
         if (Application.isMobilePlatform)
         {
             int wid = Screen.width;
@@ -132,7 +144,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             PlayerAttack playerAttack = currentGameplayCharacter.GetComponent<PlayerAttack>();
             playerAttack.weapon = weaponItem.weaponToSpawn;
         }
-        if(!currentCharacter.weaponsInHand.gameObject.activeSelf) currentCharacter.weaponsInHand.gameObject.SetActive(true);
+        if (!currentCharacter.weaponsInHand.gameObject.activeSelf) currentCharacter.weaponsInHand.gameObject.SetActive(true);
 
     }
     private bool characterChanged;
@@ -344,7 +356,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             LoadWeapon(false);
             mainMenuManager.currentCharacter = currentCharacter;
         }
-
+      
         // StartCoroutine(SetHelmetReferences(currentCharacter.helmets));
         SetCheckmarkDefaults(true);
         currentCharacter.canBlink = true;
