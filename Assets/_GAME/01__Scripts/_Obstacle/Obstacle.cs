@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
-using Obstacles;
+
 public class Obstacle : MonoBehaviour
 {
 
@@ -13,9 +13,9 @@ public class Obstacle : MonoBehaviour
     public bool MoveOverride;
     public bool wasSucked;
 
-    [SerializeField] public Obstacles.ObstacleType obstacleType;
-    public ObstacleAudioType obstacleAudioType;
+    public ObstacleType obstacleType;
     public ObstacleColor obstacleColor;
+    public ObstacleAudioType obstacleAudioType;
     [Header("Stats & References")]
     public float Weight;
     public Tile tile;
@@ -84,14 +84,6 @@ public class Obstacle : MonoBehaviour
             _obstacleUp[0] = null;
         }
 
-        galaxyForward = obstacleForward && _obstacleForward[0] != null && _obstacleForward[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyForward) CheckNeighbourFlags(_obstacleForward[0]?.GetComponent<Obstacle>());
-        galaxyBack = obstacleBack && _obstacleBack[0] != null && _obstacleBack[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyBack) CheckNeighbourFlags(_obstacleBack[0]?.GetComponent<Obstacle>());
-        galaxyLeft = obstacleLeft && _obstacleLeft[0] != null && _obstacleLeft[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyLeft) CheckNeighbourFlags(_obstacleLeft[0]?.GetComponent<Obstacle>());
-        galaxyRight = obstacleRight && _obstacleRight[0] != null && _obstacleRight[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyRight) CheckNeighbourFlags(_obstacleRight[0]?.GetComponent<Obstacle>());
 
     }
 
@@ -546,7 +538,7 @@ public class Obstacle : MonoBehaviour
             ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
             ps.gameObject.name = " PARTICLE OBJECT";
             gameObject.SetActive(false);
-           
+
             ps.Play();
             AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
             if (fallSprite != null) Destroy(fallSprite);

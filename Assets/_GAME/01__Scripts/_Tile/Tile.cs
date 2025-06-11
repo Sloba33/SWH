@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Obstacles;
+
 using Fusion;
 public class Tile : NetworkBehaviour
 {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Obstacles;
 public class Bomb : MonoBehaviour
 {
     public AudioClip spawnSound;

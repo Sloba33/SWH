@@ -3,7 +3,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Obstacles;
 public class GoalSlot : MonoBehaviour
 {
     public ObstacleType obstacleType;

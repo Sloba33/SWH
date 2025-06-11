@@ -135,10 +135,9 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   wasSucked: 0
-  aiLerp: {fileID: 0}
-  aSTarAI: {fileID: 0}
-  obstacleType: 27
-  obstacleAudioType: 0
+  obstacleType: 34
+  obstacleColor: 9
+  obstacleAudioType: 4
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -215,6 +214,7 @@ MonoBehaviour:
   HalfExtents: {x: 0.489, y: 0.02, z: 0.489}
   priority: 0
   hasPriority: 0
+  currentlyUsedPlayerConrtoller: {fileID: 0}
   recentlyPulled: 0
   pushabilityDelayed: 0
   fallSpeed: 0.003
@@ -226,6 +226,7 @@ MonoBehaviour:
   AIObstacle: 0
   audioClip: {fileID: 0}
   goalSetters: []
+  audioSource: {fileID: 0}
   galaxyForward: 0
   galaxyBack: 0
   galaxyLeft: 0
@@ -234,6 +235,7 @@ MonoBehaviour:
   spawningBlackHole: 0
   onDestroy: 0
   objectToTurnOff: {fileID: 0}
+  objectToTurnOn: {fileID: 0}
   startColor: {r: 0, g: 0, b: 0, a: 0}
   endColor: {r: 0, g: 0, b: 0, a: 0}
   blinkDuration: 1

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Obstacles;
+
 
 public class LevelGoal : MonoBehaviour
 {
@@ -36,7 +36,7 @@ public class LevelGoal : MonoBehaviour
 
     public List<Obstacle> ObstaclesToDestroy_Player = new List<Obstacle>();
     public List<Obstacle> ObstaclesToDestroy_AI = new List<Obstacle>();
-    public List<Obstacles.ObstacleType> obstacleTypes;
+    public List<ObstacleType> obstacleTypes;
     public bool DualLevel;
     public bool Tutorial;
     public bool FinalTutorial;

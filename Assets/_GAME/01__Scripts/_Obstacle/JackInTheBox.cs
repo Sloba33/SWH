@@ -1,5 +1,5 @@
 using UnityEngine;
-using Obstacles;
+
 using System.Collections;
 public class JackInTheBox : MonoBehaviour
 {

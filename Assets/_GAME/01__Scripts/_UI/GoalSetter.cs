@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Obstacles;
+
 public class GoalSetter : MonoBehaviour
 {
     public bool AIGoal;

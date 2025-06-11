@@ -113,6 +113,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -218,6 +221,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -383,7 +389,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1527374315352968822
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -397,6 +403,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -423,13 +430,9 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   wasSucked: 0
-  animator: {fileID: 0}
-  jitbParticles: {fileID: 0}
-  aiLerp: {fileID: 0}
-  aSTarAI: {fileID: 0}
-  obstacleType: 36
+  obstacleType: 44
+  obstacleColor: 9
   obstacleAudioType: 1
-  obstacleModifier: 1
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -451,21 +454,11 @@ MonoBehaviour:
   isPositioned: 0
   isHeightPositioned: 0
   grounded: 0
-  boxObstacleForward: []
-  boxObstacleBack: []
-  boxOsbtacleLeft: []
-  boxObstacleRight: []
-  boxObstacleUp: []
+  isHammerable: 0
   _rb: {fileID: 0}
-  forwardOffset: 0.34
-  backOffset: 0
-  leftOffset: 0
-  rightOffset: 0
   obstacleCheckerRadius: 0.003
-  distanceOfSphere: 0.504
   upOffset: 0.89
   upSphereDistance: 0
-  _boxHitCollider: 0
   FallTimer: 0
   forwardOffset_1: {x: -0.4, y: 0.4, z: 0.51}
   forwardOffset_2: {x: -0.4, y: -0.4, z: 0.51}
@@ -505,9 +498,6 @@ MonoBehaviour:
   Moving: 0
   fallRayDistance: 50
   fallOffset: {x: 0, y: -0.6, z: 0}
-  blackHoleTileTest: {fileID: 0}
-  startPos: {x: 0, y: 0, z: 0}
-  targetPos: {x: 0, y: 0, z: 0}
   beingSucked: 0
   _groundMask:
     serializedVersion: 2
@@ -519,45 +509,28 @@ MonoBehaviour:
   HalfExtents: {x: 0.489, y: 0.02, z: 0.489}
   priority: 0
   hasPriority: 0
+  currentlyUsedPlayerConrtoller: {fileID: 0}
   recentlyPulled: 0
-  pushableAfterPull: 0
-  pullTimer: 0
-  pullCoyoteTime: 2
   pushabilityDelayed: 0
   fallSpeed: 0.003
   startFallPosition: {x: 0, y: 0, z: 0}
-  playerPushPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
-  explosionMinForce: 5
-  explosionMaxForce: 100
-  explosionForceRadius: 20
   destructionParticleSystem: {fileID: 2163216666107331271, guid: 3a49752e5b3875f4da3c863aa5b6d466,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
   audioClip: {fileID: 0}
   goalSetters: []
+  audioSource: {fileID: 0}
   galaxyForward: 0
   galaxyBack: 0
   galaxyLeft: 0
   galaxyRight: 0
   threeOfAKind: 0
   spawningBlackHole: 0
-  jitbForward: 0
-  jitbBack: 0
-  jitbLeft: 0
-  jitbRight: 0
-  spawningJitb: 0
-  obstacleF: {fileID: 0}
-  obstacleB: {fileID: 0}
-  obstacleL: {fileID: 0}
-  obstacleR: {fileID: 0}
-  jitbF: {fileID: 0}
-  jitbB: {fileID: 0}
-  jitbL: {fileID: 0}
-  jitbR: {fileID: 0}
   onDestroy: 0
   objectToTurnOff: {fileID: 0}
+  objectToTurnOn: {fileID: 0}
   startColor: {r: 0, g: 0, b: 0, a: 0}
   endColor: {r: 0, g: 0, b: 0, a: 0}
   blinkDuration: 1
@@ -630,6 +603,7 @@ MonoBehaviour:
   Obstacle: {fileID: 0}
   currentTile: {fileID: 0}
   hasGameStarted: 0
+  isDestructible: 0
   groundObject: {fileID: 0}
   previousGroundObject: {fileID: 0}
   verticalList: []
@@ -655,6 +629,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 1527374315352968822}
   ps: {fileID: 8506445004029661093}
+  audioSource: {fileID: 0}
 --- !u!1 &5525315136572661550
 GameObject:
   m_ObjectHideFlags: 0
@@ -713,6 +688,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5395,6 +5373,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5433,13 +5414,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -5507,6 +5490,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10286,6 +10272,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10324,13 +10313,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -15144,6 +15135,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -15182,13 +15176,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
