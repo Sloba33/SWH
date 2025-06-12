@@ -67,7 +67,7 @@ public class Tile : NetworkBehaviour
             {
                 obstacle.transform.position = targetPosition;
                 obstacle.isPositioned = true;
-                if (obstacle.obstacleType == ObstacleType.Galaxy || obstacle.obstacleType == ObstacleType.Cardboard)
+                if ( obstacle.obstacleType == ObstacleType.Cardboard)
                 {
                     obstacle.SphereFlags();
                     if (obstacle._obstacleForward[0] != null) obstacle._obstacleForward[0].GetComponent<Obstacle>().SphereFlags();
@@ -78,7 +78,7 @@ public class Tile : NetworkBehaviour
                 }
             }
         }
-        if (obstacle.obstacleType == ObstacleType.Galaxy || obstacle.obstacleType == ObstacleType.Cardboard)
+        if ( obstacle.obstacleType == ObstacleType.Cardboard)
         {
             obstacle.SphereFlags();
             // obstacle.CheckThreeOfAKind();

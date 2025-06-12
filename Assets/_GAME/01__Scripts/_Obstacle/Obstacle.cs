@@ -14,6 +14,7 @@ public class Obstacle : MonoBehaviour
     public bool wasSucked;
 
     public ObstacleType obstacleType;
+    public ObstacleModifier obstacleModifier;
     public ObstacleColor obstacleColor;
     public ObstacleAudioType obstacleAudioType;
     [Header("Stats & References")]
@@ -121,15 +122,7 @@ public class Obstacle : MonoBehaviour
     private void Start()
     {
         controllerCleared = true;
-        if (obstacleType == ObstacleType.Galaxy)
-        {
-            GameManager.Instance.blackHoleObstacles.Add(this);
-        }
-        if (obstacleType == ObstacleType.Cardboard)
-        {
-            GameManager.Instance.jitbObstacles.Add(this);
-        }
-
+      
         FallTimer = 0f;
         if (GetComponent<Rigidbody>() != null)
         {

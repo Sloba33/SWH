@@ -10,7 +10,8 @@ using Coffee.UIExtensions;
 public class LevelProgress : MonoBehaviour
 {
     public AudioSource audioSource;
-    public Image Blue, Red, Green, Yellow, Black, Grey, White, Purple, Pink, Wood, Stone;
+    public Image Blue, Red, Green, Yellow, Black, Grey, White, Purple, Pink, Wood, Stone, Metal, Universal, Default;
+
     
     public UIShiny uiShiny;
     public LevelGoal levelGoal;
@@ -24,9 +25,9 @@ public class LevelProgress : MonoBehaviour
     private bool wiggleTriggered;
     public WinScreen winScreen;
     public bool ImageComplete;
+
     public void Initialize()
     {
-
         originalScale = transform.localScale;
         Debug.Log("Original scale + " + originalScale);
         transform.localScale = Vector3.zero;
@@ -48,6 +49,7 @@ public class LevelProgress : MonoBehaviour
         }
         ImageComplete = AreAllImagesFilled();
     }
+
     public void GalleryInit()
     {
         string progressKeyPrefix = gameObject.name + "_LevelProgress"; // Use GameObject name
@@ -93,12 +95,14 @@ public class LevelProgress : MonoBehaviour
         Debug.Log("Black Image: " + (Black != null ? "Assigned" : "Null"));
         Debug.Log("Grey Image: " + (Grey != null ? "Assigned" : "Null"));
         Debug.Log("White Image: " + (White != null ? "Assigned" : "Null"));
-        // Debug logs for Purple and Pink images
         Debug.Log("Purple Image: " + (Purple != null ? "Assigned" : "Null"));
         Debug.Log("Pink Image: " + (Pink != null ? "Assigned" : "Null"));
-        // Debug logs for Wood and Stone images
         Debug.Log("Wood Image: " + (Wood != null ? "Assigned" : "Null"));
         Debug.Log("Stone Image: " + (Stone != null ? "Assigned" : "Null"));
+        // Debug logs for new colors
+        Debug.Log("Default Image: " + (Default != null ? "Assigned" : "Null"));
+        Debug.Log("Metal Image: " + (Metal != null ? "Assigned" : "Null"));
+        Debug.Log("Universal Image: " + (Universal != null ? "Assigned" : "Null"));
 
 
         foreach (ObstacleColor color in Enum.GetValues(typeof(ObstacleColor)))
@@ -144,6 +148,7 @@ public class LevelProgress : MonoBehaviour
             return savedFillAmounts.ContainsKey(color) ? savedFillAmounts[color] : 0f;
         }
     }
+
     private Image GetImageForColor(ObstacleColor color)
     {
         Image image = null;
@@ -159,14 +164,18 @@ public class LevelProgress : MonoBehaviour
             case ObstacleColor.White: image = White; break;
             case ObstacleColor.Purple: image = Purple; break; 
             case ObstacleColor.Pink: image = Pink; break; 
-            case ObstacleColor.Wood: image = Wood; break; // Added Wood case
-            case ObstacleColor.Stone: image = Stone; break; // Added Stone case
+            case ObstacleColor.Wood: image = Wood; break; 
+            case ObstacleColor.Stone: image = Stone; break;
+            case ObstacleColor.Default: image = Default; break; // Added Default case
+            case ObstacleColor.Metal: image = Metal; break;     // Added Metal case
+            case ObstacleColor.Universal: image = Universal; break; // Added Universal case
             default: break;
         }
 
         Debug.Log($"GetImageForColor({color}): " + (image != null ? image.name : "null"));
         return image;
     }
+
     public UIParticle uiParticle;
     public IEnumerator FillImage(Image image, float fillAmount, float duration = 1f)
     {
@@ -177,12 +186,10 @@ public class LevelProgress : MonoBehaviour
         }
         if (image.fillAmount < 0.98f)
         {
-
             if (image.GetComponent<UIEffect>() == null)
             {
                 UIEffect uiEffect = image.gameObject.AddComponent<UIEffect>();
                 uiEffect.LoadPreset(uiEffectPreset);
-
             }
 
             if (image.GetComponent<UIEffectTweener>() == null)
@@ -190,7 +197,6 @@ public class LevelProgress : MonoBehaviour
                 UIEffectTweener uiEffectTweener = image.gameObject.AddComponent<UIEffectTweener>();
                 uiEffectTweener.duration = 1.05f;
                 uiEffectTweener.wrapMode = UIEffectTweener.WrapMode.Once;
-
             }
         }
         UIEffectTweener uiShiny = image.GetComponent<UIEffectTweener>();
@@ -213,8 +219,8 @@ public class LevelProgress : MonoBehaviour
             StartCoroutine(WiggleImage());
         }
         winScreen.ActivateButtons();
-
     }
+
     public bool AreAllImagesFilled()
     {
         float threshold = 0.98f; // Adjust this value as needed
@@ -228,12 +234,12 @@ public class LevelProgress : MonoBehaviour
                (White == null || White.fillAmount >= threshold) &&
                (Purple == null || Purple.fillAmount >= threshold) && 
                (Pink == null || Pink.fillAmount >= threshold) &&
-               (Wood == null || Wood.fillAmount >= threshold) &&   // Added Wood check
-               (Stone == null || Stone.fillAmount >= threshold); // Added Stone check
-
+               (Wood == null || Wood.fillAmount >= threshold) &&   
+               (Stone == null || Stone.fillAmount >= threshold) &&
+               (Default == null || Default.fillAmount >= threshold) && // Added Default check
+               (Metal == null || Metal.fillAmount >= threshold) &&     // Added Metal check
+               (Universal == null || Universal.fillAmount >= threshold); // Added Universal check
     }
-
-
 
     private void SaveProgress(Dictionary<ObstacleColor, float> fillAmountsToSave)
     {
@@ -242,11 +248,9 @@ public class LevelProgress : MonoBehaviour
             PlayerPrefs.SetFloat(progressKeyPrefix + "_" + kvp.Key, kvp.Value); // Save each color individually
             Debug.Log($"Saving {kvp.Key}: {kvp.Value}");
         }
-
         PlayerPrefs.Save();
         Debug.Log("Saved to PlayerPrefs");
     }
-
 
     private void LoadProgress()
     {
@@ -300,11 +304,8 @@ public class LevelProgress : MonoBehaviour
         Debug.Log("WiggleImage coroutine started on + " + transform.name); // Add this line
         yield return null;
         transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0f), 0.5f, 5, 1f).Play();
-        // transform.DOPunchRotation(new Vector3(20, 0.1f, 0f), 1f).Play();
         Debug.Log("CurrentScale  + " + transform.localScale);
         StartCoroutine(AudioManager.Instance.PlayUISound("bling", 0.1f));
         yield return new WaitForSeconds(1f); wiggleTriggered = false;
-
     }
 }
-
