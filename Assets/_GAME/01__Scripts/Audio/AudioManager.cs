@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using DigitalRuby.SoundManagerNamespace;
 using System.Collections;
 using DanielLochner.Assets.SimpleScrollSnap;
-using Obstacles;
 
 
 public class AudioManager : GloballyAccessibleBase<AudioManager>

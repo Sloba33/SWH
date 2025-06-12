@@ -68,6 +68,15 @@ public class Player : MonoBehaviour
         }
         if (helmet != null) helmet.playerAttack = GetComponent<PlayerAttack>();
 
+
+
+
+
+
+
+        // StartingStrenght = 20f;
+        // StartingMoveSpeed = 4f;
+
     }
     public float newMoveSpeed;
     public float PushAndPullSpeed(float obstacleWeight)

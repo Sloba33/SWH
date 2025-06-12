@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
+    public LevelSelectionManager levelSelectionManager;
     public Image workersUnlockedNotification;
     public TMP_InputField inputField;
     public TextMeshProUGUI inputField_Text;
@@ -59,7 +60,7 @@ public class MainMenuManager : MonoBehaviour
     public TextMeshProUGUI priceTextCoins, priceTextMoney, priceTextGems;
 
     public TextMeshProUGUI strengthStatText, speedStatText, specialStatText;
-    
+
     public ImageGallery imageGallery;
     private void Awake()
     {
@@ -68,6 +69,7 @@ public class MainMenuManager : MonoBehaviour
         PlayerPrefs.SetInt("Helmet_Standard", 1);
         // PlayerPrefs.SetInt("gems", 1000);
         gemsText.text = PlayerPrefs.GetInt("gems").ToString();
+
 
     }
     public TextMeshProUGUI coinText,
@@ -83,7 +85,7 @@ public class MainMenuManager : MonoBehaviour
         inputField.text = name;
         playerName.text = name;
     }
- public void EnableWorkersNotification(bool flag)
+    public void EnableWorkersNotification(bool flag)
     {
         Debug.Log("Enable Worker Notification : " + flag);
         if (workersUnlockedNotification != null) workersUnlockedNotification.gameObject.SetActive(flag);
@@ -133,12 +135,12 @@ public class MainMenuManager : MonoBehaviour
         inputField.onEndEdit.AddListener(OnNameEntered);
         playerName.text = PlayerPrefs.GetString("playerName", "Player");
         inputField_Text.text = PlayerPrefs.GetString("playerName", "Player");
-         inputField.text = PlayerPrefs.GetString("playerName");
+        inputField.text = PlayerPrefs.GetString("playerName");
         // yield return new WaitForSeconds(1.2f);
         customizationPanelManager.SetCurrentCharacter(currentCharacter);
         // customizationPanelManager.UpdateDefaultColors();
         if (PlayerPrefs.GetInt("FirstTimeMenu") < 2)
-        { 
+        {
             BackgroundContinueButton.gameObject.SetActive(false);
         }
         imageGallery.Initialize();
@@ -322,48 +324,155 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    private bool isOpen;
 
+    private bool isOpen = false;
+    private bool _isSettingsAnimating = false; // NEW: Flag to prevent re-triggering during animation
     public void OpenSettings()
     {
+        if (_isSettingsAnimating) return; // Prevent opening if an animation is already playing
+        _isSettingsAnimating = true; // Set flag to indicate animation has started
+
         settingsPanel.SetActive(true);
-        workButton.SetActive(false);
-        campaignButton.SetActive(false);
-        CharacterManager.Instance.PlayClick();
-        isOpen = true;
+        // Explicitly play the "SettingsFadeIn" animation.
+        // Make sure this animation exists in your Animator Controller for settingsPanel.
+        // If your "open" animation is just the default entry state, this might not be strictly needed,
+        // but it's good practice for clarity and to ensure the animation is triggered.
+        if (settingsPanel.gameObject.activeSelf)
+        {
+            Animator settingsAnimator = settingsPanel.GetComponent<Animator>();
+            if (settingsAnimator != null)
+            {
+                // Ensure "SettingsFadeIn" is the correct name of your opening animation clip.
+                // You might need to get the actual clip length for a more precise wait time.
+                settingsAnimator.Play("SettingsFadeIn");
+            }
+        }
+
+        // Immediately hide other main menu buttons
+        if (workButton != null) workButton.gameObject.SetActive(false);
+        if (campaignButton != null) campaignButton.gameObject.SetActive(false);
+
+        // Assuming CharacterManager.Instance is correctly set up as a singleton
+        if (CharacterManager.Instance != null) CharacterManager.Instance.PlayClick();
+
+        isOpen = true; // Update state immediately
+
+        // Start a coroutine to wait for the open animation to finish
+        StartCoroutine(WaitForSettingsAnimation(true));
     }
 
     public void CloseSettings()
     {
+        if (_isSettingsAnimating) return; // Prevent closing if an animation is already playing
+        _isSettingsAnimating = true; // Set flag to indicate animation has started
+
         StartCoroutine(CloseSettingsCoroutine());
     }
 
     public IEnumerator CloseSettingsCoroutine()
     {
-        workButton.SetActive(true);
-        campaignButton.SetActive(true);
-        CharacterManager.Instance.PlayClick();
-        isOpen = false;
+        // Immediately show other main menu buttons
+        if (workButton != null) workButton.gameObject.SetActive(true);
+        if (campaignButton != null) campaignButton.gameObject.SetActive(true);
+
+        // Assuming CharacterManager.Instance is correctly set up as a singleton
+        if (CharacterManager.Instance != null) CharacterManager.Instance.PlayClick();
+
+        isOpen = false; // Update state immediately for next ControlSettings call
+
         if (settingsPanel.gameObject.activeSelf)
-            settingsPanel.GetComponent<Animator>().Play("SettingsFadeOut");
-        yield return new WaitForSeconds(0.2f);
+        {
+            Animator settingsAnimator = settingsPanel.GetComponent<Animator>();
+            if (settingsAnimator != null)
+            {
+                settingsAnimator.Play("SettingsFadeOut");
+            }
+        }
+
+        // Wait for the animation to complete before deactivating the panel
+        // IMPORTANT: Adjust this wait time to exactly match your "SettingsFadeOut" animation duration.
+        // You can get this programmatically using AnimatorStateInfo if your animations change.
+        yield return new WaitForSeconds(0.2f); // Existing wait time, confirm it matches your animation!
 
         settingsPanel.SetActive(false);
+        _isSettingsAnimating = false; // Animation complete, allow further interaction
     }
 
+    // NEW: Generic coroutine to wait for settings panel animations
+    private IEnumerator WaitForSettingsAnimation(bool isOpening)
+    {
+        // You might get the actual animation length from the Animator:
+        // AnimatorStateInfo stateInfo = settingsPanel.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        // yield return new WaitForSeconds(stateInfo.length);
+
+        // For simplicity, using a hardcoded time that matches your animation duration.
+        // Adjust this to the actual duration of your "SettingsFadeIn" animation.
+        yield return new WaitForSeconds(0.2f); // Example duration, ensure it matches your animation
+
+        // In OpenSettings, we set settingsPanel.SetActive(true) immediately.
+        // The _isSettingsAnimating flag ensures no new clicks interfere until animation is done.
+        _isSettingsAnimating = false;
+    }
+    [SerializeField] private SceneLoader sceneLoader;
+    public void HandleMainMenuWorkButton()
+    {
+        int currentLevel = PlayerPrefs.GetInt("Level", 0); // Get current level, default to 0 if not set
+
+        // If the player hasn't completed all intro levels yet (Level < 3),
+        // the work button should behave as it did before (load the next sequential level).
+        if (currentLevel < 3)
+        {
+            if (sceneLoader != null)
+            {
+                // Call the existing method to load the next job/level automatically.
+                // This assumes your SceneLoader.cs has a public method LoadNextJob()
+                // that handles the logic of loading PlayerPrefs.GetInt("Level") + 3.
+                sceneLoader.LoadNextJob();
+            }
+            else
+            {
+                Debug.LogError("SceneLoader is not assigned or found. Cannot load next job for intro levels.");
+            }
+        }
+        // If the player has completed all intro levels (Level is 3 or more),
+        // the work button should now display the Level Selector screen.
+        else // currentLevel >= 3
+        {
+            if (levelSelectionManager != null)
+            {
+                // Ensure the LevelSelectionManager GameObject is active before attempting to open its UI.
+                if (!levelSelectionManager.gameObject.activeSelf)
+                {
+                    levelSelectionManager.gameObject.SetActive(true);
+                }
+
+                levelSelectionManager.OpenLevelSelection();
+            }
+            else
+            {
+                Debug.LogError("LevelSelectionManager is not assigned or found. Cannot open level selection.");
+            }
+        }
+    }
     public void ControlSettings()
     {
-        if (!isOpen)
-            OpenSettings();
-        else
-            CloseSettings();
+        // Only proceed if no settings animation is currently playing
+        if (!_isSettingsAnimating)
+        {
+            if (!isOpen)
+                OpenSettings();
+            else
+                CloseSettings();
+        }
+        // If _isSettingsAnimating is true, the click is ignored, preventing spam issues.
     }
 
     public void CloseSettingsPanel()
     {
+        // This is typically called from a "Back" button inside the settings panel.
+        // It should also respect the animation flag to avoid conflicts.
         CloseSettings();
     }
-
     public void ResetGame()
     {
         PlayerPrefs.DeleteAll();

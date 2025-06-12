@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Obstacles;
+
+
 public class LevelGoal : MonoBehaviour
 {
-
     private Settings settings;
     public LevelProgress levelProgress;
     public float currentTime = 0, bonusTime;
     public TutorialDialogue tutorialDialogue;
-    [Header("Obstacle Spawning Settings")]
+
     public bool SpawnFallingObstacles;
     public List<SpawnableItem<Obstacle>> FallingObstacles = new List<SpawnableItem<Obstacle>>();
     public int obstaclesToSpawn;
@@ -19,36 +19,31 @@ public class LevelGoal : MonoBehaviour
     public int TotalObstaclesSpawned;
     public float delayBoxSpawn = 6f;
     [SerializeField] public int minObstacleSpawnHeight = 16, maxObstacleSpawnHeight = 20;
-    [Header("Bomb Spawning Settings")]
 
     public bool SpawnFallingBombs;
     public List<SpawnableItem<GameObject>> FallingBombs = new List<SpawnableItem<GameObject>>();
-
     public int bombsToSpawn;
     public float delayBombSpawn = 10f;
     public float bombSpawnFrequency = 5f;
     [SerializeField] int minBombSpawnHeight = 10, maxBombSpawnHeight = 15;
-    [Header("Cellectible Spawning Settings")]
 
     public bool SpawnFallingCollectibles;
     public List<SpawnableItem<GameObject>> FallingCollectibles = new List<SpawnableItem<GameObject>>();
-
     public int collectiblesToSpawn;
     public float delayCollectibleSpawn = 10f;
     public float collectibleSpawnFreqency = 5f;
     [SerializeField] int minCollectibleSpawnHeight = 10, maxCollectibleSpawnHeight = 15;
-    [Header("Level Settings")]
 
     public List<Obstacle> ObstaclesToDestroy_Player = new List<Obstacle>();
     public List<Obstacle> ObstaclesToDestroy_AI = new List<Obstacle>();
-    public List<Obstacles.ObstacleType> obstacleTypes;
+    public List<ObstacleType> obstacleTypes;
     public bool DualLevel;
-    public bool Tutorial, FinalTutorial;
+    public bool Tutorial;
+    public bool FinalTutorial;
+    public bool IsIntroLevel;
 
     public Button pullButton;
-
     public Button jumpButton;
-
     public Button hit, hitDown;
     public GameObject pullHint, jumpHint, hitHint, hitDownHint, joystickHint, joystickHintJump;
 
@@ -64,7 +59,24 @@ public class LevelGoal : MonoBehaviour
     public List<Obstacle> AISideFallingObstacles = new List<Obstacle>();
     public float dualBoxSpawnDelay = 7f;
     private TutorialHandler tutorialHandler;
+
     public float fillPercentage;
+
+    public GameObject bombUniversalPrefab;
+    public GameObject bombUniversal;
+    private Vector3 spawnPosition;
+    private Quaternion spawnRotation;
+
+    public AudioSource correctObstacle;
+    public bool bonusUnlocked;
+    public Dictionary<ObstacleColor, int> destroyedObstacleCounts = new Dictionary<ObstacleColor, int>();
+    private int dualLevelCounter = 0;
+
+    private const string PREF_GAMEPLAY_TUTORIAL_COMPLETED = "GameplayTutorialCompleted";
+    private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
+    private const string PREF_CURRENT_INTRO_LEVEL = "Level";
+    private const string PREF_FIRST_TIME = "FirstTime";
+
     private IEnumerator Start()
     {
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
@@ -73,16 +85,17 @@ public class LevelGoal : MonoBehaviour
             tutorialHandler = FindObjectOfType<TutorialHandler>();
             if (tutorialHandler != null)
                 tutorialHandler.shouldGuide = true;
-
         }
-        // AddObstaclesToList();  JUST ADD THESE MANUALLY FOR EVERY PLAYER
+
         FindAndAddTilesToList();
-        bool levelCompleted = PlayerPrefs.GetInt("" + SceneManager.GetActiveScene().name + "_Completed", 0) == 1;
-        if (levelCompleted)
+
+        bool levelCompletedPreviously = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "_Completed", 0) == 1;
+        if (levelCompletedPreviously)
         {
             xp = 0;
             trophies = 0;
         }
+
         if (DualLevel)
         {
             yield return new WaitForSeconds(dualBoxSpawnDelay);
@@ -90,7 +103,6 @@ public class LevelGoal : MonoBehaviour
         }
         else if (SpawnFallingObstacles)
         {
-
             StartCoroutine(SpawnBoxes(delayBoxSpawn));
         }
         if (SpawnFallingBombs)
@@ -103,22 +115,6 @@ public class LevelGoal : MonoBehaviour
         }
         settings = FindObjectOfType<Settings>();
 
-
-        if (!FinalTutorial && PlayerPrefs.GetInt("Level") < 2)
-        {
-            Debug.Log("Setting FirsTime to 0");
-            PlayerPrefs.SetInt("FirstTime", 0);
-        }
-
-        else if (PlayerPrefs.GetInt("Level") <3)
-        {
-            Debug.Log("Setting First time to 1, and first timemenu to 1");
-            PlayerPrefs.SetInt("FirstTime", 1);
-            PlayerPrefs.SetInt("FirstTimeMenu", 1);
-            PlayerPrefs.SetInt("coins", 100);
-        }
-
-
         if (bombUniversal != null)
         {
             spawnPosition = bombUniversal.transform.localPosition;
@@ -128,10 +124,7 @@ public class LevelGoal : MonoBehaviour
             InvokeRepeating(nameof(RespawnBomb), 45, 10);
 
     }
-    public GameObject bombUniversalPrefab;
-    public GameObject bombUniversal;
-    private Vector3 spawnPosition;
-    private Quaternion spawnRotation;
+
     public void RespawnBomb()
     {
         if (bombUniversal == null)
@@ -139,6 +132,7 @@ public class LevelGoal : MonoBehaviour
             bombUniversal = Instantiate(bombUniversalPrefab, spawnPosition, spawnRotation);
         }
     }
+
     private void FixedUpdate()
     {
         if (Tutorial && settings != null && !settings.gameWon && !settings.gameLost) return;
@@ -146,52 +140,34 @@ public class LevelGoal : MonoBehaviour
         if (settings != null && settings.timerText != null)
             settings.timerText.text = currentTime.ToString("F1");
     }
+
     private T GetRandomItemByWeight<T>(List<SpawnableItem<T>> items)
     {
         float totalWeight = 0;
-
-        foreach (var item in items)
-        {
-            totalWeight += item.weight;
-        }
-
+        foreach (var item in items) { totalWeight += item.weight; }
         float randomValue = Random.Range(0, totalWeight);
         float cumulativeWeight = 0;
-
         foreach (var item in items)
         {
             cumulativeWeight += item.weight;
-            if (randomValue <= cumulativeWeight)
-            {
-                return item.item;
-            }
+            if (randomValue <= cumulativeWeight) { return item.item; }
         }
-
         return default;
     }
 
     private IEnumerator SpawnBoxes(float delay)
     {
-
         yield return new WaitForSeconds(1f);
-
         StartCoroutine(SpawnRandomFallingBox(ObstacleSpawnFrequency, delay));
-
-
     }
     private bool firstObstacleSpawn;
 
     public IEnumerator SpawnRandomFallingBox(float spawnFrequency, float initialDelay)
     {
-        if (!firstObstacleSpawn)
-        {
-            yield return new WaitForSeconds(initialDelay);
-            firstObstacleSpawn = true;
-        }
+        if (!firstObstacleSpawn) { yield return new WaitForSeconds(initialDelay); firstObstacleSpawn = true; }
         for (int i = 0; i < obstaclesToSpawn; i++)
         {
             if (TotalObstaclesSpawned % 20 == 0 && spawnFrequency > 1 && TotalObstaclesSpawned > 1) { spawnFrequency--; ObstacleSpawnFrequency--; }
-            // Debug.Log("TotalObstaclesSpawned : " + TotalObstaclesSpawned + " TotalObstaclesSpawned MOD : " + (TotalObstaclesSpawned % 20) + " Obstacle Spawn Frequency : " + spawnFrequency + " total obstacles spawned : " + TotalObstaclesSpawned);
             TotalObstaclesSpawned++;
             int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
             int randomTile = Random.Range(0, tileList.Count);
@@ -204,31 +180,20 @@ public class LevelGoal : MonoBehaviour
     }
     private IEnumerator SpawnCollectibles(float delay)
     {
-
         yield return new WaitForSeconds(1f);
         StartCoroutine(SpawnRandomFallingCollectible(collectibleSpawnFreqency, delay));
-        // InvokeRepeating(nameof(SpawnRandomFallingCollectible), bombSpawnFrequency, delay);
-
     }
     private IEnumerator SpawnBombs(float delay)
     {
-
         yield return new WaitForSeconds(1f);
         StartCoroutine(SpawnRandomFallingBomb(bombSpawnFrequency, delay));
-        // InvokeRepeating(nameof(SpawnRandomFallingCollectible), bombSpawnFrequency, delay);
-
     }
     private bool firstCollectibleSpawn;
     private bool firstBombSpawn;
+
     public IEnumerator SpawnRandomFallingBomb(float spawnFrequency, float initialDelay)
     {
-
-        if (!firstBombSpawn)
-        {
-            yield return new WaitForSeconds(initialDelay);
-            firstBombSpawn = true;
-        }
-
+        if (!firstBombSpawn) { yield return new WaitForSeconds(initialDelay); firstBombSpawn = true; }
         for (int i = 0; i < bombsToSpawn; i++)
         {
             int randomHeight = Random.Range(minBombSpawnHeight, maxBombSpawnHeight);
@@ -241,13 +206,7 @@ public class LevelGoal : MonoBehaviour
     }
     public IEnumerator SpawnRandomFallingCollectible(float spawnFrequency, float initialDelay)
     {
-
-        if (!firstCollectibleSpawn)
-        {
-            yield return new WaitForSeconds(initialDelay);
-            firstCollectibleSpawn = true;
-        }
-
+        if (!firstCollectibleSpawn) { yield return new WaitForSeconds(initialDelay); firstCollectibleSpawn = true; }
         for (int i = 0; i < collectiblesToSpawn; i++)
         {
             int randomHeight = Random.Range(minCollectibleSpawnHeight, maxCollectibleSpawnHeight);
@@ -258,6 +217,7 @@ public class LevelGoal : MonoBehaviour
             yield return new WaitForSeconds(spawnFrequency);
         }
     }
+
     public void SpawnDualBoxes()
     {
         if (dualLevelCounter < playerSideFallingObstacles.Count)
@@ -266,9 +226,7 @@ public class LevelGoal : MonoBehaviour
             AISideFallingObstacles[dualLevelCounter].gameObject.SetActive(true);
             dualLevelCounter++;
         }
-
     }
-    private int dualLevelCounter = 0;
 
     void AddObstaclesToList()
     {
@@ -279,16 +237,11 @@ public class LevelGoal : MonoBehaviour
             if (obstacleTypes.Contains(currentObstacle.obstacleType))
             {
                 ObstaclesToDestroy_Player.Add(currentObstacle);
-
             }
         }
         ObstacleTotal = ObstaclesToDestroy_Player.Count;
-
     }
 
-    public AudioSource correctObstacle;
-    public bool bonusUnlocked;
-    public Dictionary<ObstacleColor, int> destroyedObstacleCounts = new Dictionary<ObstacleColor, int>();
     public void RemoveObstacle(Obstacle obs)
     {
         if (ObstaclesToDestroy_Player.Contains(obs))
@@ -297,8 +250,7 @@ public class LevelGoal : MonoBehaviour
 
             ObstacleCounter++;
 
-            // Track destroyed obstacle colors
-            if (destroyedObstacleCounts.ContainsKey(obs.obstacleColor)) // Assuming 'color' is the enum property in your Obstacle class
+            if (destroyedObstacleCounts.ContainsKey(obs.obstacleColor))
             {
                 destroyedObstacleCounts[obs.obstacleColor]++;
             }
@@ -307,70 +259,35 @@ public class LevelGoal : MonoBehaviour
                 destroyedObstacleCounts[obs.obstacleColor] = 1;
             }
 
-
             if (ObstaclesToDestroy_Player.Count == 0)
             {
                 bonusUnlocked = currentTime < bonusTime;
                 StartCoroutine(WinLevel(0.9f));
-
-                // Now you can access the counts of destroyed obstacles:
-                Debug.Log("Destroyed Obstacle Counts:");
-                foreach (var kvp in destroyedObstacleCounts)
-                {
-                    Debug.Log($"{kvp.Key}: {kvp.Value}");
-                }
-
-                // Example: Check if at least 2 red obstacles were destroyed
-                if (destroyedObstacleCounts.ContainsKey(ObstacleColor.Red) && destroyedObstacleCounts[ObstacleColor.Red] >= 2)
-                {
-                    Debug.Log("At least 2 red obstacles were destroyed!");
-                    // Perform some action based on this condition.
-                }
-
-                // Example: Get the total number of obstacles destroyed for a specific color
-                int redCount = destroyedObstacleCounts.ContainsKey(ObstacleColor.Red) ? destroyedObstacleCounts[ObstacleColor.Red] : 0;
-                Debug.Log($"Red Obstacle Count: {redCount}");
-                Debug.Log("Level Goal: All obstacles destroyed. Triggering OnLevelCompleted event.");
-
-                // IMPROVED: Check for subscribers before invoking
-
-
             }
 
-            if (PlayerPrefs.GetInt("Level") < 2)
+            if (Tutorial)
             {
                 StartCoroutine(AudioManager.Instance.PlayUISound("bling", 0.25f));
-                Debug.Log("Playing Bling");
             }
         }
     }
+
     public void RemoveObstacleFromSection(Obstacle obs)
     {
         if (Tutorial)
         {
             for (int i = 0; i < ListOfGoalLists.list.Count; i++)
             {
-                Debug.Log("Iterating...");
                 for (int j = 0; j < ListOfGoalLists.list[i].list.Count; j++)
                 {
                     if (ListOfGoalLists.list[i].list.Contains(obs))
                     {
-                        Debug.Log("Obstacle found");
-                        Debug.Log("" + ListOfGoalLists.list[i].list[j].name);
                         ListOfGoalLists.list[i].list.Remove(obs);
                         if (ListOfGoalLists.list[i].list.Count == 0)
                         {
-                            Debug.Log("Section cleared");
                             StartCoroutine(StartNextStep());
-                            // AudioManager.Instance.PlaySound(8);
                         }
                         break;
-                    }
-                    else
-                    {
-
-                        Debug.Log("No object found");
-
                     }
                 }
             }
@@ -383,75 +300,87 @@ public class LevelGoal : MonoBehaviour
 
     public IEnumerator WinLevel(float delay)
     {
-
-        if (settings == null)
-            settings = FindObjectOfType<Settings>();
+        Debug.Log("Winning Level");
+        if (settings == null) settings = FindObjectOfType<Settings>();
         PlayerController pc = FindObjectOfType<PlayerController>();
-        Animator anim = pc.transform.GetComponent<Animator>();
         settings.gameWon = true;
         yield return new WaitForSeconds(delay);
 
         if (pc != null) pc.enabled = false;
-        // if (anim != null) anim.enabled = false;
         settings.ActivateWinPanel();
 
+        if (IsIntroLevel)
+        {
+            int currentIntroLevel = PlayerPrefs.GetInt(PREF_CURRENT_INTRO_LEVEL, 0);
+            currentIntroLevel++;
+            // PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, currentIntroLevel);
+            PlayerPrefs.Save();
 
+          
+          
+        }
     }
+
     public IEnumerator WinTutorial(float delay)
     {
-        if (settings == null)
-            settings = FindObjectOfType<Settings>();
+        Debug.Log("Winning Tutorial");
+        if (settings == null) settings = FindObjectOfType<Settings>();
         PlayerController pc = FindObjectOfType<PlayerController>();
-        Animator anim = pc.transform.GetComponent<Animator>();
         settings.gameWon = true;
         yield return new WaitForSeconds(delay);
         NameSelector nameSelector = FindObjectOfType<NameSelector>(true);
         nameSelector.gameObject.SetActive(true);
         settings.controlsPanel.SetActive(false);
 
+        PlayerPrefs.SetInt(PREF_GAMEPLAY_TUTORIAL_COMPLETED, 1);
+        PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)TutorialMenuManager.MenuTutorialStep.None);
+        PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, 0);
+        PlayerPrefs.SetInt(PREF_FIRST_TIME, 1);
+        
+        PlayerPrefs.Save();
 
+        // if (GameFlowManager.Instance != null)
+        // {
+        //     GameFlowManager.Instance.LoadScene("01_MainMenu");
+        // }
     }
+
     public IEnumerator LoseLevel()
     {
         yield return new WaitForSeconds(1.2f);
-        if (settings != null) settings = FindObjectOfType<Settings>();
+        if (settings == null) settings = FindObjectOfType<Settings>();
         settings.gameLost = true;
         if (!settings.gameWon)
         {
             settings.ActivateLosePanel();
         }
     }
+
     public void RespondToFlagEvent(Component sender, object data)
     {
         StartCoroutine(WinLevel(0.3f));
     }
+
     void FindAndAddTilesToList()
     {
-        // Using FindObjectsOfType to find all active objects of type Tile
         Tile[] tiles = FindObjectsOfType<Tile>();
-
-        // Add each Tile object to the list
         foreach (Tile tile in tiles)
         {
             if (tile.gameObject.activeSelf)
                 tileList.Add(tile);
         }
-
-        // Print the count of Tile objects found in the scene
-        Debug.Log("Number of Tile objects in the scene: " + tileList.Count);
     }
+
     public void TurnOnPullEvent(Component sender, object data)
     {
-        if (tutorialHandler != null)
-            tutorialHandler.shouldGuide = false;
+        if (tutorialHandler != null) tutorialHandler.shouldGuide = false;
         if (joystickHint != null) joystickHint.SetActive(false);
         pullButton.gameObject.SetActive(true);
         pullHint.gameObject.SetActive(true);
-
     }
+
     public void TurnOnJumpEvent(Component sender, object data)
     {
-        Debug.Log("Triggered : " + sender.name + " and : " + data);
         pullHint.gameObject.SetActive(false);
         PlayerControls pc = FindObjectOfType<PlayerControls>();
         if (pc != null) pc.hintPull = null;
@@ -459,54 +388,40 @@ public class LevelGoal : MonoBehaviour
         jumpHint.SetActive(true);
         if (joystickHintJump != null) joystickHintJump.SetActive(true);
     }
+
     public void TurnOnHitEvent(Component sender, object data)
     {
         if (jumpHint != null) jumpHint.SetActive(false);
         if (hitDown != null) hitDown.gameObject.SetActive(true);
         if (hit != null) hit.gameObject.SetActive(true);
         Destroy(sender.gameObject, 0.05f);
+    }
 
-    }
-    public void ToggleHitOn(Component sender, object data)
-    {
-        hitHint.gameObject.SetActive(true);
-    }
-    public void ToggleHitOff(Component sender, object data)
-    {
-        hitHint.gameObject.SetActive(false);
-    }
-    public void ToggleHitDownOn(Component sender, object data)
-    {
-        hitDownHint.gameObject.SetActive(true);
-    }
-    public void ToggleHitDownOff(Component sender, object data)
-    {
-        hitDownHint.gameObject.SetActive(false);
-    }
+    public void ToggleHitOn(Component sender, object data) { hitHint.gameObject.SetActive(true); }
+    public void ToggleHitOff(Component sender, object data) { hitHint.gameObject.SetActive(false); }
+    public void ToggleHitDownOn(Component sender, object data) { hitDownHint.gameObject.SetActive(true); }
+    public void ToggleHitDownOff(Component sender, object data) { hitDownHint.gameObject.SetActive(false); }
+
     public int currentStep = 0;
     public List<GameObject> tutorialBridges;
     public List<GameObject> tutorialBarriers;
     public List<GameObject> tutorialSpotlights;
-
     public bool nextStepStarted;
+
     public IEnumerator StartNextStep()
     {
         if (!nextStepStarted)
         {
-            // if (joystickHint.activeSelf) joystickHint.SetActive(false);
             if (tutorialHandler != null)
             {
-
                 tutorialHandler.shouldGuide = false;
                 joystickHint.gameObject.SetActive(false);
             }
             nextStepStarted = true;
             int tempStep = currentStep;
             tempStep++;
-            Debug.Log("temp step" + tempStep);
             if (tempStep > tutorialBarriers.Count)
             {
-                Debug.Log("Congrats");
                 if (!Tutorial)
                     StartCoroutine(WinLevel(1f));
                 else
@@ -524,26 +439,21 @@ public class LevelGoal : MonoBehaviour
                 if (tutorialDialogue != null)
                 {
                     int whatStep = currentStep % 2;
-                    Debug.Log("What step");
                     if (currentStep == 1)
                     {
-                        Debug.Log("playing well done");
                         tutorialDialogue.ToggleDialogue(DialogueType.WellDone);
                     }
                     else
                     {
-                        Debug.Log("playing good job");
                         tutorialDialogue.ToggleDialogue(DialogueType.GoodJob);
                     }
-
                 }
-                else Debug.Log("No dialogue ref assigned");
                 yield return new WaitForSeconds(0.25f);
                 AudioManager.Instance.PlaySound(0);
             }
         }
-
     }
+
     public IEnumerator TurnOnSpotlight(int spotlightNumber)
     {
         yield return new WaitForSeconds(0.1f);
@@ -552,15 +462,15 @@ public class LevelGoal : MonoBehaviour
         tutorialSpotlights[spotlightNumber].SetActive(false);
         yield return new WaitForSeconds(0.1f);
         tutorialSpotlights[spotlightNumber].SetActive(true);
-
     }
+
     public enum LevelType
     {
         Move, Pull, Jump, Hit, Bomb
     }
     public GoalList ListOfGoalLists = new GoalList();
-
 }
+
 [System.Serializable]
 public class Goal
 {
@@ -582,5 +492,4 @@ public class SpawnableItem<T>
         this.item = item;
         this.weight = weight;
     }
-    
 }

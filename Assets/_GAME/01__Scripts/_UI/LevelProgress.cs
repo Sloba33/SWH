@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Obstacles;
 using System;
 using DG.Tweening;
 using Coffee.UIEffects;
 using Coffee.UIExtensions;
+
 public class LevelProgress : MonoBehaviour
 {
     public AudioSource audioSource;
-    public Image Blue, Red, Green, Yellow, Black, Grey, White;
+    public Image Blue, Red, Green, Yellow, Black, Grey, White, Purple, Pink, Wood, Stone;
+    
     public UIShiny uiShiny;
     public LevelGoal levelGoal;
     private string progressKeyPrefix;
@@ -74,18 +75,6 @@ public class LevelProgress : MonoBehaviour
             }
         }
     }
-    // private void HandleLevelCompleted()
-    // {
-    //     Debug.Log("Level goal completed");
-    //     if (levelGoal == null)
-    //     {
-    //         Debug.LogError("Level goal null");
-    //         return;
-    //     }
-
-    //     FillImages();
-    //     SaveProgress();
-    // }
 
     private void FillImages()
     {
@@ -104,6 +93,12 @@ public class LevelProgress : MonoBehaviour
         Debug.Log("Black Image: " + (Black != null ? "Assigned" : "Null"));
         Debug.Log("Grey Image: " + (Grey != null ? "Assigned" : "Null"));
         Debug.Log("White Image: " + (White != null ? "Assigned" : "Null"));
+        // Debug logs for Purple and Pink images
+        Debug.Log("Purple Image: " + (Purple != null ? "Assigned" : "Null"));
+        Debug.Log("Pink Image: " + (Pink != null ? "Assigned" : "Null"));
+        // Debug logs for Wood and Stone images
+        Debug.Log("Wood Image: " + (Wood != null ? "Assigned" : "Null"));
+        Debug.Log("Stone Image: " + (Stone != null ? "Assigned" : "Null"));
 
 
         foreach (ObstacleColor color in Enum.GetValues(typeof(ObstacleColor)))
@@ -162,6 +157,10 @@ public class LevelProgress : MonoBehaviour
             case ObstacleColor.Black: image = Black; break;
             case ObstacleColor.Grey: image = Grey; break;
             case ObstacleColor.White: image = White; break;
+            case ObstacleColor.Purple: image = Purple; break; 
+            case ObstacleColor.Pink: image = Pink; break; 
+            case ObstacleColor.Wood: image = Wood; break; // Added Wood case
+            case ObstacleColor.Stone: image = Stone; break; // Added Stone case
             default: break;
         }
 
@@ -198,12 +197,7 @@ public class LevelProgress : MonoBehaviour
         float startFill = image.fillAmount;
         float startTime = Time.time;
         float endTime = startTime + duration;
-        // if (uiShiny != null)
-        // {
 
-        //     uiShiny.Play();
-        //     Debug.Log("PLAYING UI SHINY");
-        // }
         while (Time.time < endTime)
         {
             image.fillAmount = Mathf.Lerp(startFill, fillAmount, (Time.time - startTime) / duration);
@@ -231,7 +225,11 @@ public class LevelProgress : MonoBehaviour
                (Yellow == null || Yellow.fillAmount >= threshold) &&
                (Black == null || Black.fillAmount >= threshold) &&
                (Grey == null || Grey.fillAmount >= threshold) &&
-               (White == null || White.fillAmount >= threshold);
+               (White == null || White.fillAmount >= threshold) &&
+               (Purple == null || Purple.fillAmount >= threshold) && 
+               (Pink == null || Pink.fillAmount >= threshold) &&
+               (Wood == null || Wood.fillAmount >= threshold) &&   // Added Wood check
+               (Stone == null || Stone.fillAmount >= threshold); // Added Stone check
 
     }
 
@@ -303,9 +301,10 @@ public class LevelProgress : MonoBehaviour
         yield return null;
         transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0f), 0.5f, 5, 1f).Play();
         // transform.DOPunchRotation(new Vector3(20, 0.1f, 0f), 1f).Play();
-        Debug.Log("CurrentScale  + " + transform.localScale);
+        Debug.Log("CurrentScale  + " + transform.localScale);
         StartCoroutine(AudioManager.Instance.PlayUISound("bling", 0.1f));
         yield return new WaitForSeconds(1f); wiggleTriggered = false;
 
     }
 }
+

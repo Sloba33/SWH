@@ -59,8 +59,6 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   wasSucked: 0
-  aiLerp: {fileID: 0}
-  aSTarAI: {fileID: 0}
   obstacleType: 53
   obstacleAudioType: 0
   obstacleColor: 6
@@ -223,10 +221,13 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 47e129fdb9479de47a9b40a38c04f97c, type: 2}
+  - {fileID: 2100000, guid: bb38c076b6be9744481c72f8465de638, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -1,11 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewLevel", menuName = "Scene Data/Level")]
-public class Level : GameScene
+public class Level : ScriptableObject
 {
-    //Settings specific to level only
-    [Header("Level specific")]
-    public int placeholderNumber;
+    public int levelNumber; 
+    
+
+    
+    public int sceneBuildIndex; 
+    
+    [HideInInspector]
+    public string sceneName;
+
+    private void OnEnable()
+    {
+        sceneBuildIndex = levelNumber + 2;
+        Debug.Log("Scene Build Index set to: " + sceneBuildIndex + " for level number: " + levelNumber);
+
+    }
 }

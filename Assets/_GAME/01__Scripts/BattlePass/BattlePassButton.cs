@@ -4,6 +4,7 @@ using TMPro;
 using DG.Tweening;
 using System.Collections;
 using Coffee.UIEffects;
+using ExitGames.Client.Photon.StructWrapping;
 
 public class BattlePassButton : MonoBehaviour
 {
@@ -95,23 +96,39 @@ public class BattlePassButton : MonoBehaviour
     public void SetButtonClaimed()
     {
         // Color faded = new(1, 1, 0.65f, 0.5f);
-
+        
         claimButton.GetComponent<Image>().color = fadedColor;
         itemImage.color = new Color(1, 1, 1, 0.5f);
-        claimButton.interactable = false;
         claimText.gameObject.SetActive(false);
-        Debug.Log("Setting as claimed");
+        Debug.Log("Battle Pass : Setting as claimed" + gameObject.name +  " at index " + transform.GetSiblingIndex());
+        KillTween();
+        claimButton.interactable = false;
     }
+    private Tween tween;
     public void SetButtonAsUnclaimedAndAvailable()
     {
 
         claimButton.interactable = true;
-        Debug.Log("Setting as unclaimed but available");
+        Debug.Log("BATTLE PASS : Setting as unclaimed but available" + gameObject.name + " at index " + transform.GetSiblingIndex());
+        KillTween();
+        tween = transform.DOShakeRotation(1.5f, 5f).SetLoops(-1);
+        tween.Play();
     }
     public void SetButtonAsUnclaimedAndUnavailable()
     {
 
         claimButton.interactable = false;
-        Debug.Log("Setting as unclaimed but unavailable");
+        Debug.Log("BATTLE PASS :  Setting as unclaimed but unavailable" + gameObject.name + " at index " + transform.GetSiblingIndex());
+        KillTween();
+
+    }
+    public void KillTween()
+    {
+        if (tween != null)
+        {
+            tween.Kill();  // Stop the tween
+            tween = null;  // Clear the tween reference to avoid further usage
+        }
+        transform.rotation = Quaternion.identity;  // Reset the rotation after stopping
     }
 }

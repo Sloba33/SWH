@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using Obstacles;
 public enum AudioCategory { Obstacle, Player, UI }
 public enum ObstacleActionType { Destruction, Move }
 

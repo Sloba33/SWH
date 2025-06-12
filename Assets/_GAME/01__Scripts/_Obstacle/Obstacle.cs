@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
-using Obstacles;
+
 public class Obstacle : MonoBehaviour
 {
 
@@ -12,10 +12,10 @@ public class Obstacle : MonoBehaviour
     public Material obstacleMaterial;
     public bool MoveOverride;
     public bool wasSucked;
- 
-    [SerializeField] public Obstacles.ObstacleType obstacleType;
-    public ObstacleAudioType obstacleAudioType;
+
+    public ObstacleType obstacleType;
     public ObstacleColor obstacleColor;
+    public ObstacleAudioType obstacleAudioType;
     [Header("Stats & References")]
     public float Weight;
     public Tile tile;
@@ -84,14 +84,6 @@ public class Obstacle : MonoBehaviour
             _obstacleUp[0] = null;
         }
 
-        galaxyForward = obstacleForward && _obstacleForward[0] != null && _obstacleForward[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyForward) CheckNeighbourFlags(_obstacleForward[0]?.GetComponent<Obstacle>());
-        galaxyBack = obstacleBack && _obstacleBack[0] != null && _obstacleBack[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyBack) CheckNeighbourFlags(_obstacleBack[0]?.GetComponent<Obstacle>());
-        galaxyLeft = obstacleLeft && _obstacleLeft[0] != null && _obstacleLeft[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyLeft) CheckNeighbourFlags(_obstacleLeft[0]?.GetComponent<Obstacle>());
-        galaxyRight = obstacleRight && _obstacleRight[0] != null && _obstacleRight[0]?.GetComponent<Obstacle>()?.obstacleType == ObstacleType.Galaxy;
-        // if (galaxyRight) CheckNeighbourFlags(_obstacleRight[0]?.GetComponent<Obstacle>());
 
     }
 
@@ -124,7 +116,7 @@ public class Obstacle : MonoBehaviour
     }
 
     public bool beingSucked;
-  
+
 
     private void Start()
     {
@@ -246,14 +238,9 @@ public class Obstacle : MonoBehaviour
     {
         if (obstacleUp || pushabilityDelayed)
         {
-            // Debug.Log("Disabling Pushability 0");
             isPushable = false;
         }
-        else if (spawningBlackHole)
-        {
-            // Debug.Log("Disabling Pushability 1");
-            isPushable = false;
-        }
+
         else if (!MoveOverride) isPushable = true;
     }
     public bool Movable(Vector3 playerDir)
@@ -311,13 +298,13 @@ public class Obstacle : MonoBehaviour
             if (!MoveOverride)
                 isPushable = Movable(dir) && !pushabilityDelayed;
             if (!isPushable) return;
-          
+
             if (currentlyUsedPlayerConrtoller != null && currentlyUsedPlayerConrtoller.playerObstacleController != null && currentlyUsedPlayerConrtoller.playerObstacleController.pushDirectionChanged)
             {
                 _rb.linearVelocity = Vector3.zero;
                 currentlyUsedPlayerConrtoller.playerObstacleController.pushDirectionChanged = false; // Reset the flag
                 AudioManager.Instance.StopObstacleSound_Move();
-                
+
                 return;
             }
             else
@@ -329,7 +316,7 @@ public class Obstacle : MonoBehaviour
                 {
                     if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
                     _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
-                   
+
                 }
                 else
                 {
@@ -551,32 +538,9 @@ public class Obstacle : MonoBehaviour
             ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
             ps.gameObject.name = " PARTICLE OBJECT";
             gameObject.SetActive(false);
-            // ps.GetComponent<ParticleSystemRenderer>().material = GetComponent<Renderer>().material;
-            // ps.transform.GetChild(0).GetComponent<ParticleSystem>().GetComponent<ParticleSystemRenderer>().material = GetComponent<Renderer>().material;
+
             ps.Play();
-
-
-            // GameObject audioObject = Instantiate(new GameObject(), transform.position, transform.rotation);
-            // audioObject.name = " AUDIO OBJECT ";
-            // audioObject.AddComponent<AudioSource>();
-            // if (audioClip != null)
-            //     audioObject.GetComponent<AudioSource>().clip = audioClip;
-            // else audioObject.GetComponent<AudioSource>().clip = AudioManager.Instance.SoundAudioSources[0].clip;
-            // audioObject.GetComponent<AudioSource>().volume = 0.40f;
-            // if (obstacleType == ObstacleInfo.ObstacleType.Concrete) audioObject.GetComponent<AudioSource>().volume = 0.65f;
-            // if (obstacleType == ObstacleInfo.ObstacleType.Metal) audioObject.GetComponent<AudioSource>().volume = 0.35f;
-            // Debug.Log("Obstacle name :" + name + " obstacle type : " + obstacleType + " audio volume  :" + audioObject.GetComponent<AudioSource>().volume);
-            // audioObject.GetComponent<AudioSource>().Play();
-            // Destroy(audioObject, audioObject.GetComponent<AudioSource>().clip.length);
-
             AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
-
-            // audioSource = GetComponent<AudioSource>();
-            // audioSource.clip = AudioManager.Instance.SoundAudioSources[0].clip;
-            // // audioClip = audioSource.clip;
-            // audioSource.PlayOneShot(audioSource.clip);
-            // Debug.Log("Playing Sound :" + audioSource.clip.name);
-            // AudioManager.Instance.PlaySoundObstacleDestroy(obstacleAudioType);
             if (fallSprite != null) Destroy(fallSprite);
             if (GameManager.Instance.levelGoal != null)
             {
@@ -628,7 +592,7 @@ public class Obstacle : MonoBehaviour
             }
 
 
-
+            if (playerController != null) playerController.playerObstacleController.pushObstacle = null;
             Destroy(gameObject);
         }
     }
@@ -644,7 +608,7 @@ public class Obstacle : MonoBehaviour
     }
 
     public bool galaxyForward, galaxyBack, galaxyLeft, galaxyRight, threeOfAKind, spawningBlackHole;
-    private const float CenterThreshold = 0.05f;  
+    private const float CenterThreshold = 0.05f;
 
     public bool onDestroy;
     public GameObject objectToTurnOff;
@@ -668,8 +632,8 @@ public class Obstacle : MonoBehaviour
         }
     }
 
-   
- 
+
+
     public Color startColor, endColor;
     public float blinkDuration = 1f;
     public float blinkTime = 5.0f;

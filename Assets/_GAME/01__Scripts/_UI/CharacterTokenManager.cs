@@ -50,7 +50,7 @@ public class CharacterTokenManager : MonoBehaviour
             UnlockCharacter();
         }
 
-        // characterPickerManager.UpdateCharacterStats();
+        characterPickerManager.UpdateCharacterStats();
         Debug.Log("---------------------------- Finished adding tokens--------------------------------");
 
     }

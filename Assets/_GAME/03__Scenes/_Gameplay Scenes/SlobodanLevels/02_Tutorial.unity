@@ -8535,6 +8535,16 @@ PrefabInstance:
       propertyPath: MoveOverride
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleColor
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleAudioType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3622432114007997500, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
       propertyPath: m_Name
@@ -22585,7 +22595,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -123940,7 +123950,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -134110,7 +134120,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -144929,7 +144939,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -153106,7 +153116,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -160944,6 +160954,16 @@ PrefabInstance:
         type: 3}
       propertyPath: MoveOverride
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleColor
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleAudioType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3622432114007997500, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
@@ -245242,7 +245262,7 @@ MonoBehaviour:
   wasSucked: 0
   obstacleType: 7
   obstacleAudioType: 0
-  obstacleColor: 0
+  obstacleColor: 2
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -250491,6 +250511,7 @@ MonoBehaviour:
   DualLevel: 0
   Tutorial: 1
   FinalTutorial: 0
+  IsIntroLevel: 1
   pullButton: {fileID: 9212376002271422559}
   jumpButton: {fileID: 7219924718925125392}
   hit: {fileID: 6491778388254067366}

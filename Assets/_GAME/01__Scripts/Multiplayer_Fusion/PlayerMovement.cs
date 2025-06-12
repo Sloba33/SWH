@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _walkSpeed = 2f; //
     public float _jumpForce = 5.8f; //
     [SerializeField] private ParticleSystem _jumpParticle; // Assign in inspector
-
+    [HideInInspector] public bool justJumpedOutOfPush = false;
 
     [HideInInspector] public bool hasRecentlyFallen;
     [Header("Grounding Detection")]
@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
     private float slideForce = 65f; //
     private float slideAngle = 25f; //
     [SerializeField] private bool canPush = true;
-
+    [SerializeField] private Vector3 moveDirection;
     public bool CanPush
     {
         get => canPush;
@@ -147,7 +147,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        moveDirection = CurrentMoveDirection;
         if (!CanMove)
         {
             _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
@@ -265,32 +265,40 @@ public class PlayerMovement : MonoBehaviour
         if (!enabled)
             StopMovement();
     }
+
     public void Jump()
     {
         if (IsPulling) return;
         IsJumping = true;
-        IsGrounded = false; // Player is no longer grounded when jumping
-        if (_jumpParticle != null) // Safety check
+        IsGrounded = false;
+        if (_jumpParticle != null)
         {
             _jumpParticle.Play();
         }
-        if (_playerController.isPushing)
+        if (_playerController.isPushing) // If player was pushing *before* this jump
         {
-            Debug.Log("It's currently pushing");
+            Debug.Log("It's currently pushing, attempting to break push on jump.");
             if (_playerController.playerObstacleController.pushObstacle != null)
             {
                 _playerController.playerObstacleController.pushObstacle.isBeingPushed = false;
                 _playerController.playerObstacleController.pushObstacle = null;
                 Debug.Log("Cleaning obstacle before push jump");
             }
+            _playerController.isPushing = false;
+            _playerController.StopPush();
+            justJumpedOutOfPush = true;
         }
-        _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
         Friction(false);
+        _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
 
         if (_player != null && AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayJumpSound(_player.characterStats.female, transform.position);
         }
+    }
+    void Update()
+    {
+        Debug.Log("Linear Velocity: " + _rb.linearVelocity);
     }
     public Collider[] groundHits = new Collider[1];
     [HideInInspector] public Collider[] wallHits = new Collider[1];
@@ -309,15 +317,15 @@ public class PlayerMovement : MonoBehaviour
         {
             IsGrounded = true;
             IsFalling = false;
-            IsJumping = false; // Reset jumping state when grounded
-            Friction(true); // Apply friction when grounded
+            IsJumping = false;
+            justJumpedOutOfPush = false; // Reset when grounded
+            Friction(true);
         }
         else if (IsGrounded && !newGrounded)
         {
             IsGrounded = false;
             hasRecentlyFallen = false;
-            // Only set to falling if not jumping (just walked off a ledge)
-            if (!IsJumping && _rb.linearVelocity.y < -0.1f) // Added velocity check to ensure actual fall
+            if (!IsJumping && _rb.linearVelocity.y < -0.1f)
             {
                 IsFalling = true;
             }

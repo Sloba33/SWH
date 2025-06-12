@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Coffee.UIEffects;
+using DG.Tweening;
 public class GallerySlotPrefab : MonoBehaviour
 {
     public Image backgroundImage;
@@ -24,19 +25,36 @@ public class GallerySlotPrefab : MonoBehaviour
         imageGallery = gallery;
         claimButton.onClick.AddListener(ClaimReward);
         backgroundImage.sprite = claimableSprite;
+        StartTweening();
     }
-
+    Tween tween;
+    public void StartTweening()
+    {
+        KillTween();
+        tween = transform.DOShakeRotation(1.5f, 5f).SetLoops(-1);
+        tween.Play();
+    }
+    public void KillTween()
+    {
+        if (tween != null)
+        {
+            tween.Kill();  // Stop the tween
+            tween = null;  // Clear the tween reference to avoid further usage
+        }
+        transform.rotation = Quaternion.identity;  // Reset the rotation after stopping
+    }
     public void SetClaimed()
     {
         backgroundImage.sprite = claimedSprite;
         claimButton.interactable = false;
         claimText.text = "";
         uiShiny.enabled = false;
-
+        KillTween();
         backgroundImage.color = claimedColor;
     }
     public void SetUnavailable()
     {
+        KillTween();
         backgroundImage.sprite = unavailableSprite;
         claimButton.interactable = false;
         claimText.text = "";

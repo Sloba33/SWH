@@ -21,8 +21,13 @@ public class CharacterPickerManager : MonoBehaviour
     private AdsManager adsManager;
     public CustomizationPanelManager customizationPanelManager;
     public bool TrophyRoadTempFlag;
+    private bool CoinsGranted;
     private void Start()
     {
+
+
+
+
         adsManager = FindObjectOfType<AdsManager>(true);
         mainMenuManager = FindObjectOfType<MainMenuManager>(true);
         characterManager = FindObjectOfType<CharacterManager>(true);
@@ -115,7 +120,10 @@ public class CharacterPickerManager : MonoBehaviour
                 purchaseButton.gameObject.SetActive(true);
                 adRewardButton.gameObject.SetActive(false);
                 upgradeButton.gameObject.SetActive(false);
+                mainMenuManager.levelText.text = lvl.ToString();
+                SetLevelUI(lvl);
                 buyPriceText.text = GetCharacterPrice(currentCharacter.characterStats).ToString();
+                buyPriceText.color = PlayerPrefs.GetInt("coins") < GetCharacterPrice(currentCharacter.characterStats) ? Color.red : Color.white;
                 Debug.Log("Buy Price Text is : " + GetCharacterPrice(currentCharacter.characterStats).ToString());
                 currentCharacter.characterStats.unlockPrice = GetCharacterPrice(currentCharacter.characterStats);
 
@@ -167,8 +175,10 @@ public class CharacterPickerManager : MonoBehaviour
         // Base fill calculations for strength, speed, and special power
         float baseStrengthFill = currentCharacter.playerMenu.characterStats.strength / 20;
         float strengthFillChunk = (1 - baseStrengthFill) / 6;
+
         float baseSpeedFill = currentCharacter.playerMenu.characterStats.speed / 4;
         float speedFillChunk = (1 - baseSpeedFill) / 6;
+
         float baseSpecialFill = currentCharacter.playerMenu.characterStats.specialPower / 8;
         float specialFillChunk = (1 - baseSpecialFill) / 6;
 
@@ -203,19 +213,22 @@ public class CharacterPickerManager : MonoBehaviour
             // Update fill amounts using Lerp
             mainMenuManager.strengthFillBar.fillAmount = Mathf.Lerp(startStrFill, targetStrFill, t);
             mainMenuManager.speedFillBar.fillAmount = Mathf.Lerp(startSpdFill, targetSpdFill, t);
+            mainMenuManager.specialFillBar.fillAmount = Mathf.Lerp(startSpecialFill, targetSpecialFill, t);
 
             // Lerp text values
             int currentStrText = (int)Mathf.Lerp(startStrText, targetStrText, t);
             int currentSpdText = (int)Mathf.Lerp(startSpdText, targetSpdText, t);
+            int currentSpecialText = (int)Mathf.Lerp(startSpecialText, targetSpecialText, t);
 
             // Update text fields
             mainMenuManager.strengthStatText.text = currentStrText.ToString();
             mainMenuManager.speedStatText.text = currentSpdText.ToString() + "";
+            mainMenuManager.specialStatText.text = currentSpecialText.ToString() + "";
 
             if (lvl % 2 == 0)
             {
                 mainMenuManager.specialFillBar.fillAmount = Mathf.Lerp(startSpecialFill, targetSpecialFill, t);
-                int currentSpecialText = (int)Mathf.Lerp(startSpecialText, targetSpecialText, t);
+                currentSpecialText = (int)Mathf.Lerp(startSpecialText, targetSpecialText, t);
                 mainMenuManager.specialStatText.text = currentSpecialText.ToString() + "";
             }
 
@@ -226,8 +239,11 @@ public class CharacterPickerManager : MonoBehaviour
         // Ensure bars and text reach their target values
         mainMenuManager.strengthFillBar.fillAmount = targetStrFill;
         mainMenuManager.speedFillBar.fillAmount = targetSpdFill;
+        mainMenuManager.specialFillBar.fillAmount = targetSpecialFill;
+
         mainMenuManager.strengthStatText.text = targetStrText.ToString();
         mainMenuManager.speedStatText.text = targetSpdText.ToString() + "";
+        mainMenuManager.specialStatText.text = targetSpecialText.ToString() + "";
 
         if (lvl % 2 == 0)
         {
@@ -286,6 +302,7 @@ public class CharacterPickerManager : MonoBehaviour
             upgradeButton.gameObject.SetActive(true);
             purchaseButton.gameObject.SetActive(false);
             adRewardButton.gameObject.SetActive(false);
+
             for (int i = 0; i < characterSelectors.Count; i++)
             {
                 if (characterSelectors[i] == currentCharacter)

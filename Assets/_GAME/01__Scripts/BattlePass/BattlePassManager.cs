@@ -202,10 +202,9 @@ public class BattlePassManager : MonoBehaviour
     private void LoadClaimedItems()
     {
         string claimedFreeItemsString = PlayerPrefs.GetString("ClaimedFreeItems", string.Empty);
-        string claimedPremiumItemsString = PlayerPrefs.GetString(
-            "ClaimedPremiumItems",
-            string.Empty
-        );
+        string claimedPremiumItemsString = PlayerPrefs.GetString("ClaimedPremiumItems", string.Empty);
+        Debug.Log($"Loaded Free Items: {claimedFreeItemsString}");
+        Debug.Log($"Loaded Premium Items: {claimedPremiumItemsString}");
 
         if (!string.IsNullOrEmpty(claimedFreeItemsString))
         {

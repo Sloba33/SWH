@@ -19,6 +19,7 @@ public class PlayerObstacleController : MonoBehaviour
     [SerializeField] float pushSpeed;
     public Vector3 previousMoveDirection;
     public Vector3 currentMoveDirection;
+
     private void Start()
     {
         _anim = GetComponent<Animator>();
@@ -54,18 +55,30 @@ public class PlayerObstacleController : MonoBehaviour
     public void HandlePush()
     {
         if (playerController.isPulling) return;
-
+        if (playerMovement.justJumpedOutOfPush && _rb.linearVelocity.y > 0.1f)
+        {
+            return;
+        }
         if (!playerController._movement.IsAgainstWall || movementDirection == Vector3.zero)
         {
             previousPushDirection = Vector3.zero;
             if (pushObstacle != null) pushObstacle.ResetObstacle();
-            StopPush();
+            StopPush(); // Ensure stop push logic runs if conditions are no longer met
             return;
         }
         else if (playerController._movement.IsAgainstWall && movementDirection != Vector3.zero)
         {
             // Debug.Log("Pushing");
             pushObstacle = playerController.FindObstacle();
+            if (pushObstacle == null)
+            {
+                // The obstacle is no longer there, or a new one wasn't found
+                previousPushDirection = Vector3.zero;
+                // No need to call pushObstacle?.ResetObstacle() here because pushObstacle is null
+                StopPush();
+                return;
+            }
+
             pushObstacle.SphereFlags();
             if (!pushObstacle.isPushable)
             {

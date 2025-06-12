@@ -945,6 +945,7 @@ MonoBehaviour:
   _jumpForce: 5.8
   _jumpParticle: {fileID: 6808812054988748476, guid: b6fbc467c14a340499ee5aae55a3519c,
     type: 3}
+  justJumpedOutOfPush: 0
   hasRecentlyFallen: 0
   _groundMask:
     serializedVersion: 2
@@ -966,13 +967,15 @@ MonoBehaviour:
   raycastAngle: 5
   leftEyeOffset: {x: 0.025, y: 0, z: 0}
   rightEyeOffset: {x: -0.025, y: 0, z: 0}
+  canMove: 1
   _tileLayer:
     serializedVersion: 2
     m_Bits: 1024
   tileRayLength: 50
   forwardOffset: {x: 0, y: 0.48, z: 0}
   backOffset: {x: 0, y: 0.48, z: 0}
-  CanPush: 0
+  canPush: 1
+  moveDirection: {x: 0, y: 0, z: 0}
   groundHits:
   - {fileID: 0}
   wallHits:
@@ -11445,7 +11448,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4247424201074248903
 Transform:
   m_ObjectHideFlags: 0
@@ -11990,7 +11993,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3132822374787066858
 Transform:
   m_ObjectHideFlags: 0
