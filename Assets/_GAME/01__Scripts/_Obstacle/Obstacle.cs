@@ -11,8 +11,8 @@ public class Obstacle : MonoBehaviour
     public GameObject fallIndicator;
     public Material obstacleMaterial;
     public bool MoveOverride;
-    public bool wasSucked;
-
+    
+    public bool shouldFall = true;  
     public ObstacleType obstacleType;
     public ObstacleModifier obstacleModifier;
     public ObstacleColor obstacleColor;
@@ -122,7 +122,7 @@ public class Obstacle : MonoBehaviour
     private void Start()
     {
         controllerCleared = true;
-      
+
         FallTimer = 0f;
         if (GetComponent<Rigidbody>() != null)
         {
@@ -176,7 +176,7 @@ public class Obstacle : MonoBehaviour
     }
     private void HandleFall()
     {
-        if (!grounded)
+        if (!grounded && shouldFall)
         {
             StartCoroutine(Fall());
         }
@@ -284,7 +284,7 @@ public class Obstacle : MonoBehaviour
     public PlayerController currentlyUsedPlayerConrtoller;
     public void PushObstacle(Vector3 dir, float speed)
     {
-
+        Debug.Log("Pushing Obstacle");
         if (!obstacleUp || recentlyPulled)
         {
             if (MoveOverride) return;
@@ -307,7 +307,14 @@ public class Obstacle : MonoBehaviour
                 dir.Normalize();
                 if (Vector3.Distance(transform.position, tile.transform.position) > 0.001f)
                 {
-                    if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
+                     Debug.Log("Moving");
+                    if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI)
+                    {
+                        Debug.Log("Playing obstacle sound move");
+
+                        AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
+                    }
+
                     _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
 
                 }

@@ -316,8 +316,8 @@ public class LevelGoal : MonoBehaviour
             // PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, currentIntroLevel);
             PlayerPrefs.Save();
 
-          
-          
+
+
         }
     }
 
@@ -336,7 +336,7 @@ public class LevelGoal : MonoBehaviour
         PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)TutorialMenuManager.MenuTutorialStep.None);
         PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, 0);
         PlayerPrefs.SetInt(PREF_FIRST_TIME, 1);
-        
+
         PlayerPrefs.Save();
 
         // if (GameFlowManager.Instance != null)
@@ -381,7 +381,8 @@ public class LevelGoal : MonoBehaviour
 
     public void TurnOnJumpEvent(Component sender, object data)
     {
-        pullHint.gameObject.SetActive(false);
+        if (pullHint != null)
+            pullHint.gameObject.SetActive(false);
         PlayerControls pc = FindObjectOfType<PlayerControls>();
         if (pc != null) pc.hintPull = null;
         jumpButton.gameObject.SetActive(true);

@@ -32,7 +32,7 @@ public class PlayerObstacleController : MonoBehaviour
     private bool pullConstraintsReset;
     private void FixedUpdate()
     {
-
+        
         movementDirection = playerController._movement.CurrentMoveDirection;
         if (!playerController.isPushing && previousPushObstacle != null)
         {
@@ -54,6 +54,7 @@ public class PlayerObstacleController : MonoBehaviour
     }
     public void HandlePush()
     {
+        Debug.Log("Pushing");
         if (playerController.isPulling) return;
         if (playerMovement.justJumpedOutOfPush && _rb.linearVelocity.y > 0.1f)
         {
@@ -100,6 +101,7 @@ public class PlayerObstacleController : MonoBehaviour
             // Debug.Log("Added obstacle");
             pushObstacle.SphereFlags();
             bool Moveable = pushObstacle.CheckObstaclesAround(movementDirection);
+            Debug.Log("Moveable "+ Moveable + " pushObstacle : " + pushObstacle + " Can push : " + playerController._movement.CanPush);
             // Debug.Log("fall height is : " + playerController.fallHeight);
             // diff = playerController.fallHeight - 0.1f > pushObstacle.transform.position.y
             if (playerController._movement.hasRecentlyFallen)
@@ -163,12 +165,14 @@ public class PlayerObstacleController : MonoBehaviour
                 // Update previousMoveDirection
                 previousMoveDirection = currentMoveDirection;
             }
-            else if (!pushObstacle.grounded && pushObstacle.isFalling && !playerController._movement.IsGrounded)
+            // MODIFICATION: Added '&& Moveable' to ensure push only happens if the obstacle is movable
+            else if (!pushObstacle.grounded && pushObstacle.isFalling && !playerController._movement.IsGrounded && Moveable) // Added && Moveable
             {
                 // Debug.Log("Code 2");
                 Push();
             }
-            else if (!diff) { Debug.Log("Code 3 diff"); Push(); }
+            // MODIFICATION: Added '&& Moveable' to ensure push only happens if the obstacle is movable
+            else if (!diff && Moveable) { Debug.Log("Code 3 diff"); Push(); } // Added && Moveable
             else
             {
                 // Debug.Log("CODE 3 " + "pushObstacle :" + pushObstacle + " Can push : " + playerController.canPush + " Moveable :" + Moveable + " diff :" + diff);
@@ -205,6 +209,7 @@ public class PlayerObstacleController : MonoBehaviour
 
         _anim.SetBool("Push", true);
         _anim.SetBool("Idle", false);
+        AudioManager.Instance.PlayObstacleSound_Move(pushObstacle.obstacleAudioType, transform.position);
     }
     private IEnumerator CoordinatedPushMovement()
     {
@@ -339,4 +344,3 @@ public class PlayerObstacleController : MonoBehaviour
         return;
     }
 }
-

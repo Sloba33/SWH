@@ -59,7 +59,7 @@ public class ImageGallery : MonoBehaviour
         claimPanel.SetRewardData(reward);
         ScrollToFirstUnclaimedReward();
     }
-    public void PopulateGallery()
+  public void PopulateGallery()
     {
         int i = 0;
         foreach (LevelProgress levelProgressPrefab in levelProgressPrefabs)
@@ -91,21 +91,76 @@ public class ImageGallery : MonoBehaviour
             Debug.Log("Are images filled :" + levelProgressInstance.AreAllImagesFilled());
             gallerySlot.trophyRoadManager = trophyRoadManager;
             gallerySlot.imageGallery = this;
-            if (AreAllImagesFilled && !IsGalleryRewardClaimed(i))
+
+           if (AreAllImagesFilled && !IsGalleryRewardClaimed(i))
             {
-                Debug.Log("Images are filled");
+                Debug.Log("Images are filled and reward is unclaimed."); // Corrected log message
                 gallerySlot.Initialize(i, trophyRoadManager, this);
+
+                // --- Start of new code to find and color the outline image ---
+                Image outlineImage = null;
+
+                // 1. Try finding it as the first child of the LevelProgress instance
+                if (levelProgressInstance.transform.childCount > 0)
+                {
+                    Transform firstChild = levelProgressInstance.transform.GetChild(0);
+                    if (firstChild != null && firstChild.name.ToLower().Contains("outline"))
+                    {
+                        outlineImage = firstChild.GetComponent<Image>();
+                    }
+                }
+
+                // 2. If not found as the first child, or if the name doesn't match, search all children recursively
+                if (outlineImage == null)
+                {
+                    // Search recursively in children (including inactive ones)
+                    foreach (Image img in levelProgressInstance.GetComponentsInChildren<Image>(true))
+                    {
+                        if (img.gameObject.name.ToLower().Contains("outline"))
+                        {
+                            outlineImage = img;
+                            break; // Found it, stop searching
+                        }
+                    }
+                }
+
+                if (outlineImage != null)
+                {
+                    // Change color to #FFB500 (Unity ColorUtility can parse hex strings)
+                    Color outlineColor;
+                    if (ColorUtility.TryParseHtmlString("#FFB500", out outlineColor))
+                    {
+                        outlineImage.color = outlineColor;
+                        Debug.Log($"Set outline color for {outlineImage.name} in slot {i} to #FFB500.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Failed to parse color #FFB500 for outline image in slot {i}.");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Outline Image not found for slot {i}. Ensure it exists and its name contains 'outline'.");
+                }
+                // --- End of new code ---
+
+                // --- Call the new method here to set image fills to 0 ---
+                levelProgressInstance.ResetAllImageFills();
+                Debug.Log($"Reset fills to 0 for LevelProgress instance in slot {i} because it's unclaimed but claimable.");
+                // --- End of new code ---
+
                 // gallerySlot.claimButton.onClick.AddListener(() => ClaimGalleryReward(i, gallerySlot));
             }
+
             else if (IsGalleryRewardClaimed(i))
             {
-                Debug.Log("Images are filled but unclaimed");
+                Debug.Log("Images are filled and reward has been claimed."); // Corrected log message
                 gallerySlot.Initialize(i, trophyRoadManager, this);
                 gallerySlot.SetClaimed();
             }
             else
             {
-                Debug.Log("Images is not filled");
+                Debug.Log("Images are not filled.");
                 gallerySlot.Initialize(i, trophyRoadManager, this);
                 gallerySlot.SetUnavailable();
             }

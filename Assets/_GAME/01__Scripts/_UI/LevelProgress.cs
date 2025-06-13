@@ -12,7 +12,6 @@ public class LevelProgress : MonoBehaviour
     public AudioSource audioSource;
     public Image Blue, Red, Green, Yellow, Black, Grey, White, Purple, Pink, Wood, Stone, Metal, Universal, Default;
 
-    
     public UIShiny uiShiny;
     public LevelGoal levelGoal;
     private string progressKeyPrefix;
@@ -162,9 +161,9 @@ public class LevelProgress : MonoBehaviour
             case ObstacleColor.Black: image = Black; break;
             case ObstacleColor.Grey: image = Grey; break;
             case ObstacleColor.White: image = White; break;
-            case ObstacleColor.Purple: image = Purple; break; 
-            case ObstacleColor.Pink: image = Pink; break; 
-            case ObstacleColor.Wood: image = Wood; break; 
+            case ObstacleColor.Purple: image = Purple; break;
+            case ObstacleColor.Pink: image = Pink; break;
+            case ObstacleColor.Wood: image = Wood; break;
             case ObstacleColor.Stone: image = Stone; break;
             case ObstacleColor.Default: image = Default; break; // Added Default case
             case ObstacleColor.Metal: image = Metal; break;     // Added Metal case
@@ -207,6 +206,7 @@ public class LevelProgress : MonoBehaviour
         while (Time.time < endTime)
         {
             image.fillAmount = Mathf.Lerp(startFill, fillAmount, (Time.time - startTime) / duration);
+            DebugFillWidth(image, image.fillAmount); // Debugging fill width
             yield return null;
         }
 
@@ -221,6 +221,25 @@ public class LevelProgress : MonoBehaviour
         winScreen.ActivateButtons();
     }
 
+    // --- New method to reset all image fills ---
+    public void ResetAllImageFills()
+    {
+        Image[] imagesToReset = new Image[]
+        {
+            Blue, Red, Green, Yellow, Black, Grey, White, Purple, Pink, Wood, Stone, Metal, Universal, Default
+        };
+
+        foreach (Image img in imagesToReset)
+        {
+            if (img != null)
+            {
+                img.fillAmount = 0f;
+                Debug.Log($"Reset {img.name} fill amount to 0.");
+            }
+        }
+    }
+    // --- End of new method ---
+
     public bool AreAllImagesFilled()
     {
         float threshold = 0.98f; // Adjust this value as needed
@@ -232,9 +251,9 @@ public class LevelProgress : MonoBehaviour
                (Black == null || Black.fillAmount >= threshold) &&
                (Grey == null || Grey.fillAmount >= threshold) &&
                (White == null || White.fillAmount >= threshold) &&
-               (Purple == null || Purple.fillAmount >= threshold) && 
+               (Purple == null || Purple.fillAmount >= threshold) &&
                (Pink == null || Pink.fillAmount >= threshold) &&
-               (Wood == null || Wood.fillAmount >= threshold) &&   
+               (Wood == null || Wood.fillAmount >= threshold) &&
                (Stone == null || Stone.fillAmount >= threshold) &&
                (Default == null || Default.fillAmount >= threshold) && // Added Default check
                (Metal == null || Metal.fillAmount >= threshold) &&     // Added Metal check
@@ -281,7 +300,107 @@ public class LevelProgress : MonoBehaviour
             }
         }
     }
+    private void DebugFillWidth(Image image, float currentFillAmount)
+    {
+        if (image == null || image.sprite == null)
+        {
+            // Debug.LogWarning("Cannot debug fill width: Image or Sprite is null."); // Already logged in FillImage
+            return;
+        }
 
+        RectTransform imageRectTransform = image.GetComponent<RectTransform>();
+        if (imageRectTransform == null)
+        {
+            // Debug.LogWarning("Cannot debug fill width: Image has no RectTransform."); // Already logged in FillImage
+            return;
+        }
+
+        Sprite sprite = image.sprite;
+
+        // Epsilon for floating point comparisons
+        float epsilon = 0.001f;
+
+        // 1. Calculate the world Y position of the current fill line.
+        // Get the corners of the RectTransform in world space.
+        Vector3[] corners = new Vector3[4];
+        imageRectTransform.GetWorldCorners(corners); // [0]bottom-left, [1]top-left, [2]top-right, [3]bottom-right
+
+        // Linearly interpolate between the bottom and top world Y coordinates of the RectTransform
+        // based on the fillAmount.
+        float bottomWorldY = corners[0].y;
+        float topWorldY = corners[1].y;
+        float currentFillWorldY = Mathf.Lerp(bottomWorldY, topWorldY, currentFillAmount);
+
+        // 2. Find the min/max X coordinates of sprite vertices whose Y is below or at the fill line.
+        float minWorldX = float.MaxValue;
+        float maxWorldX = float.MinValue;
+        bool foundAnyVertexBelowFillLine = false;
+
+        // Iterate through all vertices of the sprite.
+        // sprite.vertices are in sprite-local space (relative to sprite.rect.center).
+        // We need to transform these to world space to compare with currentFillWorldY.
+        float pixelsPerUnit = sprite.pixelsPerUnit;
+        Vector2 spriteCenter = sprite.rect.center;
+
+        for (int i = 0; i < sprite.vertices.Length; i++)
+        {
+            Vector2 vertex = sprite.vertices[i];
+
+            // Convert sprite-local vertex to Image's local space (relative to Image's pivot)
+            // This transformation involves scaling by pixelsPerUnit and offsetting by sprite's center/pivot.
+            // Simplified: treat sprite's local space as directly corresponding to Image's content rect
+            // scaled by pixelsPerUnit, then transform *that* point to world space.
+
+            // Transform vertex from sprite local space (pixels) to world space
+            // Assuming image's RectTransform covers the sprite content fully.
+            Vector3 imageLocalPos = new Vector3(
+                (vertex.x - spriteCenter.x) / pixelsPerUnit,
+                (vertex.y - spriteCenter.y) / pixelsPerUnit,
+                0
+            );
+
+            // Now transform this local position to world space using the Image's RectTransform.
+            Vector3 worldVertexPos = imageRectTransform.TransformPoint(imageLocalPos);
+
+            // Check if this world-space vertex is below or at the current fill line.
+            if (worldVertexPos.y <= currentFillWorldY + epsilon)
+            {
+                minWorldX = Mathf.Min(minWorldX, worldVertexPos.x);
+                maxWorldX = Mathf.Max(maxWorldX, worldVertexPos.x);
+                foundAnyVertexBelowFillLine = true;
+            }
+        }
+
+        // 3. Debug Visualization and Logging
+        if (foundAnyVertexBelowFillLine)
+        {
+            float calculatedWidth = maxWorldX - minWorldX;
+
+            // Draw a debug line in the Scene view visualizing the calculated width
+            Vector3 debugLineStart = new Vector3(minWorldX, currentFillWorldY, 0);
+            Vector3 debugLineEnd = new Vector3(maxWorldX, currentFillWorldY, 0);
+
+            // Make sure the Z-coordinate is consistent for visibility, or slightly offset it.
+            // Using image's Z-position.
+            debugLineStart.z = imageRectTransform.position.z;
+            debugLineEnd.z = imageRectTransform.position.z;
+
+            // Draw a blue line for the calculated triangle width at the fill height
+            Debug.DrawLine(debugLineStart, debugLineEnd, Color.blue, 0.1f);
+
+            // Draw a red line showing the full width of the RectTransform at that Y for comparison
+            Debug.DrawLine(new Vector3(corners[0].x, currentFillWorldY, imageRectTransform.position.z),
+                           new Vector3(corners[3].x, currentFillWorldY, imageRectTransform.position.z), Color.red, 0.1f);
+
+            Debug.Log($"Image: {image.name}, Fill: {currentFillAmount:F2}, " +
+                      $"Calculated Triangle Width: {calculatedWidth:F2} world units. " +
+                      $"(RectTransform Width: {imageRectTransform.rect.width * imageRectTransform.lossyScale.x:F2} world units)");
+        }
+        else
+        {
+            Debug.Log($"Image: {image.name}, Fill: {currentFillAmount:F2}. No sprite vertices found below fill line. Width: 0.");
+        }
+    }
     private string DictionaryToString(Dictionary<ObstacleColor, float> dict)
     {
         string s = "{";

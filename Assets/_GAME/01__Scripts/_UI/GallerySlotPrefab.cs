@@ -10,9 +10,9 @@ public class GallerySlotPrefab : MonoBehaviour
     public Image backgroundImage;
     public Button claimButton;
     public TextMeshProUGUI claimText;
-    public UIShiny uiShiny;
+    public UIEffect uIEffect;
     public TrophyRoadManager trophyRoadManager;
-    public int levelProgressIndex;
+    public int levelProgressIndex;  
     public ImageGallery imageGallery;
     public ClaimPanel claimPanel;
     public Sprite claimableSprite, claimedSprite, unavailableSprite;
@@ -25,13 +25,14 @@ public class GallerySlotPrefab : MonoBehaviour
         imageGallery = gallery;
         claimButton.onClick.AddListener(ClaimReward);
         backgroundImage.sprite = claimableSprite;
+     
         StartTweening();
     }
     Tween tween;
     public void StartTweening()
     {
         KillTween();
-        tween = transform.DOShakeRotation(1.5f, 5f).SetLoops(-1);
+        // tween = transform.DOShakeRotation(1.5f, 5f).SetLoops(-1);
         tween.Play();
     }
     public void KillTween()
@@ -48,7 +49,7 @@ public class GallerySlotPrefab : MonoBehaviour
         backgroundImage.sprite = claimedSprite;
         claimButton.interactable = false;
         claimText.text = "";
-        uiShiny.enabled = false;
+        uIEffect.enabled = false;
         KillTween();
         backgroundImage.color = claimedColor;
     }
@@ -58,7 +59,7 @@ public class GallerySlotPrefab : MonoBehaviour
         backgroundImage.sprite = unavailableSprite;
         claimButton.interactable = false;
         claimText.text = "";
-        uiShiny.enabled = false;
+        uIEffect.enabled = false;
         backgroundImage.color = unclaimedColor;
     }
     private void SpawnCurrencyPanel()
@@ -78,9 +79,6 @@ public class GallerySlotPrefab : MonoBehaviour
     public void ClaimReward()
     {
         Debug.Log("Spawning panel in GallerySlotPrefab");
-
-
-
         SetClaimed();
         StartCoroutine(DelayScroll());
     }

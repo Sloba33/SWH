@@ -298,7 +298,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log("Linear Velocity: " + _rb.linearVelocity);
+        // Debug.Log("Linear Velocity: " + _rb.linearVelocity);
     }
     public Collider[] groundHits = new Collider[1];
     [HideInInspector] public Collider[] wallHits = new Collider[1];
