@@ -89,24 +89,24 @@ public class CameraController : MonoBehaviour
     private Color originalMat2Color;
     [SerializeField] private Renderer staircaseRenderer;
     // }
-    private IEnumerator Start()
+    private void Start()
     {
         joystickHolder = FindObjectOfType<PlayerControls>().joystickHolder;
         levelGoal = FindFirstObjectByType<LevelGoal>(FindObjectsInactive.Include);
-        if (levelGoal != null && levelGoal.SpawnFallingObstacles)
-        {
-            Debug.Log("Falling boxes so zooming out");
-            yield return new WaitForSeconds(0.5f);
-            ZoomIn();
-        }
-        yield return new WaitForSeconds(0.5f);
+        // if (levelGoal != null && levelGoal.SpawnFallingObstacles)
+        // {
+        //     Debug.Log("Falling boxes so zooming out");
+        //     yield return new WaitForSeconds(0.5f);
+        //     ZoomIn();
+        // }
+        // yield return new WaitForSeconds(0.5f);
         // mat1Color = MAT1.color;
         // mat2Color = MAT2.color;
 
-        // // Apply the instanced materials to the staircase
+        
 
 
-        // // Initialize colors using the instances
+
 
         // mat1_color_illusive = new Color(mat1Color.r, mat1Color.g, mat1Color.b, 0);
         // mat2_color_illusive = new Color(mat2Color.r, mat2Color.g, mat2Color.b, 0);
