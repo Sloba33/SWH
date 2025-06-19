@@ -32,7 +32,7 @@ public class PlayerObstacleController : MonoBehaviour
     private bool pullConstraintsReset;
     private void FixedUpdate()
     {
-        
+
         movementDirection = playerController._movement.CurrentMoveDirection;
         if (!playerController.isPushing && previousPushObstacle != null)
         {
@@ -52,30 +52,74 @@ public class PlayerObstacleController : MonoBehaviour
         }
 
     }
+    // In PlayerObstacleController.cs
+
+    // Add a field to track the last time we landed
+    private float lastLandTime = 0f;
+    private const float PUSH_RE_EVAL_DELAY_AFTER_LAND = 0.2f; // Time to delay full push re-evaluation after landing
+
     public void HandlePush()
     {
         Debug.Log("Pushing");
         if (playerController.isPulling) return;
+
+        // Capture the current timestamp if player just landed
+        if (playerMovement.justLanded && lastLandTime == 0f) // Only set on the very first frame of justLanded
+        {
+            lastLandTime = Time.time;
+        }
+        // If we are past the grace period, reset lastLandTime
+        if (lastLandTime != 0f && (Time.time - lastLandTime) > PUSH_RE_EVAL_DELAY_AFTER_LAND)
+        {
+            lastLandTime = 0f;
+        }
+
+
+        // Condition 1: If player just jumped out of a push and is still ascending
         if (playerMovement.justJumpedOutOfPush && _rb.linearVelocity.y > 0.1f)
         {
+            // Don't try to re-push while still jumping upwards
             return;
         }
-        if (!playerController._movement.IsAgainstWall || movementDirection == Vector3.zero)
+
+        // Determine if we should *attempt* to push based on wall contact and movement
+        bool canPotentiallyPush = playerController._movement.IsAgainstWall && movementDirection != Vector3.zero;
+
+        // Condition 2: If we are not currently pushing, and cannot potentially push, then stop.
+        // However, add a check for the landing grace period.
+        if (!playerController.isPushing && !canPotentiallyPush)
         {
-            previousPushDirection = Vector3.zero;
-            if (pushObstacle != null) pushObstacle.ResetObstacle();
-            StopPush(); // Ensure stop push logic runs if conditions are no longer met
-            return;
+            // Only stop if we are definitely not against a wall OR not moving,
+            // AND we are NOT in the grace period after landing where we might re-engage.
+            if (lastLandTime == 0f || (Time.time - lastLandTime) > PUSH_RE_EVAL_DELAY_AFTER_LAND)
+            {
+                // If not within the landing grace period, proceed to stop push
+                previousPushDirection = Vector3.zero;
+                if (pushObstacle != null) pushObstacle.ResetObstacle();
+                StopPush();
+                return;
+            }
+            else
+            {
+                // Within landing grace period, do not prematurely stop pushing.
+                // Allow the next frame to potentially re-establish push conditions.
+                return;
+            }
         }
-        else if (playerController._movement.IsAgainstWall && movementDirection != Vector3.zero)
+
+
+        // Main logic for finding and engaging with the obstacle
+        // This block is entered if:
+        // 1. We are currently pushing (playerController.isPushing == true) OR
+        // 2. We can potentially push (canPotentiallyPush == true) AND
+        //    we are NOT in the process of stopping prematurely due to landing issues (handled above)
+        if (canPotentiallyPush)
         {
-            // Debug.Log("Pushing");
             pushObstacle = playerController.FindObstacle();
             if (pushObstacle == null)
             {
-                // The obstacle is no longer there, or a new one wasn't found
+                // If no obstacle found, stop pushing. This applies even during grace period if no obstacle is found.
                 previousPushDirection = Vector3.zero;
-                // No need to call pushObstacle?.ResetObstacle() here because pushObstacle is null
                 StopPush();
                 return;
             }
@@ -83,37 +127,40 @@ public class PlayerObstacleController : MonoBehaviour
             pushObstacle.SphereFlags();
             if (!pushObstacle.isPushable)
             {
-                // Debug.Log("Code 0");
+                // If obstacle is not pushable, stop pushing.
                 previousPushDirection = Vector3.zero;
                 pushObstacle?.ResetObstacle();
                 StopPush();
                 return;
             }
             else
+            {
+                // Conditions met to set isPushing to true
                 playerController.isPushing = true;
+            }
+
+            // --- Rest of your existing HandlePush logic follows here ---
+            // This part determines if the Push() method is actually called.
+            // It should remain largely the same, as the goal is to prevent the flickering
+            // of playerController.isPushing, not to change the push mechanics themselves.
 
             if (previousPushObstacle != pushObstacle)
             {
-                // Debug.Log("Targetting different obstacle, resetting other");
                 if (previousPushObstacle != null) previousPushObstacle.ResetObstacle();
                 previousPushObstacle = pushObstacle;
             }
-            // Debug.Log("Added obstacle");
             pushObstacle.SphereFlags();
             bool Moveable = pushObstacle.CheckObstaclesAround(movementDirection);
-            Debug.Log("Moveable "+ Moveable + " pushObstacle : " + pushObstacle + " Can push : " + playerController._movement.CanPush);
-            // Debug.Log("fall height is : " + playerController.fallHeight);
-            // diff = playerController.fallHeight - 0.1f > pushObstacle.transform.position.y
+            Debug.Log("Moveable " + Moveable + " pushObstacle : " + pushObstacle + " Can push : " + playerController._movement.CanPush);
+
             if (playerController._movement.hasRecentlyFallen)
             {
                 diff = Mathf.Round(playerController._movement.fallHeight) - pushObstacle.transform.position.y > 0;
-                // Debug.Log("Testing fall - Fall height :" + playerController.fallHeight + " obstacle height " + pushObstacle.transform.position.y);
             }
             else diff = true;
-            // Debug.Log("Should the obstacle be pushable :" + (playerController.fallHeight - 0.1f) + " obstacle height" + pushObstacle.transform.position.y);
+
             if (pushObstacle != null && movementDirection != Vector3.zero && playerController._movement.CanPush && Moveable && diff && !pushObstacle.pushabilityDelayed)
             {
-                // Debug.Log("Should the obstacle be pushable INSIDE :" + diff);
                 Vector3 direction = pushObstacle.transform.position - transform.position;
                 pushObstacle.playerController = playerController;
                 direction.Normalize();
@@ -125,10 +172,8 @@ public class PlayerObstacleController : MonoBehaviour
                 Vector3 cubeSideCenter = pushObstacle.transform.position - pushObstacle.transform.GetComponent<Collider>().bounds.extents.magnitude * direction;
                 transform.position = cubeSideCenter;
 
-                // Update currentMoveDirection
                 currentMoveDirection = movementDirection;
 
-                // Handle transition from standstill
                 if (previousMoveDirection == Vector3.zero && currentMoveDirection != Vector3.zero)
                 {
                     pushDirectionChanged = true;
@@ -140,7 +185,6 @@ public class PlayerObstacleController : MonoBehaviour
                     }
                 }
 
-                // Check for direction change and set flag
                 if (currentMoveDirection != previousMoveDirection && pushObstacle != null && playerController._movement.CanPush && pushObstacle.Movable(movementDirection))
                 {
                     pushDirectionChanged = true;
@@ -154,7 +198,6 @@ public class PlayerObstacleController : MonoBehaviour
 
                 if (pushObstacle != null && Moveable && currentMoveDirection == previousMoveDirection && playerController._movement.CanPush)
                 {
-                    // Debug.Log("Code 1");
                     Push();
                 }
                 else
@@ -162,30 +205,31 @@ public class PlayerObstacleController : MonoBehaviour
                     bool pd = previousPushDirection == movementDirection;
                 }
 
-                // Update previousMoveDirection
                 previousMoveDirection = currentMoveDirection;
             }
-            // MODIFICATION: Added '&& Moveable' to ensure push only happens if the obstacle is movable
-            else if (!pushObstacle.grounded && pushObstacle.isFalling && !playerController._movement.IsGrounded && Moveable) // Added && Moveable
+            else if (!pushObstacle.grounded && pushObstacle.isFalling && !playerController._movement.IsGrounded && Moveable)
             {
-                // Debug.Log("Code 2");
                 Push();
             }
-            // MODIFICATION: Added '&& Moveable' to ensure push only happens if the obstacle is movable
-            else if (!diff && Moveable) { Debug.Log("Code 3 diff"); Push(); } // Added && Moveable
+            else if (!diff && Moveable) { Push(); }
             else
             {
-                // Debug.Log("CODE 3 " + "pushObstacle :" + pushObstacle + " Can push : " + playerController.canPush + " Moveable :" + Moveable + " diff :" + diff);
+                // If the above conditions for actually performing a push are not met,
+                // then ensure isPushing is false and reset obstacle.
                 pushObstacle?.ResetObstacle();
                 StopPush();
             }
         }
-        else
+        else // This is the "else" for the main "if (canPotentiallyPush)"
         {
-            if (pushObstacle != null)
+            // If we cannot potentially push at all (not against wall or no movement),
+            // then explicitly stop pushing, unless we are in the landing grace period.
+            if (lastLandTime == 0f || (Time.time - lastLandTime) > PUSH_RE_EVAL_DELAY_AFTER_LAND)
             {
-                // Debug.Log("Code 4");
-                pushObstacle.ResetObstacle();
+                if (pushObstacle != null)
+                {
+                    pushObstacle.ResetObstacle();
+                }
                 StopPush();
             }
         }

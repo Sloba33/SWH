@@ -57,8 +57,12 @@ public class PlayerAnimation : MonoBehaviour
         bool isWalking = isMoving && IsGrounded && MoveSpeed < 3f;
 
         // Prioritize states
-        if (_playerMovement.IsPushing)
+        if (_playerController.isPushing)
+        {
+            var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
+            UnityEngine.Debug.LogWarning($"Set to push:\n{stackTrace}");
             return PlayerAnimState.Push;
+        }
         if (_playerMovement.IsPulling)
             return PlayerAnimState.Pull;
 

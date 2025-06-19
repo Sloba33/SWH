@@ -335,6 +335,13 @@ public class WinScreen : MonoBehaviour
     }
     public void ActivateButtons()
     {
+        if (PlayerPrefs.GetInt("IsSeparateBuild") == 1)
+        {
+            proceedButton.SetActive(false);
+            nextLevelButton.gameObject.SetActive(true);
+            // mainMenuButton.gameObject.SetActive(true);
+            return;
+        }
         if (GameManager.Instance.ShouldHaveMainMenuButton)
         {
             proceedButton.SetActive(false);

@@ -43,7 +43,9 @@ public class SceneLoader : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Loading scene");
+        PlayerPrefs.SetInt("IsSeparateBuild", 1); // Setting for separate bui
+        bool separateBuild = PlayerPrefs.GetInt("IsSeparateBuild", 0) == 1;
+   
         currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
         if (currentLevelIndex == 0) isLoadingScene = true;
         else isLoadingScene = false;
@@ -57,17 +59,29 @@ public class SceneLoader : MonoBehaviour
         }
 
         int firstTime = PlayerPrefs.GetInt("FirstTime", 0);
-        if (isLoadingScene && firstTime != 0)
+        if (isLoadingScene && firstTime != 0 && !separateBuild)
+        {
+            // If it's a loading scene and not the first time, load the main menu
+            Debug.Log("Loading scene is active, loading main menu.");
+            StartCoroutine(LoadLevelInternal(1)); // Use the internal loading method
+        }
+        else if (isLoadingScene && firstTime == 0 && !separateBuild)
         {
             Debug.Log("Its a loading scene, so we load main menu.");
             StartCoroutine(LoadLevelInternal(1)); // Use the internal loading method
         }
-        else if (firstTime == 0 && isLoadingScene)
+        else if (firstTime == 0 && isLoadingScene && separateBuild)
         {
             Debug.Log("First time launch, loading onboarding/tutorial scene.");
             // Important: Remember to set PlayerPrefs.SetInt("FirstTime", 1);
             // in your onboarding/tutorial scene (scene 2) once it's complete.
             StartCoroutine(LoadLevelInternal(2)); // Use the internal loading method
+        }
+        if (separateBuild && PlayerPrefs.GetInt("Level")-3 > SceneManager.GetActiveScene().buildIndex)
+        {
+            Debug.Log("Loading next level with index: " + nextLevelIndex +" and name: " + SceneManager.GetSceneByBuildIndex(nextLevelIndex).name);
+            LoadLevelWithIndex(nextLevelIndex);
+
         }
     }
 
@@ -119,6 +133,7 @@ public class SceneLoader : MonoBehaviour
     public void LoadLevelWithIndex(int index)
     {
         StartCoroutine(LoadLevelInternal(index));
+
     }
     private IEnumerator LoadSceneFileInternal(string sceneName)
     {
