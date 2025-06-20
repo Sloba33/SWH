@@ -617,12 +617,9 @@ MonoBehaviour:
   flashlightEnabled: 0
   flashlight: {fileID: 4130482877464360193}
   spotlight: {fileID: 5595244717260839662}
-  followCamera: {fileID: 46321911127104630, guid: aef17e33ab1418f4c9f4700634a83c9f,
-    type: 3}
-  playerCamera: {fileID: 6968579611282920195, guid: aef17e33ab1418f4c9f4700634a83c9f,
-    type: 3}
-  cameraFollowTarget: {fileID: 419812897239369765, guid: aef17e33ab1418f4c9f4700634a83c9f,
-    type: 3}
+  followCamera: {fileID: 46321911127104630}
+  playerCamera: {fileID: 6968579611282920195}
+  cameraFollowTarget: {fileID: 419812897239369765}
   isPulling: 0
   isPushing: 0
 --- !u!114 &465992519024109052
@@ -784,8 +781,14 @@ MonoBehaviour:
   pushSpeed: 0
   previousMoveDirection: {x: 0, y: 0, z: 0}
   currentMoveDirection: {x: 0, y: 0, z: 0}
+  playerCollider: {fileID: 0}
+  repositionSpeed: 7
+  pullRepositionSpeed: 25
+  pullDistance: 0.1
+  pushCenteringSmoothFactor: 0.15
   pushDirectionChanged: 0
   delayTimer: 0
+  manualPushDistance: 0.11
 --- !u!114 &5592945993921160032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -928,6 +931,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868bfb2a67b87af4297a5e55d8066c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  justLanded: 0
+  landedTime: 0
+  LAND_GRACE_PERIOD: 0.15
   _walkSpeed: 2
   _jumpForce: 5.8
   _jumpParticle: {fileID: 6808812054988748476}

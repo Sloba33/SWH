@@ -152,6 +152,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -365,7 +368,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2197336975981693810
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -379,6 +382,7 @@ Animator:
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -468,130 +472,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AI: 0
-  _anim: {fileID: 2197336975981693810}
-  jumpParticle: {fileID: 6808812054988748476}
-  cameras: []
-  controlsPrefab: {fileID: 650113497830606794, guid: d050b8453aa154842a74551d3670b3e4,
-    type: 3}
-  camerasPrefab: {fileID: 3242656931235162317}
-  NetworkManagerPrefab: {fileID: 4097079764938019770, guid: 77a78bc2fdfd96a48999ac8dfffaf2b8,
-    type: 3}
-  SettingsPrefab: {fileID: 291434806780905183, guid: ecedcdba7c709f04e9f3c6f841734e49,
-    type: 3}
-  playerRegularCamera: {fileID: 6968579611282920195}
-  playerCam: {fileID: 0}
+  _movement: {fileID: 0}
+  playerObstacleController: {fileID: 0}
+  _playerControls: {fileID: 0}
+  pullButtonHeld: 0
+  pullButtonReleased: 0
+  flashlightEnabled: 0
   flashlight: {fileID: 3516975911220011673}
   spotlight: {fileID: 1264451102601029844}
-  joystick: {fileID: 0}
-  floatingJoystick: {fileID: 0}
-  controls: 2
-  movementType: 0
-  _tileCollisionType: 0
-  playerControls: {fileID: 0}
+  followCamera: {fileID: 0}
   playerCamera: {fileID: 3242656931235162317}
-  inputValues: {x: 0, y: 0}
-  _groundMask:
-    serializedVersion: 2
-    m_Bits: 1288
-  _obstacleMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _bombObstacleMask:
-    serializedVersion: 2
-    m_Bits: 393472
-  _tileObstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _grounderOffset: {x: 0, y: -0.47, z: 0.01}
-  _grounderRadius: 0.1
-  _isAgainstWall: 0
-  _isBombBlocked: 0
-  IsGrounded: 1
-  grounded: 0
-  isFalling: 0
-  hasRecentlyFallen: 0
-  _ground:
-  - {fileID: 0}
-  _wallCheckOffset: 0.45
-  _bombCheckOffset: 0.89
-  _wallCheckRadius: 0.12
-  _bombCheckRadius: 0.1
-  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
-  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
-  tile: {fileID: 0}
-  obstacle: {fileID: 0}
-  fallTimer: 0
-  fallPushStopper: 0
-  fallCoyoteTime: 0.35
-  fallHeight: 0
-  nudgingForce: 20
-  forceApplied: 0
-  nudgeCooldown: 0.001
-  maxDistanceToObstacle: 5
-  rayDistance: 1
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  canMove: 1
-  _walkSpeed: 2
-  obstacleAvoidanceRange: 0.06
-  _dir: {x: 0, y: 0, z: 0}
-  raycastDistance: 1
-  avoidanceMultiplier: 1
-  raycastAngle: 5
-  leftEyeOffset: {x: 0.025, y: 0, z: 0}
-  rightEyeOffset: {x: -0.025, y: 0, z: 0}
-  climbRayOffset: {x: 0, y: 0.45, z: 0}
-  behindObstacleOffset: {x: 0, y: 0, z: 0}
-  pullObstacle: {fileID: 0}
-  pullObstacleFlag: 0
-  _behindObstacleMask:
-    serializedVersion: 2
-    m_Bits: 524544
-  collectibleMask:
-    serializedVersion: 2
-    m_Bits: 131072
-  destructionTime: 0.5
-  alignmentThreshold: 0.7
-  nudgeDistance: 0
-  _jumpForce: 5.8
-  _isJumping: 0
-  jumpTimer: 0
-  jumpCoyoteTime: 0.14
-  _hasRecentlyJumped: 0
-  pushObstacle: {fileID: 0}
-  isPushing: 0
-  canPush: 1
+  cameraFollowTarget: {fileID: 0}
   isPulling: 0
-  isAgainstWall: 0
-  recentlyHitWall: 0
-  obstacleBehind: 0
-  _pullButtonHeld: 0
-  _pullButtonReleased: 0
-  tileRayLength: 50
-  forwardOffset: {x: 0, y: 0.48, z: 0}
-  backOffset: {x: 0, y: 0.48, z: 0}
-  leftOffset: {x: 0, y: 0, z: 0}
-  rightOffset: {x: 0, y: 0, z: 0}
-  frontoffs: 0.3
-  backoffs: -0.3
-  slideCheckerRadius: 0.025
-  slideForward: 0
-  slideBack: 0
-  slideLeft: 0
-  slideRight: 0
-  slideForce: 65
-  _slideForward:
-  - {fileID: 0}
-  _slideBack:
-  - {fileID: 0}
-  _slideLeft:
-  - {fileID: 0}
-  _slideRight:
-  - {fileID: 0}
-  slideAngle: 25
-  changedToJump: 1
-  changedToGround: 0
+  isPushing: 0
 --- !u!114 &465992519024109052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,46 +497,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37cb785c05ec8904f81f50d6124fafbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerDieEvent: {fileID: 0}
-  settingsPrefab: {fileID: 291434806780905183, guid: ecedcdba7c709f04e9f3c6f841734e49,
-    type: 3}
-  Health: 100
+  EndScreenCamera: {fileID: 0}
+  characterStats: {fileID: 0}
+  sprintParticleBlueJuice1: {fileID: 0}
+  sprintParticleBlueJuice2: {fileID: 0}
+  sprintParticleRedJuice1: {fileID: 0}
+  sprintParticleRedJuice2: {fileID: 0}
   pc: {fileID: 0}
-  PickaxeLevel: 1
   Energy: 100
+  HitDownEnergy: 0
   MaxEnergy: 0
   Strength: 5
   StartingStrenght: 5
   StartingMoveSpeed: 2
   MoveSpeed: 0
-  WeaponDurability: 5
   blackHoleDebuff: 0
-  hatMesh: {fileID: 0}
-  hatLampMesh: {fileID: 0}
-  mesh: {fileID: 742794624371605395}
-  shoesMesh: {fileID: 514509068229398025}
-  weaponHand: {fileID: 4888946627054563431}
   helmetParentTransform: {fileID: 4189172546823554280}
   helmet: {fileID: 0}
   helmetToSpawn: {fileID: 170772782549241822, guid: 9ccb73f22c3705c4c91b3f229fda8fe1,
     type: 3}
-  helmets:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  energyFillImage: {fileID: 0}
-  shirtID_base: 0
-  shirtID_sleeve: 0
-  hatID: 0
-  bodyID_base: 0
-  bodyID_pocket: 0
-  shoesID: 0
-  defaultShirt: {r: 1, g: 0.7176471, b: 0.47058827, a: 0}
-  defaultHat: {r: 0.9490197, g: 0.8941177, b: 0.16078432, a: 0}
-  defaultOutfit: {r: 0.41176474, g: 0.7490196, b: 1, a: 0}
-  defaultOutfitPocket: {r: 0.16540584, g: 0.41132793, b: 0.5943396, a: 0}
-  defaultShoes: {r: 0.8745099, g: 0.3921569, b: 0.36862746, a: 0}
+  hitFillImage: {fileID: 0}
+  hitDownFillImage: {fileID: 0}
+  weapon: {fileID: 0}
+  specialCharges: 0
+  specialChargesMax: 0
   newMoveSpeed: 0
   fillRate: 10
   fillDuration: 3
@@ -680,35 +557,35 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 21d7ee72-0f9d-4319-a317-440209f10659
-    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+    m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: e07d5d02-a1ad-44a2-a7d4-8c5ca2f220a3
-    m_ActionName: UI/Submit[/Keyboard/enter]
+    m_ActionName: 'UI/Submit[/Keyboard/enter]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 412b9828-9a91-4f9c-ba34-63befa2df74e
-    m_ActionName: UI/Cancel[/Keyboard/escape]
+    m_ActionName: 'UI/Cancel[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: baa39dbe-d8ce-453f-bd32-53d9f9dfe5fc
-    m_ActionName: UI/Point[/Mouse/position]
+    m_ActionName: 'UI/Point[/Mouse/position]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: bb9cab79-e0f2-4de3-b2ee-a4cf533f3686
-    m_ActionName: UI/Click[/Mouse/leftButton]
+    m_ActionName: 'UI/Click[/Mouse/leftButton]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 20c34d4e-5c25-4cdb-9b1f-56bf632d9f72
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
+    m_ActionName: 'UI/ScrollWheel[/Mouse/scroll]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 39c2edff-38c4-4b3f-8346-341991203781
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
+    m_ActionName: 'UI/MiddleClick[/Mouse/middleButton]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 36a49901-c3fb-4150-baae-5c210c47f40d
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
+    m_ActionName: 'UI/RightClick[/Mouse/rightButton]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 6083c583-a20f-482d-a88a-a4607e13d8d1
@@ -732,7 +609,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_ActionId: 9785ed7a-fe12-4b90-8b6a-67fb331155c7
-    m_ActionName: PlayerController/Jump[/Keyboard/o]
+    m_ActionName: 'PlayerController/Jump[/Keyboard/o]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 584e43f5-ef04-4124-b34f-8d2857430407
@@ -765,7 +642,13 @@ MonoBehaviour:
   previousPullObstacle: {fileID: 0}
   diff: 0
   pushSpeed: 0
+  previousMoveDirection: {x: 0, y: 0, z: 0}
+  currentMoveDirection: {x: 0, y: 0, z: 0}
+  playerCollider: {fileID: 0}
+  repositionSpeed: 7
+  pushDirectionChanged: 0
   delayTimer: 0
+  manualPushDistance: 0.75
 --- !u!114 &5592945993921160032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,6 +682,8 @@ MonoBehaviour:
   weaponHitParticle: {fileID: 3774003558467453403, guid: 6ac9e671b981e87478d9fcae9eefc417,
     type: 3}
   weaponSwingParticle: {fileID: 720859149611671853}
+  weaponSpecialSwingParticle: {fileID: 0}
+  weaponSpecialAOE: {fileID: 0}
   weaponParentTransform: {fileID: 3659079664939892968}
   headSmashCollider: {fileID: 1248404948276308447}
   weapons:
@@ -811,14 +696,19 @@ MonoBehaviour:
   - {fileID: 0}
   weaponIndex: 0
   weapon: {fileID: 982646640272966204, guid: c203c90f1e082324daf552ee26070022, type: 3}
+  backWeaponSlot: {fileID: 0}
+  backWeapon: {fileID: 0}
   ObstacleToHit: {fileID: 0}
   tool: {fileID: 0}
   toolDown: {fileID: 0}
   hitRayOffset: {x: 0, y: 0, z: 0}
   hitRayDistance: 0.95
-  canHit: 1
   hittingDown: 0
+  player: {fileID: 0}
+  weaponSpecialRadius: 0
   hitPoint: {x: 0, y: 0, z: 0}
+  weaponRadiusColliders: []
+  currentSpecialRadiusTrigger: {fileID: 0}
   delayBeforeSwing: 0.24
   delayAfterSwing: 0.06
   useTrail: 0
@@ -895,9 +785,8 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1264451102601029844}
   m_Enabled: 1
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 0
-  m_Shape: 0
   m_Color: {r: 0.98039216, g: 0.9254902, b: 0.81960785, a: 1}
   m_Intensity: 1.31
   m_Range: 2.36
@@ -947,8 +836,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!114 &5067772212585491779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,9 +976,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 4049543763410288958}
-  player: {fileID: 465992519024109052}
-  animator: {fileID: 2197336975981693810}
-  helmetDurability: 0
 --- !u!54 &6128090070271442150
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1130,6 +1020,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1299,6 +1192,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1539,9 +1435,8 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3516975911220011673}
   m_Enabled: 1
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 0
-  m_Shape: 0
   m_Color: {r: 0.9811321, g: 0.92563784, b: 0.8191527, a: 1}
   m_Intensity: 6.08
   m_Range: 6.45
@@ -1591,8 +1486,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!114 &57202881096469032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2019,6 +1918,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2170,6 +2072,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2523,12 +2428,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!114 &658905573691861324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2805,6 +2710,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2907,6 +2815,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3044,6 +2955,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3149,6 +3063,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3646,37 +3563,37 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: presetZoomValues.Array.data[1]
+      propertyPath: 'presetZoomValues.Array.data[1]'
       value: 25
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: presetZoomValues.Array.data[2]
+      propertyPath: 'presetZoomValues.Array.data[2]'
       value: 50
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: presetZoomValues.Array.data[3]
+      propertyPath: 'presetZoomValues.Array.data[3]'
       value: 75
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: presetZoomValues.Array.data[4]
+      propertyPath: 'presetZoomValues.Array.data[4]'
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: layerCullDistances.Array.data[13]
+      propertyPath: 'layerCullDistances.Array.data[13]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: layerCullDistances.Array.data[14]
+      propertyPath: 'layerCullDistances.Array.data[14]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: layerCullDistances.Array.data[15]
+      propertyPath: 'layerCullDistances.Array.data[15]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
@@ -3746,7 +3663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5705850246811769473, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: -4983882433184244931, guid: 5c21289d0c49116489e2503846dec22b,
@@ -3781,7 +3698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4768220049201118647, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: -4748721620315454823, guid: 5c21289d0c49116489e2503846dec22b,
@@ -3801,7 +3718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4748721620315454823, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: -4700677309043384270, guid: 5c21289d0c49116489e2503846dec22b,
@@ -3871,7 +3788,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3757488594685227796, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: -1825215448685420657, guid: 5c21289d0c49116489e2503846dec22b,
@@ -3886,7 +3803,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1825215448685420657, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: -1523171727531174355, guid: 5c21289d0c49116489e2503846dec22b,
@@ -3951,7 +3868,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -458752958362659121, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: -422599574416088463, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4086,7 +4003,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 641304639297225198, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 1014780185001236456, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4136,7 +4053,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1059484805457044617, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 1779098658540817008, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4151,7 +4068,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1779098658540817008, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 2541525750024214882, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4326,7 +4243,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3558685899938486707, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 4306633346925421081, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4406,7 +4323,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5371595477403874002, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 5570373027369347549, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4421,7 +4338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5570373027369347549, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 7002952620778535527, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4441,7 +4358,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7002952620778535527, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 7784196224838611711, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4561,7 +4478,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8710881448318309757, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     - target: {fileID: 8812512991410459546, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4581,18 +4498,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8812512991410459546, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
-      propertyPath: m_ExcludedPropertiesInInspector.Array.data[7]
+      propertyPath: 'm_ExcludedPropertiesInInspector.Array.data[7]'
       value: m_Lens
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -1689738664918775217, guid: 5c21289d0c49116489e2503846dec22b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 533077781566196454, guid: 5c21289d0c49116489e2503846dec22b,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1656690022240604793}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c21289d0c49116489e2503846dec22b, type: 3}
 --- !u!114 &46321911127104630 stripped
 MonoBehaviour:
@@ -4606,39 +4519,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 319d2fe34a804e245819465c9505ea59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &2615220928751371792 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 533077781566196454, guid: 5c21289d0c49116489e2503846dec22b,
-    type: 3}
-  m_PrefabInstance: {fileID: 2535244010831514870}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1656690022240604793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2615220928751371792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 0, y: 0, z: 0}
-  m_LookaheadTime: 0
-  m_LookaheadSmoothing: 0
-  m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0.5
-  m_VerticalDamping: 0.5
-  m_ScreenX: 0.5
-  m_ScreenY: 0.5
-  m_DeadZoneWidth: 0
-  m_DeadZoneHeight: 0
-  m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
-  m_BiasX: 0
-  m_BiasY: 0
-  m_CenterOnActivate: 1
 --- !u!1 &3242656931235162317 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1021971536677332027, guid: 5c21289d0c49116489e2503846dec22b,
@@ -4772,12 +4652,6 @@ PrefabInstance:
 --- !u!4 &3422665118401882296 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7239184321669955831, guid: eb1b099d2feaf184bb43e21ee217532e,
-    type: 3}
-  m_PrefabInstance: {fileID: 5406852843267287119}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6808812054988748476 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1546074422471925491, guid: eb1b099d2feaf184bb43e21ee217532e,
     type: 3}
   m_PrefabInstance: {fileID: 5406852843267287119}
   m_PrefabAsset: {fileID: 0}

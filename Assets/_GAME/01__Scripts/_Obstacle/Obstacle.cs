@@ -168,8 +168,10 @@ public class Obstacle : MonoBehaviour
     private void Reposition()
     {
 
-        if (!isPositioned && tile != null && tile.obstacleDict != null && !spawningBlackHole)
+
+        if (!isPositioned && tile != null && tile.obstacleDict != null)
         {
+            Debug.Log("Repositioning");
             tile.RepositionObstacle(obs);
         }
 
@@ -599,7 +601,7 @@ public class Obstacle : MonoBehaviour
 
     public void ResetObstacle()
     {
-
+        Debug.Log("Resetting obstacle :" + gameObject.name);
         isBeingPushed = false;
         isBeingPulled = false;
         isPositioned = false;

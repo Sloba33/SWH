@@ -12,6 +12,8 @@ public class WinScreen : MonoBehaviour
 {
     public bool sceneOverride;
     public string sceneOverrideName = "01_MainMenu";
+    public TextMeshProUGUI levelCompleteText;
+    public TextMeshProUGUI currentTime, totalTime;
     public bool MP;
     public GameObject rewardsPanel;
     public GameObject panelXP, panelTrophies;
@@ -44,6 +46,7 @@ public class WinScreen : MonoBehaviour
             Player p = FindObjectOfType<Player>();
             p.EndScreenCamera.SetActive(true);
             playerEmoteObject.GetComponent<Animator>().Play("Victory_2");
+
         }
         if (levelGoal == null)
             levelGoal = FindFirstObjectByType<LevelGoal>();
@@ -136,10 +139,37 @@ public class WinScreen : MonoBehaviour
         if (levelGoal.xp == 0) panelXP.SetActive(false);
         if (levelGoal.trophies == 0) panelTrophies.SetActive(false);
         StartCoroutine(MoveAndScalePlayerEmoteObject());
+        if (PlayerPrefs.GetInt("IsSeparateBuild") == 1)
+        {
+            currentTime.gameObject.SetActive(true);
+            totalTime.gameObject.SetActive(true);
+            float totalPlayTime = PlayerPrefs.GetFloat("TotalTimePlayed", 0);
+            float currentPlayTime = levelGoal.currentTime;
+            currentTime.text = "Current Time: " + FormatTime(currentPlayTime);
+            PlayerPrefs.SetFloat("TotalTimePlayed", totalPlayTime + currentPlayTime);
+            totalPlayTime = PlayerPrefs.GetFloat("TotalTimePlayed", 0);
+            totalTime.text = "Total Time: " + FormatTime(totalPlayTime);
+        }
+        else
+        {
+
+            currentTime.gameObject.SetActive(false);
+            totalTime.gameObject.SetActive(false);
+        }
 
 
+        if (levelCompleteText != null)
+        {
+            levelCompleteText.text = "Level " + (SceneManager.GetActiveScene().buildIndex + 1).ToString() + " Complete!";
+        }
         PlayerPrefs.SetInt(currentLevelName + "_beaten", 1);
         PlayerPrefs.Save();
+    }
+    private string FormatTime(float timeInSeconds)
+    {
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60F);
+        int seconds = Mathf.FloorToInt(timeInSeconds % 60F);
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
     private bool CheckIfLevelIsBeaten()
     {
