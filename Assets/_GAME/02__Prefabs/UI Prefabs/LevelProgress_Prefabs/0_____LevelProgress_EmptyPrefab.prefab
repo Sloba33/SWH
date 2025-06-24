@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 28, y: 0}
-  m_SizeDelta: {x: 2815.832, y: 3074.0002}
+  m_SizeDelta: {x: 3045.3113, y: 2168}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3621661202677208052
 CanvasRenderer:
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d9ea66f226680ba4888ce36e3b941417, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e3be2d8a7787d854a827f64c32ac2add, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -175,6 +175,11 @@ MonoBehaviour:
   White: {fileID: 0}
   Purple: {fileID: 0}
   Pink: {fileID: 0}
+  Wood: {fileID: 0}
+  Stone: {fileID: 0}
+  Metal: {fileID: 0}
+  Universal: {fileID: 0}
+  Default: {fileID: 0}
   uiShiny: {fileID: 0}
   levelGoal: {fileID: 0}
   fillMultiplier: 0.333
@@ -196,7 +201,7 @@ GameObject:
   - component: {fileID: 3124974672271567993}
   - component: {fileID: 1285360672458904541}
   m_Layer: 5
-  m_Name: Blue
+  m_Name: Black
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -218,8 +223,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 28, y: 5}
-  m_SizeDelta: {x: 2812.1677, y: 3070}
+  m_AnchoredPosition: {x: 191, y: -199}
+  m_SizeDelta: {x: 1412.0635, y: 695}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3124974672271567993
 CanvasRenderer:
@@ -249,7 +254,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cf78a9d032e33384e859f3685f4c1804, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d7780a981dd04684faf21eede6717e5a, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
