@@ -11,8 +11,8 @@ public class Obstacle : MonoBehaviour
     public GameObject fallIndicator;
     public Material obstacleMaterial;
     public bool MoveOverride;
-    
-    public bool shouldFall = true;  
+    public bool isSpawnedForRecovery = false;
+    public bool shouldFall = true;
     public ObstacleType obstacleType;
     public ObstacleModifier obstacleModifier;
     public ObstacleColor obstacleColor;
@@ -309,7 +309,7 @@ public class Obstacle : MonoBehaviour
                 dir.Normalize();
                 if (Vector3.Distance(transform.position, tile.transform.position) > 0.001f)
                 {
-                     Debug.Log("Moving");
+                    Debug.Log("Moving");
                     if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI)
                     {
                         Debug.Log("Playing obstacle sound move");
@@ -525,11 +525,11 @@ public class Obstacle : MonoBehaviour
     public AudioClip audioClip;
     public GoalSetter[] goalSetters;
     public AudioSource audioSource;
-    public void ParticleDestroy()
+    public void ParticleDestroy(ObstacleDestructionSource source = ObstacleDestructionSource.None)
     {
-        StartCoroutine(DelayedParticleDestroy());
+        StartCoroutine(DelayedParticleDestroy(source));
     }
-    IEnumerator DelayedParticleDestroy()
+    IEnumerator DelayedParticleDestroy(ObstacleDestructionSource source)
     {
         // DELAY ON DESTRUCTION/SOUND change as needed (was 0.1f)
         yield return new WaitForSeconds(0.05f);  // Adjust the delay as needed
@@ -540,15 +540,23 @@ public class Obstacle : MonoBehaviour
             ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
             ps.gameObject.name = " PARTICLE OBJECT";
             gameObject.SetActive(false);
+            if (source != ObstacleDestructionSource.None)
+            {
 
-            ps.Play();
-            AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
+                ps.Play();
+                AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
+            }
             if (fallSprite != null) Destroy(fallSprite);
             if (GameManager.Instance.levelGoal != null)
             {
                 GameManager.Instance.levelGoal.RemoveObstacleFromSection(this);
-            }
 
+                // Only queue for respawn if NOT destroyed by match-3
+                if (source != ObstacleDestructionSource.MatchThree)
+                {
+                    GameManager.Instance.levelGoal.QueueObstacleForSpawnProcessing(this);
+                }
+            }
             if (GameManager.Instance.levelGoal.DualLevel)
             {
                 if (!AIObstacle)
@@ -601,7 +609,7 @@ public class Obstacle : MonoBehaviour
 
     public void ResetObstacle()
     {
-        Debug.Log("Resetting obstacle :" + gameObject.name);
+        // Debug.Log("Resetting obstacle :" + gameObject.name);
         isBeingPushed = false;
         isBeingPulled = false;
         isPositioned = false;
@@ -672,6 +680,15 @@ public class Obstacle : MonoBehaviour
         }
 
         obstacleMaterial.color = toColor;
+    }
+
+    public enum ObstacleDestructionSource
+    {
+        None,
+        MatchThree,
+        Weapon,
+        Bomb,
+        Other
     }
 
 }

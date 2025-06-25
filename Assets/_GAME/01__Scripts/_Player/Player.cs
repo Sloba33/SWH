@@ -153,7 +153,7 @@ public class Player : MonoBehaviour
     public void Die(Transform obstacle)
     {
         GetComponent<Animator>().Play("Death_Animation");
-        obstacle.transform.GetComponent<Obstacle>().ParticleDestroy();
+        obstacle.transform.GetComponent<Obstacle>().ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
         GetComponent<PlayerController>().enabled = false;
         StartCoroutine(LoseLevel());
     }

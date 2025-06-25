@@ -442,7 +442,7 @@ public class PlayerMovement : MonoBehaviour
         Ray rayBack = new Ray(transform.position, transform.forward * -1);
         RaycastHit hitBack;
         obstacleBehind = Physics.Raycast(rayBack, out hitBack, 0.6f, _behindObstacleMask);
-        if (obstacleBehind) Debug.Log("Theres an obstacle behind");
+        // if (obstacleBehind) Debug.Log("Theres an obstacle behind");
         /**
        **Forward Cast
        */

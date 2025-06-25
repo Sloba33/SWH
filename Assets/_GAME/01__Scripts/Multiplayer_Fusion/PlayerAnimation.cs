@@ -82,9 +82,9 @@ public class PlayerAnimation : MonoBehaviour
 
             if (!isMoving && (!_playerMovement.IsPushing || !_playerController.isPushing) && !_playerMovement.IsPulling)
             {
-                Debug.Log("REASONING :" + !isMoving + " " + (!_playerMovement.IsPushing || !_playerController.isPushing) + " " + !_playerMovement.IsPulling);
+                // Debug.Log("REASONING :" + !isMoving + " " + (!_playerMovement.IsPushing || !_playerController.isPushing) + " " + !_playerMovement.IsPulling);
                 var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
-                UnityEngine.Debug.LogWarning($"Set to Idle:\n{stackTrace}");
+                // UnityEngine.Debug.LogWarning($"Set to Idle:\n{stackTrace}");
                 return PlayerAnimState.Idle;
             }
         }
