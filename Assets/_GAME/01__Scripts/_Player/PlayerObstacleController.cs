@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerObstacleController : MonoBehaviour
 {
     // separate obstacle shit a bit more
+    public bool lockMidAirPush;
     private PlayerMovement playerMovement;
     PlayerController playerController;
     Player player;
@@ -117,6 +118,8 @@ public class PlayerObstacleController : MonoBehaviour
     private const float PUSH_RE_EVAL_DELAY_AFTER_LAND = 0.2f; // Time to delay full push re-evaluation after landing
     public void HandlePush()
     {
+        Debug.Log("[HandlePush] START");
+        // Debug.Log($"isPulling: {playerController.isPulling}, justLanded: {playerMovement.justLanded}, justJumpedOutOfPush: {playerMovement.justJumpedOutOfPush}, linearVelocity.y: {_rb.linearVelocity.y}");
         if (playerController.isPulling)
             return;
 
@@ -134,9 +137,10 @@ public class PlayerObstacleController : MonoBehaviour
         }
 
         bool canPotentiallyPush = playerController._movement.IsAgainstWall && movementDirection != Vector3.zero;
-
+        Debug.Log($"canPotentiallyPush: {canPotentiallyPush}, IsAgainstWall: {playerController._movement.IsAgainstWall}, moveDir: {movementDirection}");
         if (!playerController.isPushing && !canPotentiallyPush)
         {
+            Debug.Log("[HandlePush] Early exit: not pushing + can't potentially push");
             if (lastLandTime == 0f || (Time.time - lastLandTime) > PUSH_RE_EVAL_DELAY_AFTER_LAND)
             {
                 previousPushDirection = Vector3.zero;
@@ -155,14 +159,17 @@ public class PlayerObstacleController : MonoBehaviour
         if (canPotentiallyPush)
         {
             Obstacle foundObstacle = playerController.FindObstacle();
-
+            Debug.Log($"FindObstacle returned: {(foundObstacle ? foundObstacle.name : "null")}");
             if (foundObstacle != null)
             {
                 if (pushObstacle == null || pushObstacle != foundObstacle)
                 {
                     if (pushObstacle != null) pushObstacle.ResetObstacle();
                     pushObstacle = foundObstacle;
+                    lockMidAirPush = true;
+                    Debug.Log($"pushObstacle assigned: {pushObstacle.name}, grounded: {pushObstacle.grounded}, falling: {pushObstacle.isFalling}, pushable: {pushObstacle.isPushable}");
                 }
+                else Debug.Log("pushObstacle is null after assignment.");
             }
             else if (pushObstacle != null && playerController.isPushing)
             {
@@ -201,12 +208,12 @@ public class PlayerObstacleController : MonoBehaviour
 
             pushObstacle.SphereFlags();
             bool Moveable = pushObstacle.CheckObstaclesAround(movementDirection);
-
+            Debug.Log($"pushObstacle Moveable: {Moveable}, pushabilityDelayed: {pushObstacle.pushabilityDelayed}");
             if (playerController._movement.hasRecentlyFallen)
                 diff = Mathf.Round(playerController._movement.fallHeight) - pushObstacle.transform.position.y >= 0;
             else
                 diff = true;
-
+            Debug.Log($"Centering push? Conditions => CanPush: {playerController._movement.CanPush}, Moveable: {Moveable}, diff: {diff}, !delayed: {!pushObstacle.pushabilityDelayed}");
             if (pushObstacle != null && movementDirection != Vector3.zero &&
                 playerController._movement.CanPush && Moveable && diff && !pushObstacle.pushabilityDelayed)
             {
@@ -275,30 +282,32 @@ public class PlayerObstacleController : MonoBehaviour
 
                 previousMoveDirection = currentMoveDirection;
             }
+
             else if (!pushObstacle.grounded && pushObstacle.isFalling && !playerController._movement.IsGrounded && Moveable)
             {
-                Vector3 normalizedMovementDirection = movementDirection.normalized;
-                float playerHalfSize = ((CapsuleCollider)playerCollider).radius;
-                float obstacleHalfSize = 0.5f;
-                float combinedSizeAndOffset = obstacleHalfSize + playerHalfSize + manualPushDistance;
+                // Debug.Log("[HandlePush] Falling push branch hit. Player airborne + obstacle falling");
+                // Vector3 normalizedMovementDirection = movementDirection.normalized;
+                // float playerHalfSize = ((CapsuleCollider)playerCollider).radius;
+                // float obstacleHalfSize = 0.5f;
+                // float combinedSizeAndOffset = obstacleHalfSize + playerHalfSize + manualPushDistance;
 
-                Vector3 targetPlayerPosition = pushObstacle.transform.position;
+                // Vector3 targetPlayerPosition = pushObstacle.transform.position;
 
-                if (Mathf.Abs(normalizedMovementDirection.x) > 0.01f)
-                {
-                    targetPlayerPosition.x = pushObstacle.transform.position.x - (normalizedMovementDirection.x * combinedSizeAndOffset);
-                    targetPlayerPosition.z = pushObstacle.transform.position.z;
-                }
-                else if (Mathf.Abs(normalizedMovementDirection.z) > 0.01f)
-                {
-                    targetPlayerPosition.z = pushObstacle.transform.position.z - (normalizedMovementDirection.z * combinedSizeAndOffset);
-                    targetPlayerPosition.x = pushObstacle.transform.position.x;
-                }
+                // if (Mathf.Abs(normalizedMovementDirection.x) > 0.01f)
+                // {
+                //     targetPlayerPosition.x = pushObstacle.transform.position.x - (normalizedMovementDirection.x * combinedSizeAndOffset);
+                //     targetPlayerPosition.z = pushObstacle.transform.position.z;
+                // }
+                // else if (Mathf.Abs(normalizedMovementDirection.z) > 0.01f)
+                // {
+                //     targetPlayerPosition.z = pushObstacle.transform.position.z - (normalizedMovementDirection.z * combinedSizeAndOffset);
+                //     targetPlayerPosition.x = pushObstacle.transform.position.x;
+                // }
 
-                targetPlayerPosition.y = pushObstacle.transform.position.y;
+                // targetPlayerPosition.y = pushObstacle.transform.position.y;
 
-                _rb.MovePosition(Vector3.Lerp(_rb.position, targetPlayerPosition, pushCenteringSmoothFactor));
-
+                // _rb.MovePosition(Vector3.Lerp(_rb.position, targetPlayerPosition, pushCenteringSmoothFactor));
+                Debug.Log("[HandlePush] Mid-air fallback branch hit — pushing airborne obstacle");
                 Push();
             }
             else if (!diff && Moveable)
@@ -307,12 +316,14 @@ public class PlayerObstacleController : MonoBehaviour
             }
             else
             {
+                Debug.Log("[HandlePush] FINAL fallback - stopping push");
                 pushObstacle?.ResetObstacle();
                 StopPush();
             }
         }
         else
         {
+            Debug.Log("[HandlePush] FINAL fallback2 - stopping push");
             if (lastLandTime == 0f || (Time.time - lastLandTime) > PUSH_RE_EVAL_DELAY_AFTER_LAND)
             {
                 if (pushObstacle != null) pushObstacle.ResetObstacle();
@@ -325,6 +336,8 @@ public class PlayerObstacleController : MonoBehaviour
                 return;
             }
         }
+        Debug.Log("[HandlePush] END");
+        lockMidAirPush = false;
     }
     /// <summary>
     /// old push logic, now with more checks and conditions
@@ -673,32 +686,34 @@ public class PlayerObstacleController : MonoBehaviour
     // }
     [SerializeField] private float pushCenteringSmoothFactor = 0.15f; // Adjust this value in Inspector (0 to 1)
     public bool pushDirectionChanged = false;
-   void Push()
-{
-    if (pushDirectionChanged)
+    void Push()
     {
-        pushDirectionChanged = false;
-        return;
+        if (pushDirectionChanged)
+        {
+            pushDirectionChanged = false;
+            return;
+        }
+
+        if (pushObstacle == null)
+        {
+            Debug.LogWarning("[Push] pushObstacle is NULL");
+            return;
+        }
+
+        playerController.isPushing = true;
+        pushObstacle.isBeingPushed = true;
+        pushObstacle.wasRecentlyPushed = true;
+
+        Debug.Log("[Push] Starting coordinated push on obstacle: " + pushObstacle.name);
+
+        // StartCoroutine(CoordinatedPushMovement());
+        Vector3 dir = new Vector3(movementDirection.x, pushObstacle.transform.position.y, movementDirection.z);
+        pushObstacle.PushObstacle(dir, player.PushAndPullSpeed(pushObstacle.Weight));
+
+        _anim.SetBool("Push", true);
+        _anim.SetBool("Idle", false);
+        AudioManager.Instance.PlayObstacleSound_Move(pushObstacle.obstacleAudioType, transform.position);
     }
-
-    if (pushObstacle == null)
-    {
-        Debug.LogWarning("[Push] pushObstacle is NULL");
-        return;
-    }
-
-    playerController.isPushing = true;
-    pushObstacle.isBeingPushed = true;
-    pushObstacle.wasRecentlyPushed = true;
-
-    Debug.Log("[Push] Starting coordinated push on obstacle: " + pushObstacle.name);
-
-    StartCoroutine(CoordinatedPushMovement());
-
-    _anim.SetBool("Push", true);
-    _anim.SetBool("Idle", false);
-    AudioManager.Instance.PlayObstacleSound_Move(pushObstacle.obstacleAudioType, transform.position);
-}
 
     private IEnumerator CoordinatedPushMovement()
     {
@@ -706,7 +721,8 @@ public class PlayerObstacleController : MonoBehaviour
         {
             if (pushObstacle == null)
             {
-                StopPush();
+                Debug.LogWarning("[PushCoroutine] pushObstacle became null. Exiting push.");
+                StopPush(); // clean up if needed
                 yield break;
             }
 
@@ -717,8 +733,14 @@ public class PlayerObstacleController : MonoBehaviour
             {
                 yield return new WaitForFixedUpdate();
 
-                Vector3 deltaMovement = moveDirection * speed * Time.fixedDeltaTime;
+                if (pushObstacle == null)
+                {
+                    Debug.LogWarning("[PushCoroutine] Obstacle null after WaitForFixedUpdate.");
+                    StopPush();
+                    yield break;
+                }
 
+                Vector3 deltaMovement = moveDirection * speed * Time.fixedDeltaTime;
                 Vector3 playerTarget = transform.position + deltaMovement;
                 Vector3 obstacleTarget = pushObstacle.transform.position + deltaMovement;
 
@@ -734,11 +756,16 @@ public class PlayerObstacleController : MonoBehaviour
             }
         }
 
-        StopPush(); // clean up if loop exits naturally
+        StopPush();
     }
 
     public void StopPush()
     {
+        if (lockMidAirPush)
+        {
+            Debug.LogWarning("[StopPush] Prevented push stop — lockMidAirPush active");
+            return;
+        }
         if (!playerController.AI)
             AudioManager.Instance.StopObstacleSound_Move();
 
