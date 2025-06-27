@@ -8538,7 +8538,7 @@ PrefabInstance:
     - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
       propertyPath: obstacleColor
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
@@ -9968,9 +9968,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
   wasSucked: 0
-  obstacleType: 6
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 1
   obstacleAudioType: 0
-  obstacleColor: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -19777,8 +19778,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 26
-  obstacleAudioType: 1
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 1
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -29919,8 +29921,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 6
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -65316,6 +65319,16 @@ PrefabInstance:
       propertyPath: MoveOverride
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleColor
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleAudioType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3622432114007997500, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
       propertyPath: m_Name
@@ -81870,8 +81883,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 6
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -99090,8 +99104,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 26
-  obstacleAudioType: 1
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 1
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -101781,9 +101796,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   wasSucked: 0
-  obstacleType: 6
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 1
   obstacleAudioType: 0
-  obstacleColor: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -118632,8 +118648,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 26
-  obstacleAudioType: 1
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 1
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -134707,6 +134724,16 @@ PrefabInstance:
       propertyPath: MoveOverride
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleColor
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
+        type: 3}
+      propertyPath: obstacleAudioType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3622432114007997500, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
       propertyPath: m_Name
@@ -146833,8 +146860,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 6
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -153436,8 +153464,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 26
-  obstacleAudioType: 1
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 1
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -157412,8 +157441,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 26
-  obstacleAudioType: 1
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 1
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -160958,7 +160988,7 @@ PrefabInstance:
     - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
       propertyPath: obstacleColor
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8,
         type: 3}
@@ -177716,9 +177746,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
   wasSucked: 0
-  obstacleType: 6
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 1
   obstacleAudioType: 0
-  obstacleColor: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -195857,8 +195888,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 6
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -204928,8 +204960,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 6
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -212472,8 +212505,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 26
-  obstacleAudioType: 1
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 1
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -216393,8 +216427,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 6
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -216688,8 +216723,9 @@ MonoBehaviour:
   MoveOverride: 1
   wasSucked: 0
   obstacleType: 6
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -237444,8 +237480,9 @@ MonoBehaviour:
   MoveOverride: 0
   wasSucked: 0
   obstacleType: 15
-  obstacleAudioType: 0
+  obstacleModifier: 0
   obstacleColor: 0
+  obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -238974,9 +239011,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
   wasSucked: 0
-  obstacleType: 6
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 1
   obstacleAudioType: 0
-  obstacleColor: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -244315,9 +244353,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   wasSucked: 0
-  obstacleType: 6
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 1
   obstacleAudioType: 0
-  obstacleColor: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -245134,9 +245173,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   wasSucked: 0
-  obstacleType: 7
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 3
   obstacleAudioType: 0
-  obstacleColor: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -245260,9 +245300,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   wasSucked: 0
-  obstacleType: 7
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 3
   obstacleAudioType: 0
-  obstacleColor: 2
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -257591,9 +257632,10 @@ MonoBehaviour:
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
   wasSucked: 0
-  obstacleType: 6
+  obstacleType: 10
+  obstacleModifier: 0
+  obstacleColor: 1
   obstacleAudioType: 0
-  obstacleColor: 0
   Weight: 10
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,

@@ -37,9 +37,21 @@ public class GameManager : MonoBehaviour
 
 
 
+    private void SetTestBuildPrefs()
+    {
+        if (PlayerPrefs.GetInt("Level") < 3)
+        {
+            PlayerPrefs.SetInt("FirstTime", 1);
+            PlayerPrefs.SetInt("GameplayTutorialCompleted", 1);
+            PlayerPrefs.SetInt("IntroMenuTutorialStage", 1);
+            PlayerPrefs.SetInt("Level", 3);
+        }
 
+    }
     private void Awake()
     {
+        SetTestBuildPrefs();
+
         Debug.Log("Framerate set");
         Application.targetFrameRate = 60;
         _instance = this;

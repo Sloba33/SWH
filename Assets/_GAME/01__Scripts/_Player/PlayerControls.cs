@@ -75,14 +75,14 @@ public class PlayerControls : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //
 
         // Only add listener if jumpButton is assigned
-        if (jumpButton != null) //
-        {
-            jumpButton.onClick.AddListener(OnMobileJumpButtonClicked); //
-        }
-        else
-        {
-            Debug.LogWarning("Jump Button not assigned in PlayerControls. Ensure it's hooked up in the Inspector."); //
-        }
+        // if (jumpButton != null) //
+        // {
+        //     jumpButton.onClick.AddListener(OnMobileJumpButtonClicked); //
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("Jump Button not assigned in PlayerControls. Ensure it's hooked up in the Inspector."); //
+        // }
 
         Invoke(nameof(SetReferences), 1f); //
 
@@ -128,7 +128,11 @@ public class PlayerControls : MonoBehaviour
     public bool _isInteractable; //
     public void Interactable(bool interactable) //
     {
-        if (pullFrame == null || pullHand == null) return; // Safety check
+        if (pullFrame == null || pullHand == null || pullButton == null) return; // Safety check
+
+        // It's crucial to set the Button's interactable property here
+        // as well as your custom _isInteractable and color changes.
+        pullButton.interactable = interactable;
 
         if (interactable && !_isInteractable) //
         {
@@ -148,53 +152,102 @@ public class PlayerControls : MonoBehaviour
     {
         if (playerController == null) return; //
         playerRegularCamera = playerController.playerCamera; //
-        playerCamera = playerController.followCamera.gameObject; //
+        // playerCamera = playerController.followCamera.gameObject; //
 
         // UI Button Listeners for Attack actions
         if (hitButton != null) // Safety check
         {
-            hitButton.onClick.AddListener(() => {
+            hitButton.onClick.AddListener(() =>
+            {
                 if (playerAttack != null) playerAttack.Hit(); // Call Hit method on PlayerAttack
             });
         }
 
         if (specialButton != null && levelGoal != null && !levelGoal.Tutorial) // Safety check and tutorial condition
         {
-            specialButton.onClick.AddListener(() => {
+            specialButton.onClick.AddListener(() =>
+            {
                 if (playerAttack != null) playerAttack.SpecialAttack(); // Call SpecialAttack on PlayerAttack
             });
         }
 
         if (hitDownButton != null) // Safety check
         {
-            hitDownButton.onClick.AddListener(() => {
+            hitDownButton.onClick.AddListener(() =>
+            {
                 if (playerAttack != null) playerAttack.HitDown(); // Call HitDown method on PlayerAttack
             });
         }
 
         // Pull button EventTriggers (already setup correctly)
-        EventTrigger.Entry pointerDownEntry = new EventTrigger.Entry(); //
-        pointerDownEntry.eventID = EventTriggerType.PointerDown; //
-        pointerDownEntry.callback.AddListener((data) => { OnPointerDownDelegatePull((PointerEventData)data); }); //
-        if (pullButton != null && pullButton.GetComponent<EventTrigger>() != null) // Safety check
+        // Add a check to ensure EventTrigger exists before adding entries
+        EventTrigger pullEventTrigger = pullButton?.GetComponent<EventTrigger>();
+        if (pullButton != null && pullEventTrigger == null)
         {
-            pullButton.GetComponent<EventTrigger>().triggers.Add(pointerDownEntry); //
+            // If it doesn't exist, add it
+            pullEventTrigger = pullButton.gameObject.AddComponent<EventTrigger>();
         }
 
-
-        EventTrigger.Entry pointerUpEntry = new EventTrigger.Entry(); //
-        pointerUpEntry.eventID = EventTriggerType.PointerUp; //
-        pointerUpEntry.callback.AddListener((data) => { OnPointerUpDelegatePull((PointerEventData)data); }); //
-        if (pullButton != null && pullButton.GetComponent<EventTrigger>() != null) // Safety check
+        if (pullEventTrigger != null)
         {
-            pullButton.GetComponent<EventTrigger>().triggers.Add(pointerUpEntry); //
+            EventTrigger.Entry pointerDownEntry = new EventTrigger.Entry(); //
+            pointerDownEntry.eventID = EventTriggerType.PointerDown; //
+            pointerDownEntry.callback.AddListener((data) => { OnPointerDownDelegatePull((PointerEventData)data); }); //
+            pullEventTrigger.triggers.Add(pointerDownEntry); //
+
+            EventTrigger.Entry pointerUpEntry = new EventTrigger.Entry(); //
+            pointerUpEntry.eventID = EventTriggerType.PointerUp; //
+            pointerUpEntry.callback.AddListener((data) => { OnPointerUpDelegatePull((PointerEventData)data); }); //
+            pullEventTrigger.triggers.Add(pointerUpEntry); //
+        }
+        else
+        {
+            Debug.LogWarning("Pull Button or its EventTrigger is null. Ensure the Pull Button GameObject has an EventTrigger component.");
         }
 
-        // Removed direct Jump and Bomb EventTriggers here, as they are handled elsewhere (Jump by GameEvents, Bomb by AddConsumable)
+        EventTrigger jumpEventTrigger = jumpButton?.GetComponent<EventTrigger>();
+        if (jumpButton != null)
+        {
+            if (jumpEventTrigger == null)
+            {
+                // If it doesn't exist, add it
+                jumpEventTrigger = jumpButton.gameObject.AddComponent<EventTrigger>();
+            }
+
+            EventTrigger.Entry jumpPointerDownEntry = new EventTrigger.Entry();
+            jumpPointerDownEntry.eventID = EventTriggerType.PointerDown;
+            jumpPointerDownEntry.callback.AddListener((data) => { OnPointerDownDelegateJump((PointerEventData)data); });
+            jumpEventTrigger.triggers.Add(jumpPointerDownEntry);
+        }
+        else
+        {
+            Debug.LogWarning("Jump Button not assigned or its EventTrigger is null. Ensure the Jump Button GameObject has an EventTrigger component or is assigned in Inspector.");
+        }
     }
+    public void OnPointerDownDelegateJump(PointerEventData eventData)
+    {
+        // You might want to add an IsInteractable check here too, similar to pullButton
+        if (jumpButton != null && !jumpButton.IsInteractable())
+        {
+            Debug.Log("Jump button clicked but it is not interactable. Ignoring action.");
+            return;
+        }
 
+        // This is where you call your existing method that invokes the game event
+        OnMobileJumpButtonClicked(); // Call your existing method that invokes GameEvents.OnJumpButtonPressed
+        if (handJump != null) handJump.gameObject.SetActive(false); // Your existing jump hint logic
+        else if (levelGoal != null && levelGoal.Tutorial && levelGoal.jumpHint != null) levelGoal.jumpHint.gameObject.SetActive(false);
+        Debug.Log("Jumping (from PointerDownDelegateJump)");
+    }
     public void OnPointerDownDelegatePull(PointerEventData eventData) //
     {
+        // THIS IS THE CRUCIAL CHANGE: Check if the button is interactable
+        if (pullButton != null && !pullButton.IsInteractable())
+        {
+            Debug.Log("Pull button clicked but it is not interactable. Ignoring action.");
+            return; // Do nothing if the button is not interactable
+        }
+
         if (playerController != null) playerController.StartPull(); //
         isPulling = true; //
         if (hintPull != null) hintPull.gameObject.SetActive(false); //
@@ -202,6 +255,13 @@ public class PlayerControls : MonoBehaviour
 
     public void OnPointerUpDelegatePull(PointerEventData eventData) //
     {
+        // Add the same check here for consistency, though PointerUp might not need to be blocked if PointerDown is.
+        if (pullButton != null && !pullButton.IsInteractable())
+        {
+            Debug.Log("Pull button released but it was not interactable. Ignoring action.");
+            return; // Do nothing if the button is not interactable
+        }
+
         if (playerController != null) playerController.StopPull(); //
         isPulling = false; //
         if (!levelGoal.Tutorial) return; //

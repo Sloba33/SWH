@@ -171,7 +171,7 @@ public class Bomb : MonoBehaviour
                 {
                     Debug.Log("Obstacle found in levelgoal");
                     levelGoal.RemoveObstacle(obstaclesToHit[i]);
-                    obstaclesToHit[i].ParticleDestroy();
+                    obstaclesToHit[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
                 }
             }
         }
@@ -181,7 +181,7 @@ public class Bomb : MonoBehaviour
             for (int i = 0; i < obstaclesToHit.Count; i++)
             {
                 if (obstaclesToHit[i] != null)
-                    obstaclesToHit[i].ParticleDestroy();
+                    obstaclesToHit[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
             }
         }
         if (player != null && !isColored) player.Die();
@@ -218,7 +218,7 @@ public class Bomb : MonoBehaviour
                 {
                     Debug.Log("Obstacle found in levelgoal");
                     levelGoal.RemoveObstacle(obstaclesToNuke[i]);
-                    obstaclesToNuke[i].ParticleDestroy();
+                    obstaclesToNuke[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
                 }
             }
         }
@@ -228,7 +228,7 @@ public class Bomb : MonoBehaviour
             for (int i = 0; i < obstaclesToNuke.Count; i++)
             {
                 if (obstaclesToNuke[i] != null)
-                    obstaclesToNuke[i].ParticleDestroy();
+                    obstaclesToNuke[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
             }
         }
 

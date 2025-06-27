@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     private RigidbodyConstraints _originalConstraints; // Store original constraints
     private PlayerInputHandler _inputHandler; // Reference to the input handler
     private PlayerAttack _playerAttack; // Reference to the player attack script
+    [HideInInspector] public bool justLanded = false; // Indicates player just landed from a jump/fall
+    public float landedTime = 0f; // To track when the player landed
+    public float LAND_GRACE_PERIOD = 0.15f; // Adjust this value as needed (e.g., 0.1s to 0.2s)
     [Header("Movement Settings")]
     [SerializeField] private float _walkSpeed = 2f; //
     public float _jumpForce = 5.8f; //
@@ -298,7 +301,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log("Linear Velocity: " + _rb.linearVelocity);
+        // Debug.Log("Linear Velocity: " + _rb.linearVelocity);
     }
     public Collider[] groundHits = new Collider[1];
     [HideInInspector] public Collider[] wallHits = new Collider[1];
@@ -318,7 +321,9 @@ public class PlayerMovement : MonoBehaviour
             IsGrounded = true;
             IsFalling = false;
             IsJumping = false;
-            justJumpedOutOfPush = false; // Reset when grounded
+            justLanded = true; // Set flag when landing
+            landedTime = Time.time; // Record landing time
+            justJumpedOutOfPush = false; // Reset if this was a jump out of push
             Friction(true);
         }
         else if (IsGrounded && !newGrounded)
@@ -329,6 +334,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 IsFalling = true;
             }
+            justLanded = false; // Reset if no longer grounded
         }
 
         // Update wall/bomb blocked states (these could be networked if relevant for gameplay)
@@ -348,6 +354,12 @@ public class PlayerMovement : MonoBehaviour
             _bombObstacleMask
         ) > 0;
         // if (IsAgainstWall && IsJumping)
+        if (justLanded && (Time.time - landedTime) > LAND_GRACE_PERIOD)
+        {
+            justLanded = false;
+        }
+
+
         //     CanMove = false;
         return newGrounded;
     }
@@ -430,7 +442,7 @@ public class PlayerMovement : MonoBehaviour
         Ray rayBack = new Ray(transform.position, transform.forward * -1);
         RaycastHit hitBack;
         obstacleBehind = Physics.Raycast(rayBack, out hitBack, 0.6f, _behindObstacleMask);
-        if (obstacleBehind) Debug.Log("Theres an obstacle behind");
+        // if (obstacleBehind) Debug.Log("Theres an obstacle behind");
         /**
        **Forward Cast
        */

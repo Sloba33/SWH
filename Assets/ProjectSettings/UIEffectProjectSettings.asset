@@ -43,6 +43,8 @@ ShaderVariantCollection:
         passType: 0
       - keywords: COLOR_ADDITIVE SAMPLING_BLUR_FAST SHADOW_COLOR_REPLACE
         passType: 0
+      - keywords: COLOR_MULTIPLY
+        passType: 0
       - keywords: COLOR_REPLACE SAMPLING_BLUR_FAST SHADOW_COLOR_REPLACE
         passType: 0
       - keywords: COLOR_REPLACE SAMPLING_BLUR_FAST SHADOW_COLOR_REPLACE TONE_NEGATIVE
@@ -51,12 +53,39 @@ ShaderVariantCollection:
         passType: 0
       - keywords: COLOR_SUBTRACTIVE TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
         passType: 0
+      - keywords: EDGE_COLOR_ADDITIVE EDGE_SHINY
+        passType: 0
+      - keywords: EDGE_COLOR_ADDITIVE EDGE_SHINY TRANSITION_COLOR_MULTIPLY_ADDITIVE
+          TRANSITION_SHINY
+        passType: 0
+      - keywords: EDGE_COLOR_CONTRAST EDGE_SHINY
+        passType: 0
+      - keywords: EDGE_COLOR_MULTIPLY_LUMINANCE EDGE_SHINY
+        passType: 0
       - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN
         passType: 0
       - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN SAMPLING_PIXELATION
         passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_BURN TRANSITION_COLOR_MULTIPLY_ADDITIVE
+        passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_COLOR_MULTIPLY_ADDITIVE
+          TRANSITION_DISSOLVE
+        passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_COLOR_MULTIPLY_ADDITIVE
+          TRANSITION_MASK
+        passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_COLOR_MULTIPLY_ADDITIVE
+          TRANSITION_MELT
+        passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_COLOR_MULTIPLY_ADDITIVE
+          TRANSITION_PATTERN
+        passType: 0
       - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_COLOR_MULTIPLY_ADDITIVE
           TRANSITION_SHINY
+        passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_CUTOFF
+        passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_PLAIN TRANSITION_FADE
         passType: 0
       - keywords: EDGE_COLOR_REPLACE EDGE_SHINY
         passType: 0
@@ -65,17 +94,37 @@ ShaderVariantCollection:
       - keywords: EDGE_COLOR_REPLACE EDGE_SHINY TRANSITION_COLOR_MULTIPLY_ADDITIVE
           TRANSITION_SHINY
         passType: 0
+      - keywords: EDGE_COLOR_REPLACE EDGE_SHINY TRANSITION_FADE
+        passType: 0
       - keywords: EDGE_PLAIN TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
         passType: 0
       - keywords: EDGE_SHINY TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
         passType: 0
+      - keywords: SAMPLING_BLUR_FAST
+        passType: 0
       - keywords: SAMPLING_BLUR_FAST TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
         passType: 0
+      - keywords: SAMPLING_BLUR_MEDIUM
+        passType: 0
+      - keywords: SAMPLING_EDGE_ALPHA
+        passType: 0
+      - keywords: SAMPLING_EDGE_LUMINANCE
+        passType: 0
+      - keywords: SAMPLING_RGB_SHIFT
+        passType: 0
       - keywords: SHADOW_COLOR_ADDITIVE
+        passType: 0
+      - keywords: SHADOW_COLOR_HSV_MODIFIER
+        passType: 0
+      - keywords: SHADOW_COLOR_MULTIPLY
+        passType: 0
+      - keywords: SHADOW_COLOR_MULTIPLY_ADDITIVE
         passType: 0
       - keywords: SHADOW_COLOR_REPLACE
         passType: 0
       - keywords: SHADOW_COLOR_REPLACE TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
+        passType: 0
+      - keywords: SHADOW_COLOR_SUBTRACTIVE
         passType: 0
       - keywords: TARGET_HUE TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
         passType: 0
@@ -84,6 +133,10 @@ ShaderVariantCollection:
       - keywords: TONE_GRAYSCALE
         passType: 0
       - keywords: TONE_NEGATIVE
+        passType: 0
+      - keywords: TONE_POSTERIZE
+        passType: 0
+      - keywords: TONE_RETRO
         passType: 0
       - keywords: TONE_SEPIA
         passType: 0

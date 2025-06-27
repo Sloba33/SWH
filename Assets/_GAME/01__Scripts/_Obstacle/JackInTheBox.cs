@@ -38,7 +38,7 @@ public class JackInTheBox : MonoBehaviour
     public IEnumerator DestroyJitb()
     {
         yield return new WaitForSeconds(3.5f);
-        obstacle.ParticleDestroy();
+        obstacle.ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
         
     }
 }

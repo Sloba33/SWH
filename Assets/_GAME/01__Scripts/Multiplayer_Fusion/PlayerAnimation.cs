@@ -36,6 +36,7 @@ public class PlayerAnimation : MonoBehaviour
         if (_anim == null || _playerMovement == null || _player == null || _playerController == null) return;
 
         UpdateAnimationState();
+        // Debug.Log("CurrentAnimState: " + CurrentAnimState);
     }
 
     private void UpdateAnimationState()
@@ -57,8 +58,12 @@ public class PlayerAnimation : MonoBehaviour
         bool isWalking = isMoving && IsGrounded && MoveSpeed < 3f;
 
         // Prioritize states
-        if (_playerMovement.IsPushing)
+        if (_playerController.isPushing || _playerMovement.IsPushing)
+        {
+            var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
+            UnityEngine.Debug.LogWarning($"Set to push:\n{stackTrace}");
             return PlayerAnimState.Push;
+        }
         if (_playerMovement.IsPulling)
             return PlayerAnimState.Pull;
 
@@ -75,8 +80,11 @@ public class PlayerAnimation : MonoBehaviour
             if (isWalking)
                 return PlayerAnimState.Walk;
 
-            if (!isMoving && !_playerMovement.IsPushing && !_playerMovement.IsPulling)
+            if (!isMoving && (!_playerMovement.IsPushing || !_playerController.isPushing) && !_playerMovement.IsPulling)
             {
+                // Debug.Log("REASONING :" + !isMoving + " " + (!_playerMovement.IsPushing || !_playerController.isPushing) + " " + !_playerMovement.IsPulling);
+                var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
+                // UnityEngine.Debug.LogWarning($"Set to Idle:\n{stackTrace}");
                 return PlayerAnimState.Idle;
             }
         }

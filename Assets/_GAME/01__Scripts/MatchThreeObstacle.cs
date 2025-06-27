@@ -11,6 +11,7 @@ public class MatchThreeObstacle : MonoBehaviour
     public bool hasGameStarted;
     public bool isDestructible;
 
+    private List<Obstacle> obstaclesToProcessForSpawns = new();
     private IEnumerator Start()
     {
         Obstacle = GetComponent<Obstacle>();
@@ -52,9 +53,22 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private void CheckForMatches()
     {
+        obstaclesToProcessForSpawns.Clear();
         CheckListForMatches(verticalList);
         CheckListForMatches(horizontalList);
         CheckListForMatches(updownList);
+        if (obstaclesToProcessForSpawns.Count > 0)
+        {
+            if (GameManager.Instance != null && GameManager.Instance.levelGoal != null)
+            {
+                foreach (var obstacle in obstaclesToProcessForSpawns)
+                {
+                    GameManager.Instance.levelGoal.QueueObstacleForSpawnProcessing(obstacle);
+                }
+            }
+            ClearObstacleLists();
+        }
+
     }
 
     private int consecutiveCount = 1;
@@ -63,7 +77,7 @@ public class MatchThreeObstacle : MonoBehaviour
     {
         if (obstacleList.Count == 0) return; // Prevent errors with empty lists
 
-        ObstacleType specialType;
+        // ObstacleType specialType; // This variable is not used in the method's logic after the change, consider removing if no other use
         // ObstacleColor specialColor; // Not strictly needed here, as Universal handles it
 
         float offset;
@@ -86,13 +100,10 @@ public class MatchThreeObstacle : MonoBehaviour
         {
             float distanceToGround = Vector3.Distance(Obstacle.transform.position, groundPosition);
 
-            // Check if the current obstacle in the list matches the type and color of the 'origin' or the current match chain's target.
-            // This is the core logic change.
-            if (IsMatchingTypeAndColor(currentMatchTarget, obstacleList[i]) && distanceToGround < (transform.position.y + offset))
+            // Use the new IsMatchingObstacle method
+            if (IsMatchingObstacle(currentMatchTarget, obstacleList[i]) && distanceToGround < (transform.position.y + offset))
             {
-                // Debug.Log("Distance to ground " + distanceToGround);
                 consecutiveCount++;
-                // Debug.Log("Consecutive count" + consecutiveCount);
                 if (consecutiveCount >= 3)
                 {
                     if (CheckAndHandleJackInTheBox(obstacleList))
@@ -100,35 +111,10 @@ public class MatchThreeObstacle : MonoBehaviour
                         // JackInTheBox found, cancel match (or special handling)
                         return;
                     }
+                    // Pass the currentMatchTarget and consecutiveCount for destruction logic
                     DestroyConsecutiveObstacles(obstacleList, i, consecutiveCount);
                     return; // Stop checking this list after a match is found and destroyed
                 }
-            }
-            // Handling for cases where the origin obstacle or the comparison obstacle is Universal.
-            // This assumes 'Universal' means it matches anything for its type, and implicitly, its color.
-            else if (currentMatchTarget.obstacleType == ObstacleType.Universal || obstacleList[i].obstacleType == ObstacleType.Universal)
-            {
-                // If either is Universal, it counts as a match for the purpose of extending a chain
-                // (e.g., Red-Universal-Red still counts as a match of Red).
-                // If the universal is the first in the chain, it needs to 'adopt' the type/color of the next non-universal.
-                // The current implementation of IsMatchingTypeAndColor handles this implicitly by comparing to a specific type/color,
-                // so we just need to ensure the count continues for universal.
-
-                // For simplicity, let's keep the existing `Universal` logic as is, but it might need
-                // more specific rules if `Universal` should behave differently in chains.
-                // The most robust way to handle `Universal` is usually within the `IsMatchingTypeAndColor` itself.
-
-                // Re-evaluating the original `else if` block:
-                // `Obstacle.obstacleType == ObstacleType.Universal && obstacleList[0].obstacleType == ObstacleType.Universal`
-                // This original logic specifically checked if *this* obstacle (the one the script is on)
-                // AND the *first* obstacle in the list are Universal. This is less flexible.
-                // It's better to integrate Universal checks into IsMatchingTypeAndColor.
-
-                // Let's modify this to use the IsMatchingTypeAndColor method more universally.
-                // The current `IsMatchingTypeAndColor` handles Universal types.
-                // So, if it's NOT a normal match, and it's NOT a universal, then reset.
-                consecutiveCount = 1;
-                currentMatchTarget = obstacleList[i]; // Start new potential sequence
             }
             else
             {
@@ -138,18 +124,40 @@ public class MatchThreeObstacle : MonoBehaviour
         }
     }
 
-    // *** MODIFIED: New IsMatchingTypeAndColor method ***
-    private bool IsMatchingTypeAndColor(Obstacle mainObstacle, Obstacle compareObstacle)
+    /// <summary>
+    /// Checks if two obstacles match based on Type, Color, and Modifier (especially Universal).
+    /// </summary>
+    /// <param name="mainObstacle">The reference obstacle for comparison.</param>
+    /// <param name="compareObstacle">The obstacle to compare against the reference.</param>
+    /// <returns>True if they match, false otherwise.</returns>
+    private bool IsMatchingObstacle(Obstacle mainObstacle, Obstacle compareObstacle)
     {
-        // If either obstacle is Universal, it matches the other's type and color.
-        if (mainObstacle.obstacleType == ObstacleType.Universal || compareObstacle.obstacleType == ObstacleType.Universal)
+        // A null obstacle cannot match
+        if (mainObstacle == null || compareObstacle == null) return false;
+
+        // If either obstacle has a Universal modifier, it matches anything
+        if (mainObstacle.obstacleModifier == ObstacleModifier.Universal || compareObstacle.obstacleModifier == ObstacleModifier.Universal)
         {
-            return true; // Universal matches anything
+            return true;
         }
 
-        // Otherwise, match based on both type AND color
+        // If either obstacle has a Universal type, it matches the other's type (and implicitly color for Universal type)
+        // This part might need careful consideration if Universal type should *also* imply Universal modifier
+        // For now, it means if one is universal type, it matches the other type, then we check color.
+        if (mainObstacle.obstacleType == ObstacleType.Universal || compareObstacle.obstacleType == ObstacleType.Universal)
+        {
+            // If one is Universal type, and the other is a specific type, it still counts as a type match.
+            // Then we must also check for color match.
+            return (mainObstacle.obstacleColor == compareObstacle.obstacleColor ||
+                    mainObstacle.obstacleColor == ObstacleColor.Universal ||
+                    compareObstacle.obstacleColor == ObstacleColor.Universal);
+        }
+
+        // If neither is Universal in type or modifier, then match based on exact Type, Color, and Modifier
+        // This assumes non-Universal modifiers must also match exactly if they exist.
         return (mainObstacle.obstacleType == compareObstacle.obstacleType &&
-                mainObstacle.obstacleColor == compareObstacle.obstacleColor);
+                mainObstacle.obstacleColor == compareObstacle.obstacleColor &&
+                mainObstacle.obstacleModifier == compareObstacle.obstacleModifier);
     }
 
     private bool CheckAndHandleJackInTheBox(List<Obstacle> obstacleList)
@@ -166,31 +174,29 @@ public class MatchThreeObstacle : MonoBehaviour
         return false;
     }
 
-    // *** MODIFIED: Added consecutiveCount parameter to DestroyConsecutiveObstacles ***
-    private void DestroyConsecutiveObstacles(List<Obstacle> obstacleList, int i, int count, ObstacleType? specialType = null)
+    private void DestroyConsecutiveObstacles(List<Obstacle> obstacleList, int i, int count)
     {
-        // The loop needs to iterate 'count' times backwards from 'i'
         for (int j = i - count + 1; j <= i; j++)
         {
-            // Ensure index is valid
             if (j >= 0 && j < obstacleList.Count)
             {
-                if (!obstacleList[j].queuedForDestruction)
+                Obstacle obstacleToDestroy = obstacleList[j]; // Get the obstacle reference for easier use
+                if (obstacleToDestroy != null && !obstacleToDestroy.queuedForDestruction)
                 {
-                    // The specialType logic for `destructionParticleSystem` might need re-evaluation
-                    // with the new ObstacleData approach for `Universal` types.
-                    // For now, retaining original logic for `specialType` but it might be redundant
-                    // if `destructionParticleSystem` is now consistently on `ObstacleData`.
-                    if (specialType.HasValue && j == 0) // This logic seems specific to the first element in the list
+                    // ESSENTIAL ADDITION 1: Add the obstacle to the list that will be processed later by CheckForMatches.
+                    // This builds the batch of destroyed obstacles for a single call to LevelGoal.ProcessDestroyedObstacles.
+                    obstaclesToProcessForSpawns.Add(obstacleToDestroy);
+
+                    // Your existing line to trigger the obstacle's own destruction effects.
+                    obstacleToDestroy.ParticleDestroy(Obstacle.ObstacleDestructionSource.MatchThree);
+
+                    // ESSENTIAL ADDITION 2: Tell LevelGoal to remove this obstacle from its tracked list.
+                    // This keeps LevelGoal's 'ObstaclesToDestroy_Player' accurate.
+                    // Remember: LevelGoal.RemoveObstacle now ONLY removes from the list and DOES NOT trigger spawn checks.
+                    if (GameManager.Instance != null && GameManager.Instance.levelGoal != null)
                     {
-                        // This implies the special type sets the particle system for the 'origin' obstacle.
-                        // With the new structure, the particle system should ideally be driven by the ObstacleData
-                        // associated with each obstacle.
-                        // Consider if this line is still needed or if `obstacleList[j].ParticleDestroy()`
-                        // (which relies on `obstacleList[j].destructionParticleSystem`) is sufficient.
-                        obstacleList[j].destructionParticleSystem = obstacleList[1].destructionParticleSystem;
+                        GameManager.Instance.levelGoal.RemoveObstacle(obstacleToDestroy);
                     }
-                    obstacleList[j].ParticleDestroy();
                 }
             }
         }
@@ -246,10 +252,8 @@ public class MatchThreeObstacle : MonoBehaviour
         {
             Obstacle hitObstacle = hit.collider.GetComponent<Obstacle>();
 
-            // *** MODIFIED: Use IsMatchingTypeAndColor for raycast condition ***
-            // This is the check for whether a hit obstacle *should* be added to a directional list.
-            // It should only be added if it's the same type AND color, or if it's a Universal.
-            if (hitObstacle != null && IsMatchingTypeAndColor(Obstacle, hitObstacle)) // Use the script's own Obstacle as the reference
+            // Use the new IsMatchingObstacle for raycast condition
+            if (hitObstacle != null && IsMatchingObstacle(Obstacle, hitObstacle)) // Use the script's own Obstacle as the reference
             {
                 AddToObstacleList(hitObstacle, direction);
                 rayOrigin = hit.point + direction * 0.02f;
@@ -275,8 +279,6 @@ public class MatchThreeObstacle : MonoBehaviour
     {
         if (!list.Contains(hitObstacle))
         {
-            // Removed the `if (!list.Contains(Obstacle))` and `list.Insert(0, Obstacle);`
-            // because `Obstacle` is now added to all lists at the beginning of `CastRays()`.
             list.Add(hitObstacle);
         }
     }

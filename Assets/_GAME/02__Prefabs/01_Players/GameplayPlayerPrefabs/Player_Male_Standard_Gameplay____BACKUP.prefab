@@ -605,114 +605,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccc0b4389dd70b489f8020285537b91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMovement: {fileID: 0}
   AI: 0
-  player: {fileID: 0}
-  playerAttack: {fileID: 0}
+  _movement: {fileID: 0}
   playerObstacleController: {fileID: 0}
-  playerInput: {fileID: 0}
-  jumpParticle: {fileID: 6808812054988748476}
-  camerasPrefab: {fileID: 3242656931235162317}
-  playerRegularCamera: {fileID: 6968579611282920195}
+  _playerControls: {fileID: 0}
+  pullButtonHeld: 0
+  pullButtonReleased: 0
+  flashlightEnabled: 0
   flashlight: {fileID: 5595244717260839662}
   spotlight: {fileID: 4130482877464360193}
-  floatingJoystick: {fileID: 0}
-  dynamicJoystick: {fileID: 0}
-  controls: 0
-  movementType: 0
-  playerControls: {fileID: 0}
+  followCamera: {fileID: 0}
   playerCamera: {fileID: 3242656931235162317}
-  inputValues: {x: 0, y: 0}
-  _groundMask:
-    serializedVersion: 2
-    m_Bits: 1288
-  _obstacleMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _bombObstacleMask:
-    serializedVersion: 2
-    m_Bits: 393472
-  _tileObstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _isAgainstWall: 0
-  _isBombBlocked: 0
-  IsGrounded: 0
-  grounded: 0
-  isFalling: 0
-  hasRecentlyFallen: 0
-  _ground:
-  - {fileID: 0}
-  _wallCheckRadius: 0.12
-  _bombCheckRadius: 0.1
-  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
-  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
-  tile: {fileID: 0}
-  obstacle: {fileID: 0}
-  fallHeight: 0
-  forceApplied: 0
-  rayDistance: 1
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  canMove: 1
-  _walkSpeed: 2
-  obstacleAvoidanceRange: 0.06
-  _dir: {x: 0, y: 0, z: 0}
-  raycastDistance: 1
-  avoidanceMultiplier: 1
-  raycastAngle: 5
-  leftEyeOffset: {x: 0.025, y: 0, z: 0}
-  rightEyeOffset: {x: -0.025, y: 0, z: 0}
-  climbRayOffset: {x: 0, y: 0.45, z: 0}
-  behindObstacleOffset: {x: 0, y: 0, z: 0}
-  pullObstacleFlag: 0
-  _behindObstacleMask:
-    serializedVersion: 2
-    m_Bits: 524544
-  collectibleMask:
-    serializedVersion: 2
-    m_Bits: 131072
-  previousMoveDirection: {x: 0, y: 0, z: 0}
-  currentMoveDirection: {x: 0, y: 0, z: 0}
-  nudgeDistance: 0
-  _jumpForce: 5.8
-  _isJumping: 1
-  jumpTimer: 0
-  jumpCoyoteTime: 0.14
-  _hasRecentlyJumped: 1
-  isPushing: 0
-  canPush: 1
+  cameraFollowTarget: {fileID: 0}
   isPulling: 0
-  isAgainstWall: 0
-  recentlyHitWall: 0
-  obstacleBehind: 0
-  _pullButtonHeld: 0
-  _pullButtonReleased: 0
-  tileRayLength: 50
-  forwardOffset: {x: 0, y: 0.48, z: 0}
-  backOffset: {x: 0, y: 0.48, z: 0}
-  leftOffset: {x: 0, y: 0, z: 0}
-  rightOffset: {x: 0, y: 0, z: 0}
-  frontoffs: 0.3
-  backoffs: -0.3
-  slideCheckerRadius: 0.025
-  slideForward: 0
-  slideBack: 0
-  slideLeft: 0
-  slideRight: 0
-  slideForce: 65
-  _slideForward:
-  - {fileID: 0}
-  _slideBack:
-  - {fileID: 0}
-  _slideLeft:
-  - {fileID: 0}
-  _slideRight:
-  - {fileID: 0}
-  slideAngle: 25
-  changedToJump: 0
-  changedToGround: 0
+  isPushing: 0
 --- !u!114 &465992519024109052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -872,8 +778,11 @@ MonoBehaviour:
   pushSpeed: 0
   previousMoveDirection: {x: 0, y: 0, z: 0}
   currentMoveDirection: {x: 0, y: 0, z: 0}
+  playerCollider: {fileID: 0}
+  repositionSpeed: 7
   pushDirectionChanged: 0
   delayTimer: 0
+  manualPushDistance: 0.75
 --- !u!114 &5592945993921160032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -929,7 +838,6 @@ MonoBehaviour:
   toolDown: {fileID: 0}
   hitRayOffset: {x: 0, y: 0, z: 0}
   hitRayDistance: 0.95
-  canHit: 1
   hittingDown: 0
   player: {fileID: 0}
   weaponSpecialRadius: 0
@@ -20309,12 +20217,6 @@ PrefabInstance:
 --- !u!4 &3422665118401882296 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7239184321669955831, guid: eb1b099d2feaf184bb43e21ee217532e,
-    type: 3}
-  m_PrefabInstance: {fileID: 5406852843267287119}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6808812054988748476 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1546074422471925491, guid: eb1b099d2feaf184bb43e21ee217532e,
     type: 3}
   m_PrefabInstance: {fileID: 5406852843267287119}
   m_PrefabAsset: {fileID: 0}

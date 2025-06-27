@@ -30,7 +30,7 @@ public class HeadSmashCollider : MonoBehaviour
                         GameObject originalObject = obs.transform.gameObject;
                         // QuestRotator.Instance.UpdateQuestProgress(QuestType.Headbutt);
 
-                        originalObject.GetComponent<Obstacle>().ParticleDestroy();
+                        originalObject.GetComponent<Obstacle>().ParticleDestroy(Obstacle.ObstacleDestructionSource.Weapon);
                     }
                     else
                     {

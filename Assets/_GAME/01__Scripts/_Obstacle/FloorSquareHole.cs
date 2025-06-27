@@ -28,6 +28,9 @@ public class FloorSquareHole : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
+            other.GetComponent<Obstacle>().playerController.isPushing = false;
+            other.GetComponent<Obstacle>().playerController.transform.GetComponent<PlayerMovement>().IsPushing = false;
+            other.GetComponent<Obstacle>().playerController.transform.GetComponent<PlayerMovement>().CanMove = false;
             other.GetComponent<Obstacle>().enabled = false;
             other.GetComponent<Collider>().enabled = false;
             currentObject = other.gameObject;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using System.Linq;
 
 public class LevelGoal : MonoBehaviour
 {
@@ -11,7 +11,12 @@ public class LevelGoal : MonoBehaviour
     public LevelProgress levelProgress;
     public float currentTime = 0, bonusTime;
     public TutorialDialogue tutorialDialogue;
-
+    [Header("Obstacle Spawn Settings")]
+    public Dictionary<System.Tuple<ObstacleType, ObstacleColor>, Obstacle> goalObstaclePrefabs = new();
+    private Dictionary<System.Tuple<ObstacleType, ObstacleColor>, Obstacle> _obstacleTemplates = new();
+    public Dictionary<System.Tuple<ObstacleType, ObstacleColor>, int> initialObstacleCounts = new();
+    private HashSet<System.Tuple<ObstacleType, ObstacleColor>> suppressedSpawnTypes = new();
+    private List<Obstacle> _obstaclesDestroyedThisFrame = new List<Obstacle>();
     public bool SpawnFallingObstacles;
     public List<SpawnableItem<Obstacle>> FallingObstacles = new List<SpawnableItem<Obstacle>>();
     public int obstaclesToSpawn;
@@ -19,14 +24,14 @@ public class LevelGoal : MonoBehaviour
     public int TotalObstaclesSpawned;
     public float delayBoxSpawn = 6f;
     [SerializeField] public int minObstacleSpawnHeight = 16, maxObstacleSpawnHeight = 20;
-
+    [Header("Bomb Spawn Settings")]
     public bool SpawnFallingBombs;
     public List<SpawnableItem<GameObject>> FallingBombs = new List<SpawnableItem<GameObject>>();
     public int bombsToSpawn;
     public float delayBombSpawn = 10f;
     public float bombSpawnFrequency = 5f;
     [SerializeField] int minBombSpawnHeight = 10, maxBombSpawnHeight = 15;
-
+    [Header("Collectible Spawn Settings")]
     public bool SpawnFallingCollectibles;
     public List<SpawnableItem<GameObject>> FallingCollectibles = new List<SpawnableItem<GameObject>>();
     public int collectiblesToSpawn;
@@ -88,6 +93,9 @@ public class LevelGoal : MonoBehaviour
         }
 
         FindAndAddTilesToList();
+        AddObstaclesToInitialCounts();
+        // PopulateGoalObstaclePrefabs();
+        CreateObstacleTemplates();
 
         bool levelCompletedPreviously = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "_Completed", 0) == 1;
         if (levelCompletedPreviously)
@@ -124,6 +132,114 @@ public class LevelGoal : MonoBehaviour
             InvokeRepeating(nameof(RespawnBomb), 45, 10);
 
     }
+    public void QueueObstacleForSpawnProcessing(Obstacle obstacle)
+    {
+        if (obstacle != null && !_obstaclesDestroyedThisFrame.Contains(obstacle))
+        {
+            _obstaclesDestroyedThisFrame.Add(obstacle);
+            Debug.Log($"LevelGoal: Queued obstacle {obstacle.name} for spawn processing. Queue size: {_obstaclesDestroyedThisFrame.Count}");
+        }
+    }
+    private void ProcessDestroyedObstaclesInternal() // Renamed to avoid conflict with potential public usage
+    {
+        if (_obstaclesDestroyedThisFrame.Count == 0)
+        {
+            return; // Nothing to process
+        }
+
+        // Use a HashSet to ensure we only check each unique type/color once per batch
+        HashSet<System.Tuple<ObstacleType, ObstacleColor>> uniqueDestroyedTypesAndColors = new();
+
+        // Populate the HashSet from the obstacles queued this frame
+        foreach (var obstacle in _obstaclesDestroyedThisFrame)
+        {
+            if (obstacle != null)
+            {
+                uniqueDestroyedTypesAndColors.Add(System.Tuple.Create(obstacle.obstacleType, obstacle.obstacleColor));
+            }
+        }
+
+        // NEW LOGS for debugging the "2x2" issue
+        string uniquePairsString = string.Join(", ", uniqueDestroyedTypesAndColors.Select(t => $"{t.Item1}-{t.Item2}"));
+        Debug.Log($"ProcessDestroyedObstaclesInternal: Found {uniqueDestroyedTypesAndColors.Count} unique types/colors: [{uniquePairsString}]");
+
+        // Iterate through unique types and trigger spawn checks
+        foreach (var typeColorPair in uniqueDestroyedTypesAndColors)
+        {
+            Debug.Log($"ProcessDestroyedObstaclesInternal: Calling CheckForMissingObstaclesAndSpawn for {typeColorPair.Item1}-{typeColorPair.Item2}");
+            CheckForMissingObstaclesAndSpawn(typeColorPair.Item1, typeColorPair.Item2);
+        }
+
+        // Clear the queue for the next frame
+        _obstaclesDestroyedThisFrame.Clear();
+        Debug.Log("ProcessDestroyedObstaclesInternal: Finished processing batch and cleared queue.");
+    }
+
+    private void AddObstaclesToInitialCounts()
+    {
+        initialObstacleCounts.Clear(); // Clear it first to ensure fresh counts
+
+        // Iterate through the ObstaclesToDestroy_Player list.
+        // This list should already contain all initial goal obstacles present in the scene at start.
+        foreach (Obstacle obs in ObstaclesToDestroy_Player)
+        {
+            if (obs == null) continue; // Skip if reference is null (e.g., already destroyed or invalid)
+
+            System.Tuple<ObstacleType, ObstacleColor> key = System.Tuple.Create(obs.obstacleType, obs.obstacleColor);
+            if (initialObstacleCounts.ContainsKey(key))
+            {
+                initialObstacleCounts[key]++;
+            }
+            else
+            {
+                initialObstacleCounts[key] = 1;
+            }
+        }
+    }
+    private void CreateObstacleTemplates()
+    {
+        _obstacleTemplates.Clear(); // Clear any previous templates
+
+        // Iterate through the unique obstacle types/colors identified as part of the level goal
+        foreach (var entry in initialObstacleCounts)
+        {
+            System.Tuple<ObstacleType, ObstacleColor> neededKey = entry.Key;
+
+            // Find an existing *scene instance* of an obstacle that matches this type/color.
+            // We use ObstaclesToDestroy_Player as it should contain initial goal obstacles.
+            Obstacle foundInstance = null;
+            foreach (Obstacle obs in ObstaclesToDestroy_Player)
+            {
+                if (obs != null && obs.obstacleType == neededKey.Item1 && obs.obstacleColor == neededKey.Item2)
+                {
+                    foundInstance = obs;
+                    break; // Found one, no need to search further
+                }
+            }
+
+            if (foundInstance == null)
+            {
+                Debug.LogWarning($"No existing scene instance found for obstacle type {neededKey.Item1}-{neededKey.Item2}. Cannot create a template for respawning. Please ensure at least one of each goal obstacle type is present in the scene at start.");
+                continue; // Cannot create a template if no source instance exists
+            }
+
+            // Create a clone of the found instance to use as a template
+            // Instantiating from a scene object creates a copy of that scene object.
+            Obstacle template = Instantiate(foundInstance);
+
+            // Disable the template object immediately so it's not visible or interactive
+            template.gameObject.SetActive(false);
+            // Optionally, parent it under LevelGoal's GameObject for scene organization
+            template.transform.SetParent(this.transform);
+            template.name = $"Template_{neededKey.Item1}_{neededKey.Item2}";
+
+            _obstacleTemplates.Add(neededKey, template);
+            Debug.Log($"Created template for {neededKey.Item1}-{neededKey.Item2}");
+        }
+    }
+
+
+
 
     public void RespawnBomb()
     {
@@ -133,6 +249,10 @@ public class LevelGoal : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        ProcessDestroyedObstaclesInternal();
+    }
     private void FixedUpdate()
     {
         if (Tutorial && settings != null && !settings.gameWon && !settings.gameLost) return;
@@ -176,6 +296,32 @@ public class LevelGoal : MonoBehaviour
             Obstacle fallingObstacle = Instantiate(obstacle, spawnPos, obstacle.transform.rotation, null);
             fallingObstacle.name += TotalObstaclesSpawned.ToString();
             yield return new WaitForSeconds(spawnFrequency);
+        }
+    }
+    public void ProcessDestroyedObstacles(IEnumerable<Obstacle> destroyedObstacles)
+    {
+        HashSet<System.Tuple<ObstacleType, ObstacleColor>> uniqueDestroyedTypesAndColors = new();
+
+        // NEW LOG
+        Debug.Log($"ProcessDestroyedObstacles: Called with {destroyedObstacles.Count()} obstacles in the batch.");
+
+        foreach (var obstacle in destroyedObstacles)
+        {
+            if (obstacle != null)
+            {
+                uniqueDestroyedTypesAndColors.Add(System.Tuple.Create(obstacle.obstacleType, obstacle.obstacleColor));
+            }
+        }
+
+        // NEW LOG
+        string uniquePairsString = string.Join(", ", uniqueDestroyedTypesAndColors.Select(t => $"{t.Item1}-{t.Item2}"));
+        Debug.Log($"ProcessDestroyedObstacles: Found {uniqueDestroyedTypesAndColors.Count} unique types/colors: [{uniquePairsString}]");
+
+
+        foreach (var typeColorPair in uniqueDestroyedTypesAndColors)
+        {
+            Debug.Log($"ProcessDestroyedObstacles: Calling CheckForMissingObstaclesAndSpawn for {typeColorPair.Item1}-{typeColorPair.Item2}");
+            CheckForMissingObstaclesAndSpawn(typeColorPair.Item1, typeColorPair.Item2);
         }
     }
     private IEnumerator SpawnCollectibles(float delay)
@@ -247,6 +393,21 @@ public class LevelGoal : MonoBehaviour
         if (ObstaclesToDestroy_Player.Contains(obs))
         {
             ObstaclesToDestroy_Player.Remove(obs);
+            if (!obs.isSpawnedForRecovery)
+            {
+                // Count how many of the same type/color are left
+                int remaining = ObstaclesToDestroy_Player.Count(o =>
+                    o != null &&
+                    o.obstacleType == obs.obstacleType &&
+                    o.obstacleColor == obs.obstacleColor &&
+                    !o.isSpawnedForRecovery);
+                Debug.Log($"[REMOVE] Removed obstacle {obs.name} of type {obs.obstacleType} and color {obs.obstacleColor}. Remaining: {remaining}");
+
+                if (remaining == 0)
+                {
+                    DestroyAllRecoveryObstaclesOfType(obs.obstacleType, obs.obstacleColor);
+                }
+            }
 
             ObstacleCounter++;
 
@@ -258,6 +419,8 @@ public class LevelGoal : MonoBehaviour
             {
                 destroyedObstacleCounts[obs.obstacleColor] = 1;
             }
+
+
 
             if (ObstaclesToDestroy_Player.Count == 0)
             {
@@ -271,7 +434,218 @@ public class LevelGoal : MonoBehaviour
             }
         }
     }
+    private void DestroyAllRecoveryObstaclesOfType(ObstacleType type, ObstacleColor color)
+    {
+        var recoveryObstacles = ObstaclesToDestroy_Player.Where(o =>
+            o != null &&
+            o.obstacleType == type &&
+            o.obstacleColor == color &&
+            o.isSpawnedForRecovery).ToList();
+        bool anyGrounded = recoveryObstacles.Any(o => o.grounded);
+        if (anyGrounded)
+        {
+            int countOnScene = ObstaclesToDestroy_Player.Count(o =>
+            o != null &&
+            o.obstacleType == type &&
+            o.obstacleColor == color);
+            int neededToReachThree = 3 - countOnScene;
+            Debug.Log("Needed to reach 3 for grounded ones :" + neededToReachThree);
 
+            if (neededToReachThree > 0)
+            {
+                var keySpawner = System.Tuple.Create(type, color);
+                if (_obstacleTemplates.TryGetValue(keySpawner, out Obstacle templateObstacle) && templateObstacle != null)
+                {
+                    Debug.Log($"[SPAWN] Spawning {neededToReachThree} more {type}-{color} because only {countOnScene} remain.");
+                    for (int i = 0; i < neededToReachThree; i++)
+                    {
+                        StartCoroutine(SpawnSpecificFallingObstacle(templateObstacle, ObstacleSpawnFrequency, 0f));
+                    }
+                }
+            }
+        }
+        // foreach (var obstacle in recoveryObstacles)
+        // {
+        //     // Mark as processed
+        //     ObstaclesToDestroy_Player.Remove(obstacle);
+
+        //     // Play destruction
+        //     if (!obstacle.queuedForDestruction)
+        //     {
+        //         obstacle.ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
+        //     }
+        // }
+        var key = System.Tuple.Create(type, color);
+        suppressedSpawnTypes.Add(key);
+        Debug.Log($"Destroyed {recoveryObstacles.Count} recovery obstacles for {type}-{color} after final original was destroyed.");
+    }
+    // private void DestroyAllRecoveryObstaclesOfType(ObstacleType type, ObstacleColor color)
+    // {
+    //     var recoveryObstacles = ObstaclesToDestroy_Player.Where(o =>
+    //         o != null &&
+    //         o.obstacleType == type &&
+    //         o.obstacleColor == color &&
+    //         o.isSpawnedForRecovery).ToList();
+    //     Debug.Log($"CDOS: [CLEANUP] Found {recoveryObstacles.Count} recovery obstacles of type {type} and color {color}.");
+
+    //     bool anyGrounded = recoveryObstacles.Any(o => o.grounded);
+
+    //     if (anyGrounded)
+    //     {
+    //         Debug.Log($"CDOS: [KEEP] Some recovery obstacles of {type}-{color} are grounded. Keeping all.");
+    //         // Just check if we still need to spawn more
+    //         int countOnScene = ObstaclesToDestroy_Player.Count(o =>
+    //             o != null &&
+    //             o.obstacleType == type &&
+    //             o.obstacleColor == color);
+
+    //         int neededToReachThree = 3 - countOnScene;
+
+    //         if (neededToReachThree > 0)
+    //         {
+    //             var key = System.Tuple.Create(type, color);
+    //             if (_obstacleTemplates.TryGetValue(key, out Obstacle templateObstacle) && templateObstacle != null)
+    //             {
+    //                 Debug.Log($"CDOS: [SPAWN] Spawning {neededToReachThree} more {type}-{color} because only {countOnScene} remain.");
+    //                 for (int i = 0; i < neededToReachThree; i++)
+    //                 {
+    //                     StartCoroutine(SpawnSpecificFallingObstacle(templateObstacle, ObstacleSpawnFrequency, 0f));
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     else
+    //     {
+    //         Debug.Log($"CDOS: [CLEANUP] No recovery obstacles of {type}-{color} have landed. Destroying all recovery ones.");
+    //         foreach (var obstacle in recoveryObstacles)
+    //         {
+    //             if (!obstacle.queuedForDestruction)
+    //             {
+    //                 ObstaclesToDestroy_Player.Remove(obstacle);
+    //                 obstacle.ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
+    //             }
+    //         }
+    //         Debug.Log($"CDOS: [CLEANUP] Destroyed {recoveryObstacles.Count} recovery obstacles of type {type} and color {color}.");
+    //         // After destruction, spawn 3 new ones
+    //         var key = System.Tuple.Create(type, color);
+    //         if (_obstacleTemplates.TryGetValue(key, out Obstacle templateObstacle) && templateObstacle != null)
+    //         {
+    //             for (int i = 0; i < 3; i++)
+    //             {
+    //                 StartCoroutine(SpawnSpecificFallingObstacle(templateObstacle, ObstacleSpawnFrequency, 0f));
+    //             }
+    //         }
+    //     }
+    //     var keyRec = System.Tuple.Create(type, color);
+    //     suppressedSpawnTypes.Add(keyRec);
+    // }
+    private void CheckForMissingObstaclesAndSpawn(ObstacleType destroyedType, ObstacleColor destroyedColor)
+    {
+        var keySuppressed = System.Tuple.Create(destroyedType, destroyedColor);
+        if (suppressedSpawnTypes.Contains(keySuppressed))
+        {
+            Debug.Log($"CDOS: [SPAWN BLOCKED] Skipping spawn for {destroyedType}-{destroyedColor} due to recovery cleanup.");
+            return;
+        }
+        // NEW LOG
+        Debug.Log($"CDOS: Start for Type={destroyedType}, Color={destroyedColor}");
+
+        if (!Tutorial)
+        {
+            int remainingCountForTypeColor = ObstaclesToDestroy_Player
+                                                 .Count(o => o != null && o.obstacleType == destroyedType && o.obstacleColor == destroyedColor);
+
+            System.Tuple<ObstacleType, ObstacleColor> key = System.Tuple.Create(destroyedType, destroyedColor);
+            if (!initialObstacleCounts.TryGetValue(key, out int initialCount))
+            {
+                Debug.LogWarning($"CDOS: Initial count for {destroyedType}-{destroyedColor} not found. Cannot determine if respawn is needed.");
+                return;
+            }
+
+            // NEW LOGS
+            Debug.Log($"CDOS: Remaining for {destroyedType}-{destroyedColor}: {remainingCountForTypeColor}");
+            Debug.Log($"CDOS: Initial count for {destroyedType}-{destroyedColor}: {initialCount}");
+
+
+            if (remainingCountForTypeColor < 3 && initialCount >= 3)
+            {
+                int neededToReachThree = 3 - remainingCountForTypeColor;
+                if (neededToReachThree > 0)
+                {
+                    Debug.Log($"CDOS: Spawning {neededToReachThree} of {destroyedType}-{destroyedColor} to enable match-3.");
+
+                    System.Tuple<ObstacleType, ObstacleColor> templateKey = System.Tuple.Create(destroyedType, destroyedColor);
+                    if (_obstacleTemplates.TryGetValue(templateKey, out Obstacle templateObstacle))
+                    {
+                        if (templateObstacle == null)
+                        {
+                            Debug.LogError($"CDOS Template obstacle for {destroyedType}-{destroyedColor} is null/destroyed! This should not happen.");
+                            return;
+                        }
+
+                        // NEW LOG
+                        Debug.Log($"CDOS: About to loop {neededToReachThree} times for spawning {templateObstacle.name}.");
+                        for (int i = 0; i < neededToReachThree; i++)
+                        {
+                            // NEW LOG
+                            Debug.Log($"CDOS: Spawning iteration {i + 1} of {neededToReachThree} for {templateObstacle.name}");
+                            StartCoroutine(SpawnSpecificFallingObstacle(templateObstacle, ObstacleSpawnFrequency, 0f));
+                            Debug.Log("$CDOS: Spawned a new obstacle of type {destroyedType} and color {destroyedColor} and name {templateObstacle.name}");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"CDOS Could not find template for {destroyedType}-{destroyedColor}. Make sure an initial instance exists in the scene and CreateObstacleTemplates ran correctly.");
+                    }
+                }
+            }
+        }
+    }
+    private void FindAndAddTilesToList()
+    {
+        // Example: Find all obstacles in the scene. You might need to filter these.
+        ObstaclesToDestroy_Player = new List<Obstacle>(FindObjectsOfType<Obstacle>());
+
+        // Example: Populate tileList
+        tileList = new List<Tile>(FindObjectsOfType<Tile>());
+    }
+    // private Obstacle GetSpecificSpawnableObstacle(ObstacleType type, ObstacleColor color)
+    // {
+    //     foreach (var spawnable in FallingObstacles)
+    //     {
+    //         if (spawnable.item.obstacleType == type && spawnable.item.obstacleColor == color)
+    //         {
+    //             return spawnable.item;
+    //         }
+    //         // Handle Universal type specifically if needed in this lookup context
+    //         if (spawnable.item.obstacleType == ObstacleType.Universal && (type != ObstacleType.None))
+    //         {
+    //             // If a Universal obstacle can become any type/color, this logic needs careful consideration.
+    //             // For now, assume a Universal obstacle can fulfill a missing requirement.
+    //             // You might need a more sophisticated mapping here if Universal has specific 'target' types it can substitute for.
+    //             return spawnable.item;
+    //         }
+    //     }
+    //     return null; // No suitable spawnable obstacle found
+    // }
+    public IEnumerator SpawnSpecificFallingObstacle(Obstacle obstaclePrefab, float spawnFrequency, float initialDelay)
+    {
+        yield return new WaitForSeconds(initialDelay);
+
+        int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
+        int randomTile = Random.Range(0, tileList.Count);
+        Vector3 spawnPos = new(tileList[randomTile].transform.position.x, randomHeight, tileList[randomTile].transform.position.z);
+        Obstacle fallingObstacle = Instantiate(obstaclePrefab, spawnPos, obstaclePrefab.transform.rotation, null);
+        fallingObstacle.isSpawnedForRecovery = true;
+        fallingObstacle.gameObject.SetActive(true);
+        // You might want a better naming convention here for spawned obstacles
+        fallingObstacle.name = $"Spawned_{obstaclePrefab.name}_{System.Guid.NewGuid().ToString().Substring(0, 4)}";
+        // Important: Re-add this newly spawned obstacle to the ObstaclesToDestroy_Player list
+        // so it counts towards the level goal.
+        ObstaclesToDestroy_Player.Add(fallingObstacle);
+
+        yield return new WaitForSeconds(spawnFrequency);
+    }
     public void RemoveObstacleFromSection(Obstacle obs)
     {
         if (Tutorial)
@@ -316,8 +690,8 @@ public class LevelGoal : MonoBehaviour
             // PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, currentIntroLevel);
             PlayerPrefs.Save();
 
-          
-          
+
+
         }
     }
 
@@ -336,7 +710,7 @@ public class LevelGoal : MonoBehaviour
         PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)TutorialMenuManager.MenuTutorialStep.None);
         PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, 0);
         PlayerPrefs.SetInt(PREF_FIRST_TIME, 1);
-        
+
         PlayerPrefs.Save();
 
         // if (GameFlowManager.Instance != null)
@@ -361,15 +735,15 @@ public class LevelGoal : MonoBehaviour
         StartCoroutine(WinLevel(0.3f));
     }
 
-    void FindAndAddTilesToList()
-    {
-        Tile[] tiles = FindObjectsOfType<Tile>();
-        foreach (Tile tile in tiles)
-        {
-            if (tile.gameObject.activeSelf)
-                tileList.Add(tile);
-        }
-    }
+    // void FindAndAddTilesToList()
+    // {
+    //     Tile[] tiles = FindObjectsOfType<Tile>();
+    //     foreach (Tile tile in tiles)
+    //     {
+    //         if (tile.gameObject.activeSelf)
+    //             tileList.Add(tile);
+    //     }
+    // }
 
     public void TurnOnPullEvent(Component sender, object data)
     {
@@ -381,7 +755,8 @@ public class LevelGoal : MonoBehaviour
 
     public void TurnOnJumpEvent(Component sender, object data)
     {
-        pullHint.gameObject.SetActive(false);
+        if (pullHint != null)
+            pullHint.gameObject.SetActive(false);
         PlayerControls pc = FindObjectOfType<PlayerControls>();
         if (pc != null) pc.hintPull = null;
         jumpButton.gameObject.SetActive(true);

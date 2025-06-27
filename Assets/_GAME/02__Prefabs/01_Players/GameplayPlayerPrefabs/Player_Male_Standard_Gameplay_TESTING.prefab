@@ -797,8 +797,14 @@ MonoBehaviour:
   pushSpeed: 0
   previousMoveDirection: {x: 0, y: 0, z: 0}
   currentMoveDirection: {x: 0, y: 0, z: 0}
+  playerCollider: {fileID: 0}
+  repositionSpeed: 7
+  pullRepositionSpeed: 25
+  pullDistance: 0.1
+  pushCenteringSmoothFactor: 0.15
   pushDirectionChanged: 0
   delayTimer: 0
+  manualPushDistance: 0.11
 --- !u!114 &5592945993921160032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -941,6 +947,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868bfb2a67b87af4297a5e55d8066c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  justLanded: 0
+  landedTime: 0
+  LAND_GRACE_PERIOD: 0.15
   _walkSpeed: 2
   _jumpForce: 5.8
   _jumpParticle: {fileID: 6808812054988748476, guid: b6fbc467c14a340499ee5aae55a3519c,
