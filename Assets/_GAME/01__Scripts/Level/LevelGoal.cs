@@ -441,22 +441,27 @@ public class LevelGoal : MonoBehaviour
             o.obstacleType == type &&
             o.obstacleColor == color &&
             o.isSpawnedForRecovery).ToList();
+
         bool anyGrounded = recoveryObstacles.Any(o => o.grounded);
+
+        var key = System.Tuple.Create(type, color);
+
         if (anyGrounded)
         {
+            Debug.Log($"[CDOS] At least one recovery {type}-{color} obstacle is grounded. Keeping them, and spawning more if needed.");
+
             int countOnScene = ObstaclesToDestroy_Player.Count(o =>
-            o != null &&
-            o.obstacleType == type &&
-            o.obstacleColor == color);
+                o != null &&
+                o.obstacleType == type &&
+                o.obstacleColor == color);
+
             int neededToReachThree = 3 - countOnScene;
-            Debug.Log("Needed to reach 3 for grounded ones :" + neededToReachThree);
 
             if (neededToReachThree > 0)
             {
-                var keySpawner = System.Tuple.Create(type, color);
-                if (_obstacleTemplates.TryGetValue(keySpawner, out Obstacle templateObstacle) && templateObstacle != null)
+                if (_obstacleTemplates.TryGetValue(key, out Obstacle templateObstacle) && templateObstacle != null)
                 {
-                    Debug.Log($"[SPAWN] Spawning {neededToReachThree} more {type}-{color} because only {countOnScene} remain.");
+                    Debug.Log($"[CDOS] Spawning {neededToReachThree} more {type}-{color} obstacles.");
                     for (int i = 0; i < neededToReachThree; i++)
                     {
                         StartCoroutine(SpawnSpecificFallingObstacle(templateObstacle, ObstacleSpawnFrequency, 0f));
@@ -464,20 +469,24 @@ public class LevelGoal : MonoBehaviour
                 }
             }
         }
-        // foreach (var obstacle in recoveryObstacles)
-        // {
-        //     // Mark as processed
-        //     ObstaclesToDestroy_Player.Remove(obstacle);
+        else
+        {
+            Debug.Log($"[CDOS] No recovery {type}-{color} obstacles are grounded. Destroying them all.");
 
-        //     // Play destruction
-        //     if (!obstacle.queuedForDestruction)
-        //     {
-        //         obstacle.ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
-        //     }
-        // }
-        var key = System.Tuple.Create(type, color);
+            foreach (var obstacle in recoveryObstacles)
+            {
+                if (!obstacle.queuedForDestruction)
+                {
+                    ObstaclesToDestroy_Player.Remove(obstacle);
+                    obstacle.ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
+                }
+            }
+
+            Debug.Log($"[CDOS] Destroyed {recoveryObstacles.Count} recovery obstacles of {type}-{color}.");
+        }
+
+        // In both cases, suppress further automatic spawning
         suppressedSpawnTypes.Add(key);
-        Debug.Log($"Destroyed {recoveryObstacles.Count} recovery obstacles for {type}-{color} after final original was destroyed.");
     }
     // private void DestroyAllRecoveryObstaclesOfType(ObstacleType type, ObstacleColor color)
     // {

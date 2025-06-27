@@ -136,8 +136,13 @@ public class PlayerController : MonoBehaviour
     public Obstacle FindObstacle()
     {
         if (_movement.wallHits[0] != null)
+        {
+            Debug.Log("[FindObstacle] Found: " + _movement.wallHits[0].gameObject.name);
             return _movement.wallHits[0].gameObject.GetComponent<Obstacle>();
-        else return null;
+        }
+
+        Debug.Log("[FindObstacle] No obstacle found");
+        return null;
     }
 }
 

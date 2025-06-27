@@ -609,12 +609,12 @@ public class Obstacle : MonoBehaviour
 
     public void ResetObstacle()
     {
-        // Debug.Log("Resetting obstacle :" + gameObject.name);
         isBeingPushed = false;
         isBeingPulled = false;
         isPositioned = false;
         isHeightPositioned = false;
         isPullable = true;
+        Debug.Log("Resetting obstacle :" + gameObject.name);
     }
 
     public bool galaxyForward, galaxyBack, galaxyLeft, galaxyRight, threeOfAKind, spawningBlackHole;
