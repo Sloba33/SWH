@@ -1,4 +1,5 @@
 using System.Collections;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +28,9 @@ public class Player : MonoBehaviour
     public Image hitDownFillImage;
     public Weapon weapon;
     public int specialCharges, specialChargesMax;
+    
+    [Header("Multiplayer")]
+    public CameraHolder MainGameplayCamera;
 
     private void Awake()
     {
@@ -76,6 +80,7 @@ public class Player : MonoBehaviour
 
         // StartingStrenght = 20f;
         // StartingMoveSpeed = 4f;
+        SetupCamera();
 
     }
     public float newMoveSpeed;
@@ -97,6 +102,25 @@ public class Player : MonoBehaviour
         else
             Debug.LogError("Helmet to spawn is null");
     }
+
+    private void SetupCamera()
+    {
+        if (gameObject.name.StartsWith("[netw"))
+            return;
+        
+        if (MainGameplayCamera == null)
+        {
+            MainGameplayCamera = FindObjectOfType<CameraHolder>();
+            MainGameplayCamera.ControllerRef.Setup(this);
+            
+            PlayerController pc = GetComponent<PlayerController>();
+            pc.followCamera = MainGameplayCamera.CinemachineFreeLookRef;
+            pc.playerCamera = MainGameplayCamera.CameraRef;
+        }
+        else
+            Debug.LogError("Main camera already set up");
+    }
+    
     public void SpendEnergy(float amount)
     {
         Energy -= amount;

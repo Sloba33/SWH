@@ -112,6 +112,16 @@ public class CameraController : MonoBehaviour
         // mat2_color_illusive = new Color(mat2Color.r, mat2Color.g, mat2Color.b, 0);
         // if (!playerController.AI) { ZoomIn(); ZoomIn(); }       
     }
+
+    public void Setup(Player playerObject)
+    {
+        playerCamera.Follow = playerObject.transform;
+        playerCamera.LookAt = playerObject.transform;
+        playerController = playerObject.GetComponent<PlayerController>();
+        
+        Debug.LogError("Setting up camera for: " + playerObject.gameObject.name);
+    }
+    
     private IEnumerator ZoomOutForFallingLevel()
     {
         yield return new WaitForSeconds(1f);

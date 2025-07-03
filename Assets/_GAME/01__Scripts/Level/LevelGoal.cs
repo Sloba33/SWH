@@ -198,6 +198,7 @@ public class LevelGoal : MonoBehaviour
     }
     private void CreateObstacleTemplates()
     {
+        return;
         _obstacleTemplates.Clear(); // Clear any previous templates
 
         // Iterate through the unique obstacle types/colors identified as part of the level goal

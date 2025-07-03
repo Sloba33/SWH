@@ -4,7 +4,6 @@ using TMPro;
 using DG.Tweening;
 using System.Collections;
 using Coffee.UIEffects;
-using ExitGames.Client.Photon.StructWrapping;
 
 public class BattlePassButton : MonoBehaviour
 {

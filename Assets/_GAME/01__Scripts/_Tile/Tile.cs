@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Obstacles;
 
 public class Tile : MonoBehaviour
 {

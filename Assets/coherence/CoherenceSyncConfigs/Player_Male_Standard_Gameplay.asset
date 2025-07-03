@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: Player_Male_Standard_Gameplay
+  m_EditorClassIdentifier: 
+  id: b6fbc467c14a340499ee5aae55a3519c
+  selfId: 9b0954c971c11489ba620916760d4b7f
+  editorTarget: {fileID: 1051776569072472735, guid: b6fbc467c14a340499ee5aae55a3519c,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 376563246947631201
+  objectInstantiator:
+    rid: 376563246947631202
+  references:
+    version: 2
+    RefIds:
+    - rid: 376563246947631201
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 1051776569072472735, guid: b6fbc467c14a340499ee5aae55a3519c,
+          type: 3}
+    - rid: 376563246947631202
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 
