@@ -151,11 +151,12 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         moveDirection = CurrentMoveDirection;
-        if (!CanMove)
+        if (!CanMove && !_playerController.isPushing)
         {
             _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
             CurrentMoveDirection = Vector3.zero;
             CurrentCalculatedMoveSpeed = 0f;
+            // HandleMovement(_inputHandler.MoveInput);
         }
         else
         {
