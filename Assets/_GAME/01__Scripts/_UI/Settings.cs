@@ -17,6 +17,7 @@ public class Settings : MonoBehaviour
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(0.5f);
+        cameraController = FindAnyObjectByType<CameraController>();
         rotateLeft.onClick.AddListener(() =>
                {
                    cameraController.RotateRight();
