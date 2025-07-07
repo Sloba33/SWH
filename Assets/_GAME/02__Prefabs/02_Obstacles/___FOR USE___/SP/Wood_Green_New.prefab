@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4173848472885215466}
   - component: {fileID: 2081135325506907121}
   - component: {fileID: 289859601042341823}
-  - component: {fileID: 5970467666058130275}
+  - component: {fileID: 240919084418845680}
   m_Layer: 8
   m_Name: Wood_Green_New
   m_TagString: Obstacle
@@ -31,8 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1929530726916549885}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00000009735359, y: -0.00000004371139, z: -9.553428e-16,
-    w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -60,7 +59,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 13
   obstacleModifier: 0
   obstacleColor: 2
@@ -300,7 +300,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 3
---- !u!114 &5970467666058130275
+--- !u!114 &240919084418845680
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -396,7 +396,7 @@ MonoBehaviour:
   unsyncedNetworkEntityPriority: 0
   preserveChildren: 0
   bindings:
-  - rid: 376563244009259123
+  - rid: 5134750266372915297
   scenePrefabInstanceUUID: 
   coherenceUUID: 
   assetVersion: 
@@ -409,17 +409,17 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 376563244009259123
+    - rid: 5134750266372915297
       type: {class: PositionBinding, ns: Coherence.Toolkit.Bindings.TransformBindings,
         asm: Coherence.Toolkit}
       data:
         descriptor:
-          rid: 376563244009259124
+          rid: 5134750266372915298
         routing: 0
         syncMode: 0
         isPredicted: 0
         predictionMode: 0
-        guid: e7ddf381aceb449d815f28d2b2ab826c
+        guid: 06b0b4bc34ff4a18bf0b60ff58a5c980
         archetypeData:
           type: 7
           minRange: 0
@@ -432,10 +432,10 @@ MonoBehaviour:
             precision: 0.001
             floatCompression: 0
         unityComponent: {fileID: 1078661234935404686}
-        coherenceSync: {fileID: 5970467666058130275}
+        coherenceSync: {fileID: 240919084418845680}
         interpolationSettings: {fileID: 11400000, guid: ae4419d1d9a8643709bf5f6b90c584a5,
           type: 2}
-    - rid: 376563244009259124
+    - rid: 5134750266372915298
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: position

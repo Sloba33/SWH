@@ -24,7 +24,7 @@ namespace Coherence.Generated
     using Logger = Coherence.Log.Logger;
     using UnityEngine.Scripting;
     [UnityEngine.Scripting.Preserve]
-    public class Binding_18a6a6483a4c5364985ae06e2f3e54bf_b7a859ecfc2a41f79a9cf3745e686ffa : PositionBinding
+    public class Binding_18a6a6483a4c5364985ae06e2f3e54bf_557d18b8f371417295d0da79328944db : PositionBinding
     {   
         private global::UnityEngine.Transform CastedUnityComponent;
 
@@ -89,7 +89,7 @@ namespace Coherence.Generated
         
         private readonly Dictionary<string, Binding> bakedValueBindings = new Dictionary<string, Binding>()
         {
-			["b7a859ecfc2a41f79a9cf3745e686ffa"] = new Binding_18a6a6483a4c5364985ae06e2f3e54bf_b7a859ecfc2a41f79a9cf3745e686ffa(),
+			["557d18b8f371417295d0da79328944db"] = new Binding_18a6a6483a4c5364985ae06e2f3e54bf_557d18b8f371417295d0da79328944db(),
         };
         
         private Dictionary<string, Action<CommandBinding, CommandsHandler>> bakedCommandBindings = new Dictionary<string, Action<CommandBinding, CommandsHandler>>();

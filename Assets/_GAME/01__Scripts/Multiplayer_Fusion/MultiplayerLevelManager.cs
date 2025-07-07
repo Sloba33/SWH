@@ -1,3 +1,4 @@
+using System.Collections;
 using Coherence.Toolkit;
 using UnityEngine;
 
@@ -10,14 +11,18 @@ public class MultiplayerLevelManager : MonoBehaviour
 
     public void Start()
     {
-        SpawnBoxes();
+        StartCoroutine(SpawnBoxes());
         GameManager.Instance.SpawnPlayer();
     }
 
-    public void SpawnBoxes()
+    public IEnumerator SpawnBoxes()
     {
+        yield return new WaitForSecondsRealtime(1f);
+        // if (gameObject.name.StartsWith("[netw"))
+        //     yield break;
+        Debug.LogError("spawnedBoxes: " + spawnedBoxes);
         if (spawnedBoxes)
-            return;
+            yield break;
 
         Instantiate(MultiplayerBoxesPrefab);
         spawnedBoxes = true;
