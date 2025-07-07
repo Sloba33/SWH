@@ -126,21 +126,22 @@ MonoBehaviour:
   isGlobal: 0
   approveAuthorityTransferRequests: 1
   simulationType: 0
-  authorityTransferConfig: 0
+  authorityTransferConfig: 2
   orphanedBehavior: 0
-  lifetimeType: 0
+  lifetimeType: 1
   uniquenessType: 1
   replacementStrategy: 1
-  unsyncedNetworkEntityPriority: 0
+  unsyncedNetworkEntityPriority: 1
   preserveChildren: 0
   bindings:
   - rid: 376563244009259098
   - rid: 376563244009259109
   scenePrefabInstanceUUID: 
-  coherenceUUID: 
+  coherenceUUID: multiplayermanager
   assetVersion: 
   coherenceTag: 
-  componentActions: []
+  componentActions:
+  - rid: 5134750266372915285
   floatingOriginMode: 0
   floatingOriginParentedMode: 1
   references:
@@ -240,3 +241,8 @@ MonoBehaviour:
             Coherence.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         oldName: 
         oldParameterAssemblyTypes: []
+    - rid: 5134750266372915285
+      type: {class: DisableBehaviourComponentAction, ns: Coherence.Toolkit.ComponentActions,
+        asm: Coherence.Toolkit}
+      data:
+        component: {fileID: 5495683855552343153}
