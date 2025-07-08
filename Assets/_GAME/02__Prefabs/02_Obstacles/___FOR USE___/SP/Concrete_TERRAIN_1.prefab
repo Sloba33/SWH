@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2897968739711587734
+--- !u!1 &3377198580015890946
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2872703807059055579}
-  - component: {fileID: 8769009229522236266}
-  - component: {fileID: 6159040772859984780}
-  - component: {fileID: 1732271442187002874}
-  - component: {fileID: 4723677997560912058}
-  - component: {fileID: 6858857323563283849}
-  - component: {fileID: 5670300861469835891}
+  - component: {fileID: 7310221715760945131}
+  - component: {fileID: 758719049991675060}
+  - component: {fileID: 4531341932784725762}
+  - component: {fileID: 7300765704901263704}
+  - component: {fileID: 1643040782705779206}
+  - component: {fileID: -4152520665397066038}
+  - component: {fileID: -5747806313299232045}
   m_Layer: 8
-  m_Name: Glass_2
+  m_Name: Concrete_TERRAIN_1
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2872703807059055579
+--- !u!4 &7310221715760945131
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2897968739711587734}
+  m_GameObject: {fileID: 3377198580015890946}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00000010430811, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3, y: 0.00000011920929, z: 3}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8769009229522236266
+--- !u!33 &758719049991675060
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2897968739711587734}
-  m_Mesh: {fileID: -8873786902571586346, guid: 06a089b60d4c4a847bba3b0f99f7fc5f, type: 3}
---- !u!23 &6159040772859984780
+  m_GameObject: {fileID: 3377198580015890946}
+  m_Mesh: {fileID: -2717957372965806646, guid: 1d71c49847a78af4e8516546a98d53ed, type: 3}
+--- !u!23 &4531341932784725762
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2897968739711587734}
+  m_GameObject: {fileID: 3377198580015890946}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b42c523b78d2c524e8e7a42dae279e3e, type: 2}
+  - {fileID: 2100000, guid: 5738fe59add43b545bbc410b1bc54f4f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,33 +90,111 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1732271442187002874
+--- !u!65 &7300765704901263704
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3377198580015890946}
+  m_Material: {fileID: 13400000, guid: 50c9027403b776c41863989e4dd79d42, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9900031, y: 0.9976478, z: 0.9941194}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1643040782705779206
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3377198580015890946}
+  serializedVersion: 4
+  m_Mass: 40
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 3
+--- !u!114 &-4152520665397066038
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2897968739711587734}
+  m_GameObject: {fileID: 3377198580015890946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 481e22fcd3995164392d2a293b5556a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  rayLength: 1
+  Obstacle: {fileID: 0}
+  currentTile: {fileID: 0}
+  hasGameStarted: 0
+  isDestructible: 0
+  groundObject: {fileID: 0}
+  previousGroundObject: {fileID: 0}
+  verticalList: []
+  horizontalList: []
+  updownList: []
+  ObstacleListForward: []
+  ObstacleListBackward: []
+  ObstacleListLeft: []
+  ObstacleListRight: []
+  ObstacleListUp: []
+  ObstacleListDown: []
+--- !u!114 &-5747806313299232045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3377198580015890946}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleMesh: {fileID: 0}
-  obstacleSprite: {fileID: 21300000, guid: a35dd80315b91794e9721179475a1003, type: 3}
-  obstacleFallPS: {fileID: 7602442951908165281, guid: 92ce7f324cf4a2146a11a0d3c8082354,
-    type: 3}
-  fallIndicator: {fileID: 6784415547297523, guid: 8a83e16146f8f8b409ae4a4b4841feb7,
+  obstacleSprite: {fileID: 0}
+  obstacleFallPS: {fileID: 0}
+  fallIndicator: {fileID: 6784415547297523, guid: bc50a1aa5f994234dbb097fdc80576e9,
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   isSpawnedForRecovery: 0
   shouldFall: 1
-  obstacleType: 5
+  obstacleType: 1
   obstacleModifier: 0
   obstacleColor: 0
-  obstacleAudioType: 7
-  Weight: 10
+  obstacleAudioType: 1
+  Weight: 40
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
     type: 3}
@@ -198,11 +276,11 @@ MonoBehaviour:
   fallSpeed: 0.003
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
-  destructionParticleSystem: {fileID: 5340863147955218704, guid: 73c7a0da30a5b534f9099bf361070786,
+  destructionParticleSystem: {fileID: 2163216666107331271, guid: 3a49752e5b3875f4da3c863aa5b6d466,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
-  audioClip: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 5a9678f914cee3542ba224ec3c8d73c4, type: 3}
   goalSetters: []
   audioSource: {fileID: 0}
   galaxyForward: 0
@@ -219,82 +297,3 @@ MonoBehaviour:
   blinkDuration: 1
   blinkTime: 5
   shouldBlink: 0
---- !u!65 &4723677997560912058
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2897968739711587734}
-  m_Material: {fileID: 13400000, guid: 50c9027403b776c41863989e4dd79d42, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &6858857323563283849
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2897968739711587734}
-  serializedVersion: 4
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 3
---- !u!114 &5670300861469835891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2897968739711587734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 481e22fcd3995164392d2a293b5556a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  rayLength: 1
-  Obstacle: {fileID: 0}
-  currentTile: {fileID: 0}
-  hasGameStarted: 0
-  isDestructible: 1
-  groundObject: {fileID: 0}
-  previousGroundObject: {fileID: 0}
-  verticalList: []
-  horizontalList: []
-  updownList: []
-  ObstacleListForward: []
-  ObstacleListBackward: []
-  ObstacleListLeft: []
-  ObstacleListRight: []
-  ObstacleListUp: []
-  ObstacleListDown: []

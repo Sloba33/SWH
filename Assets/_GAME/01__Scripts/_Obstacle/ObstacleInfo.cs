@@ -4,7 +4,7 @@ public enum ObstacleType
 }
 public enum ObstacleAudioType
 {
-    Wood, Concrete, Metal, Plastic, Cardboard, None, Marble
+    Wood, Concrete, Metal, Plastic, Cardboard, None, Marble, Glass, Ice
 }
 public enum ObstacleModifier
 {
