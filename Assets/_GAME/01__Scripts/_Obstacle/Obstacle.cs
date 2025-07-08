@@ -430,6 +430,8 @@ public class Obstacle : MonoBehaviour
                     targetHeight = groundHeight;
                 }
                 // fallSprite.transform.localScale = startFallIndicatorScale / (targetHeight - transform.position.y);
+                if (fallSprite != null && fallSprite.transform.localScale.x > 0.11f)
+                    fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
 
                 float distanceToGround = Mathf.Abs(Vector3.Distance(new Vector3(transform.position.x, targetHeight, transform.position.z), transform.position));
 
@@ -442,6 +444,8 @@ public class Obstacle : MonoBehaviour
                     // Debug.Log("fallsprite MID at start   :   " + fallSprite.transform.localScale);
                     fallSprite.transform.localScale = startFallIndicatorScale * scaleFactor * scalingMultiplier;
                     // Debug.Log("fallsprite LATE at start   :   " + fallSprite.transform.localScale);
+                    if (fallSprite.transform.localScale.x > 0.11f)
+                        fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
                 }
 
                 transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, targetHeight, transform.position.z), fallSpeed * 17.5f);
