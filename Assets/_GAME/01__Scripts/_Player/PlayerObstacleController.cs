@@ -243,14 +243,31 @@ public class PlayerObstacleController : MonoBehaviour
 
                 targetPlayerPosition.y = pushObstacle.transform.position.y;
 
-                Vector3 currentPosition = _rb.position;
-                Vector3 positionDelta = targetPlayerPosition - currentPosition;
-                _rb.MovePosition(targetPlayerPosition);
+                Vector3 current = _rb.position;
+                Vector3 target = current;
+                Vector3 obstaclePos = pushObstacle.transform.position;
+                Vector3 dir = movementDirection.normalized;
 
-                if (positionDelta.sqrMagnitude < 0.005f * 0.005f)
-                    _rb.linearVelocity = Vector3.zero;
+                // Reposition perpendicular to push direction
+                if (Mathf.Abs(dir.z) > 0.01f) // pushing along Z → center X
+                {
+                    target.x = Mathf.Lerp(current.x, obstaclePos.x, pushCenteringSmoothFactor);
+                }
+
+                if (Mathf.Abs(dir.x) > 0.01f) // pushing along X → center Z
+                {
+                    target.z = Mathf.Lerp(current.z, obstaclePos.z, pushCenteringSmoothFactor);
+                }
+
+                // Always match Y height with obstacle
+                target.y = obstaclePos.y;
+
+                // Convert to velocity (center only the perpendicular axis)
+                Vector3 velocity = (target - current) / Time.fixedDeltaTime;
+                _rb.linearVelocity = new Vector3(velocity.x, _rb.linearVelocity.y, velocity.z);
 
                 currentMoveDirection = movementDirection;
+
 
                 if (previousMoveDirection == Vector3.zero && currentMoveDirection != Vector3.zero)
                 {
@@ -776,25 +793,25 @@ public class PlayerObstacleController : MonoBehaviour
 
         if (pushObstacle != null)
         {
-            // ✅ Reset the obstacle’s internal state (important!)
+
             pushObstacle.ResetObstacle();
 
-            // Stop velocity if it's not kinematic
+
             if (!pushObstacle._rb.isKinematic)
                 pushObstacle._rb.linearVelocity = Vector3.zero;
 
-            // Detach player reference
+
             pushObstacle.currentlyUsedPlayerConrtoller = null;
         }
         pushObstacle = null;
         previousPushObstacle = null;
         previousPushDirection = Vector3.zero;
-        previousMoveDirection = Vector3.zero; // Reset previousMoveDirection
+        previousMoveDirection = Vector3.zero;
         playerController.isPushing = false;
 
         pushDirectionChanged = false;
 
-        // Stop repositioning when push stops
+
         isRepositioning = false;
         repositionProgress = 0f;
 
@@ -843,13 +860,13 @@ public class PlayerObstacleController : MonoBehaviour
 
                     float playerHalfSize = ((CapsuleCollider)playerCollider).radius;
 
-                    // Target player position for pulling
+
                     Vector3 targetPlayerPosition = pullObstacle.transform.position + (normalizedPullDirection * (obstacleHalfSize + playerHalfSize + pullDistance));
 
-                    // Snap player's Y to obstacle's Y if pulling from a different height, as in your old code
+
                     targetPlayerPosition.y = pullObstacle.transform.position.y;
 
-                    // Use smooth repositioning for pull as well (optional - you can keep instant for pull if preferred)
+
                     StartSmoothRepositioning(targetPlayerPosition);
 
                     movementDirection = Vector3.zero;
