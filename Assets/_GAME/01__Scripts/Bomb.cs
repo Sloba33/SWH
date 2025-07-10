@@ -7,8 +7,8 @@ public class Bomb : MonoBehaviour
 {
     public AudioClip spawnSound;
     public bool isColored;
-    public List<ObstacleType> bombTypes = new List<ObstacleType>();
-    public ObstacleType bombType;
+    public List<ObstacleColor> bombColors = new List<ObstacleColor>();
+    public ObstacleColor bombColor;
     public Transform parent;
     public Player player;
     public AudioSource audioSource;
@@ -124,7 +124,7 @@ public class Bomb : MonoBehaviour
         Obstacle obstacle = other.GetComponent<Obstacle>();
         if (obstacle != null)
         {
-            if (bombType == obstacle.obstacleType || bombType == ObstacleType.Universal)
+            if (bombColor == obstacle.obstacleColor || bombColor == ObstacleColor.Universal)
             {
                 obstaclesToHit.Add(obstacle);
             }
@@ -195,44 +195,34 @@ public class Bomb : MonoBehaviour
     public IEnumerator ExplodeColored()
     {
         Debug.Log("Exploding colored bomb");
+
         Obstacle[] obstacles = FindObjectsOfType<Obstacle>();
         List<Obstacle> obstaclesToNuke = new List<Obstacle>();
-        for (int i = 0; i < obstacles.Length; i++)
+        foreach (Obstacle obstacle in obstacles)
         {
-            Debug.Log("Checking obstascle :" + obstacles[i] + " in the list");
-            if (bombTypes.Contains(obstacles[i].obstacleType))
+        Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
+            if (obstacle.obstacleColor == bombColor || bombColor == ObstacleColor.Universal)
             {
-                Debug.Log("Obstacle found!");
-                obstaclesToNuke.Add(obstacles[i]);
+                Debug.Log("Matching obstacle found: " + obstacle.name);
+                obstaclesToNuke.Add(obstacle);
             }
-            else Debug.Log("Obstacle not found");
         }
+
         LevelGoal levelGoal = FindObjectOfType<LevelGoal>();
         yield return new WaitForSeconds(0.1f);
-        if (levelGoal != null)
-        {
-            for (int i = 0; i < obstaclesToNuke.Count; i++)
-            {
 
-                if (obstaclesToNuke[i] != null)
-                {
-                    Debug.Log("Obstacle found in levelgoal");
-                    levelGoal.RemoveObstacle(obstaclesToNuke[i]);
-                    obstaclesToNuke[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
-                }
-            }
-        }
-        else
+        foreach (Obstacle obs in obstaclesToNuke)
         {
-            // countdownText.text = time + "...";
-            for (int i = 0; i < obstaclesToNuke.Count; i++)
+            if (obs != null)
             {
-                if (obstaclesToNuke[i] != null)
-                    obstaclesToNuke[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
+                Debug.Log("Destroying obstacle: " + obs.name);
+                if (levelGoal != null)
+                    levelGoal.RemoveObstacle(obs);
+
+                obs.ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
             }
         }
 
-        // explosionParticle.Play();
         textGameObject.SetActive(false);
         mesh.enabled = false;
         audioSource.Play();

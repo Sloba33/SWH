@@ -8,7 +8,7 @@ public class BombCollectible : CollectibleItem
     public MeshRenderer mesh;
     public SphereCollider sphereCollider;
     public GameObject objectToDestroy;
-    public BombType bombType;
+    public ObstacleColor bombColor; // Changed from ObstacleColor to BombType
     public Bomb bombPrefab;
     bool isCollected;
     // private AudioSource audioSource;
