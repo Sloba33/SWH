@@ -118,7 +118,7 @@ public class PlayerObstacleController : MonoBehaviour
     private const float PUSH_RE_EVAL_DELAY_AFTER_LAND = 0.2f; // Time to delay full push re-evaluation after landing
     public void HandlePush()
     {
-        Debug.Log("[HandlePush] START");
+        // Debug.Log("[HandlePush] START");
         // Debug.Log($"isPulling: {playerController.isPulling}, justLanded: {playerMovement.justLanded}, justJumpedOutOfPush: {playerMovement.justJumpedOutOfPush}, linearVelocity.y: {_rb.linearVelocity.y}");
         if (playerController.isPulling)
             return;
@@ -137,10 +137,10 @@ public class PlayerObstacleController : MonoBehaviour
         }
 
         bool canPotentiallyPush = playerController._movement.IsAgainstWall && movementDirection != Vector3.zero;
-        Debug.Log($"canPotentiallyPush: {canPotentiallyPush}, IsAgainstWall: {playerController._movement.IsAgainstWall}, moveDir: {movementDirection}");
+        // Debug.Log($"canPotentiallyPush: {canPotentiallyPush}, IsAgainstWall: {playerController._movement.IsAgainstWall}, moveDir: {movementDirection}");
         if (!playerController.isPushing && !canPotentiallyPush)
         {
-            Debug.Log("[HandlePush] Early exit: not pushing + can't potentially push");
+            // Debug.Log("[HandlePush] Early exit: not pushing + can't potentially push");
             if (lastLandTime == 0f || (Time.time - lastLandTime) > PUSH_RE_EVAL_DELAY_AFTER_LAND)
             {
                 previousPushDirection = Vector3.zero;
@@ -208,6 +208,13 @@ public class PlayerObstacleController : MonoBehaviour
 
             pushObstacle.SphereFlags();
             bool Moveable = pushObstacle.CheckObstaclesAround(movementDirection);
+            if (!Moveable || !playerController._movement.CanPush)
+            {
+                Debug.Log("[HandlePush] Obstacle not movable in that direction or can't push.");
+                pushObstacle.ResetObstacle();
+                StopPush();
+                return;
+            }
             Debug.Log($"pushObstacle Moveable: {Moveable}, pushabilityDelayed: {pushObstacle.pushabilityDelayed}");
             if (playerController._movement.hasRecentlyFallen)
                 diff = Mathf.Round(playerController._movement.fallHeight) - pushObstacle.transform.position.y >= 0;
@@ -248,21 +255,21 @@ public class PlayerObstacleController : MonoBehaviour
                 Vector3 obstaclePos = pushObstacle.transform.position;
                 Vector3 dir = movementDirection.normalized;
 
-                // Reposition perpendicular to push direction
-                if (Mathf.Abs(dir.z) > 0.01f) // pushing along Z → center X
+
+                if (Mathf.Abs(dir.z) > 0.01f)
                 {
                     target.x = Mathf.Lerp(current.x, obstaclePos.x, pushCenteringSmoothFactor);
                 }
 
-                if (Mathf.Abs(dir.x) > 0.01f) // pushing along X → center Z
+                if (Mathf.Abs(dir.x) > 0.01f)
                 {
                     target.z = Mathf.Lerp(current.z, obstaclePos.z, pushCenteringSmoothFactor);
                 }
 
-                // Always match Y height with obstacle
+
                 target.y = obstaclePos.y;
 
-                // Convert to velocity (center only the perpendicular axis)
+
                 Vector3 velocity = (target - current) / Time.fixedDeltaTime;
                 _rb.linearVelocity = new Vector3(velocity.x, _rb.linearVelocity.y, velocity.z);
 

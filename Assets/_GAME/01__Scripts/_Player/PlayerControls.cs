@@ -370,7 +370,7 @@ public class PlayerControls : MonoBehaviour
         // Check for an existing active slot with the same type or a universal type
         for (int i = 0; i < consumableSlots.Count; i++) //
         {
-            if (consumableSlots[i].gameObject.activeSelf && (consumableSlots[i].slotType == collectibleItem.GetComponent<BombCollectible>().bombType || consumableSlots[i].slotType == BombCollectible.BombType.None)) //
+            if (consumableSlots[i].gameObject.activeSelf && (consumableSlots[i].obstacleColor == collectibleItem.GetComponent<BombCollectible>().bombColor || consumableSlots[i].obstacleColor == ObstacleColor.Universal)) //
             {
                 consumableSlots[i].SetConsumable(collectibleItem); //
                 Debug.Log("Added bomb to existing slot : " + collectibleItem.name + " to slot :" + consumableSlots[i].name + " with bomb prefab : " + consumableSlots[i].bombPrefab.gameObject); //

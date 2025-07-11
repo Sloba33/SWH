@@ -144,6 +144,26 @@ public class PlayerController : MonoBehaviour
         Debug.Log("[FindObstacle] No obstacle found");
         return null;
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Collectible"))
+        {
+            Debug.Log("Power-up collision detected" + other);
+            CollectibleItem col = other.GetComponentInParent<CollectibleItem>();
+            if (col != null)
+            {
+
+                col.Collect(this);
+                Debug.Log("Trigger name " + other.name);
+
+            }
+        }
+        if (other.CompareTag("Trap"))
+        {
+            _player.Die();
+            // StartCoroutine(player.LoseLevel());
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------------
