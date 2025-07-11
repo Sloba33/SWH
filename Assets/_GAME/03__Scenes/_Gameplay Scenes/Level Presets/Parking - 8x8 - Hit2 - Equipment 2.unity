@@ -11155,6 +11155,79 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852122776}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &872095289
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -7991616638750655702, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: freezeDuration
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983857211178744598, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_Name
+      value: FreezeTimeCollectible
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: baba87ecafd42fc4ba33462652ee4e27,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: baba87ecafd42fc4ba33462652ee4e27, type: 3}
 --- !u!1 &885836279
 GameObject:
   m_ObjectHideFlags: 0
@@ -13338,6 +13411,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 922907733723194534, guid: c543a64b5862410459e9f334a0ce0eff,
         type: 3}
+      propertyPath: shouldFall
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 922907733723194534, guid: c543a64b5862410459e9f334a0ce0eff,
+        type: 3}
       propertyPath: fallIndicator
       value: 
       objectReference: {fileID: 6784415547297523, guid: bc50a1aa5f994234dbb097fdc80576e9,
@@ -13355,7 +13433,7 @@ PrefabInstance:
     - target: {fileID: 5682892133533255588, guid: c543a64b5862410459e9f334a0ce0eff,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5682892133533255588, guid: c543a64b5862410459e9f334a0ce0eff,
         type: 3}
@@ -25743,7 +25821,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 8976141381338161322}
   counterText: {fileID: 6774412641576852423}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 7147883297928690628}
 --- !u!114 &661286600467865267
 MonoBehaviour:
@@ -25763,7 +25841,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 3052005042654698087}
   counterText: {fileID: 105611169465268557}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 1495161798703259905}
 --- !u!114 &687102994462703997
 MonoBehaviour:
@@ -26822,6 +26900,8 @@ MonoBehaviour:
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1
+  spawnedObstacles:
+  - {fileID: 346575575}
   minObstacleSpawnHeight: 20
   maxObstacleSpawnHeight: 25
   SpawnFallingBombs: 0
@@ -27967,7 +28047,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 3714757370375703166}
   counterText: {fileID: 6161753672647894827}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 3019202540937757915}
 --- !u!222 &4256447086285094470
 CanvasRenderer:
@@ -27995,7 +28075,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 5631496660679507028}
   counterText: {fileID: 3844934938431311103}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 8893475264538358368}
 --- !u!114 &4402356625886973007
 MonoBehaviour:
@@ -28584,7 +28664,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 8997349262073053537}
   counterText: {fileID: 2753631773700049210}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 5085416744926590539}
 --- !u!224 &5984021553116685706
 RectTransform:
@@ -29849,7 +29929,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 263410226178134092}
   counterText: {fileID: 516856948097274149}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 3089976561563180851}
 --- !u!224 &7355577788680854600
 RectTransform:
@@ -30755,3 +30835,4 @@ SceneRoots:
   - {fileID: 1839201174}
   - {fileID: 1180869484}
   - {fileID: 2056902450}
+  - {fileID: 872095289}

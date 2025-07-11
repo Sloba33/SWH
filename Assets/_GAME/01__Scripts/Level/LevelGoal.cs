@@ -373,10 +373,42 @@ public class LevelGoal : MonoBehaviour
             playerSideFallingObstacles[dualLevelCounter].gameObject.SetActive(true);
             AISideFallingObstacles[dualLevelCounter].gameObject.SetActive(true);
             dualLevelCounter++;
-            
+
         }
     }
+    public IEnumerator FreezeTime(float freezeDuration)
+    {
 
+        foreach (Obstacle obstacle in spawnedObstacles)
+        {
+            if (obstacle != null)
+            {
+
+                if (!obstacle.grounded)
+                {
+
+                    obstacle.FreezeFall(true);
+                    Debug.Log("Freezing obstacle: " + obstacle.name);
+                }
+
+
+            }
+        }
+        yield return new WaitForSeconds(freezeDuration);
+        Debug.Log("Freezing time ended, unfreezing obstacles.");
+        foreach (Obstacle obstacle in spawnedObstacles)
+        {
+            if (obstacle != null)
+            {
+                if (!obstacle.grounded)
+                {
+                    obstacle.FreezeFall(false);
+                    Debug.Log("Unfreezing obstacle: " + obstacle.name);
+                }
+
+            }
+        }
+    }
     void AddObstaclesToList()
     {
         UnityEngine.Object[] objectsOfType = FindObjectsOfType(typeof(Obstacle));

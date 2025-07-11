@@ -20,45 +20,14 @@ public class FreezeTimeCollectible : CollectibleItem
             if (levelGoal != null)
             {
                 Debug.Log("Freezing time for " + freezeDuration + " seconds.");
-                StartCoroutine(FreezeTime());
+                StartCoroutine(levelGoal.FreezeTime(freezeDuration));
             }
             isCollected = true;
             mesh.enabled = false;
             sphereCollider.enabled = false;
-            PlayCollectSound(objectToDestroy);
+            PlayCollectSound(objectToDestroy, freezeDuration+0.1f);
             // player.GetComponent<Player>().pc.AddConsumable(this);
         }
     }
-    private IEnumerator FreezeTime()
-    {
-        List<Obstacle> obstaclesToFreeze = levelGoal.spawnedObstacles;
-        foreach (Obstacle obstacle in obstaclesToFreeze)
-        {
-            if (obstacle != null)
-            {
-
-                if (!obstacle.grounded)
-                {
-
-                    obstacle.FreezeFall(false);
-                    Debug.Log("Freezing obstacle: " + obstacle.name);
-                }
-                
-
-            }
-        }
-        yield return new WaitForSeconds(freezeDuration);
-        foreach (Obstacle obstacle in obstaclesToFreeze)
-        {
-            if (obstacle != null)
-            {
-                if (!obstacle.grounded)
-                {
-                    obstacle.FreezeFall(true);
-                    Debug.Log("Unfreezing obstacle: " + obstacle.name);
-                }
-
-            }
-        }
-    }
+    
 }
