@@ -23,6 +23,7 @@ public class LevelGoal : MonoBehaviour
     public float ObstacleSpawnFrequency;
     public int TotalObstaclesSpawned;
     public float delayBoxSpawn = 6f;
+    public List<Obstacle> spawnedObstacles = new List<Obstacle>();
     [SerializeField] public int minObstacleSpawnHeight = 16, maxObstacleSpawnHeight = 20;
     [Header("Bomb Spawn Settings")]
     public bool SpawnFallingBombs;
@@ -294,6 +295,7 @@ public class LevelGoal : MonoBehaviour
             Obstacle obstacle = GetRandomItemByWeight(FallingObstacles);
             Vector3 spawnPos = new(tileList[randomTile].transform.position.x, randomHeight, tileList[randomTile].transform.position.z);
             Obstacle fallingObstacle = Instantiate(obstacle, spawnPos, obstacle.transform.rotation, null);
+            spawnedObstacles.Add(fallingObstacle);
             fallingObstacle.name += TotalObstaclesSpawned.ToString();
             yield return new WaitForSeconds(spawnFrequency);
         }
@@ -371,6 +373,7 @@ public class LevelGoal : MonoBehaviour
             playerSideFallingObstacles[dualLevelCounter].gameObject.SetActive(true);
             AISideFallingObstacles[dualLevelCounter].gameObject.SetActive(true);
             dualLevelCounter++;
+            
         }
     }
 
@@ -652,6 +655,7 @@ public class LevelGoal : MonoBehaviour
         // Important: Re-add this newly spawned obstacle to the ObstaclesToDestroy_Player list
         // so it counts towards the level goal.
         ObstaclesToDestroy_Player.Add(fallingObstacle);
+        spawnedObstacles.Add(fallingObstacle);
 
         yield return new WaitForSeconds(spawnFrequency);
     }

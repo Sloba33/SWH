@@ -95,7 +95,7 @@ public class MatchThreeObstacle : MonoBehaviour
 
         consecutiveCount = 1;
         Obstacle currentMatchTarget = obstacleList[0]; // Start with the first obstacle in the sequence
-        Debug.Log("Current match target");
+        // Debug.Log("Current match target");
         for (int i = 1; i < obstacleList.Count; i++)
         {
             float distanceToGround = Vector3.Distance(Obstacle.transform.position, groundPosition);
