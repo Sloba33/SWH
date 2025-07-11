@@ -14,11 +14,18 @@ public abstract class CollectibleItem : MonoBehaviour
     protected void PlayCollectSound(GameObject objectToKill)
     {
         if (collectSound != null)
-        {   
+        {
             AudioSource.PlayClipAtPoint(collectSound, transform.position);
             Destroy(objectToKill, collectSound.length);
         }
     }
 
-
+    protected void PlayCollectSound(GameObject objectToKill, float time)
+    {
+        if (collectSound != null)
+        {
+            AudioSource.PlayClipAtPoint(collectSound, transform.position);
+            Destroy(objectToKill, time);
+        }
+    }
 }
