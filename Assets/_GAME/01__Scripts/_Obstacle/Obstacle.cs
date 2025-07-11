@@ -671,7 +671,12 @@ public class Obstacle : MonoBehaviour
         // Revert to color1 after blinking period is over
         obstacleMaterial.color = startColor;
     }
-
+    public void FreezeFall(bool freeze)
+    {
+        isFalling = freeze;
+        shouldFall = freeze;
+        isPositioned = freeze;
+    }
     IEnumerator BlinkToColor(Color fromColor, Color toColor, float duration)
     {
         float elapsedTime = 0f;
