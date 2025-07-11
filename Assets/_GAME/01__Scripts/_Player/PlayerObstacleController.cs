@@ -1,4 +1,6 @@
 using System.Collections;
+using Coherence;
+using Coherence.Toolkit;
 using Unity.Multiplayer.Tools.MetricTypes;
 using UnityEngine;
 
@@ -198,6 +200,12 @@ public class PlayerObstacleController : MonoBehaviour
                 return;
             }
 
+            if (!playerController.isPushing)
+            {
+                var coherenceSync = pushObstacle.GetComponent<CoherenceSync>();
+                bool requestSuccess = coherenceSync.RequestAuthority(AuthorityType.Full);
+                Debug.LogError("Authority transfered: " + requestSuccess);
+            }
             playerController.isPushing = true;
 
             if (previousPushObstacle != pushObstacle)

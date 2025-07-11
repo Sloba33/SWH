@@ -658,7 +658,6 @@ MonoBehaviour:
   weapon: {fileID: 0}
   specialCharges: 0
   specialChargesMax: 3
-  MainGameplayCameraPrefab: {fileID: 0}
   MainGameplayCamera: {fileID: 0}
   newMoveSpeed: 0
   fillRate: 10
@@ -770,6 +769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d65e83870e042947bf787f200c2a140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockMidAirPush: 0
   movementDirection: {x: 0, y: 0, z: 0}
   previousPushDirection: {x: 0, y: 0, z: 0}
   pullDirection: {x: 0, y: 0, z: 0}
@@ -1449,7 +1449,13 @@ MonoBehaviour:
   coherenceUUID: 
   assetVersion: 
   coherenceTag: 
-  componentActions: []
+  componentActions:
+  - rid: 5134750349120765952
+  - rid: 5134750349120765956
+  - rid: 5134750349120765958
+  - rid: 5134750349120765959
+  - rid: 5134750349120765961
+  - rid: 5134750349120765964
   floatingOriginMode: 0
   floatingOriginParentedMode: 1
   references:
@@ -2209,6 +2215,36 @@ MonoBehaviour:
         oldName: 
         oldParameterAssemblyTypes: []
         parameterHash: 1293411866
+    - rid: 5134750349120765952
+      type: {class: DisableBehaviourComponentAction, ns: Coherence.Toolkit.ComponentActions,
+        asm: Coherence.Toolkit}
+      data:
+        component: {fileID: 757512896333920360}
+    - rid: 5134750349120765956
+      type: {class: DisableBehaviourComponentAction, ns: Coherence.Toolkit.ComponentActions,
+        asm: Coherence.Toolkit}
+      data:
+        component: {fileID: 54848946358295858}
+    - rid: 5134750349120765958
+      type: {class: DisableBehaviourComponentAction, ns: Coherence.Toolkit.ComponentActions,
+        asm: Coherence.Toolkit}
+      data:
+        component: {fileID: 4049543763410288958}
+    - rid: 5134750349120765959
+      type: {class: DisableBehaviourComponentAction, ns: Coherence.Toolkit.ComponentActions,
+        asm: Coherence.Toolkit}
+      data:
+        component: {fileID: 465992519024109052}
+    - rid: 5134750349120765961
+      type: {class: DisableBehaviourComponentAction, ns: Coherence.Toolkit.ComponentActions,
+        asm: Coherence.Toolkit}
+      data:
+        component: {fileID: 6323961180492439195}
+    - rid: 5134750349120765964
+      type: {class: DisableBehaviourComponentAction, ns: Coherence.Toolkit.ComponentActions,
+        asm: Coherence.Toolkit}
+      data:
+        component: {fileID: 2336115394746904577}
 --- !u!1 &1179067297764220063
 GameObject:
   m_ObjectHideFlags: 0
