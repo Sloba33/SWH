@@ -648,7 +648,7 @@ public class LevelGoal : MonoBehaviour
     private void FindAndAddTilesToList()
     {
         // Example: Find all obstacles in the scene. You might need to filter these.
-        ObstaclesToDestroy_Player = new List<Obstacle>(FindObjectsOfType<Obstacle>());
+        // ObstaclesToDestroy_Player = new List<Obstacle>(FindObjectsOfType<Obstacle>());
 
         // Example: Populate tileList
         tileList = new List<Tile>(FindObjectsOfType<Tile>());
