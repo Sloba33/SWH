@@ -10,7 +10,7 @@ public class Chapter : MonoBehaviour
     // REMOVED: public GameObject chaptersPanel;
 
     // Assign the TextMeshProUGUI component of your chapter button in the Inspector
-    [SerializeField] private TextMeshProUGUI chapterNameText;
+    [SerializeField] public TextMeshProUGUI chapterNameText;
     public Image chapterImage;
 
     private void Awake()
@@ -32,6 +32,7 @@ public class Chapter : MonoBehaviour
         if (chapterNameText != null)
         {
             chapterNameText.text = name;
+            chapterImage.rectTransform.localScale = new Vector3(30f, 30f, 30f);
         }
     }
 
