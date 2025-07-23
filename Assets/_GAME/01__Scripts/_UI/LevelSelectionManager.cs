@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using Coffee.UIEffects;
 using System.Collections;
-using Fusion;
+
 
 public class LevelSelectionManager : MonoBehaviour
 {

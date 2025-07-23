@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using Fusion;
+
 public class Tile : MonoBehaviour
 {
     public List<Tile> neighbourList = new();
