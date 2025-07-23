@@ -75,6 +75,7 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private void CheckListForMatches(List<Obstacle> obstacleList)
     {
+        Debug.Log("M3 - Obstacle List Count : " + obstacleList.Count + "called by : " + Obstacle.name);
         if (obstacleList.Count == 0) return; // Prevent errors with empty lists
 
         // ObstacleType specialType; // This variable is not used in the method's logic after the change, consider removing if no other use
@@ -95,19 +96,21 @@ public class MatchThreeObstacle : MonoBehaviour
 
         consecutiveCount = 1;
         Obstacle currentMatchTarget = obstacleList[0]; // Start with the first obstacle in the sequence
-        // Debug.Log("Current match target");
+        Debug.Log("M3 - Current match target" + currentMatchTarget);
         for (int i = 1; i < obstacleList.Count; i++)
         {
             float distanceToGround = Vector3.Distance(Obstacle.transform.position, groundPosition);
-
+            Debug.Log("M3 - Entered matching intereation");
             // Use the new IsMatchingObstacle method
             if (IsMatchingObstacle(currentMatchTarget, obstacleList[i]) && distanceToGround < (transform.position.y + offset))
             {
+                Debug.Log("M3 - Matching");
                 consecutiveCount++;
                 if (consecutiveCount >= 3)
                 {
                     if (CheckAndHandleJackInTheBox(obstacleList))
                     {
+                        Debug.Log("M3 - Found JITB");
                         // JackInTheBox found, cancel match (or special handling)
                         return;
                     }
