@@ -4,6 +4,7 @@ using Coffee.UIEffects;
 
 public class CharacterSelector : MonoBehaviour
 {
+    public UIEffect uiEffect;
     public bool isEditable;
     public bool isAdReward;
     public CharacterStats characterStats;
@@ -25,6 +26,7 @@ public class CharacterSelector : MonoBehaviour
         if (characterStats == null) return;
         if (button == null) button = GetComponent<Button>();
         uiShadow = GetComponent<UIShadow>();
+        uiEffect = GetComponent<UIEffect>();
         if (characterPickerManager.currentCharacter != this)
             uiShadow.enabled = false;
         else uiShadow.enabled = true;

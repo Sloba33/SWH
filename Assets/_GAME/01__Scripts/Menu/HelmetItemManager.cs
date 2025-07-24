@@ -16,9 +16,10 @@ public class HelmetItemManager : MonoBehaviour
     public Image durabilityFillBar;
     public TextMeshProUGUI helmetName;
     public TextMeshProUGUI priceText;
+    private CharacterPickerManager characterPickerManager;
     private void Start()
     {
-
+        characterPickerManager = FindAnyObjectByType<CharacterPickerManager>(FindObjectsInactive.Include);
         int id = PlayerPrefs.GetInt("SelectedHelmetID", 0);
         helmetItem = helmetItems[id];
         helmet = CharacterManager.Instance.helmet;

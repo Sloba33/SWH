@@ -24,17 +24,17 @@ public class CharacterPickerManager : MonoBehaviour
     private bool CoinsGranted;
     private void Start()
     {
-
-
-
-
         adsManager = FindObjectOfType<AdsManager>(true);
         mainMenuManager = FindObjectOfType<MainMenuManager>(true);
         characterManager = FindObjectOfType<CharacterManager>(true);
         customizationPanelManager = FindObjectOfType<CustomizationPanelManager>(true);
         upgradeButton = mainMenuManager.priceTextCoins.transform.parent.GetComponent<Button>();
         characterTokenManager = FindObjectOfType<CharacterTokenManager>(true);
-        if (characterSelectors.Count == 0)
+    
+    }
+    private void OnEnable()
+    {
+    if (characterSelectors.Count == 0)
             for (int i = 0; i < content.childCount; i++)
             {
                 characterSelectors.Add(content.GetChild(i).GetComponent<CharacterSelector>());
@@ -43,17 +43,13 @@ public class CharacterPickerManager : MonoBehaviour
         int id = PlayerPrefs.GetInt("SelectedCharacterID", 0);
         Debug.Log("ID: " + id);
         currentCharacter = characterSelectors[id];
-
+        characterSelectorCurrent = currentCharacter;
         UpdateCharacterStats();
     }
     public PlayerMenu FindCharacterByID()
     {
         int index = PlayerPrefs.GetInt("SelectedCharacterID", 0);
         return characterSelectors[index].playerMenu;
-    }
-    private void OnEnable()
-    {
-
     }
 
     public void UpdateCharacterStats()
@@ -70,9 +66,7 @@ public class CharacterPickerManager : MonoBehaviour
             if (currentCharacter.unlocked)
             {
                 Debug.Log(currentCharacter.name + " is unlocked?" + currentCharacter.unlocked);
-                purchaseButton.gameObject.SetActive(false);
-                adRewardButton.gameObject.SetActive(false);
-                upgradeButton.gameObject.SetActive(true);
+                ActivateButton(UnlockAndUpgradeButtonType.Upgrade, currentCharacter);
                 // Load character stats from PlayerPrefs
 
                 Debug.Log("TrophyRoadTempFlag : " + TrophyRoadTempFlag);
@@ -94,10 +88,10 @@ public class CharacterPickerManager : MonoBehaviour
                 mainMenuManager.priceTextCoins.color = PlayerPrefs.GetInt("coins") < currentCharacter.playerMenu.characterStats.upgradeCostCoins ? Color.red : Color.white;
                 mainMenuManager.priceTextMoney.color = PlayerPrefs.GetInt("money") < currentCharacter.playerMenu.characterStats.upgradeCostMoney ? Color.red : Color.white;
 
-                // Set level UI
+                // Set level     UI
                 SetLevelUI(lvl);
 
-
+                SetUiEffect(currentCharacter, true);
                 // Set character name in UI
                 mainMenuManager.characterName.text = currentCharacter.characterStats.characterName;
 
@@ -123,7 +117,7 @@ public class CharacterPickerManager : MonoBehaviour
                 mainMenuManager.levelText.text = lvl.ToString();
                 SetLevelUI(lvl);
                 buyPriceText.text = GetCharacterPrice(currentCharacter.characterStats).ToString();
-                buyPriceText.color = PlayerPrefs.GetInt("coins") < GetCharacterPrice(currentCharacter.characterStats) ? Color.red : Color.white;
+                buyPriceText.color = PlayerPrefs.GetInt("gems") < GetCharacterPrice(currentCharacter.characterStats) ? Color.red : Color.white;
                 Debug.Log("Buy Price Text is : " + GetCharacterPrice(currentCharacter.characterStats).ToString());
                 currentCharacter.characterStats.unlockPrice = GetCharacterPrice(currentCharacter.characterStats);
 
@@ -155,7 +149,33 @@ public class CharacterPickerManager : MonoBehaviour
             Debug.Log("NULLOMEGALUL");
         }
     }
+    public UIEffect uiEffect;
+    private void SetUiEffect(CharacterSelector currentlySelectedCharacter, bool unlocked)
+    {
+        if (uiEffect != null)
+        {
+            uiEffect.enabled = false;
+            uiEffect = null;
+        }
 
+        uiEffect = currentlySelectedCharacter.GetComponent<UIEffect>();
+        if (currentlySelectedCharacter.uiEffect != null)
+        {
+            uiEffect.enabled = true;
+            if (unlocked)
+            {
+                uiEffect.shadowColor = Color.green;
+            }
+            else
+            {
+                uiEffect.shadowColor = Color.red;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("UIShadow component not found on the character selector.");
+        }
+    }
     public void UpgradeStrength(float amount)
     {
         currentCharacter.playerMenu.characterStats.strength += amount;
@@ -252,56 +272,88 @@ public class CharacterPickerManager : MonoBehaviour
         }
     }
     public MainMenuManager mainMenuManager;
-    private UIShadow uiShadow;
-    public void SetCharacter(CharacterSelector characterSelector, bool isFromTokens)
+
+
+    public void PreviewCharacter(CharacterSelector characterSelector, bool isAdReward)
     {
+        characterSelector.customizationPanelManager.ToggleAllCustomizationTabs(false);
 
-        if (characterSelector.customizationPanelManager != null)
-            if (!characterSelector.isEditable)
-            {
-                characterSelector.customizationPanelManager.ToggleEditingTabs(false);
-            }
-            else characterSelector.customizationPanelManager.ToggleEditingTabs(true);
-
-        if (TrophyRoadTempFlag)
+        if (isAdReward)
         {
-            Debug.Log("Attempting to Set Character - Called From Trophy Road - Skipping setting character");
-            TrophyRoadTempFlag = false;
+
+            ActivateButton(UnlockAndUpgradeButtonType.Ad, characterSelector);
+
+
+        }
+        else
+        {
+            ActivateButton(UnlockAndUpgradeButtonType.Unlock, characterSelector);
+
+
+        }
+        SetUiEffect(characterSelector, false);
+
+
+        UpdateCharacterStats();
+
+    }
+    public void ActivateButton(UnlockAndUpgradeButtonType type, CharacterSelector characterSelector)
+    {
+        if (characterSelector == null)
+        {
+            characterSelector = currentCharacter;
+        }
+        if (characterSelector == null)
+        {
+            Debug.LogError("Character selector is null, cannot activate button.");
             return;
         }
-        currentCharacter = characterSelector;
+        {
+            switch (type)
+            {
+                case UnlockAndUpgradeButtonType.Unlock:
+                    purchaseButton.gameObject.SetActive(true);
+                    upgradeButton.gameObject.SetActive(false);
+                    adRewardButton.gameObject.SetActive(false);
+                    purchaseButton.onClick.AddListener(() =>
+                             {
+                                 UnlockCharacter(characterSelector, true);
+                             });
+                    break;
+                case UnlockAndUpgradeButtonType.Ad:
+                    purchaseButton.gameObject.SetActive(false);
+                    upgradeButton.gameObject.SetActive(false);
+                    adRewardButton.gameObject.SetActive(true);
+                    adRewardButton.onClick.AddListener(() =>
+                                {
+                                    adsManager.ShowRewarded(currentCharacter.characterStats.characterName + "_ad_tokens");
+                                    UnlockAdCharacter();
+                                });
+                    break;
+                case UnlockAndUpgradeButtonType.Upgrade:
+                    purchaseButton.gameObject.SetActive(false);
+                    upgradeButton.gameObject.SetActive(true);
+                    adRewardButton.gameObject.SetActive(false);
+                    break;
+            }
+        }
+    }
+    public void SelectCharacter(CharacterSelector characterSelector, bool isUnlocked, bool isAdReward)
+    {
+
         purchaseButton.onClick.RemoveAllListeners();
         adRewardButton.onClick.RemoveAllListeners();
-        if (uiShadow != null) uiShadow.enabled = false;
 
-        if (!currentCharacter.unlocked && !currentCharacter.isAdReward)
+        if (!isUnlocked)
         {
-            purchaseButton.gameObject.SetActive(true);
-            upgradeButton.gameObject.SetActive(false);
-            adRewardButton.gameObject.SetActive(false);
-            purchaseButton.onClick.AddListener(() =>
-                              {
-                                  UnlockCharacter(characterSelector, true);
-                              });
-            currentCharacter.uiShadow.effectColor = Color.red;
+            if (isAdReward)
+                PreviewCharacter(characterSelector, true);
+            else
+                PreviewCharacter(characterSelector, false);
         }
-        else if (currentCharacter.isAdReward && !currentCharacter.unlocked)
+        else
         {
-            upgradeButton.gameObject.SetActive(false);
-            purchaseButton.gameObject.SetActive(false);
-            adRewardButton.gameObject.SetActive(true);
-            adRewardButton.onClick.AddListener(() =>
-                             {
-                                 adsManager.ShowRewarded(currentCharacter.characterStats.characterName + "_ad_tokens");
-                                 UnlockAdCharacter();
-                             });
-            currentCharacter.uiShadow.effectColor = Color.green;
-        }
-        else if (currentCharacter.unlocked)
-        {
-            upgradeButton.gameObject.SetActive(true);
-            purchaseButton.gameObject.SetActive(false);
-            adRewardButton.gameObject.SetActive(false);
+            ActivateButton(UnlockAndUpgradeButtonType.Upgrade, characterSelector);
 
             for (int i = 0; i < characterSelectors.Count; i++)
             {
@@ -311,10 +363,30 @@ public class CharacterPickerManager : MonoBehaviour
                     Debug.Log("This is the character :" + characterSelectors[i].name);
                 }
             }
-            currentCharacter.uiShadow.effectColor = Color.green;
+
+            if (!characterSelector.isEditable)
+                characterSelector.customizationPanelManager.ToggleEditingTabs(false);
+            else characterSelector.customizationPanelManager.ToggleEditingTabs(true);
+
+            SetUiEffect(characterSelector, true);
         }
-        currentCharacter.uiShadow.enabled = true;
-        uiShadow = currentCharacter.uiShadow;
+    }
+    public CharacterSelector characterSelectorCurrent;
+    public void SetCharacter(CharacterSelector characterSelector, bool isFromTokens)
+    {
+
+
+        if (TrophyRoadTempFlag)
+        {
+            Debug.Log("Attempting to Set Character - Called From Trophy Road - Skipping setting character");
+            TrophyRoadTempFlag = false;
+            return;
+        }
+        characterSelectorCurrent = characterSelector;
+        currentCharacter = characterSelector;
+
+        SelectCharacter(currentCharacter, currentCharacter.unlocked, currentCharacter.isAdReward);
+
         bool characterNotificationClicked = PlayerPrefs.GetInt(characterSelector.characterStats.characterName.ToString() + "_clicked") != 1;
         if (characterNotificationClicked)
         {
@@ -330,6 +402,7 @@ public class CharacterPickerManager : MonoBehaviour
         TrophyRoadTempFlag = false; // reset this after claimign in trouphy road
         UpdateCharacterStats();
     }
+
     private void UnlockAdCharacter()
     {
         Debug.Log(PlayerPrefs.GetInt(currentCharacter.characterStats.characterName + "_ad_tokens"));
@@ -442,8 +515,8 @@ public class CharacterPickerManager : MonoBehaviour
     {
         for (int i = 0; i < characterSelectors.Count; i++)
         {
-            if (characterSelectors[i].GetComponent<UIShadow>() != null)
-                characterSelectors[i].uiShadow.enabled = false;
+            if (characterSelectors[i].GetComponent<UIEffect>() != null)
+                characterSelectors[i].uiEffect.enabled = false;
         }
     }
 

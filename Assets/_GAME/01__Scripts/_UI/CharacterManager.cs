@@ -19,6 +19,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     public List<PlayerController> gameplayCharacters = new();
     public int characterIndex, weaponIndex, helmetIndex;
     public CustomizationPanelManager customizationPanelManager;
+    // private CharacterPickerManager characterPickerManager;
     [SerializeField] private AudioClip audioClip;
     private bool _coinsGranted;
     // private CharacterPickerManager characterPickerManager;
@@ -36,6 +37,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     private void Start()
     {
         // IronSource.Agent.validateIntegration();
+
         GrantStarterCoins();
         PlayerPrefs.SetInt("Toby", 1);
         Application.targetFrameRate = 60;
@@ -52,12 +54,13 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         {
             customizationPanelManager.colorButtonManagers[i].LoadColorButtons();
         }
-        if (characterPickerManager == null) characterPickerManager = FindObjectOfType<CharacterPickerManager>(true);
+        if (characterPickerManager == null) characterPickerManager = FindAnyObjectByType<CharacterPickerManager>(FindObjectsInactive.Include);
+        currentCharacterSelector = characterPickerManager.characterSelectorCurrent;
         SetStartingHelmets();
         LoadCharacter(false);
 
         StartCoroutine(LoadHelmet(false));
-
+        StartCoroutine(SetInitialConfirmedHelmet());
         weaponItemManager.SetReferencesStart();
         LoadWeapon(false);
 
@@ -69,6 +72,21 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         previousWeapon = currentWeapon;
         characterPickerManager.UpdateCharacterStats();
 
+
+    }
+    private IEnumerator SetInitialConfirmedHelmet()
+    {
+        yield return null; // Ensure helmet has been instantiated
+
+        if (currentHelmet != null && helmet != null)
+        {
+            confirmedHelmetPrefab = helmet.gameObject;
+            Debug.Log("[INIT] Setting confirmedHelmetPrefab to: " + confirmedHelmetPrefab.name);
+        }
+    }
+    void OnEnable()
+    {
+        currentCharacterSelector = characterPickerManager.characterSelectorCurrent;
     }
     public void PlayClick()
     {
@@ -76,8 +94,8 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     private void SetStartingHelmets()
     {
-        if (characterPickerManager.characterSelectors.Count == 0) Debug.Log("Count is 0");
-        if (characterPickerManager.characterSelectors == null) Debug.Log("No character selector assigned");
+        if (characterPickerManager.characterSelectors.Count == 0) Debug.Log("[SetStartingHelmet] - Count is 0");
+        if (characterPickerManager.characterSelectors == null) Debug.Log("SetStartingHelmet]  No character selector assigned");
         if (characterPickerManager.characterSelectors.Count == 0)
         {
             for (int i = 0; i < characterPickerManager.content.childCount; i++)
@@ -149,59 +167,82 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     private bool characterChanged;
     public CharacterSelector currentCharacterSelector;
+    public bool wasPreviewingHelmet = false;
     public void RevertSelectionStates()
     {
-
+        Debug.Log("[REVERT] RevertSelectionStates CALLED");
         ClearShadows();
-
-        if (!characterChanged)
+        Debug.Log("[REVERT] previousHelmet: " + previousHelmet + ", wasPreviewingHelmet: " + wasPreviewingHelmet);
+        // Always revert helmet if needed, regardless of characterChanged
+        if (confirmedHelmetPrefab != null && wasPreviewingHelmet)
         {
-            Destroy(currentWeapon);
-            Destroy(currentHelmet);
-            // }
-            if (previousWeapon != null)
-            {
-                currentWeapon = Instantiate(previousWeapon, currentCharacter.weaponsInHand);
-                currentWeapon.SetActive(true);
-                // Destroy(previousWeapon);
-                previousWeapon = null;
-            }
-            if (previousHelmet != null && !helmetItem.unlocked)
-            {
-                Debug.Log("Helmet not unlocked");
-                currentHelmet = Instantiate(previousHelmet, currentCharacter.helmetParent);
-                currentHelmet.SetActive(true);
-                SetDefaultHelmet(currentCharacter);
+            Debug.Log("[REVERT] Helmet is locked, reverting to previousHelmet prefab");
 
-                // Destroy(previousHelmet);
-                previousHelmet = null;
-                // StartCoroutine(LoadHelmet(true));
+            if (currentHelmet != null)
+                Destroy(currentHelmet);
 
+            currentHelmet = Instantiate(confirmedHelmetPrefab, currentCharacter.helmetParent);
+            currentHelmet.SetActive(true);
+
+            Helmet revertedHelmet = currentHelmet.GetComponent<Helmet>();
+            if (revertedHelmet != null)
+            {
+                Debug.Log("[REVERT] Helmet Name: " + revertedHelmet.helmetName);
+                Debug.Log("[REVERT] DefaultColor: " + revertedHelmet.defaultColor);
+                revertedHelmet.material.color = helmet.defaultColor;
+                revertedHelmet.SetTex(currentCharacter.helmetMaterial);
+                // revertedHelmet.mesh.material = new Material(revertedHelmet.mesh.material); // ensure instancing
+                // revertedHelmet.material = revertedHelmet.mesh.material;
+                // revertedHelmet.material.color = revertedHelmet.defaultColor;
+                // Material newMat = new Material(revertedHelmet.mesh.material);
+                // revertedHelmet.mesh.material = newMat;
+                // revertedHelmet.material = newMat;
+
+                // revertedHelmet.material.color = revertedHelmet.defaultColor;
+                // revertedHelmet.SetTex(currentCharacter.helmetMaterial);
+
+                for (int j = 0; j < customizationPanelManager.colorButtonManagers.Count; j++)
+                {
+                    if (customizationPanelManager.colorButtonManagers[j].clothesType == ColorButtonManager.ClothesType.Hat)
+                    {
+                        customizationPanelManager.colorButtonManagers[j].colorButtons[0].color = revertedHelmet.defaultColor;
+                        customizationPanelManager.colorButtonManagers[j].SetSpecificCheckmark();
+                    }
+                }
+
+                currentCharacter.ColorHat(revertedHelmet.defaultColor);
             }
+
+            previousHelmet = null;
         }
-        if (currentCharacter != null)
+
+        // Only revert character if changed
+        if (characterChanged)
         {
-            if (previousCharacter != null)
+            if (currentCharacter != null && previousCharacter != null)
             {
-                Debug.Log("Character Was Changed");
+                Debug.Log("[REVERT] Reverting character");
                 currentCharacter.gameObject.SetActive(false);
                 currentCharacter = previousCharacter;
                 previousCharacter = null;
+                currentCharacter.gameObject.SetActive(true);
             }
 
-            currentCharacter.gameObject.SetActive(true);
             if (currentCharacterSelector != null && currentCharacterSelector.unlocked)
                 StartCoroutine(LoadHelmet(false));
-            else StartCoroutine(LoadHelmet(true));
-            // SetDefaultHelmet();
+            else
+                StartCoroutine(LoadHelmet(true));
+
+            characterChanged = false;
         }
+
         if (currentCharacterSelector != null && !currentCharacterSelector.unlocked)
         {
             SetDefaultHelmet(currentCharacter);
         }
-        characterChanged = false;
-
     }
+
+
     public void SetDefaultHelmet(PlayerMenu character)
     {
         Debug.Log("Setting Default Helmet Colors");
@@ -248,42 +289,116 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         // boxWeapon = Instantiate(weaponItem.weaponAtBox, weaponsAtBoxParent);
         // uncomment above line to make weapons on box spawn
     }
+    public void SelectHelmet()
+    {
+
+    }
+    public GameObject confirmedHelmetPrefab;
+    public void PreviewHelmet(HelmetItem helmetItem)
+    {
+        wasPreviewingHelmet = true;
+
+        if (confirmedHelmetPrefab == null && helmet != null)
+        {
+            confirmedHelmetPrefab = helmet.gameObject;
+        }
+
+        if (currentHelmet != null)
+            Destroy(currentHelmet);
+
+        currentHelmet = Instantiate(helmetItem.helmet.gameObject, currentCharacter.helmetParent);
+        currentHelmet.SetActive(true);
+
+        Helmet instanceHelmet = currentHelmet.GetComponent<Helmet>();
+        if (instanceHelmet != null)
+        {
+            // Always create a clean material per helmet preview
+            Material newMat = new Material(instanceHelmet.mesh.material);
+            instanceHelmet.mesh.material = newMat;
+            instanceHelmet.material = newMat;
+
+            newMat.color = helmetItem.helmet.defaultColor;
+            instanceHelmet.SetTex(newMat);
+
+            helmet = instanceHelmet;
+        }
+
+        for (int j = 0; j < customizationPanelManager.colorButtonManagers.Count; j++)
+        {
+            if (customizationPanelManager.colorButtonManagers[j].clothesType == ColorButtonManager.ClothesType.Hat)
+            {
+                customizationPanelManager.colorButtonManagers[j].colorButtons[0].color = helmetItem.helmet.defaultColor;
+                customizationPanelManager.colorButtonManagers[j].SetSpecificCheckmark();
+            }
+        }
+    }
+
+    public void PreviewCharacter(PlayerMenu character)
+    {
+        Debug.Log("Previewing character (not unlocked)");
+
+        if (currentCharacter != null)
+            currentCharacter.gameObject.SetActive(false);
+
+        currentCharacter = character;
+        currentCharacter.gameObject.SetActive(true);
+        currentCharacter.GetComponent<Animator>().SetBool("Picking", true);
+        customizationPanelManager.helmetItemManager.currentCharacter = currentCharacter;
+        mainMenuManager.currentCharacter = currentCharacter;
+
+        // Preview default helmet
+        HelmetItem previewHelmetItem = character.defaultHelmetItem;
+        PreviewHelmet(previewHelmetItem);
+
+        characterChanged = true;
+    }
     public void SetHelmet(Component sender, object data)
     {
         HelmetItem helmetItem = (HelmetItem)data;
+
+        bool characterUnlocked = characterPickerManager.characterSelectorCurrent.unlocked;
+
+        if (!helmetItem.unlocked || !characterUnlocked)
+        {
+            Debug.Log("Helmet or character is locked, previewing helmet.");
+            PreviewHelmet(helmetItem);
+            return;
+        }
+
+        Debug.Log("Setting helmet.");
+
         if (currentHelmet != null)
         {
+            previousHelmet = helmet.gameObject;
             Destroy(currentHelmet);
-            // Destroy(previousHelmet);
         }
+
         previousHelmet = helmetItemManager.FindHelmetByID().helmet.gameObject;
         currentHelmet = Instantiate(helmetItem.helmet.gameObject, currentCharacter.helmetParent);
+        currentHelmet.SetActive(true);
 
-        if (helmetItem.unlocked)
-        {
-            // Destroy(previousHelmet);
-            helmetIndex = PlayerPrefs.GetInt("SelectedHelmetID", 0);
-            previousHelmet = helmetItemManager.FindHelmetByID().helmet.gameObject;
-            Player player = currentGameplayCharacter.GetComponent<Player>();
-            player.helmetToSpawn = helmet;
-            PlayerPrefs.SetInt("SelectedHelmetColor", 0);
-        }
-        currentCharacter.defaultHat = helmet.defaultColor;
         helmet = helmetItem.helmet;
         helmet.material.color = helmet.defaultColor;
         helmet.SetTex(currentCharacter.helmetMaterial);
 
-        currentHelmet.SetActive(true);
+        confirmedHelmetPrefab = helmetItem.helmet.gameObject;
+        wasPreviewingHelmet = false;
+        helmetIndex = helmetItem.id;
+        PlayerPrefs.SetInt("SelectedHelmetID", helmetIndex);
+        PlayerPrefs.SetInt("SelectedHelmetColor", 0);
+
+        Player player = currentGameplayCharacter.GetComponent<Player>();
+        player.helmetToSpawn = helmet;
 
         for (int j = 0; j < customizationPanelManager.colorButtonManagers.Count; j++)
         {
-
             if (customizationPanelManager.colorButtonManagers[j].clothesType == ColorButtonManager.ClothesType.Hat)
             {
                 customizationPanelManager.colorButtonManagers[j].colorButtons[0].color = helmet.defaultColor;
                 customizationPanelManager.colorButtonManagers[j].SetSpecificCheckmark();
             }
         }
+
     }
     public IEnumerator LoadHelmet(bool reset)
     {
@@ -336,42 +451,48 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     private UIShadow uishadow;
     public void SetCharacter(Component sender, object data)
     {
-
-        if (characterPickerManager.TrophyRoadTempFlag) { Debug.Log("Called From Trophy Road - Skipping setting character"); return; }
-        currentCharacter.gameObject.SetActive(false);
-        // PlayerColorsGlobal.Instance.SetGameplayPrefab(characterIndex);
-        Debug.Log("Component " + sender.GetType() + "Object :" + data.GetType());
-        previousCharacter = characterPickerManager.FindCharacterByID();
-        Debug.Log("Previous Character :" + previousCharacter.name);
-        currentCharacter = (PlayerMenu)data;
-        if (characterPickerManager.currentCharacter.unlocked)
+        if (characterPickerManager.TrophyRoadTempFlag)
         {
-            Debug.Log("Current character Name : " + currentCharacter.name);
-            Debug.Log("Previous Character :" + previousCharacter.name);
-            characterIndex = PlayerPrefs.GetInt("SelectedCharacterID", 0);
-            previousCharacter = currentCharacter;
-            currentGameplayCharacter = gameplayCharacters[characterIndex];
-            customizationPanelManager.helmetItemManager.currentCharacter = currentCharacter;
-            StartCoroutine(LoadHelmet(true));
-            LoadWeapon(false);
-            mainMenuManager.currentCharacter = currentCharacter;
+            Debug.Log("Called From Trophy Road - Skipping setting character");
+            return;
         }
-      
-        // StartCoroutine(SetHelmetReferences(currentCharacter.helmets));
+
+        previousCharacter = characterPickerManager.FindCharacterByID();
+
+        PlayerMenu selectedCharacter = (PlayerMenu)data;
+
+        bool isUnlocked = characterPickerManager.currentCharacter.unlocked;
+
+        if (!isUnlocked)
+        {
+            PreviewCharacter(selectedCharacter);
+            return;
+        }
+
+        Debug.Log("Setting character: " + selectedCharacter.name);
+
+        if (currentCharacter != null)
+            currentCharacter.gameObject.SetActive(false);
+
+        currentCharacter = selectedCharacter;
+        characterIndex = PlayerPrefs.GetInt("SelectedCharacterID", 0);
+        currentGameplayCharacter = gameplayCharacters[characterIndex];
+
+        customizationPanelManager.helmetItemManager.currentCharacter = currentCharacter;
+        mainMenuManager.currentCharacter = currentCharacter;
+
+        StartCoroutine(LoadHelmet(true));
+        LoadWeapon(false);
+
         SetCheckmarkDefaults(true);
+        customizationPanelManager.UpdateDefaultColors();
+
         currentCharacter.canBlink = true;
         currentCharacter.hasBlinked = false;
 
-
-        // Debug.Log("Current character : " + currentCharacter + " has helmets : " + currentCharacter.helmets.Count + " helmetitem manager");
-        // profileManager.SetProfileCharacter(characterIndex);
-
-        Debug.Log("Current character : " + currentCharacter + " has picking set to true");
         currentCharacter.gameObject.SetActive(true);
         currentCharacter.GetComponent<Animator>().SetBool("Picking", true);
 
-        customizationPanelManager.UpdateDefaultColors();
-        StartCoroutine(LoadHelmet(true));
         characterChanged = true;
     }
     public void LoadCharacter(bool reset)
