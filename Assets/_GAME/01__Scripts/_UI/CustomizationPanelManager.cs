@@ -87,6 +87,13 @@ public class CustomizationPanelManager : MonoBehaviour
             panel.gameObject.SetActive(false);
         }
     }
+    public void ToggleAllCustomizationTabs(bool state)
+    {
+        foreach (CustomizationTab tab in customizationTabs)
+        {
+            if (tab.tabType != CustomizationTab.TabType.Character) tab.GetComponent<Button>().interactable = state;
+        }
+    }
     public void ToggleEditingTabs(bool state)
     {
         foreach (CustomizationTab tab in customizationTabs)

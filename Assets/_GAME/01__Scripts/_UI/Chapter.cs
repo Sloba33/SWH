@@ -1,21 +1,16 @@
-// Chapter.cs (MODIFIED - Your existing MonoBehaviour)
 using UnityEngine.UI;
 using UnityEngine;
-using TMPro; // Make sure you have TextMeshPro imported and assigned if using TMP
+using TMPro; 
 
 public class Chapter : MonoBehaviour
 {
-    // REMOVED: public GameObject levelsParent;
-    // REMOVED: public GameObject levelsPanel;
-    // REMOVED: public GameObject chaptersPanel;
-
-    // Assign the TextMeshProUGUI component of your chapter button in the Inspector
-    [SerializeField] private TextMeshProUGUI chapterNameText;
+   
+    [SerializeField] public TextMeshProUGUI chapterNameText;
     public Image chapterImage;
 
     private void Awake()
     {
-        // Attempt to find TextMeshProUGUI component if not assigned in Inspector
+ 
         if (chapterNameText == null)
         {
             chapterNameText = GetComponentInChildren<TextMeshProUGUI>();
@@ -26,16 +21,15 @@ public class Chapter : MonoBehaviour
         }
     }
 
-    // This method will be called by LevelSelectionManager to set the chapter button's text
+   
     public void SetChapterName(string name)
     {
         if (chapterNameText != null)
         {
             chapterNameText.text = name;
+            chapterImage.rectTransform.localScale = new Vector3(30f, 30f, 30f);
         }
     }
 
-    // REMOVED: The Start() and OpenPanel() methods are removed from here.
-    // Their functionality (adding click listeners and panel transitions)
-    // will now be handled by the LevelSelectionManager.
+
 }

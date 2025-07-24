@@ -54,7 +54,15 @@ public class PlayerObstacleController : MonoBehaviour
             }
         }
     }
-
+    private void ControlPlayerFallWhilePulling()
+    {
+        if (playerController.isPulling && pullObstacle != null && pullObstacle.isFalling)
+        {
+            Vector3 pos = transform.position;
+            pos.y = pullObstacle.transform.position.y;
+            transform.position = pos;
+        }
+    }
     private bool pullConstraintsReset;
     private void FixedUpdate()
     {
@@ -74,7 +82,10 @@ public class PlayerObstacleController : MonoBehaviour
         HandlePush();
         playerController._movement.SetPullConstraints(pullObstacle);
         if (playerController.isPulling && !playerController.pullButtonReleased)
+        {
+            ControlPlayerFallWhilePulling();
             HandlePull();
+        }
         if (!pullConstraintsReset && !playerController.pullButtonHeld && playerController.pullButtonReleased)
         {
             Debug.Log("Pull stopped");
@@ -871,10 +882,12 @@ public class PlayerObstacleController : MonoBehaviour
                     Vector3 targetPlayerPosition = pullObstacle.transform.position + (normalizedPullDirection * (obstacleHalfSize + playerHalfSize + pullDistance));
 
 
-                    targetPlayerPosition.y = pullObstacle.transform.position.y;
+                    // targetPlayerPosition.y = pullObstacle.transform.position.y;
 
 
                     StartSmoothRepositioning(targetPlayerPosition);
+                    // float y = pullObstacle.transform.position.y;
+                    // transform.position = new Vector3(targetPlayerPosition.x, y, targetPlayerPosition.z);
 
                     movementDirection = Vector3.zero;
                     pullConstraintsReset = false;
