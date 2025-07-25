@@ -167,6 +167,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     private bool characterChanged;
     public CharacterSelector currentCharacterSelector;
+    public Helmet revertedHelmet;
     public bool wasPreviewingHelmet = false;
     public void RevertSelectionStates()
     {
@@ -184,7 +185,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             currentHelmet = Instantiate(confirmedHelmetPrefab, currentCharacter.helmetParent);
             currentHelmet.SetActive(true);
 
-            Helmet revertedHelmet = currentHelmet.GetComponent<Helmet>();
+            revertedHelmet = currentHelmet.GetComponent<Helmet>();
             if (revertedHelmet != null)
             {
                 Debug.Log("[REVERT] Helmet Name: " + revertedHelmet.helmetName);

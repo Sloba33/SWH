@@ -138,7 +138,7 @@ public class CharacterPickerManager : MonoBehaviour
                 currentCharacter.characterStats.Ad_Tokens = GetCharacterAdTokensAmount(currentCharacter.characterStats);
             }
             if (currentCharacter.customizationPanelManager != null)
-                if (!currentCharacter.isEditable)
+                if (!currentCharacter.isEditable || !currentCharacter.unlocked)
                 {
                     currentCharacter.customizationPanelManager.ToggleEditingTabs(false);
                 }
