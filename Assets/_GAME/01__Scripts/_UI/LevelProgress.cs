@@ -20,6 +20,7 @@ public class LevelProgress : MonoBehaviour
     private Vector3 originalScale;
     private Dictionary<ObstacleColor, float> savedFillAmounts;
     public UIEffect uiEffectPreset;
+    public UIEffect uiEffect_SingleColorPreset;
     private Dictionary<ObstacleColor, float> initialFillAmounts; // New dictionary
     private bool wiggleTriggered;
     public WinScreen winScreen;
@@ -27,6 +28,7 @@ public class LevelProgress : MonoBehaviour
 
     public void Initialize()
     {
+
         originalScale = transform.localScale;
         Debug.Log("Original scale + " + originalScale);
         transform.localScale = Vector3.zero;
@@ -178,6 +180,8 @@ public class LevelProgress : MonoBehaviour
     public UIParticle uiParticle;
     public IEnumerator FillImage(Image image, float fillAmount, float duration = 1f)
     {
+        UIEffect uiEffect;
+        UIEffectTweener uiEffectTweener;
         if (image == null)
         {
             Debug.LogError("Image component is null!");
@@ -187,18 +191,18 @@ public class LevelProgress : MonoBehaviour
         {
             if (image.GetComponent<UIEffect>() == null)
             {
-                UIEffect uiEffect = image.gameObject.AddComponent<UIEffect>();
+                uiEffect = image.gameObject.AddComponent<UIEffect>();
                 uiEffect.LoadPreset(uiEffectPreset);
             }
 
             if (image.GetComponent<UIEffectTweener>() == null)
             {
-                UIEffectTweener uiEffectTweener = image.gameObject.AddComponent<UIEffectTweener>();
+                uiEffectTweener = image.gameObject.AddComponent<UIEffectTweener>();
                 uiEffectTweener.duration = 1.05f;
                 uiEffectTweener.wrapMode = UIEffectTweener.WrapMode.Once;
             }
         }
-        UIEffectTweener uiShiny = image.GetComponent<UIEffectTweener>();
+
         float startFill = image.fillAmount;
         float startTime = Time.time;
         float endTime = startTime + duration;
@@ -212,6 +216,29 @@ public class LevelProgress : MonoBehaviour
 
         image.fillAmount = fillAmount;
         uiParticle.enabled = true;
+        yield return new WaitForSeconds(0.1f);
+        if (fillAmount >= 0.98f)
+        {
+            UIEffect uiEffect2 = image.GetComponent<UIEffect>();
+            if (uiEffect2 == null)
+                uiEffect2 = image.gameObject.AddComponent<UIEffect>();
+
+            if (uiEffect2 != null && uiEffect_SingleColorPreset != null) uiEffect2.LoadPreset(uiEffect_SingleColorPreset); // Always reload preset
+
+            // Destroy and re-add the tweener to ensure it resets properly
+            UIEffectTweener existingTweener = image.GetComponent<UIEffectTweener>();
+            if (existingTweener != null)
+                Destroy(existingTweener);
+
+            UIEffectTweener newTweener = image.gameObject.AddComponent<UIEffectTweener>();
+            newTweener.duration = 1f;
+            newTweener.wrapMode = UIEffectTweener.WrapMode.Once;
+
+            // Important: force UI update before calling Play()
+            Canvas.ForceUpdateCanvases();
+
+            newTweener.Play();
+        }
         // Check if all *assigned* images are filled
         if (AreAllImagesFilled() && !wiggleTriggered)
         {
@@ -219,6 +246,10 @@ public class LevelProgress : MonoBehaviour
             StartCoroutine(WiggleImage());
         }
         winScreen.ActivateButtons();
+
+
+
+
     }
 
     // --- New method to reset all image fills ---
@@ -392,14 +423,14 @@ public class LevelProgress : MonoBehaviour
             Debug.DrawLine(new Vector3(corners[0].x, currentFillWorldY, imageRectTransform.position.z),
                            new Vector3(corners[3].x, currentFillWorldY, imageRectTransform.position.z), Color.red, 0.1f);
 
-            Debug.Log($"Image: {image.name}, Fill: {currentFillAmount:F2}, " +
-                      $"Calculated Triangle Width: {calculatedWidth:F2} world units. " +
-                      $"(RectTransform Width: {imageRectTransform.rect.width * imageRectTransform.lossyScale.x:F2} world units)");
+            // Debug.Log($"Image: {image.name}, Fill: {currentFillAmount:F2}, " +
+            //           $"Calculated Triangle Width: {calculatedWidth:F2} world units. " +
+            //           $"(RectTransform Width: {imageRectTransform.rect.width * imageRectTransform.lossyScale.x:F2} world units)");
         }
-        else
-        {
-            Debug.Log($"Image: {image.name}, Fill: {currentFillAmount:F2}. No sprite vertices found below fill line. Width: 0.");
-        }
+        // else
+        // {
+        //     Debug.Log($"Image: {image.name}, Fill: {currentFillAmount:F2}. No sprite vertices found below fill line. Width: 0.");
+        // }
     }
     private string DictionaryToString(Dictionary<ObstacleColor, float> dict)
     {

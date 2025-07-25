@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
-        SetTestBuildPrefs();
+        // SetTestBuildPrefs();
 
         Debug.Log("Framerate set");
         Application.targetFrameRate = 60;

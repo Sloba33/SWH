@@ -161,6 +161,7 @@ public class TutorialMenuManager : MonoBehaviour
             if (menuTutorialStage == (int)MenuTutorialStep.None)
             {
                 currentTutorialStep = MenuTutorialStep.WorkButton;
+                Debug.Log("Setting intro menu tutorial stage to WorkButton");
                 PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)MenuTutorialStep.WorkButton);
             }
             else
@@ -425,7 +426,7 @@ public class TutorialMenuManager : MonoBehaviour
                 break;
                 // For other steps, actualStepToSave remains currentTutorialStep (e.g., WorkButton, TrophyRoadButton, WorkersButton, WorkButton_End, Completed)
         }
-
+        Debug.Log("Setting intro menu tutorial stage to: " + actualStepToSave);
         PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)actualStepToSave);
         PlayerPrefs.Save(); // Explicitly save PlayerPrefs immediately for crash prevention
 
@@ -489,6 +490,7 @@ public class TutorialMenuManager : MonoBehaviour
 
     public void EndMenuTutorial()
     {
+      
         PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)MenuTutorialStep.Completed);
         PlayerPrefs.Save(); // Ensure completion state is saved
 

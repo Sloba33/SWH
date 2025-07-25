@@ -724,20 +724,16 @@ public class LevelGoal : MonoBehaviour
         PlayerController pc = FindObjectOfType<PlayerController>();
         settings.gameWon = true;
         yield return new WaitForSeconds(delay);
-
+        if (FinalTutorial)
+        {
+            PlayerPrefs.SetInt("FirstTime", 1);
+        }
         if (pc != null) pc.enabled = false;
         settings.ActivateWinPanel();
 
-        if (IsIntroLevel)
-        {
-            int currentIntroLevel = PlayerPrefs.GetInt(PREF_CURRENT_INTRO_LEVEL, 0);
-            currentIntroLevel++;
-            // PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, currentIntroLevel);
-            PlayerPrefs.Save();
 
+        PlayerPrefs.Save();
 
-
-        }
     }
 
     public IEnumerator WinTutorial(float delay)

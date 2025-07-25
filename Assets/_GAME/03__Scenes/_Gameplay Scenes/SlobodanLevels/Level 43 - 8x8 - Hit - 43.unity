@@ -2726,6 +2726,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 146046152}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &158474425 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1732271442187002874, guid: 70d8ce3340f712444b5dc564164163e1,
+    type: 3}
+  m_PrefabInstance: {fileID: 265981090}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &159071340
 GameObject:
   m_ObjectHideFlags: 0
@@ -16298,6 +16310,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446451986}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1459546100 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5549944313687641112, guid: 7fe768fc17a62b04298c2f42e49f7f31,
+    type: 3}
+  m_PrefabInstance: {fileID: 1109279807}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1477892836
 GameObject:
   m_ObjectHideFlags: 0
@@ -22087,6 +22111,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883648524}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1905622424 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3858214248255844358, guid: 35f0ac6569f90c24bbfb2b5829b2c341,
+    type: 3}
+  m_PrefabInstance: {fileID: 2129966396}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1926645777
 GameObject:
   m_ObjectHideFlags: 0
@@ -25643,7 +25679,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 8976141381338161322}
   counterText: {fileID: 6774412641576852423}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 7147883297928690628}
 --- !u!114 &661286600467865267
 MonoBehaviour:
@@ -25663,7 +25699,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 3052005042654698087}
   counterText: {fileID: 105611169465268557}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 1495161798703259905}
 --- !u!114 &687102994462703997
 MonoBehaviour:
@@ -26721,6 +26757,7 @@ MonoBehaviour:
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1
+  spawnedObstacles: []
   minObstacleSpawnHeight: 20
   maxObstacleSpawnHeight: 25
   SpawnFallingBombs: 0
@@ -26761,6 +26798,9 @@ MonoBehaviour:
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
   - {fileID: 585144557}
+  - {fileID: 1905622424}
+  - {fileID: 1459546100}
+  - {fileID: 158474425}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -27866,7 +27906,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 3714757370375703166}
   counterText: {fileID: 6161753672647894827}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 3019202540937757915}
 --- !u!222 &4256447086285094470
 CanvasRenderer:
@@ -27894,7 +27934,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 5631496660679507028}
   counterText: {fileID: 3844934938431311103}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 8893475264538358368}
 --- !u!114 &4402356625886973007
 MonoBehaviour:
@@ -28483,7 +28523,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 8997349262073053537}
   counterText: {fileID: 2753631773700049210}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 5085416744926590539}
 --- !u!224 &5984021553116685706
 RectTransform:
@@ -29748,7 +29788,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 263410226178134092}
   counterText: {fileID: 516856948097274149}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 3089976561563180851}
 --- !u!224 &7355577788680854600
 RectTransform:

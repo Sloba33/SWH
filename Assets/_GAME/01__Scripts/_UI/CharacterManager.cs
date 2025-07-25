@@ -22,6 +22,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     // private CharacterPickerManager characterPickerManager;
     [SerializeField] private AudioClip audioClip;
     private bool _coinsGranted;
+    public bool ColorChanged;
     // private CharacterPickerManager characterPickerManager;
     private void GrantStarterCoins()
     {
@@ -87,6 +88,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     void OnEnable()
     {
         currentCharacterSelector = characterPickerManager.characterSelectorCurrent;
+        Debug.Log("[THIS] - CharacterManager enabled, currentCharacterSelector: " + currentCharacterSelector);
     }
     public void PlayClick()
     {
@@ -186,7 +188,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             currentHelmet.SetActive(true);
 
             revertedHelmet = currentHelmet.GetComponent<Helmet>();
-            if (revertedHelmet != null)
+            if (revertedHelmet != null && !ColorChanged)
             {
                 Debug.Log("[REVERT] Helmet Name: " + revertedHelmet.helmetName);
                 Debug.Log("[REVERT] DefaultColor: " + revertedHelmet.defaultColor);
@@ -235,14 +237,18 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
                 StartCoroutine(LoadHelmet(true));
 
             characterChanged = false;
+
+            // ✅ Update external references now that currentCharacter has been reverted
+            characterPickerManager.characterSelectorCurrent = characterPickerManager.FindCharacterSelectorByCharacter(currentCharacter);
+            currentCharacterSelector = characterPickerManager.characterSelectorCurrent;
+            customizationPanelManager.currentCharacter = currentCharacter;
+            customizationPanelManager.helmetItemManager.currentCharacter = currentCharacter;
+            mainMenuManager.currentCharacter = currentCharacter;
+
         }
 
-        if (currentCharacterSelector != null && !currentCharacterSelector.unlocked)
-        {
-            SetDefaultHelmet(currentCharacter);
-        }
+
     }
-
 
     public void SetDefaultHelmet(PlayerMenu character)
     {
@@ -370,8 +376,10 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
         if (currentHelmet != null)
         {
-            previousHelmet = helmet.gameObject;
-            Destroy(currentHelmet);
+            if (helmet.gameObject != null)
+                previousHelmet = helmet.gameObject;
+            if (currentHelmet != null)
+                Destroy(currentHelmet);
         }
 
         previousHelmet = helmetItemManager.FindHelmetByID().helmet.gameObject;
@@ -434,7 +442,10 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         // currentCharacter.defaultHat = helmet.defaultColor;
 
         if (reset)
+        {
+            Debug.Log("[LOAD HELMET] -Resetting helmet to default color");
             helmet.material.color = helmet.defaultColor;
+        }
 
         helmet.SetTex(currentCharacter.helmetMaterial);
         for (int j = 0; j < customizationPanelManager.colorButtonManagers.Count; j++)

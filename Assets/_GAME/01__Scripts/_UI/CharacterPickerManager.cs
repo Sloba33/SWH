@@ -30,11 +30,11 @@ public class CharacterPickerManager : MonoBehaviour
         customizationPanelManager = FindObjectOfType<CustomizationPanelManager>(true);
         upgradeButton = mainMenuManager.priceTextCoins.transform.parent.GetComponent<Button>();
         characterTokenManager = FindObjectOfType<CharacterTokenManager>(true);
-    
+
     }
     private void OnEnable()
     {
-    if (characterSelectors.Count == 0)
+        if (characterSelectors.Count == 0)
             for (int i = 0; i < content.childCount; i++)
             {
                 characterSelectors.Add(content.GetChild(i).GetComponent<CharacterSelector>());
@@ -45,6 +45,21 @@ public class CharacterPickerManager : MonoBehaviour
         currentCharacter = characterSelectors[id];
         characterSelectorCurrent = currentCharacter;
         UpdateCharacterStats();
+        StartCoroutine(ToggleEditingTabs());
+    }
+    private IEnumerator ToggleEditingTabs()
+    {
+        yield return new WaitForSeconds(0.01f);
+        if (currentCharacter != null && !currentCharacter.isEditable)
+        {
+            Debug.Log("Current character is not editable, toggling editing tabs off");
+            currentCharacter.customizationPanelManager.ToggleEditingTabs(false);
+        }
+        else if (currentCharacter != null && currentCharacter.isEditable)
+        {
+            Debug.Log("Current character is editable, toggling editing tabs on");
+            currentCharacter.customizationPanelManager.ToggleEditingTabs(true);
+        }
     }
     public PlayerMenu FindCharacterByID()
     {
@@ -370,6 +385,10 @@ public class CharacterPickerManager : MonoBehaviour
 
             SetUiEffect(characterSelector, true);
         }
+    }
+    public CharacterSelector FindCharacterSelectorByCharacter(PlayerMenu character)
+    {
+        return characterSelectors.Find(x => x.playerMenu == character);
     }
     public CharacterSelector characterSelectorCurrent;
     public void SetCharacter(CharacterSelector characterSelector, bool isFromTokens)

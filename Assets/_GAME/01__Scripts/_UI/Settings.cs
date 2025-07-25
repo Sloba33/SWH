@@ -13,7 +13,7 @@ public class Settings : MonoBehaviour
     public PlayerController playerController;
     public CameraController cameraController;
     public bool gameWon, gameLost;
-
+    public Sprite temporarySprite;
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(0.5f);

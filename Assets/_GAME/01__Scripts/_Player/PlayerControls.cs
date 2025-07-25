@@ -29,6 +29,8 @@ public class PlayerControls : MonoBehaviour
     public bool isPulling; //
     public TutorialHandler tutorialHandler; //
     public Button specialButton; //
+    public Settings settings;
+    public Image specialChargeImage;
 
     // Removed the Update method for keyboard input for attacks.
     // private void Update()
@@ -73,7 +75,9 @@ public class PlayerControls : MonoBehaviour
         _isInteractable = true; //
         levelGoal = FindObjectOfType<LevelGoal>(); //
         yield return new WaitForSeconds(0.5f); //
-
+        settings = FindAnyObjectByType<Settings>(FindObjectsInactive.Include); //
+        specialChargeImage = GameObject.Find("SpecialChargeFrame")?.GetComponent<Image>(); //
+        if (specialChargeImage != null) specialChargeImage.GetComponent<Image>().enabled = false;
         // Only add listener if jumpButton is assigned
         // if (jumpButton != null) //
         // {

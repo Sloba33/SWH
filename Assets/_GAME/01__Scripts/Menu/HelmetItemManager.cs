@@ -57,8 +57,15 @@ public class HelmetItemManager : MonoBehaviour
                 priceText.color = Color.red;
             }
             else priceText.color = Color.white;
+            characterPickerManager.currentCharacter.customizationPanelManager.ToggleEditingTabs(false);
         }
-        else purchaseButton.gameObject.SetActive(false);
+        else
+        {
+            purchaseButton.gameObject.SetActive(false);
+            if (characterPickerManager != null && characterPickerManager.currentCharacter != null && characterPickerManager.currentCharacter.customizationPanelManager != null)
+                characterPickerManager.currentCharacter.customizationPanelManager.ToggleEditingTabs(true);
+        }
+
         this.helmetItem = helmetItem;
         this.helmet = helmetItem.helmet;
         SetHelmetStats();
