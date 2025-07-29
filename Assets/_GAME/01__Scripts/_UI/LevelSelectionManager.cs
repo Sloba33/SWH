@@ -486,7 +486,7 @@ public class LevelSelectionManager : MonoBehaviour
 
         RectTransform levelButtonGO = Instantiate(levelButtonPrefab, contentParent);
         Button buttonComponent = levelButtonGO.GetComponent<Button>();
-
+        LevelButtonDisplay levelButtonDisplay = levelButtonGO.GetComponent<LevelButtonDisplay>();
         TextMeshProUGUI tmpText = levelButtonGO.GetComponentInChildren<TextMeshProUGUI>();
         if (tmpText != null)
         {
@@ -508,7 +508,16 @@ public class LevelSelectionManager : MonoBehaviour
             // Control UIShiny and UIEffectTweener components
             // The "latest unlocked that wasn't completed yet" is the level with levelNumber == (currentUnlockedLevel + 1)
             bool isLatestUnbeatenLevel = (level.levelNumber == (currentUnlockedLevel + 1));
-
+            if (levelButtonDisplay != null)
+            {
+                levelButtonDisplay.levelSceneName = level.sceneName;
+                levelButtonDisplay.Initialize();
+             
+            }
+            else
+            {
+                Debug.LogWarning($"Level button prefab '{levelButtonPrefab.name}' is missing a LevelButtonDisplay component.");
+            }
             UIShiny uiShiny = levelButtonGO.GetComponent<UIShiny>();
             UIEffectTweener uiEffectTweener = levelButtonGO.GetComponent<UIEffectTweener>();
 

@@ -9,7 +9,12 @@ public class LevelGoal : MonoBehaviour
 {
     private Settings settings;
     public LevelProgress levelProgress;
-    public float currentTime = 0, bonusTime;
+    public float currentTime = 0;
+    [Header("Star Time Thresholds (in seconds)")]
+    public float threeStarTime;
+    public float twoStarTime;
+    public float oneStarTime;
+    public float bonusTime;
     public TutorialDialogue tutorialDialogue;
     [Header("Obstacle Spawn Settings")]
     public Dictionary<System.Tuple<ObstacleType, ObstacleColor>, Obstacle> goalObstaclePrefabs = new();
@@ -730,7 +735,22 @@ public class LevelGoal : MonoBehaviour
         }
         if (pc != null) pc.enabled = false;
         settings.ActivateWinPanel();
+        int starsEarned = 0;
+        if (currentTime <= threeStarTime) starsEarned = 3;
+        else if (currentTime <= twoStarTime) starsEarned = 2;
+        else if (currentTime <= oneStarTime) starsEarned = 1;
 
+        bool bonusEarned = currentTime <= bonusTime;
+
+        // Save stars and bonus
+        string levelKey = SceneManager.GetActiveScene().name + "_Stars";
+        int previousStars = PlayerPrefs.GetInt(levelKey, 0);
+        if (starsEarned > previousStars) PlayerPrefs.SetInt(levelKey, starsEarned);
+
+        string bonusKey = SceneManager.GetActiveScene().name + "_Bonus";
+        if (bonusEarned) PlayerPrefs.SetInt(bonusKey, 1);
+
+        PlayerPrefs.Save();
 
         PlayerPrefs.Save();
 
