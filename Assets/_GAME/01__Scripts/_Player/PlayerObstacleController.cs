@@ -58,11 +58,16 @@ public class PlayerObstacleController : MonoBehaviour
     {
         if (playerController.isPulling && pullObstacle != null && pullObstacle.isFalling)
         {
-            Vector3 pos = transform.position;
-            pos.y = pullObstacle.transform.position.y;
-            transform.position = pos;
+            // Prevent syncing Y if player is standing on anything
+            if (!playerMovement.IsGrounded)
+            {
+                Vector3 pos = transform.position;
+                pos.y = pullObstacle.transform.position.y;
+                transform.position = pos;
+            }
         }
     }
+
     private bool pullConstraintsReset;
     private void FixedUpdate()
     {

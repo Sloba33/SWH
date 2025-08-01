@@ -25,7 +25,7 @@ public class MatchThreeObstacle : MonoBehaviour
     {
         if (!isDestructible) return;
         if (Obstacle != null && Obstacle.isFalling) ClearObstacleLists();
-        if (hasGameStarted && Obstacle.Moving)
+        if (hasGameStarted && Obstacle.Moving && IsCenteredOnTile())
         {
             if (Obstacle.isFalling) return;
             if (currentTile != Obstacle.tile)
@@ -75,11 +75,8 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private void CheckListForMatches(List<Obstacle> obstacleList)
     {
-        Debug.Log("M3 - Obstacle List Count : " + obstacleList.Count + "called by : " + Obstacle.name);
-        if (obstacleList.Count == 0) return; // Prevent errors with empty lists
-
-        // ObstacleType specialType; // This variable is not used in the method's logic after the change, consider removing if no other use
-        // ObstacleColor specialColor; // Not strictly needed here, as Universal handles it
+        if (obstacleList == null || obstacleList.Count < 3)
+            return;
 
         float offset;
         Vector3 groundPosition;
@@ -94,38 +91,47 @@ public class MatchThreeObstacle : MonoBehaviour
             offset = 0.05f;
         }
 
+        int matchStart = 0;
+        Obstacle currentMatchTarget = obstacleList[0];
         consecutiveCount = 1;
-        Obstacle currentMatchTarget = obstacleList[0]; // Start with the first obstacle in the sequence
-        Debug.Log("M3 - Current match target" + currentMatchTarget);
+
         for (int i = 1; i < obstacleList.Count; i++)
         {
             float distanceToGround = Vector3.Distance(Obstacle.transform.position, groundPosition);
-            Debug.Log("M3 - Entered matching intereation");
-            // Use the new IsMatchingObstacle method
+
             if (IsMatchingObstacle(currentMatchTarget, obstacleList[i]) && distanceToGround < (transform.position.y + offset))
             {
-                Debug.Log("M3 - Matching");
                 consecutiveCount++;
-                if (consecutiveCount >= 3)
-                {
-                    if (CheckAndHandleJackInTheBox(obstacleList))
-                    {
-                        Debug.Log("M3 - Found JITB");
-                        // JackInTheBox found, cancel match (or special handling)
-                        return;
-                    }
-                    // Pass the currentMatchTarget and consecutiveCount for destruction logic
-                    DestroyConsecutiveObstacles(obstacleList, i, consecutiveCount);
-                    return; // Stop checking this list after a match is found and destroyed
-                }
             }
             else
             {
+                if (consecutiveCount >= 3)
+                {
+                    // Handle match group from matchStart to i - 1
+                    if (CheckAndHandleJackInTheBox(obstacleList.GetRange(matchStart, consecutiveCount)))
+                        return;
+
+                    DestroyConsecutiveObstacles(obstacleList, matchStart, consecutiveCount);
+                    return; // Or remove this if you want to continue scanning for more matches
+                }
+
+                // Reset
                 consecutiveCount = 1;
-                currentMatchTarget = obstacleList[i]; // Start new potential sequence
+                matchStart = i;
+                currentMatchTarget = obstacleList[i];
             }
         }
+
+        // Final match check at end of list
+        if (consecutiveCount >= 3)
+        {
+            if (CheckAndHandleJackInTheBox(obstacleList.GetRange(matchStart, consecutiveCount)))
+                return;
+
+            DestroyConsecutiveObstacles(obstacleList, matchStart, consecutiveCount);
+        }
     }
+
 
     /// <summary>
     /// Checks if two obstacles match based on Type, Color, and Modifier (especially Universal).
@@ -177,30 +183,36 @@ public class MatchThreeObstacle : MonoBehaviour
         }
         return false;
     }
-
-    private void DestroyConsecutiveObstacles(List<Obstacle> obstacleList, int i, int count)
+    private bool IsCenteredOnTile()
     {
-        for (int j = i - count + 1; j <= i; j++)
+        if (Obstacle == null || Obstacle.tile == null)
+            return false;
+
+        Vector3 obstaclePos = transform.position;
+        Vector3 tileCenter = Obstacle.tile.transform.position;
+
+        // Ignore Y-axis for distance check
+        Vector2 obstacleXZ = new Vector2(obstaclePos.x, obstaclePos.z);
+        Vector2 tileCenterXZ = new Vector2(tileCenter.x, tileCenter.z);
+
+        float distanceXZ = Vector2.Distance(obstacleXZ, tileCenterXZ);
+
+        return distanceXZ <= 0.2f; // Adjust threshold to taste
+    }
+
+
+    private void DestroyConsecutiveObstacles(List<Obstacle> obstacleList, int startIndex, int count)
+    {
+        for (int j = startIndex; j < startIndex + count; j++)
         {
             if (j >= 0 && j < obstacleList.Count)
             {
-                Obstacle obstacleToDestroy = obstacleList[j]; // Get the obstacle reference for easier use
+                Obstacle obstacleToDestroy = obstacleList[j];
                 if (obstacleToDestroy != null && !obstacleToDestroy.queuedForDestruction)
                 {
-                    // ESSENTIAL ADDITION 1: Add the obstacle to the list that will be processed later by CheckForMatches.
-                    // This builds the batch of destroyed obstacles for a single call to LevelGoal.ProcessDestroyedObstacles.
                     obstaclesToProcessForSpawns.Add(obstacleToDestroy);
-
-                    // Your existing line to trigger the obstacle's own destruction effects.
                     obstacleToDestroy.ParticleDestroy(Obstacle.ObstacleDestructionSource.MatchThree);
-
-                    // ESSENTIAL ADDITION 2: Tell LevelGoal to remove this obstacle from its tracked list.
-                    // This keeps LevelGoal's 'ObstaclesToDestroy_Player' accurate.
-                    // Remember: LevelGoal.RemoveObstacle now ONLY removes from the list and DOES NOT trigger spawn checks.
-                    if (GameManager.Instance != null && GameManager.Instance.levelGoal != null)
-                    {
-                        GameManager.Instance.levelGoal.RemoveObstacle(obstacleToDestroy);
-                    }
+                    GameManager.Instance?.levelGoal?.RemoveObstacle(obstacleToDestroy);
                 }
             }
         }
