@@ -3,17 +3,22 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using System.IO;
 
 public class BatchSceneReplacer : EditorWindow
 {
     [Header("Scene List")]
     public List<SceneAsset> scenesToFix = new();
 
+    [Header("Toggles")]
+    public bool ShouldFixEnvironment;
+    public bool ShouldFixSettings;
+    public bool ShouldRemoveDialogueIcon;
+    public bool ShouldParentAllObstacles;
+    public bool ShouldFixLevelGoal;
+
     [Header("Prefabs")]
     public GameObject environmentPrefab;
     public GameObject spSettingsPrefab;
-    
 
     [MenuItem("Tools/Batch Scene Fixer")]
     public static void ShowWindow()
@@ -23,105 +28,160 @@ public class BatchSceneReplacer : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("Scenes to Fix", EditorStyles.boldLabel);
         SerializedObject so = new SerializedObject(this);
-        SerializedProperty scenesProp = so.FindProperty("scenesToFix");
-        EditorGUILayout.PropertyField(scenesProp, true);
-        so.ApplyModifiedProperties();
+
+        // Scene List
+        EditorGUILayout.PropertyField(so.FindProperty("scenesToFix"), true);
 
         EditorGUILayout.Space();
-        environmentPrefab = (GameObject)EditorGUILayout.ObjectField("Environment Prefab", environmentPrefab, typeof(GameObject), false);
-        spSettingsPrefab = (GameObject)EditorGUILayout.ObjectField("SP_Controls Prefab", spSettingsPrefab, typeof(GameObject), false);
+        EditorGUILayout.LabelField("Scene Modifications", EditorStyles.boldLabel);
+
+        // Environment toggle and field
+        ShouldFixEnvironment = EditorGUILayout.Toggle("Fix Environment", ShouldFixEnvironment);
+        using (new EditorGUI.DisabledScope(!ShouldFixEnvironment))
+        {
+            environmentPrefab = (GameObject)EditorGUILayout.ObjectField("Environment Prefab", environmentPrefab, typeof(GameObject), false);
+        }
+
+        // SP Controls toggle and field
+        ShouldFixSettings = EditorGUILayout.Toggle("Fix Settings (SP_Settings)", ShouldFixSettings);
+        using (new EditorGUI.DisabledScope(!ShouldFixSettings))
+        {
+            spSettingsPrefab = (GameObject)EditorGUILayout.ObjectField("SP_Settings Prefab", spSettingsPrefab, typeof(GameObject), false);
+        }
+
+        // Dialogue disable toggle
+        ShouldRemoveDialogueIcon = EditorGUILayout.Toggle("Disable Dialogue UI", ShouldRemoveDialogueIcon);
+
+        // Parent obstacles toggle
+        ShouldFixLevelGoal = EditorGUILayout.Toggle("Fix LevelGoal Obstacles", ShouldFixLevelGoal); ;
+        ShouldParentAllObstacles = EditorGUILayout.Toggle("Group Obstacles in Scene", ShouldParentAllObstacles);
 
         EditorGUILayout.Space();
-
         if (GUILayout.Button("Fix All Scenes"))
         {
             FixScenes();
         }
+
+        so.ApplyModifiedProperties();
     }
 
     private void FixScenes()
     {
-        if (scenesToFix == null || scenesToFix.Count == 0)
-        {
-            Debug.LogWarning("No scenes assigned to fix.");
-            return;
-        }
-
         foreach (SceneAsset sceneAsset in scenesToFix)
         {
-            if (sceneAsset == null)
-                continue;
+            if (sceneAsset == null) continue;
 
             string scenePath = AssetDatabase.GetAssetPath(sceneAsset);
             Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
 
             bool modified = false;
 
-            // Replace Environment
-            GameObject oldEnvironment = GameObject.Find("Environment");
-            if (oldEnvironment != null && environmentPrefab != null)
+            // --- Fix Environment ---
+            if (ShouldFixEnvironment)
             {
-                Vector3 pos = oldEnvironment.transform.position;
-                Quaternion rot = oldEnvironment.transform.rotation;
-                GameObject newEnv = (GameObject)PrefabUtility.InstantiatePrefab(environmentPrefab);
-                newEnv.transform.position = pos;
-                newEnv.transform.rotation = rot;
-
-                Undo.DestroyObjectImmediate(oldEnvironment);
-                modified = true;
-                Debug.Log($"Replaced Environment in {scene.name}");
-            }
-
-            // Replace SP_Controls under Main_UI
-            GameObject spSettings = GameObject.Find("SP_Settings");
-            if (spSettings != null && spSettingsPrefab != null)
-            {
-                GameObject mainUI = GameObject.Find("Main_UI");
-                if (mainUI != null)
+                GameObject oldEnv = GameObject.Find("Environment");
+                if (oldEnv && environmentPrefab)
                 {
-                    Vector3 pos = spSettings.transform.position;
-                    Quaternion rot = spSettings.transform.rotation;
-                    GameObject newSP = (GameObject)PrefabUtility.InstantiatePrefab(spSettingsPrefab, mainUI.transform);
-                    newSP.transform.position = pos;
-                    newSP.transform.rotation = rot;
-
-                    Undo.DestroyObjectImmediate(spSettings);
+                    GameObject newEnv = (GameObject)PrefabUtility.InstantiatePrefab(environmentPrefab);
+                    Undo.DestroyObjectImmediate(oldEnv);
                     modified = true;
-                    Debug.Log($"Replaced SP_Controls in {scene.name}");
+                    Debug.Log($"Replaced Environment in {scene.name}");
                 }
             }
 
-            // Assign all obstacles to LevelGoal
-            LevelGoal levelGoal = GameObject.FindObjectOfType<LevelGoal>();
-            if (levelGoal != null)
+            // --- Fix SP_Controls ---
+            if (ShouldFixSettings)
             {
-                Obstacle[] allObstacles = GameObject.FindObjectsOfType<Obstacle>(true);
-                levelGoal.ObstaclesToDestroy_Player.Clear();
-                levelGoal.ObstaclesToDestroy_Player.AddRange(allObstacles);
-                EditorUtility.SetDirty(levelGoal);
-                modified = true;
-                Debug.Log($"Added {allObstacles.Length} obstacles to LevelGoal in {scene.name}");
+                GameObject mainUI = GameObject.Find("Main_UI");
+                if (mainUI)
+                {
+                    GameObject oldSP = GameObject.Find("SP_Settings");
+                    if (oldSP && spSettingsPrefab)
+                    {
+                        Vector3 pos = oldSP.transform.position;
+                        Quaternion rot = oldSP.transform.rotation;
+                        GameObject newSP = (GameObject)PrefabUtility.InstantiatePrefab(spSettingsPrefab, mainUI.transform);
+                        newSP.transform.position = pos;
+                        newSP.transform.rotation = rot;
+                        Undo.DestroyObjectImmediate(oldSP);
+                        modified = true;
+                        Debug.Log($"Replaced SP_Settings in {scene.name}");
+                    }
+                }
+            }
+
+            // --- Disable Dialogue UI ---
+            if (ShouldRemoveDialogueIcon)
+            {
+                GameObject[] allObjs = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+                foreach (var go in allObjs)
+                {
+                    if (go.name.ToLower().Contains("dialogue"))
+                    {
+                        go.SetActive(false);
+                        modified = true;
+                        Debug.Log($"Disabled Dialogue Object: {go.name} in {scene.name}");
+                    }
+                }
+            }
+
+            // --- Group All Obstacles ---
+            LevelGoal levelGoal = GameObject.FindFirstObjectByType<LevelGoal>();
+            if (levelGoal)
+            {
+                Obstacle[] obstacles = GameObject.FindObjectsByType<Obstacle>(FindObjectsSortMode.None);
+                if (ShouldFixLevelGoal)
+                {
+
+                    Obstacle[] allObstacles = GameObject.FindObjectsByType<Obstacle>(FindObjectsSortMode.None);
+                    List<Obstacle> validObstacles = new();
+
+                    foreach (var obs in allObstacles)
+                    {
+                        if (obs.obstacleType != ObstacleType.Metal)
+                        {
+                            validObstacles.Add(obs);
+                        }
+                    }
+
+                    levelGoal.ObstaclesToDestroy_Player.Clear();
+                    levelGoal.ObstaclesToDestroy_Player.AddRange(validObstacles);
+                    EditorUtility.SetDirty(levelGoal);
+                    modified = true;
+                }
+
+                if (ShouldParentAllObstacles)
+                {
+                    GameObject obstacleParent = GameObject.Find("Obstacles") ?? new GameObject("Obstacles");
+                    obstacleParent.transform.position = Vector3.zero;
+
+                    foreach (Obstacle obs in obstacles)
+                    {
+                        obs.transform.SetParent(obstacleParent.transform, true); // retain world pos
+                    }
+
+                    Debug.Log($"Grouped {obstacles.Length} obstacles under 'Obstacles' GameObject in {scene.name}");
+                }
+                else
+                {
+                    Debug.Log($"Assigned {obstacles.Length} obstacles to LevelGoal in {scene.name}");
+                }
             }
             else
             {
-                Debug.LogWarning($"No LevelGoal found in {scene.name}");
+                Debug.LogWarning($"No LevelGoal found in scene {scene.name}");
             }
 
             if (modified)
             {
                 EditorSceneManager.MarkSceneDirty(scene);
                 EditorSceneManager.SaveScene(scene);
-                Debug.Log($"Saved scene: {scene.name}");
-            }
-            else
-            {
-                Debug.Log($"No changes needed for scene: {scene.name}");
+                Debug.Log($"Saved changes to scene: {scene.name}");
             }
         }
 
         AssetDatabase.SaveAssets();
-        Debug.Log("Batch scene fix completed.");
+        Debug.Log("✅ Finished processing all scenes.");
     }
 }
