@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7214448288805631408}
   - component: {fileID: 3914636231800777355}
   m_Layer: 8
-  m_Name: Metal_Obstacle
+  m_Name: Metal_Obstacle_X
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -181,6 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 1
+  isFrozen: 0
   obstacleMesh: {fileID: 0}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -190,7 +192,7 @@ MonoBehaviour:
   MoveOverride: 1
   isSpawnedForRecovery: 0
   shouldFall: 1
-  obstacleType: 43
+  obstacleType: 9
   obstacleModifier: 0
   obstacleColor: 6
   obstacleAudioType: 2

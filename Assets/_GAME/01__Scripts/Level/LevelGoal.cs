@@ -7,6 +7,8 @@ using System.Linq;
 
 public class LevelGoal : MonoBehaviour
 {
+    public bool ShouldReplaceMetalBoxes;
+    public GameObject metalBox_X, metalBox_O;
     private Settings settings;
     public LevelProgress levelProgress;
     public float currentTime = 0;
@@ -87,9 +89,38 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
     private const string PREF_FIRST_TIME = "FirstTime";
+    private void ReplaceXMetalBoxes()
+    {
+        Obstacle[] allObstacles = FindObjectsOfType<Obstacle>();
 
+        foreach (Obstacle obs in allObstacles)
+        {
+            if (obs.obstacleType == ObstacleType.Metal && obs.is_x_box)
+            {
+                // Cache transform and rotation
+                Vector3 pos = obs.transform.position;
+                Quaternion rot = obs.transform.rotation;
+                Transform parent = obs.transform.parent;
+
+                // Destroy current obstacle
+                DestroyImmediate(obs.gameObject); // DestroyImmediate is better in edit/start-time replacement
+
+                // Instantiate the correct one
+                GameObject replacement = Instantiate(metalBox_O, pos, rot, parent);
+                Debug.Log($"Replaced metal X box at {pos} with normal metal box.");
+            }
+        }
+    }
+    private void Awake()
+    {
+        if (ShouldReplaceMetalBoxes)
+        {
+            ReplaceXMetalBoxes();
+        }
+    }
     private IEnumerator Start()
     {
+
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
         if (Tutorial)
         {
@@ -146,6 +177,7 @@ public class LevelGoal : MonoBehaviour
             Debug.Log($"LevelGoal: Queued obstacle {obstacle.name} for spawn processing. Queue size: {_obstaclesDestroyedThisFrame.Count}");
         }
     }
+
     private void ProcessDestroyedObstaclesInternal() // Renamed to avoid conflict with potential public usage
     {
         if (_obstaclesDestroyedThisFrame.Count == 0)

@@ -4,6 +4,7 @@ using DG.Tweening;
 
 public class Obstacle : MonoBehaviour
 {
+    public bool is_x_box;
     public bool isFrozen;
     public MeshRenderer obstacleMesh;
     public Sprite obstacleSprite;
