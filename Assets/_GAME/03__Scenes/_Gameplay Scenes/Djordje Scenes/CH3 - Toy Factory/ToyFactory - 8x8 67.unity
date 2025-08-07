@@ -2794,6 +2794,74 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 104c217aedb8870499b134aa72df54d7, type: 3}
+--- !u!1001 &868571300
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6390644272076231186, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_Name
+      value: SodaCanCollectibleBlue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5b76e532431e08f4eb84b05d86cc4700, type: 3}
 --- !u!1001 &902032396
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6407,21 +6475,11 @@ MonoBehaviour:
   oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
-  SpawnFallingObstacles: 0
+  SpawnFallingObstacles: 1
   FallingObstacles:
-  - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
+  - item: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: 798c02443606707419c46dffb5589fed, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: 3b5621e9c14841d4a85a5ac47cad88bf, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: ef6d583b7c22f27479f932db0e8854f2, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: e3507a700acbb85408de54d971d9f19f, type: 3}
-    weight: 10
-  - item: {fileID: 1964128455452615959, guid: f2b9311cc643a2b459010a0eaa480325, type: 3}
-    weight: 1
-  obstaclesToSpawn: 1000
+  obstaclesToSpawn: 8
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1
@@ -10275,3 +10333,4 @@ SceneRoots:
   - {fileID: 1100076915}
   - {fileID: 853434310}
   - {fileID: 235061105}
+  - {fileID: 868571300}
