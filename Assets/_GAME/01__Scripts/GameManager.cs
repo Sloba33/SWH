@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
-        SetTestBuildPrefs();
+        // SetTestBuildPrefs();
 
         Debug.Log("Framerate set");
         Application.targetFrameRate = 60;
@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // IsMultiplayer = FindFirstObjectByType<NetworkRunner>() != null;
+       
         if (Application.isMobilePlatform)
         {
             int wid = Screen.width;

@@ -12,7 +12,7 @@ public class ConsumableSlot : MonoBehaviour
     public int counter;
     public Button btn;
     public TextMeshProUGUI counterText;
-    public BombCollectible.BombType slotType;
+    public ObstacleColor obstacleColor;
     public Image bombBackgroundImage;
     private void Start()
     {
@@ -26,7 +26,8 @@ public class ConsumableSlot : MonoBehaviour
         if (collectibleItem.isConsumable)
         {
             // Debug.Log("Item is consumable");
-            slotType = collectibleItem.GetComponent<BombCollectible>().bombType;
+            obstacleColor = collectibleItem.GetComponent<BombCollectible>().bombColor;
+            Debug.Log("Obstacle Color is " + obstacleColor);
         }
         counter++;
         counterText.text = counter + "";
@@ -43,7 +44,7 @@ public class ConsumableSlot : MonoBehaviour
         ci=null;
         counter = 0;
         counterText.text = ""+0;
-        slotType = BombCollectible.BombType.None;
+        obstacleColor = ObstacleColor.Universal;
         img.sprite = null;
         gameObject.SetActive(false);
     }

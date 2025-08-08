@@ -29,6 +29,8 @@ public class PlayerControls : MonoBehaviour
     public bool isPulling; //
     public TutorialHandler tutorialHandler; //
     public Button specialButton; //
+    public Settings settings;
+    public Image specialChargeImage;
 
     // Removed the Update method for keyboard input for attacks.
     // private void Update()
@@ -73,7 +75,9 @@ public class PlayerControls : MonoBehaviour
         _isInteractable = true; //
         levelGoal = FindObjectOfType<LevelGoal>(); //
         yield return new WaitForSeconds(0.5f); //
-
+        settings = FindAnyObjectByType<Settings>(FindObjectsInactive.Include); //
+        specialChargeImage = GameObject.Find("SpecialChargeFrame")?.GetComponent<Image>(); //
+        if (specialChargeImage != null) specialChargeImage.GetComponent<Image>().enabled = false;
         // Only add listener if jumpButton is assigned
         // if (jumpButton != null) //
         // {
@@ -370,7 +374,7 @@ public class PlayerControls : MonoBehaviour
         // Check for an existing active slot with the same type or a universal type
         for (int i = 0; i < consumableSlots.Count; i++) //
         {
-            if (consumableSlots[i].gameObject.activeSelf && (consumableSlots[i].slotType == collectibleItem.GetComponent<BombCollectible>().bombType || consumableSlots[i].slotType == BombCollectible.BombType.None)) //
+            if (consumableSlots[i].gameObject.activeSelf && (consumableSlots[i].obstacleColor == collectibleItem.GetComponent<BombCollectible>().bombColor || consumableSlots[i].obstacleColor == ObstacleColor.Universal)) //
             {
                 consumableSlots[i].SetConsumable(collectibleItem); //
                 Debug.Log("Added bomb to existing slot : " + collectibleItem.name + " to slot :" + consumableSlots[i].name + " with bomb prefab : " + consumableSlots[i].bombPrefab.gameObject); //

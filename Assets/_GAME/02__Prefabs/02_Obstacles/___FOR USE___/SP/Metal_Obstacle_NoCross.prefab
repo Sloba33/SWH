@@ -62,6 +62,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -178,6 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 0}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -185,12 +190,12 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
-  aiLerp: {fileID: 0}
-  aSTarAI: {fileID: 0}
-  obstacleType: 43
-  obstacleAudioType: 2
+  isSpawnedForRecovery: 0
+  shouldFall: 1
+  obstacleType: 9
+  obstacleModifier: 0
   obstacleColor: 6
+  obstacleAudioType: 2
   Weight: 40
   tile: {fileID: 0}
   fracturedObject: {fileID: 7720066643381754197, guid: b16cce4a1efea5c4cbdc4b75e2b172e8,
@@ -212,7 +217,7 @@ MonoBehaviour:
   isPositioned: 0
   isHeightPositioned: 0
   grounded: 0
-  isHammerable: 0
+  isHammerable: 1
   _rb: {fileID: 0}
   obstacleCheckerRadius: 0.003
   upOffset: 0.89

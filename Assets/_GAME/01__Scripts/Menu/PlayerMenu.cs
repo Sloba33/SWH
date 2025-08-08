@@ -49,7 +49,7 @@ public class PlayerMenu : MonoBehaviour
     {
         materialToColor.color = targetColor;
         SaveColor(colorString, targetColor);
-        Debug.Log("Loaded default " + colorString + " color");
+        Debug.Log("Coloring " + colorString + " to: " + targetColor + " of type: " + materialToColor.name);
     }
     public void ColorShirt(Color col)
     {
@@ -80,6 +80,7 @@ public class PlayerMenu : MonoBehaviour
     public void ColorHat(Color col)
     {
         ColorItem(helmetMaterial, col, "hat");
+        Debug.Log("Coloring helmet material to: " + col + " of type: " + helmetMaterial.name);
     }
     public void ColorShoes(Color col)
     {

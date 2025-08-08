@@ -107,7 +107,11 @@ public class WinScreen : MonoBehaviour
             Debug.Log("levelGoal.xp : " + levelGoal.xp);
             Debug.Log("levelGoal.trophies  : " + levelGoal.trophies);
             if (!CheckIfLevelIsBeaten())
+            {
+
                 StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
+                Debug.Log("Level : " + PlayerPrefs.GetInt("Level") + " hasnt been beaten yet, generating gains");
+            }
             else
             {
                 TrophyText.text = levelGoal.trophies + "/" + levelGoal.trophies;
@@ -131,6 +135,12 @@ public class WinScreen : MonoBehaviour
             uIParticle = GetComponentInChildren<UIParticle>();
             levelProgress.uiParticle = uIParticle;
             levelProgress.winScreen = this;
+        }
+        else
+        {
+            // Fallback if levelProgress is missing — allow level progression
+            Debug.Log("[WinScreen] No LevelProgress assigned. Automatically activating next level button.");
+            ActivateButtons();
         }
         if (playerGameObject != null)
         {
@@ -160,7 +170,7 @@ public class WinScreen : MonoBehaviour
 
         if (levelCompleteText != null)
         {
-            levelCompleteText.text = "Level " + (SceneManager.GetActiveScene().buildIndex + 1).ToString() + " Complete!";
+            levelCompleteText.text = "Level " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3).ToString() + " Complete!";
         }
         PlayerPrefs.SetInt(currentLevelName + "_beaten", 1);
         PlayerPrefs.Save();
@@ -365,13 +375,7 @@ public class WinScreen : MonoBehaviour
     }
     public void ActivateButtons()
     {
-        if (PlayerPrefs.GetInt("IsSeparateBuild") == 1)
-        {
-            proceedButton.SetActive(false);
-            nextLevelButton.gameObject.SetActive(true);
-            // mainMenuButton.gameObject.SetActive(true);
-            return;
-        }
+
         if (GameManager.Instance.ShouldHaveMainMenuButton)
         {
             proceedButton.SetActive(false);

@@ -15,6 +15,7 @@ public class Weapon : MonoBehaviour
     private void Start()
     {
         energyConsumption = PlayerPrefs.GetFloat(weaponName + "_EnergyConsumption", energyConsumption);
+        Debug.Log("Weapon Start: " + weaponName + " Energy Consumption: " + energyConsumption);
         energyRecharge = PlayerPrefs.GetFloat(weaponName + "_EnergyRecharge", energyRecharge);
         Player player = FindObjectOfType<Player>();
         PlayerAttack playerAttack = player.GetComponent<PlayerAttack>();

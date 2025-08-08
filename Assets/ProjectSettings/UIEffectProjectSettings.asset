@@ -45,6 +45,8 @@ ShaderVariantCollection:
         passType: 0
       - keywords: COLOR_MULTIPLY
         passType: 0
+      - keywords: COLOR_MULTIPLY SHADOW_COLOR_REPLACE
+        passType: 0
       - keywords: COLOR_REPLACE SAMPLING_BLUR_FAST SHADOW_COLOR_REPLACE
         passType: 0
       - keywords: COLOR_REPLACE SAMPLING_BLUR_FAST SHADOW_COLOR_REPLACE TONE_NEGATIVE
@@ -102,6 +104,8 @@ ShaderVariantCollection:
         passType: 0
       - keywords: SAMPLING_BLUR_FAST
         passType: 0
+      - keywords: SAMPLING_BLUR_FAST SHADOW_COLOR_REPLACE
+        passType: 0
       - keywords: SAMPLING_BLUR_FAST TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
         passType: 0
       - keywords: SAMPLING_BLUR_MEDIUM
@@ -122,7 +126,11 @@ ShaderVariantCollection:
         passType: 0
       - keywords: SHADOW_COLOR_REPLACE
         passType: 0
+      - keywords: SHADOW_COLOR_REPLACE TONE_SEPIA
+        passType: 0
       - keywords: SHADOW_COLOR_REPLACE TRANSITION_COLOR_MULTIPLY_ADDITIVE TRANSITION_SHINY
+        passType: 0
+      - keywords: SHADOW_COLOR_REPLACE TRANSITION_FADE
         passType: 0
       - keywords: SHADOW_COLOR_SUBTRACTIVE
         passType: 0

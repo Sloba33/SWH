@@ -69,14 +69,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectibleSprite: {fileID: 21300000, guid: 9208f3cf37bbe12469b5b3923624ba80, type: 3}
-  collectableName: BombCollectible
   collectSound: {fileID: 8300000, guid: 3c3b83f027abc3d4bb2542a40095d1fe, type: 3}
   isConsumable: 1
-  isColored: 0
   mesh: {fileID: 1814606762605903507}
   sphereCollider: {fileID: 4207172828084061907}
   objectToDestroy: {fileID: 6989674221227821592}
-  bombType: 0
+  bombColor: 13
   bombPrefab: {fileID: 2189585335206403249, guid: 98547653374992f4788a92c7fb5ec559,
     type: 3}
   Grounded: 0
@@ -145,6 +143,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -173,7 +174,7 @@ MeshRenderer:
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!95 &8244251944849243684
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -187,6 +188,7 @@ Animator:
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -203,6 +205,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 5f3bedeff5339eb44837d80a3dfb30d2, type: 3}
+  m_Resource: {fileID: 8300000, guid: 5f3bedeff5339eb44837d80a3dfb30d2, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -466,7 +469,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19912330, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 27b6622e120c7f549b38d8ae5f2eb219, type: 2}
     - target: {fileID: 19912330, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
@@ -474,11 +477,11 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19912330, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
-      propertyPath: m_VertexStreams.Array.data[1]
+      propertyPath: 'm_VertexStreams.Array.data[1]'
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19912330, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
-      propertyPath: m_VertexStreams.Array.data[2]
+      propertyPath: 'm_VertexStreams.Array.data[2]'
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 19913606, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
@@ -490,7 +493,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 19913606, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 27b6622e120c7f549b38d8ae5f2eb219, type: 2}
     - target: {fileID: 19913606, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
@@ -498,11 +501,11 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19913606, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
-      propertyPath: m_VertexStreams.Array.data[1]
+      propertyPath: 'm_VertexStreams.Array.data[1]'
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19913606, guid: 36c40fe19a4447d468678ecd395846df, type: 3}
-      propertyPath: m_VertexStreams.Array.data[2]
+      propertyPath: 'm_VertexStreams.Array.data[2]'
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 19963538, guid: 36c40fe19a4447d468678ecd395846df, type: 3}

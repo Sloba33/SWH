@@ -59,7 +59,7 @@ public class ImageGallery : MonoBehaviour
         claimPanel.SetRewardData(reward);
         ScrollToFirstUnclaimedReward();
     }
-  public void PopulateGallery()
+    public void PopulateGallery()
     {
         int i = 0;
         foreach (LevelProgress levelProgressPrefab in levelProgressPrefabs)
@@ -92,7 +92,7 @@ public class ImageGallery : MonoBehaviour
             gallerySlot.trophyRoadManager = trophyRoadManager;
             gallerySlot.imageGallery = this;
 
-           if (AreAllImagesFilled && !IsGalleryRewardClaimed(i))
+            if (AreAllImagesFilled && !IsGalleryRewardClaimed(i))
             {
                 Debug.Log("Images are filled and reward is unclaimed."); // Corrected log message
                 gallerySlot.Initialize(i, trophyRoadManager, this);
@@ -106,6 +106,7 @@ public class ImageGallery : MonoBehaviour
                     Transform firstChild = levelProgressInstance.transform.GetChild(0);
                     if (firstChild != null && firstChild.name.ToLower().Contains("outline"))
                     {
+                        Debug.Log("Found outline image as first child: " + firstChild.name);
                         outlineImage = firstChild.GetComponent<Image>();
                     }
                 }
@@ -137,6 +138,7 @@ public class ImageGallery : MonoBehaviour
                     {
                         Debug.LogWarning($"Failed to parse color #FFB500 for outline image in slot {i}.");
                     }
+
                 }
                 else
                 {
@@ -154,9 +156,41 @@ public class ImageGallery : MonoBehaviour
 
             else if (IsGalleryRewardClaimed(i))
             {
-                Debug.Log("Images are filled and reward has been claimed."); // Corrected log message
+                Debug.Log("Images are filled and reward has been claimed.");
                 gallerySlot.Initialize(i, trophyRoadManager, this);
                 gallerySlot.SetClaimed();
+
+                // --- Disable outline for claimed items ---
+                Image outlineImage = null;
+
+                // 1. Try first child
+                if (levelProgressInstance.transform.childCount > 0)
+                {
+                    Transform firstChild = levelProgressInstance.transform.GetChild(0);
+                    if (firstChild != null && firstChild.name.ToLower().Contains("outline"))
+                    {
+                        outlineImage = firstChild.GetComponent<Image>();
+                    }
+                }
+
+                // 2. Fallback to recursive search
+                if (outlineImage == null)
+                {
+                    foreach (Image img in levelProgressInstance.GetComponentsInChildren<Image>(true))
+                    {
+                        if (img.gameObject.name.ToLower().Contains("outline"))
+                        {
+                            outlineImage = img;
+                            break;
+                        }
+                    }
+                }
+
+                if (outlineImage != null)
+                {
+                    outlineImage.gameObject.SetActive(false);
+                    Debug.Log($"[Init] Disabled outline for claimed reward in slot {i}");
+                }
             }
             else
             {
@@ -175,7 +209,46 @@ public class ImageGallery : MonoBehaviour
 
         Debug.Log("Spawning panel in ImageGallery");
         ShowClaimPanel(levelProgressIndex);
+
+
+        Transform slotTransform = Content.GetChild(levelProgressIndex);
+        LevelProgress levelProgress = slotTransform.GetComponentInChildren<LevelProgress>();
+        if (levelProgress != null)
+        {
+            // Set all images to full fill
+            foreach (Image img in levelProgress.GetComponentsInChildren<Image>(true))
+            {
+                if (img != null && img.type == Image.Type.Filled)
+                {
+                    img.fillAmount = 1f;
+                    Debug.Log($"Set {img.name} fill to 1f after claiming reward {levelProgressIndex}");
+                }
+            }
+
+            // Disable outline image
+            Image outlineImage = null;
+
+            foreach (Image img in levelProgress.GetComponentsInChildren<Image>(true))
+            {
+                if (img.gameObject.name.ToLower().Contains("outline"))
+                {
+                    outlineImage = img;
+                    break;
+                }
+            }
+
+            if (outlineImage != null)
+            {
+                outlineImage.gameObject.SetActive(false);
+                Debug.Log($"Disabled outline image {outlineImage.name} for claimed reward {levelProgressIndex}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"LevelProgress not found at index {levelProgressIndex}");
+        }
     }
+
 
     private bool IsGalleryRewardClaimed(int levelProgressIndex)
     {

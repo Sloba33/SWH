@@ -23548,6 +23548,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4586241151906607370, guid: e3b9067d4217d1442ab853f1cc37581c,
         type: 3}
+      propertyPath: onDestroy
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586241151906607370, guid: e3b9067d4217d1442ab853f1cc37581c,
+        type: 3}
+      propertyPath: isPushable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586241151906607370, guid: e3b9067d4217d1442ab853f1cc37581c,
+        type: 3}
       propertyPath: shouldFall
       value: 0
       objectReference: {fileID: 0}
@@ -23562,6 +23572,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 2a782776303885549bcacb06353414e9,
         type: 3}
+    - target: {fileID: 4586241151906607370, guid: e3b9067d4217d1442ab853f1cc37581c,
+        type: 3}
+      propertyPath: objectToTurnOff
+      value: 
+      objectReference: {fileID: 2019852670}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -49935,6 +49950,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2011795490}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2019852670 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6784415547297523, guid: e465fa2fc14eccd4a95177df097e13db,
+    type: 3}
+  m_PrefabInstance: {fileID: 1798198619}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2021631786
 GameObject:
   m_ObjectHideFlags: 0
@@ -54425,7 +54446,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 8976141381338161322}
   counterText: {fileID: 6774412641576852423}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 7147883297928690628}
 --- !u!114 &661286600467865267
 MonoBehaviour:
@@ -54445,7 +54466,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 3052005042654698087}
   counterText: {fileID: 105611169465268557}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 1495161798703259905}
 --- !u!4 &662177820585018343
 Transform:
@@ -62968,6 +62989,7 @@ MonoBehaviour:
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1
+  spawnedObstacles: []
   minObstacleSpawnHeight: 20
   maxObstacleSpawnHeight: 25
   SpawnFallingBombs: 0
@@ -73547,6 +73569,74 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1001 &3343404724998870717
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.829
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.783
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.996
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2272984080034587080, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6533325339529403190, guid: f9b793dafabb33f4a851040c3ce752df,
+        type: 3}
+      propertyPath: m_Name
+      value: Hook&Chain
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f9b793dafabb33f4a851040c3ce752df, type: 3}
 --- !u!1 &3358543686299086766
 GameObject:
   m_ObjectHideFlags: 0
@@ -94601,7 +94691,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 3714757370375703166}
   counterText: {fileID: 6161753672647894827}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 3019202540937757915}
 --- !u!33 &4255203966689403466
 MeshFilter:
@@ -94738,7 +94828,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 5631496660679507028}
   counterText: {fileID: 3844934938431311103}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 8893475264538358368}
 --- !u!23 &4377859502786165117
 MeshRenderer:
@@ -102064,7 +102154,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 8997349262073053537}
   counterText: {fileID: 2753631773700049210}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 5085416744926590539}
 --- !u!224 &5984021553116685706
 RectTransform:
@@ -114633,7 +114723,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 263410226178134092}
   counterText: {fileID: 516856948097274149}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 3089976561563180851}
 --- !u!33 &7351983766342917007
 MeshFilter:
@@ -122453,5 +122543,6 @@ SceneRoots:
   - {fileID: 952868772}
   - {fileID: 949685197}
   - {fileID: 6911620293104934533}
-  - {fileID: 2122918255}
   - {fileID: 1798198619}
+  - {fileID: 3343404724998870717}
+  - {fileID: 2122918255}

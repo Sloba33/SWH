@@ -16,9 +16,10 @@ public class HelmetItemManager : MonoBehaviour
     public Image durabilityFillBar;
     public TextMeshProUGUI helmetName;
     public TextMeshProUGUI priceText;
+    private CharacterPickerManager characterPickerManager;
     private void Start()
     {
-
+        characterPickerManager = FindAnyObjectByType<CharacterPickerManager>(FindObjectsInactive.Include);
         int id = PlayerPrefs.GetInt("SelectedHelmetID", 0);
         helmetItem = helmetItems[id];
         helmet = CharacterManager.Instance.helmet;
@@ -56,8 +57,15 @@ public class HelmetItemManager : MonoBehaviour
                 priceText.color = Color.red;
             }
             else priceText.color = Color.white;
+            characterPickerManager.currentCharacter.customizationPanelManager.ToggleEditingTabs(false);
         }
-        else purchaseButton.gameObject.SetActive(false);
+        else
+        {
+            purchaseButton.gameObject.SetActive(false);
+            if (characterPickerManager != null && characterPickerManager.currentCharacter != null && characterPickerManager.currentCharacter.customizationPanelManager != null)
+                characterPickerManager.currentCharacter.customizationPanelManager.ToggleEditingTabs(true);
+        }
+
         this.helmetItem = helmetItem;
         this.helmet = helmetItem.helmet;
         SetHelmetStats();

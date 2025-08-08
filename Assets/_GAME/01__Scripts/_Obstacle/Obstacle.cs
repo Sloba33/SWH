@@ -4,7 +4,8 @@ using DG.Tweening;
 
 public class Obstacle : MonoBehaviour
 {
-
+    public bool is_x_box;
+    public bool isFrozen;
     public MeshRenderer obstacleMesh;
     public Sprite obstacleSprite;
     public ParticleSystem obstacleFallPS;
@@ -377,6 +378,7 @@ public class Obstacle : MonoBehaviour
     GameObject fallSprite = null;
     float tileOffset = 0.554f;
     float obstacleOffset = 1f;
+    private Coroutine fallCouroutine;
     public IEnumerator Fall()
     {
         StartCoroutine(DisablePushabilityForTime(0.5f));
@@ -414,7 +416,7 @@ public class Obstacle : MonoBehaviour
             }
             targetHeight = groundHeight;
             Vector3 startFallIndicatorScale = fallSprite.transform.localScale;
-            while (transform.position.y > targetHeight || !grounded)
+            while ((transform.position.y > targetHeight || !grounded) && !isFrozen)
             {
                 if (Physics.Raycast(transform.position, Vector3.down, out hit, raycastDistance, _groundMask))
                 {
@@ -430,6 +432,8 @@ public class Obstacle : MonoBehaviour
                     targetHeight = groundHeight;
                 }
                 // fallSprite.transform.localScale = startFallIndicatorScale / (targetHeight - transform.position.y);
+                if (fallSprite != null && fallSprite.transform.localScale.x > 0.11f)
+                    fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
 
                 float distanceToGround = Mathf.Abs(Vector3.Distance(new Vector3(transform.position.x, targetHeight, transform.position.z), transform.position));
 
@@ -442,6 +446,8 @@ public class Obstacle : MonoBehaviour
                     // Debug.Log("fallsprite MID at start   :   " + fallSprite.transform.localScale);
                     fallSprite.transform.localScale = startFallIndicatorScale * scaleFactor * scalingMultiplier;
                     // Debug.Log("fallsprite LATE at start   :   " + fallSprite.transform.localScale);
+                    if (fallSprite.transform.localScale.x > 0.11f)
+                        fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
                 }
 
                 transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, targetHeight, transform.position.z), fallSpeed * 17.5f);
@@ -459,6 +465,12 @@ public class Obstacle : MonoBehaviour
                 {
                     targetHeight -= 0.1f;
                 }
+            }
+            if (isFrozen)
+            {
+                // This will stop the coroutine from proceeding to the landing logic.
+                isFalling = false; // Reset the isFalling flag.
+                yield break;       // Exit the coroutine immediately.
             }
             if (transform.position.y <= targetHeight)
             {
@@ -486,6 +498,7 @@ public class Obstacle : MonoBehaviour
             }
             // Debug.Log("Run match once ");
             Destroy(fallSprite, 0.1f);
+
 
         }
 
@@ -667,7 +680,16 @@ public class Obstacle : MonoBehaviour
         // Revert to color1 after blinking period is over
         obstacleMaterial.color = startColor;
     }
-
+    public void FreezeFall(bool freeze)
+    {
+        isFrozen = freeze;
+        isFalling = !freeze;
+        shouldFall = !freeze;
+        isPositioned = !freeze;
+        hasFallStarted = freeze;
+        if (freeze) Debug.Log("Freezing");
+        else Debug.Log("Unfreezing");
+    }
     IEnumerator BlinkToColor(Color fromColor, Color toColor, float duration)
     {
         float elapsedTime = 0f;

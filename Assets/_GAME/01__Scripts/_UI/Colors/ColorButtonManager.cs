@@ -62,6 +62,7 @@ public class ColorButtonManager : MonoBehaviour
             PlayerPrefs.SetInt("SelectedShoesColor", index);
             currentCharacter.ColorShoes(color);
         }
+        CharacterManager.Instance.ColorChanged = true;
 
     }
     public static void SaveColor(string key, Color color)

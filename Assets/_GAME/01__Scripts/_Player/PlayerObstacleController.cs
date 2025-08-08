@@ -56,6 +56,19 @@ public class PlayerObstacleController : MonoBehaviour
             }
         }
     }
+    private void ControlPlayerFallWhilePulling()
+    {
+        if (playerController.isPulling && pullObstacle != null && pullObstacle.isFalling)
+        {
+            // Prevent syncing Y if player is standing on anything
+            if (!playerMovement.IsGrounded)
+            {
+                Vector3 pos = transform.position;
+                pos.y = pullObstacle.transform.position.y;
+                transform.position = pos;
+            }
+        }
+    }
 
     private bool pullConstraintsReset;
     private void FixedUpdate()
@@ -76,7 +89,10 @@ public class PlayerObstacleController : MonoBehaviour
         HandlePush();
         playerController._movement.SetPullConstraints(pullObstacle);
         if (playerController.isPulling && !playerController.pullButtonReleased)
+        {
+            ControlPlayerFallWhilePulling();
             HandlePull();
+        }
         if (!pullConstraintsReset && !playerController.pullButtonHeld && playerController.pullButtonReleased)
         {
             Debug.Log("Pull stopped");
@@ -120,7 +136,7 @@ public class PlayerObstacleController : MonoBehaviour
     private const float PUSH_RE_EVAL_DELAY_AFTER_LAND = 0.2f; // Time to delay full push re-evaluation after landing
     public void HandlePush()
     {
-        Debug.Log("[HandlePush] START");
+        // Debug.Log("[HandlePush] START");
         // Debug.Log($"isPulling: {playerController.isPulling}, justLanded: {playerMovement.justLanded}, justJumpedOutOfPush: {playerMovement.justJumpedOutOfPush}, linearVelocity.y: {_rb.linearVelocity.y}");
         if (playerController.isPulling)
             return;
@@ -139,10 +155,10 @@ public class PlayerObstacleController : MonoBehaviour
         }
 
         bool canPotentiallyPush = playerController._movement.IsAgainstWall && movementDirection != Vector3.zero;
-        Debug.Log($"canPotentiallyPush: {canPotentiallyPush}, IsAgainstWall: {playerController._movement.IsAgainstWall}, moveDir: {movementDirection}");
+        // Debug.Log($"canPotentiallyPush: {canPotentiallyPush}, IsAgainstWall: {playerController._movement.IsAgainstWall}, moveDir: {movementDirection}");
         if (!playerController.isPushing && !canPotentiallyPush)
         {
-            Debug.Log("[HandlePush] Early exit: not pushing + can't potentially push");
+            // Debug.Log("[HandlePush] Early exit: not pushing + can't potentially push");
             if (lastLandTime == 0f || (Time.time - lastLandTime) > PUSH_RE_EVAL_DELAY_AFTER_LAND)
             {
                 previousPushDirection = Vector3.zero;
@@ -216,6 +232,13 @@ public class PlayerObstacleController : MonoBehaviour
 
             pushObstacle.SphereFlags();
             bool Moveable = pushObstacle.CheckObstaclesAround(movementDirection);
+            if (!Moveable || !playerController._movement.CanPush)
+            {
+                Debug.Log("[HandlePush] Obstacle not movable in that direction or can't push.");
+                pushObstacle.ResetObstacle();
+                StopPush();
+                return;
+            }
             Debug.Log($"pushObstacle Moveable: {Moveable}, pushabilityDelayed: {pushObstacle.pushabilityDelayed}");
             if (playerController._movement.hasRecentlyFallen)
                 diff = Mathf.Round(playerController._movement.fallHeight) - pushObstacle.transform.position.y >= 0;
@@ -251,14 +274,31 @@ public class PlayerObstacleController : MonoBehaviour
 
                 targetPlayerPosition.y = pushObstacle.transform.position.y;
 
-                Vector3 currentPosition = _rb.position;
-                Vector3 positionDelta = targetPlayerPosition - currentPosition;
-                _rb.MovePosition(targetPlayerPosition);
+                Vector3 current = _rb.position;
+                Vector3 target = current;
+                Vector3 obstaclePos = pushObstacle.transform.position;
+                Vector3 dir = movementDirection.normalized;
 
-                if (positionDelta.sqrMagnitude < 0.005f * 0.005f)
-                    _rb.linearVelocity = Vector3.zero;
+
+                if (Mathf.Abs(dir.z) > 0.01f)
+                {
+                    target.x = Mathf.Lerp(current.x, obstaclePos.x, pushCenteringSmoothFactor);
+                }
+
+                if (Mathf.Abs(dir.x) > 0.01f)
+                {
+                    target.z = Mathf.Lerp(current.z, obstaclePos.z, pushCenteringSmoothFactor);
+                }
+
+
+                target.y = obstaclePos.y;
+
+
+                Vector3 velocity = (target - current) / Time.fixedDeltaTime;
+                _rb.linearVelocity = new Vector3(velocity.x, _rb.linearVelocity.y, velocity.z);
 
                 currentMoveDirection = movementDirection;
+
 
                 if (previousMoveDirection == Vector3.zero && currentMoveDirection != Vector3.zero)
                 {
@@ -784,25 +824,25 @@ public class PlayerObstacleController : MonoBehaviour
 
         if (pushObstacle != null)
         {
-            // ✅ Reset the obstacle’s internal state (important!)
+
             pushObstacle.ResetObstacle();
 
-            // Stop velocity if it's not kinematic
+
             if (!pushObstacle._rb.isKinematic)
                 pushObstacle._rb.linearVelocity = Vector3.zero;
 
-            // Detach player reference
+
             pushObstacle.currentlyUsedPlayerConrtoller = null;
         }
         pushObstacle = null;
         previousPushObstacle = null;
         previousPushDirection = Vector3.zero;
-        previousMoveDirection = Vector3.zero; // Reset previousMoveDirection
+        previousMoveDirection = Vector3.zero;
         playerController.isPushing = false;
 
         pushDirectionChanged = false;
 
-        // Stop repositioning when push stops
+
         isRepositioning = false;
         repositionProgress = 0f;
 
@@ -851,14 +891,16 @@ public class PlayerObstacleController : MonoBehaviour
 
                     float playerHalfSize = ((CapsuleCollider)playerCollider).radius;
 
-                    // Target player position for pulling
+
                     Vector3 targetPlayerPosition = pullObstacle.transform.position + (normalizedPullDirection * (obstacleHalfSize + playerHalfSize + pullDistance));
 
-                    // Snap player's Y to obstacle's Y if pulling from a different height, as in your old code
-                    targetPlayerPosition.y = pullObstacle.transform.position.y;
 
-                    // Use smooth repositioning for pull as well (optional - you can keep instant for pull if preferred)
+                    // targetPlayerPosition.y = pullObstacle.transform.position.y;
+
+
                     StartSmoothRepositioning(targetPlayerPosition);
+                    // float y = pullObstacle.transform.position.y;
+                    // transform.position = new Vector3(targetPlayerPosition.x, y, targetPlayerPosition.z);
 
                     movementDirection = Vector3.zero;
                     pullConstraintsReset = false;

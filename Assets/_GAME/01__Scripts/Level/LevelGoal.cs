@@ -7,9 +7,15 @@ using System.Linq;
 
 public class LevelGoal : MonoBehaviour
 {
+   
     private Settings settings;
     public LevelProgress levelProgress;
-    public float currentTime = 0, bonusTime;
+    public float currentTime = 0;
+    [Header("Star Time Thresholds (in seconds)")]
+    public float threeStarTime;
+    public float twoStarTime;
+    public float oneStarTime;
+    public float bonusTime;
     public TutorialDialogue tutorialDialogue;
     [Header("Obstacle Spawn Settings")]
     public Dictionary<System.Tuple<ObstacleType, ObstacleColor>, Obstacle> goalObstaclePrefabs = new();
@@ -23,6 +29,7 @@ public class LevelGoal : MonoBehaviour
     public float ObstacleSpawnFrequency;
     public int TotalObstaclesSpawned;
     public float delayBoxSpawn = 6f;
+    public List<Obstacle> spawnedObstacles = new List<Obstacle>();
     [SerializeField] public int minObstacleSpawnHeight = 16, maxObstacleSpawnHeight = 20;
     [Header("Bomb Spawn Settings")]
     public bool SpawnFallingBombs;
@@ -81,9 +88,11 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
     private const string PREF_FIRST_TIME = "FirstTime";
-
+    
+ 
     private IEnumerator Start()
     {
+
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
         if (Tutorial)
         {
@@ -140,6 +149,7 @@ public class LevelGoal : MonoBehaviour
             Debug.Log($"LevelGoal: Queued obstacle {obstacle.name} for spawn processing. Queue size: {_obstaclesDestroyedThisFrame.Count}");
         }
     }
+
     private void ProcessDestroyedObstaclesInternal() // Renamed to avoid conflict with potential public usage
     {
         if (_obstaclesDestroyedThisFrame.Count == 0)
@@ -295,6 +305,7 @@ public class LevelGoal : MonoBehaviour
             Obstacle obstacle = GetRandomItemByWeight(FallingObstacles);
             Vector3 spawnPos = new(tileList[randomTile].transform.position.x, randomHeight, tileList[randomTile].transform.position.z);
             Obstacle fallingObstacle = Instantiate(obstacle, spawnPos, obstacle.transform.rotation, null);
+            spawnedObstacles.Add(fallingObstacle);
             fallingObstacle.name += TotalObstaclesSpawned.ToString();
             yield return new WaitForSeconds(spawnFrequency);
         }
@@ -372,9 +383,42 @@ public class LevelGoal : MonoBehaviour
             playerSideFallingObstacles[dualLevelCounter].gameObject.SetActive(true);
             AISideFallingObstacles[dualLevelCounter].gameObject.SetActive(true);
             dualLevelCounter++;
+
         }
     }
+    public IEnumerator FreezeTime(float freezeDuration)
+    {
 
+        foreach (Obstacle obstacle in spawnedObstacles)
+        {
+            if (obstacle != null)
+            {
+
+                if (!obstacle.grounded)
+                {
+
+                    obstacle.FreezeFall(true);
+                    Debug.Log("Freezing obstacle: " + obstacle.name);
+                }
+
+
+            }
+        }
+        yield return new WaitForSeconds(freezeDuration);
+        Debug.Log("Freezing time ended, unfreezing obstacles.");
+        foreach (Obstacle obstacle in spawnedObstacles)
+        {
+            if (obstacle != null)
+            {
+                if (!obstacle.grounded)
+                {
+                    obstacle.FreezeFall(false);
+                    Debug.Log("Unfreezing obstacle: " + obstacle.name);
+                }
+
+            }
+        }
+    }
     void AddObstaclesToList()
     {
         UnityEngine.Object[] objectsOfType = FindObjectsOfType(typeof(Obstacle));
@@ -614,7 +658,7 @@ public class LevelGoal : MonoBehaviour
     private void FindAndAddTilesToList()
     {
         // Example: Find all obstacles in the scene. You might need to filter these.
-        ObstaclesToDestroy_Player = new List<Obstacle>(FindObjectsOfType<Obstacle>());
+        // ObstaclesToDestroy_Player = new List<Obstacle>(FindObjectsOfType<Obstacle>());
 
         // Example: Populate tileList
         tileList = new List<Tile>(FindObjectsOfType<Tile>());
@@ -653,6 +697,7 @@ public class LevelGoal : MonoBehaviour
         // Important: Re-add this newly spawned obstacle to the ObstaclesToDestroy_Player list
         // so it counts towards the level goal.
         ObstaclesToDestroy_Player.Add(fallingObstacle);
+        spawnedObstacles.Add(fallingObstacle);
 
         yield return new WaitForSeconds(spawnFrequency);
     }
@@ -689,20 +734,31 @@ public class LevelGoal : MonoBehaviour
         PlayerController pc = FindObjectOfType<PlayerController>();
         settings.gameWon = true;
         yield return new WaitForSeconds(delay);
-
+        if (FinalTutorial)
+        {
+            PlayerPrefs.SetInt("FirstTime", 1);
+        }
         if (pc != null) pc.enabled = false;
         settings.ActivateWinPanel();
+        int starsEarned = 0;
+        if (currentTime <= threeStarTime) starsEarned = 3;
+        else if (currentTime <= twoStarTime) starsEarned = 2;
+        else if (currentTime <= oneStarTime) starsEarned = 1;
 
-        if (IsIntroLevel)
-        {
-            int currentIntroLevel = PlayerPrefs.GetInt(PREF_CURRENT_INTRO_LEVEL, 0);
-            currentIntroLevel++;
-            // PlayerPrefs.SetInt(PREF_CURRENT_INTRO_LEVEL, currentIntroLevel);
-            PlayerPrefs.Save();
+        bool bonusEarned = currentTime <= bonusTime;
 
+        // Save stars and bonus
+        string levelKey = SceneManager.GetActiveScene().name + "_Stars";
+        int previousStars = PlayerPrefs.GetInt(levelKey, 0);
+        if (starsEarned > previousStars) PlayerPrefs.SetInt(levelKey, starsEarned);
 
+        string bonusKey = SceneManager.GetActiveScene().name + "_Bonus";
+        if (bonusEarned) PlayerPrefs.SetInt(bonusKey, 1);
 
-        }
+        PlayerPrefs.Save();
+
+        PlayerPrefs.Save();
+
     }
 
     public IEnumerator WinTutorial(float delay)
