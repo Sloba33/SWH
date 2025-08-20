@@ -5914,6 +5914,74 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1169303937}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1191803862
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7335002144845053451, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_Name
+      value: SodaCanCollectableRed
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8240060399736131306, guid: 71c07529ef231c447bb10d275e121ab8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 71c07529ef231c447bb10d275e121ab8, type: 3}
 --- !u!1 &1210435869
 GameObject:
   m_ObjectHideFlags: 0
@@ -21623,7 +21691,7 @@ PrefabInstance:
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: SpawnFallingObstacles
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
@@ -35580,3 +35648,4 @@ SceneRoots:
   - {fileID: 584592133}
   - {fileID: 1811669690}
   - {fileID: 1019901494}
+  - {fileID: 1191803862}
