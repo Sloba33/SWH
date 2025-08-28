@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class Settings : MonoBehaviour
 {
     public GameObject winPanelPrefab, losePanelPrefab, pausePanelPrefab;
@@ -22,10 +23,12 @@ public class Settings : MonoBehaviour
                {
                    cameraController.RotateRight();
                });
+        Debug.Log("ADDED CAMERA ONCLICK");
         rotateRight.onClick.AddListener(() =>
         {
             cameraController.RotateLeft();
         });
+        Debug.Log("ADDED CAMERA ONCLICK");
         zoomIn.onClick.AddListener(() =>
           {
               cameraController.ZoomIn();

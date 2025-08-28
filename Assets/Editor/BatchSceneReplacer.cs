@@ -12,6 +12,7 @@ public class BatchSceneReplacer : EditorWindow
     [Header("Toggles")]
     public bool ShouldFixEnvironment;
     public bool ShouldFixSettings;
+    public bool ShouldFixControls;
     public bool ShouldRemoveDialogueIcon;
     public bool ShouldParentAllObstacles;
     public bool ShouldFixLevelGoal;
@@ -29,6 +30,11 @@ public class BatchSceneReplacer : EditorWindow
     public GameObject spSettingsPrefab;
     public bool UseCustomSettingsName;
     public string SettingsObjectName = "SP_Settings";
+
+    [Header("SP_Controls Settings")]
+    public GameObject spControlsPrefab;
+    public bool UseCustomControlsName;
+    public string ControlsObjectName = "SP_Controls";
 
     [Header("Dialogue Settings")]
     public bool UseCustomDialogueName;
@@ -68,7 +74,6 @@ public class BatchSceneReplacer : EditorWindow
                 EnvironmentOffset = EditorGUILayout.Vector3Field("Environment Offset", EnvironmentOffset);
             }
 
-            // Optional extra removals alongside Environment swap
             ExtraObjectName1 = EditorGUILayout.TextField("Extra Object Name 1", ExtraObjectName1);
             ExtraObjectName2 = EditorGUILayout.TextField("Extra Object Name 2", ExtraObjectName2);
         }
@@ -83,6 +88,19 @@ public class BatchSceneReplacer : EditorWindow
             using (new EditorGUI.DisabledScope(!UseCustomSettingsName))
             {
                 SettingsObjectName = EditorGUILayout.TextField("Settings Obj Name", SettingsObjectName);
+            }
+        }
+
+        // --- SP_Controls ---
+        ShouldFixControls = EditorGUILayout.Toggle("Fix Controls (SP_Controls)", ShouldFixControls);
+        using (new EditorGUI.DisabledScope(!ShouldFixControls))
+        {
+            spControlsPrefab = (GameObject)EditorGUILayout.ObjectField("SP_Controls Prefab", spControlsPrefab, typeof(GameObject), false);
+
+            UseCustomControlsName = EditorGUILayout.Toggle("Use Custom Controls Name", UseCustomControlsName);
+            using (new EditorGUI.DisabledScope(!UseCustomControlsName))
+            {
+                ControlsObjectName = EditorGUILayout.TextField("Controls Obj Name", ControlsObjectName);
             }
         }
 
@@ -129,40 +147,22 @@ public class BatchSceneReplacer : EditorWindow
 
                 if (oldEnv && environmentPrefab)
                 {
-                    // Destroy old first so name conflicts/parents don’t interfere
                     Undo.DestroyObjectImmediate(oldEnv);
-
-                    // Instantiate prefab into this scene and keep its own transform (usually 0,0,0)
                     GameObject newEnv = (GameObject)PrefabUtility.InstantiatePrefab(environmentPrefab, scene);
-
-                    // If offset is requested, add it on top of the prefab’s own position
-                    if (OffsetEnvironment)
-                        newEnv.transform.position += EnvironmentOffset;
-
+                    if (OffsetEnvironment) newEnv.transform.position += EnvironmentOffset;
                     modified = true;
-                    Debug.Log($"Replaced Environment in {scene.name} (kept prefab's transform)");
+                    Debug.Log($"Replaced Environment in {scene.name}");
                 }
 
-                // Optional extra removals
                 if (!string.IsNullOrEmpty(ExtraObjectName1))
                 {
                     GameObject extra1 = GameObject.Find(ExtraObjectName1);
-                    if (extra1)
-                    {
-                        Undo.DestroyObjectImmediate(extra1);
-                        modified = true;
-                        Debug.Log($"Removed extra object {ExtraObjectName1} in {scene.name}");
-                    }
+                    if (extra1) { Undo.DestroyObjectImmediate(extra1); modified = true; }
                 }
                 if (!string.IsNullOrEmpty(ExtraObjectName2))
                 {
                     GameObject extra2 = GameObject.Find(ExtraObjectName2);
-                    if (extra2)
-                    {
-                        Undo.DestroyObjectImmediate(extra2);
-                        modified = true;
-                        Debug.Log($"Removed extra object {ExtraObjectName2} in {scene.name}");
-                    }
+                    if (extra2) { Undo.DestroyObjectImmediate(extra2); modified = true; }
                 }
             }
 
@@ -190,7 +190,31 @@ public class BatchSceneReplacer : EditorWindow
                 }
             }
 
-            // --- Disable Dialogue UI ---
+            // --- Fix SP_Controls ---
+            if (ShouldFixControls)
+            {
+                GameObject mainUI = GameObject.Find("Main_UI");
+                if (mainUI)
+                {
+                    string controlsName = UseCustomControlsName ? ControlsObjectName : "SP_Controls";
+                    GameObject oldControls = GameObject.Find(controlsName);
+                    if (oldControls && spControlsPrefab)
+                    {
+                        Vector3 pos = oldControls.transform.position;
+                        Quaternion rot = oldControls.transform.rotation;
+
+                        GameObject newControls = (GameObject)PrefabUtility.InstantiatePrefab(spControlsPrefab, mainUI.transform);
+                        newControls.transform.position = pos;
+                        newControls.transform.rotation = rot;
+
+                        Undo.DestroyObjectImmediate(oldControls);
+                        modified = true;
+                        Debug.Log($"Replaced SP_Controls in {scene.name}");
+                    }
+                }
+            }
+
+            // --- Disable Dialogue ---
             if (ShouldRemoveDialogueIcon)
             {
                 string dialogueName = UseCustomDialogueName ? DialogueObjectName : "dialogue";
@@ -217,10 +241,9 @@ public class BatchSceneReplacer : EditorWindow
                     List<Obstacle> validObstacles = new();
                     foreach (var obs in obstacles)
                     {
-                        if (obs.obstacleType != ObstacleType.Metal) // exclude metal boxes
+                        if (obs.obstacleType != ObstacleType.Metal)
                             validObstacles.Add(obs);
                     }
-
                     levelGoal.ObstaclesToDestroy_Player.Clear();
                     levelGoal.ObstaclesToDestroy_Player.AddRange(validObstacles);
                     EditorUtility.SetDirty(levelGoal);
@@ -231,11 +254,8 @@ public class BatchSceneReplacer : EditorWindow
                 {
                     GameObject obstacleParent = GameObject.Find("Obstacles") ?? new GameObject("Obstacles");
                     obstacleParent.transform.position = Vector3.zero;
-
                     foreach (Obstacle obs in obstacles)
-                    {
-                        obs.transform.SetParent(obstacleParent.transform, true); // keep world pos
-                    }
+                        obs.transform.SetParent(obstacleParent.transform, true);
 
                     Debug.Log($"Grouped {obstacles.Length} obstacles under 'Obstacles' in {scene.name}");
                 }
@@ -249,7 +269,6 @@ public class BatchSceneReplacer : EditorWindow
             {
                 EditorSceneManager.MarkSceneDirty(scene);
                 EditorSceneManager.SaveScene(scene);
-                Debug.Log($"Saved changes to scene: {scene.name}");
             }
         }
 
