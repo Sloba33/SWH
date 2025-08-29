@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
+    [HideInInspector] public bool allowFallOffEdges;
     private PlayerController _playerController;
     private PlayerControls _playerControls;
     private Player _player; //
@@ -179,9 +181,8 @@ public class PlayerMovement : MonoBehaviour
             _jumpInputReceivedThisFrame = false;
         }
 
-        if (jumpInputDetected && IsGrounded && !IsJumping && !IsPulling)
+        if (jumpInputDetected && IsGrounded && !IsJumping && !IsPulling && !_playerController.isPushing && !_playerController.isPulling)
         {
-            // Debug.Log("Conditions met for Jump!"); // Debugging
             Jump();
         }
         else if (jumpInputDetected)
@@ -272,7 +273,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump()
     {
-        if (IsPulling) return;
+        if (IsPulling || _playerController.isPulling || _playerController.isPushing)
+            return;
         IsJumping = true;
         IsGrounded = false;
         if (_jumpParticle != null)
@@ -586,6 +588,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName.ToLower().Contains("city"))
+        {
+            allowFallOffEdges = true;
+            Debug.Log("Allowfallofedges = " + allowFallOffEdges);
+        }
+
         _rb = GetComponent<Rigidbody>();
         _originalConstraints = _rb.constraints;
         _playerAttack = GetComponent<PlayerAttack>();

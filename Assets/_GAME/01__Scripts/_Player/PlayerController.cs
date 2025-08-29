@@ -164,6 +164,15 @@ public class PlayerController : MonoBehaviour
             // StartCoroutine(player.LoseLevel());
         }
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_movement.allowFallOffEdges && collision.gameObject.layer == LayerMask.NameToLayer("Boundary"))
+        {
+            // Ignore collision only for player
+            Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
+        }
+    }
+
 }
 
 // ----------------------------------------------------------------------------------

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Data;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class CameraController : MonoBehaviour
 {
@@ -82,6 +83,10 @@ public class CameraController : MonoBehaviour
             ZoomIn();
             ZoomIn();
         }
+        if (!hasFallen && transform.position.y < fallThresholdY)
+        {
+            HandlePlayerFall();
+        }
     }
     public Material MAT1;
     public Material MAT2;
@@ -103,8 +108,16 @@ public class CameraController : MonoBehaviour
         // mat1Color = MAT1.color;
         // mat2Color = MAT2.color;
 
-        
 
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (!sceneName.ToLower().Contains("city"))
+        {
+            enabled = false;
+            return;
+        }
+
+        // Get the Cinemachine camera in the scene
+        vcam = FindObjectOfType<CinemachineVirtualCamera>();
 
 
 
@@ -323,5 +336,29 @@ public class CameraController : MonoBehaviour
     public void ChangeCameraType()
     {
         mainCamera.orthographic = !mainCamera.orthographic;
+    }
+    public float fallThresholdY = -3f;
+    private bool hasFallen = false;
+
+    private CinemachineVirtualCamera vcam;
+
+
+
+    private void HandlePlayerFall()
+    {
+        hasFallen = true;
+
+        // Create a dummy target at the player's current position
+        GameObject fallCamTarget = new GameObject("FallCamTarget");
+        fallCamTarget.transform.position = transform.position; // player position at fall
+
+        if (vcMain != null)
+        {
+            vcMain.Follow = fallCamTarget.transform;
+            vcMain.LookAt = fallCamTarget.transform;
+        }
+
+        Debug.Log("Player fell off platform. Camera now locked to dummy target.");
+        StartCoroutine(playerController.GetComponent<Player>().LoseLevel(1.25f));
     }
 }

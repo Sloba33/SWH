@@ -17,6 +17,7 @@ public class BatchSceneReplacer : EditorWindow
     public bool ShouldParentAllObstacles;
     public bool ShouldFixLevelGoal;
     public bool OffsetEnvironment;
+    public bool ShouldReplaceSceneName;
 
     [Header("Environment Settings")]
     public GameObject environmentPrefab;
@@ -39,7 +40,8 @@ public class BatchSceneReplacer : EditorWindow
     [Header("Dialogue Settings")]
     public bool UseCustomDialogueName;
     public string DialogueObjectName = "Dialogue";
-
+    [Header("Name Settings")]
+    [SerializeField] private bool replaceToyFactoryWithCity;
     [MenuItem("Tools/Batch Scene Fixer")]
     public static void ShowWindow()
     {
@@ -118,7 +120,7 @@ public class BatchSceneReplacer : EditorWindow
         // --- LevelGoal + Obstacles ---
         ShouldFixLevelGoal = EditorGUILayout.Toggle("Fix LevelGoal Obstacles", ShouldFixLevelGoal);
         ShouldParentAllObstacles = EditorGUILayout.Toggle("Group Obstacles in Scene", ShouldParentAllObstacles);
-
+        ShouldReplaceSceneName = EditorGUILayout.Toggle("Replace ToyFactory with City in name", ShouldReplaceSceneName);
         EditorGUILayout.Space();
         if (GUILayout.Button("Fix All Scenes"))
         {
@@ -167,28 +169,7 @@ public class BatchSceneReplacer : EditorWindow
             }
 
             // --- Fix SP_Settings ---
-            if (ShouldFixSettings)
-            {
-                GameObject mainUI = GameObject.Find("Main_UI");
-                if (mainUI)
-                {
-                    string settingsName = UseCustomSettingsName ? SettingsObjectName : "SP_Settings";
-                    GameObject oldSP = GameObject.Find(settingsName);
-                    if (oldSP && spSettingsPrefab)
-                    {
-                        Vector3 pos = oldSP.transform.position;
-                        Quaternion rot = oldSP.transform.rotation;
 
-                        GameObject newSP = (GameObject)PrefabUtility.InstantiatePrefab(spSettingsPrefab, mainUI.transform);
-                        newSP.transform.position = pos;
-                        newSP.transform.rotation = rot;
-
-                        Undo.DestroyObjectImmediate(oldSP);
-                        modified = true;
-                        Debug.Log($"Replaced SP_Settings in {scene.name}");
-                    }
-                }
-            }
 
             // --- Fix SP_Controls ---
             if (ShouldFixControls)
@@ -213,7 +194,39 @@ public class BatchSceneReplacer : EditorWindow
                     }
                 }
             }
+            if (ShouldFixSettings)
+            {
+                GameObject mainUI = GameObject.Find("Main_UI");
+                if (mainUI)
+                {
+                    string settingsName = UseCustomSettingsName ? SettingsObjectName : "SP_Settings";
+                    GameObject oldSP = GameObject.Find(settingsName);
+                    if (oldSP && spSettingsPrefab)
+                    {
+                        Vector3 pos = oldSP.transform.position;
+                        Quaternion rot = oldSP.transform.rotation;
 
+                        GameObject newSP = (GameObject)PrefabUtility.InstantiatePrefab(spSettingsPrefab, mainUI.transform);
+                        newSP.transform.position = pos;
+                        newSP.transform.rotation = rot;
+
+                        Undo.DestroyObjectImmediate(oldSP);
+                        modified = true;
+                        Debug.Log($"Replaced SP_Settings in {scene.name}");
+                    }
+                }
+            }
+            //---- Change Scene Name ----
+            string path = scene.path;
+            string sceneName = System.IO.Path.GetFileNameWithoutExtension(path);
+            if (ShouldReplaceSceneName && sceneName.Contains("ToyFactory"))
+            {
+                Debug.Log("ToyFactory found, replacing with City");
+                string newSceneName = sceneName.Replace("ToyFactory", "City");
+                sceneName = sceneName.Replace("ToyFactory", "City");
+                AssetDatabase.RenameAsset(path, newSceneName);
+                Debug.Log("New Scene name is : " + sceneName);
+            }
             // --- Disable Dialogue ---
             if (ShouldRemoveDialogueIcon)
             {
