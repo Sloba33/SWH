@@ -14541,6 +14541,74 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 585885382}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &590709694
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7444141568096717815, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_Name
+      value: EnergyPowerUP
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 576e207dc8f004547a1c48daf9cda4fe, type: 3}
 --- !u!1 &603838982
 GameObject:
   m_ObjectHideFlags: 0
@@ -49883,6 +49951,8 @@ MonoBehaviour:
   isPulling: 0
   tutorialHandler: {fileID: 0}
   specialButton: {fileID: 3477240574997560888}
+  settings: {fileID: 0}
+  specialChargeImage: {fileID: 0}
   _isInteractable: 0
 --- !u!1 &884812664037741486
 GameObject:
@@ -57982,23 +58052,16 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: 499ff3cece66727498dcdef8ef0d8ae4,
     type: 3}
   currentTime: 0
+  threeStarTime: 0
+  twoStarTime: 0
+  oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   SpawnFallingObstacles: 0
   FallingObstacles:
-  - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
+  - item: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: 798c02443606707419c46dffb5589fed, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: 3b5621e9c14841d4a85a5ac47cad88bf, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: ef6d583b7c22f27479f932db0e8854f2, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: e3507a700acbb85408de54d971d9f19f, type: 3}
-    weight: 10
-  - item: {fileID: 1964128455452615959, guid: f2b9311cc643a2b459010a0eaa480325, type: 3}
-    weight: 1
-  obstaclesToSpawn: 1000
+  obstaclesToSpawn: 12
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1
@@ -117371,3 +117434,4 @@ SceneRoots:
   - {fileID: 995204278}
   - {fileID: 2134068252}
   - {fileID: 418336657}
+  - {fileID: 590709694}
