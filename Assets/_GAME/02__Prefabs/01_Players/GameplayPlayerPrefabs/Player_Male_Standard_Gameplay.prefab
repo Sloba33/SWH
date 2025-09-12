@@ -768,6 +768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d65e83870e042947bf787f200c2a140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockMidAirPush: 0
   movementDirection: {x: 0, y: 0, z: 0}
   previousPushDirection: {x: 0, y: 0, z: 0}
   pullDirection: {x: 0, y: 0, z: 0}
@@ -931,6 +932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868bfb2a67b87af4297a5e55d8066c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowFallOffEdges: 0
   justLanded: 0
   landedTime: 0
   LAND_GRACE_PERIOD: 0.15
@@ -17212,7 +17214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6980341082338363358}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38917494, y: -0.34707448, z: 0.1612016, w: 0.83791184}
+  m_LocalRotation: {x: 0.38916847, y: -0.34707162, z: 0.16119657, w: 0.83791703}
   m_LocalPosition: {x: 2.1213207, y: 4, z: -2.1213202}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -18857,6 +18859,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
+      propertyPath: 'presetZoomValues.Array.data[6]'
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
+        type: 3}
+      propertyPath: 'presetZoomValues.Array.data[7]'
+      value: 175
+      objectReference: {fileID: 0}
+    - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
+        type: 3}
       propertyPath: 'layerCullDistances.Array.data[13]'
       value: 0
       objectReference: {fileID: 0}
@@ -18929,6 +18941,26 @@ PrefabInstance:
         type: 3}
       propertyPath: presetOrbits.Array.data[5].m_Radius
       value: 4.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
+        type: 3}
+      propertyPath: presetOrbits.Array.data[6].m_Height
+      value: 7.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
+        type: 3}
+      propertyPath: presetOrbits.Array.data[6].m_Radius
+      value: 5.4
+      objectReference: {fileID: 0}
+    - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
+        type: 3}
+      propertyPath: presetOrbits.Array.data[7].m_Height
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -6070524055557150927, guid: 5c21289d0c49116489e2503846dec22b,
+        type: 3}
+      propertyPath: presetOrbits.Array.data[7].m_Radius
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -5705850246811769473, guid: 5c21289d0c49116489e2503846dec22b,
         type: 3}
@@ -20091,7 +20123,7 @@ MonoBehaviour:
   m_PivotOffset: {x: 0, y: 0, z: 0}
   m_AmplitudeGain: 0
   m_FrequencyGain: 1
-  mNoiseOffsets: {x: 0, y: 0, z: 0}
+  mNoiseOffsets: {x: 354.2921, y: 880.5239, z: 902.32446}
 --- !u!4 &5704367237440060937 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7784196224838611711, guid: 5c21289d0c49116489e2503846dec22b,
