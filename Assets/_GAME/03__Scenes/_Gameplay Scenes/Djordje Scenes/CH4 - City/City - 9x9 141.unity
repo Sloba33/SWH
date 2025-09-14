@@ -658,6 +658,74 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 247784260}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &259608329
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5983857211178744598, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_Name
+      value: DonutCollectible
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328030628707022122, guid: 33f7872caa842374a8afb62d3d920d84,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 33f7872caa842374a8afb62d3d920d84, type: 3}
 --- !u!1001 &314109267
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12870,6 +12938,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
+      propertyPath: useNewSpawnSystem
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
       propertyPath: SpawnFallingObstacles
       value: 0
       objectReference: {fileID: 0}
@@ -12877,6 +12950,11 @@ PrefabInstance:
         type: 3}
       propertyPath: FallingObstacles.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.size
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
@@ -13098,6 +13176,17 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[41]'
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.data[0].item
+      value: 
+      objectReference: {fileID: -5747806313299232045, guid: a3ee657f4a80b5f4b8cfe9373bd89016,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.data[0].count
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3977909807041550586, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
@@ -24525,3 +24614,4 @@ SceneRoots:
   - {fileID: 1132019366}
   - {fileID: 182461217}
   - {fileID: 60868582}
+  - {fileID: 259608329}

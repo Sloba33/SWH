@@ -19058,6 +19058,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
+      propertyPath: useNewSpawnSystem
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
       propertyPath: SpawnFallingObstacles
       value: 0
       objectReference: {fileID: 0}
@@ -19068,9 +19073,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
+      propertyPath: fixedFallingObstacles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
       propertyPath: FallingObstacles.Array.data[0].item
       value: 
-      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+      objectReference: {fileID: -5747806313299232045, guid: a3ee657f4a80b5f4b8cfe9373bd89016,
         type: 3}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
@@ -19286,6 +19296,17 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[41]'
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.data[0].item
+      value: 
+      objectReference: {fileID: -5747806313299232045, guid: a3ee657f4a80b5f4b8cfe9373bd89016,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.data[0].count
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3977909807041550586, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}

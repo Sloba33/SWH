@@ -4896,8 +4896,10 @@ MonoBehaviour:
   oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
-  useNewSpawnSystem: 0
-  fixedFallingObstacles: []
+  useNewSpawnSystem: 1
+  fixedFallingObstacles:
+  - item: {fileID: -5747806313299232045, guid: a3ee657f4a80b5f4b8cfe9373bd89016, type: 3}
+    count: 8
   fixedFallingBombs: []
   fixedFallingCollectibles: []
   SpawnFallingObstacles: 0

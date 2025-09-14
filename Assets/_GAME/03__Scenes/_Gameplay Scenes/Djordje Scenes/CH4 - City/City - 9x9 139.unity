@@ -1985,6 +1985,74 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &987280999
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6390644272076231186, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_Name
+      value: SodaCanCollectibleBlue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5b76e532431e08f4eb84b05d86cc4700, type: 3}
 --- !u!1001 &1010288771
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13550,13 +13618,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
+      propertyPath: useNewSpawnSystem
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
       propertyPath: SpawnFallingObstacles
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: FallingObstacles.Array.size
-      value: 1
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.size
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
@@ -13566,8 +13644,65 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
+      propertyPath: FallingObstacles.Array.data[1].item
+      value: 
+      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[2].item
+      value: 
+      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[3].item
+      value: 
+      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[4].item
+      value: 
+      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[5].item
+      value: 
+      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[6].item
+      value: 
+      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[7].item
+      value: 
+      objectReference: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
       propertyPath: ObstaclesToDestroy_Player.Array.size
       value: 42
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[5].weight
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[6].weight
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: FallingObstacles.Array.data[7].weight
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
@@ -13778,6 +13913,17 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[41]'
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.data[0].item
+      value: 
+      objectReference: {fileID: -5747806313299232045, guid: a3ee657f4a80b5f4b8cfe9373bd89016,
+        type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: fixedFallingObstacles.Array.data[0].count
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3977909807041550586, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
@@ -25215,3 +25361,4 @@ SceneRoots:
   - {fileID: 361884664}
   - {fileID: 643805702}
   - {fileID: 896193231}
+  - {fileID: 987280999}
