@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class BatchSceneReplacer : EditorWindow
 {
@@ -12,13 +13,39 @@ public class BatchSceneReplacer : EditorWindow
     [Header("Toggles")]
     public bool ShouldFixEnvironment;
     public bool ShouldFixSettings;
+    public bool ShouldFixControls;
     public bool ShouldRemoveDialogueIcon;
     public bool ShouldParentAllObstacles;
     public bool ShouldFixLevelGoal;
+    public bool OffsetEnvironment;
+    public bool ShouldReplaceSceneName;
+    public bool ShouldReorderSceneName;
 
-    [Header("Prefabs")]
+    [Header("Environment Settings")]
     public GameObject environmentPrefab;
+    public bool UseCustomEnvironmentName;
+    public string EnvironmentObjectName = "Environment";
+    public Vector3 EnvironmentOffset = Vector3.zero;
+    public string ExtraObjectName1 = "";
+    public string ExtraObjectName2 = "";
+
+    [Header("SP_Settings Settings")]
     public GameObject spSettingsPrefab;
+    public bool UseCustomSettingsName;
+    public string SettingsObjectName = "SP_Settings";
+
+    [Header("SP_Controls Settings")]
+    public GameObject spControlsPrefab;
+    public bool UseCustomControlsName;
+    public string ControlsObjectName = "SP_Controls";
+
+    [Header("Dialogue Settings")]
+    public bool UseCustomDialogueName;
+    public string DialogueObjectName = "Dialogue";
+
+    [Header("Name Replace Settings")]
+    public string TargetString = "ToyFactory";
+    public string ResultString = "City";
 
     [MenuItem("Tools/Batch Scene Fixer")]
     public static void ShowWindow()
@@ -36,26 +63,78 @@ public class BatchSceneReplacer : EditorWindow
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Scene Modifications", EditorStyles.boldLabel);
 
-        // Environment toggle and field
+        // --- Environment ---
         ShouldFixEnvironment = EditorGUILayout.Toggle("Fix Environment", ShouldFixEnvironment);
         using (new EditorGUI.DisabledScope(!ShouldFixEnvironment))
         {
             environmentPrefab = (GameObject)EditorGUILayout.ObjectField("Environment Prefab", environmentPrefab, typeof(GameObject), false);
+
+            UseCustomEnvironmentName = EditorGUILayout.Toggle("Use Custom Env Name", UseCustomEnvironmentName);
+            using (new EditorGUI.DisabledScope(!UseCustomEnvironmentName))
+            {
+                EnvironmentObjectName = EditorGUILayout.TextField("Env Object Name", EnvironmentObjectName);
+            }
+
+            OffsetEnvironment = EditorGUILayout.Toggle("Offset Environment", OffsetEnvironment);
+            using (new EditorGUI.DisabledScope(!OffsetEnvironment))
+            {
+                EnvironmentOffset = EditorGUILayout.Vector3Field("Environment Offset", EnvironmentOffset);
+            }
+
+            ExtraObjectName1 = EditorGUILayout.TextField("Extra Object Name 1", ExtraObjectName1);
+            ExtraObjectName2 = EditorGUILayout.TextField("Extra Object Name 2", ExtraObjectName2);
         }
 
-        // SP Controls toggle and field
+        // --- SP_Settings ---
         ShouldFixSettings = EditorGUILayout.Toggle("Fix Settings (SP_Settings)", ShouldFixSettings);
         using (new EditorGUI.DisabledScope(!ShouldFixSettings))
         {
             spSettingsPrefab = (GameObject)EditorGUILayout.ObjectField("SP_Settings Prefab", spSettingsPrefab, typeof(GameObject), false);
+
+            UseCustomSettingsName = EditorGUILayout.Toggle("Use Custom Settings Name", UseCustomSettingsName);
+            using (new EditorGUI.DisabledScope(!UseCustomSettingsName))
+            {
+                SettingsObjectName = EditorGUILayout.TextField("Settings Obj Name", SettingsObjectName);
+            }
         }
 
-        // Dialogue disable toggle
-        ShouldRemoveDialogueIcon = EditorGUILayout.Toggle("Disable Dialogue UI", ShouldRemoveDialogueIcon);
+        // --- SP_Controls ---
+        ShouldFixControls = EditorGUILayout.Toggle("Fix Controls (SP_Controls)", ShouldFixControls);
+        using (new EditorGUI.DisabledScope(!ShouldFixControls))
+        {
+            spControlsPrefab = (GameObject)EditorGUILayout.ObjectField("SP_Controls Prefab", spControlsPrefab, typeof(GameObject), false);
 
-        // Parent obstacles toggle
-        ShouldFixLevelGoal = EditorGUILayout.Toggle("Fix LevelGoal Obstacles", ShouldFixLevelGoal); ;
+            UseCustomControlsName = EditorGUILayout.Toggle("Use Custom Controls Name", UseCustomControlsName);
+            using (new EditorGUI.DisabledScope(!UseCustomControlsName))
+            {
+                ControlsObjectName = EditorGUILayout.TextField("Controls Obj Name", ControlsObjectName);
+            }
+        }
+
+        // --- Dialogue ---
+        ShouldRemoveDialogueIcon = EditorGUILayout.Toggle("Disable Dialogue UI", ShouldRemoveDialogueIcon);
+        using (new EditorGUI.DisabledScope(!ShouldRemoveDialogueIcon))
+        {
+            UseCustomDialogueName = EditorGUILayout.Toggle("Use Custom Dialogue Name", UseCustomDialogueName);
+            using (new EditorGUI.DisabledScope(!UseCustomDialogueName))
+            {
+                DialogueObjectName = EditorGUILayout.TextField("Dialogue Obj Name", DialogueObjectName);
+            }
+        }
+
+        // --- LevelGoal + Obstacles ---
+        ShouldFixLevelGoal = EditorGUILayout.Toggle("Fix LevelGoal Obstacles", ShouldFixLevelGoal);
         ShouldParentAllObstacles = EditorGUILayout.Toggle("Group Obstacles in Scene", ShouldParentAllObstacles);
+
+        // --- Name Editing ---
+        ShouldReplaceSceneName = EditorGUILayout.Toggle("Replace Target String in Scene Name", ShouldReplaceSceneName);
+        using (new EditorGUI.DisabledScope(!ShouldReplaceSceneName))
+        {
+            TargetString = EditorGUILayout.TextField("Target String", TargetString);
+            ResultString = EditorGUILayout.TextField("Result String", ResultString);
+        }
+
+        ShouldReorderSceneName = EditorGUILayout.Toggle("Reorder Scene Name (Name - Grid - Number)", ShouldReorderSceneName);
 
         EditorGUILayout.Space();
         if (GUILayout.Button("Fix All Scenes"))
@@ -77,107 +156,48 @@ public class BatchSceneReplacer : EditorWindow
 
             bool modified = false;
 
-            // --- Fix Environment ---
-            if (ShouldFixEnvironment)
+            // --- Scene Name Replace ---
+            string path = scene.path;
+            string sceneName = System.IO.Path.GetFileNameWithoutExtension(path);
+
+            if (ShouldReplaceSceneName && !string.IsNullOrEmpty(TargetString))
             {
-                GameObject oldEnv = GameObject.Find("Environment");
-                if (oldEnv && environmentPrefab)
+                if (sceneName.Contains(TargetString))
                 {
-                    GameObject newEnv = (GameObject)PrefabUtility.InstantiatePrefab(environmentPrefab);
-                    Undo.DestroyObjectImmediate(oldEnv);
+                    string newSceneName = sceneName.Replace(TargetString, ResultString);
+                    AssetDatabase.RenameAsset(path, newSceneName);
+                    sceneName = newSceneName;
                     modified = true;
-                    Debug.Log($"Replaced Environment in {scene.name}");
+                    Debug.Log($"Renamed {scene.name} -> {sceneName}");
                 }
             }
-
-            // --- Fix SP_Controls ---
-            if (ShouldFixSettings)
+            if (ShouldReorderSceneName)
             {
-                GameObject mainUI = GameObject.Find("Main_UI");
-                if (mainUI)
+                // Regex: captures Name, Grid (e.g. 10x10), and Number
+                // Handles both "Name - 10x10 200" and "Name - 10x10 - 200"
+                Match match = Regex.Match(sceneName, @"^(.*?)[\s-]+(\d+x\d+)[\s-]+(\d+)$", RegexOptions.IgnoreCase);
+                if (match.Success)
                 {
-                    GameObject oldSP = GameObject.Find("SP_Settings");
-                    if (oldSP && spSettingsPrefab)
+                    Debug.Log("Old Scene name : " + sceneName);
+                    string name = match.Groups[1].Value.Trim();
+                    string grid = match.Groups[2].Value.Trim();
+                    string number = match.Groups[3].Value.Trim();
+
+                    string newSceneName = $"{name} - {number} - {grid}";
+                    if (!sceneName.Equals(newSceneName, System.StringComparison.OrdinalIgnoreCase))
                     {
-                        Vector3 pos = oldSP.transform.position;
-                        Quaternion rot = oldSP.transform.rotation;
-                        GameObject newSP = (GameObject)PrefabUtility.InstantiatePrefab(spSettingsPrefab, mainUI.transform);
-                        newSP.transform.position = pos;
-                        newSP.transform.rotation = rot;
-                        Undo.DestroyObjectImmediate(oldSP);
+                        AssetDatabase.RenameAsset(path, newSceneName);
+                        sceneName = newSceneName;
                         modified = true;
-                        Debug.Log($"Replaced SP_Settings in {scene.name}");
+                        Debug.Log($"Reordered scene name -> {sceneName}");
                     }
                 }
-            }
-
-            // --- Disable Dialogue UI ---
-            if (ShouldRemoveDialogueIcon)
-            {
-                GameObject[] allObjs = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-                foreach (var go in allObjs)
-                {
-                    if (go.name.ToLower().Contains("dialogue"))
-                    {
-                        go.SetActive(false);
-                        modified = true;
-                        Debug.Log($"Disabled Dialogue Object: {go.name} in {scene.name}");
-                    }
-                }
-            }
-
-            // --- Group All Obstacles ---
-            LevelGoal levelGoal = GameObject.FindFirstObjectByType<LevelGoal>();
-            if (levelGoal)
-            {
-                Obstacle[] obstacles = GameObject.FindObjectsByType<Obstacle>(FindObjectsSortMode.None);
-                if (ShouldFixLevelGoal)
-                {
-
-                    Obstacle[] allObstacles = GameObject.FindObjectsByType<Obstacle>(FindObjectsSortMode.None);
-                    List<Obstacle> validObstacles = new();
-
-                    foreach (var obs in allObstacles)
-                    {
-                        if (obs.obstacleType != ObstacleType.Metal)
-                        {
-                            validObstacles.Add(obs);
-                        }
-                    }
-
-                    levelGoal.ObstaclesToDestroy_Player.Clear();
-                    levelGoal.ObstaclesToDestroy_Player.AddRange(validObstacles);
-                    EditorUtility.SetDirty(levelGoal);
-                    modified = true;
-                }
-
-                if (ShouldParentAllObstacles)
-                {
-                    GameObject obstacleParent = GameObject.Find("Obstacles") ?? new GameObject("Obstacles");
-                    obstacleParent.transform.position = Vector3.zero;
-
-                    foreach (Obstacle obs in obstacles)
-                    {
-                        obs.transform.SetParent(obstacleParent.transform, true); // retain world pos
-                    }
-
-                    Debug.Log($"Grouped {obstacles.Length} obstacles under 'Obstacles' GameObject in {scene.name}");
-                }
-                else
-                {
-                    Debug.Log($"Assigned {obstacles.Length} obstacles to LevelGoal in {scene.name}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"No LevelGoal found in scene {scene.name}");
             }
 
             if (modified)
             {
                 EditorSceneManager.MarkSceneDirty(scene);
                 EditorSceneManager.SaveScene(scene);
-                Debug.Log($"Saved changes to scene: {scene.name}");
             }
         }
 

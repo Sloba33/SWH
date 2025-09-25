@@ -38,38 +38,39 @@ public class GoalSetter : MonoBehaviour
             return;
         // Iterate through the list of obstacles
         if (!AIGoal)
-            foreach (var obstacle in levelGoal.ObstaclesToDestroy_Player)
-            {
-                // Check if the obstacle type is already in the dictionary
-                if (obstacleTypeCounts.ContainsKey(obstacle.obstacleType))
+            if (levelGoal != null && levelGoal.ObstaclesToDestroy_Player.Count > 0)
+                foreach (var obstacle in levelGoal.ObstaclesToDestroy_Player)
                 {
-                    // Add the obstacle to the list for this obstacle type
-                    obstacleTypeCounts[obstacle.obstacleType].Add(obstacle);
+                    // Check if the obstacle type is already in the dictionary
+                    if (obstacleTypeCounts.ContainsKey(obstacle.obstacleType))
+                    {
+                        // Add the obstacle to the list for this obstacle type
+                        obstacleTypeCounts[obstacle.obstacleType].Add(obstacle);
+                    }
+                    else
+                    {
+                        // Create a new list for this obstacle type and add the obstacle to it
+                        obstacleTypeCounts[obstacle.obstacleType] = new List<Obstacle>() { obstacle };
+                    }
                 }
-                else
+            else
+            {
+                Debug.Log(" Obstacle type count ???? : " + obstacleTypeCounts.Count);
+                foreach (var obstacle in levelGoal.ObstaclesToDestroy_AI)
                 {
-                    // Create a new list for this obstacle type and add the obstacle to it
-                    obstacleTypeCounts[obstacle.obstacleType] = new List<Obstacle>() { obstacle };
+                    // Check if the obstacle type is already in the dictionary
+                    if (obstacleTypeCounts.ContainsKey(obstacle.obstacleType))
+                    {
+                        // Add the obstacle to the list for this obstacle type
+                        obstacleTypeCounts[obstacle.obstacleType].Add(obstacle);
+                    }
+                    else
+                    {
+                        // Create a new list for this obstacle type and add the obstacle to it
+                        obstacleTypeCounts[obstacle.obstacleType] = new List<Obstacle>() { obstacle };
+                    }
                 }
             }
-        else
-        {
-            Debug.Log(" Obstacle type count ???? : " + obstacleTypeCounts.Count);
-            foreach (var obstacle in levelGoal.ObstaclesToDestroy_AI)
-            {
-                // Check if the obstacle type is already in the dictionary
-                if (obstacleTypeCounts.ContainsKey(obstacle.obstacleType))
-                {
-                    // Add the obstacle to the list for this obstacle type
-                    obstacleTypeCounts[obstacle.obstacleType].Add(obstacle);
-                }
-                else
-                {
-                    // Create a new list for this obstacle type and add the obstacle to it
-                    obstacleTypeCounts[obstacle.obstacleType] = new List<Obstacle>() { obstacle };
-                }
-            }
-        }
 
         // Clear the obstacleTypes list before populating it
         obstacleTypes.Clear();

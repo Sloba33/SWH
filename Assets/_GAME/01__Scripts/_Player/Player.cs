@@ -199,6 +199,18 @@ public class Player : MonoBehaviour
         }
         GetComponent<PlayerController>().enabled = false;
     }
+    public IEnumerator LoseLevel(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Settings settings = FindObjectOfType<Settings>();
+        if (settings != null) Debug.Log("its fine");
+        if (!settings.gameWon)
+        {
+            Debug.Log("Activating panel");
+            settings.ActivateLosePanel();
+        }
+        GetComponent<PlayerController>().enabled = false;
+    }
     public bool hasSpeedBuff, hasStrengthBuff;
     public float buffedSpeed, buffedStrength;
     public void BuffSpeed(float duration, float amount)

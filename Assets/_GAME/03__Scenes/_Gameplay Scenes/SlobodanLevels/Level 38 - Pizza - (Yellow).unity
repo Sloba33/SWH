@@ -55784,6 +55784,8 @@ MonoBehaviour:
   isPulling: 0
   tutorialHandler: {fileID: 0}
   specialButton: {fileID: 3477240574997560888}
+  settings: {fileID: 0}
+  specialChargeImage: {fileID: 0}
   _isInteractable: 0
 --- !u!1 &884812664037741486
 GameObject:
@@ -63883,13 +63885,16 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: b273de57b0fad2e4792ae8926c42758b,
     type: 3}
   currentTime: 0
+  threeStarTime: 0
+  twoStarTime: 0
+  oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   SpawnFallingObstacles: 1
   FallingObstacles:
   - item: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986, type: 3}
     weight: 1
-  obstaclesToSpawn: 20
+  obstaclesToSpawn: 8
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1

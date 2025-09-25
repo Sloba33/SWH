@@ -7,9 +7,12 @@ using UnityEngine.UI;
 using TMPro;
 using System.Data;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class CameraController : MonoBehaviour
 {
+
+    private int zoomCount = 7;
     private LevelGoal levelGoal;
     public Camera regularCamera;
     public Button rotateLeft, rotateRight, zoomIn, zoomOut;
@@ -37,28 +40,7 @@ public class CameraController : MonoBehaviour
     public float _previousRotation; // Store the previous rotation before each new rotation
     bool previousRotation;
     public Transform parentTransform;
-    // public override void OnStartClient()
-    // {
-    //     base.OnStartClient();
-    //     if (!base.IsOwner) return;
-    //     vcMain = GetComponent<CinemachineFreeLook>();
-    //     if (base.IsOwner)
-    //     {
-    //         vcMain.Priority = 1;
-    //     }
-    //     else vcMain.Priority = 0;
-    // }
-    // void Start()
-    // {
-    //     // mainCamera = Camera.main;
-    //     // _initialRotation = playerCamera.m_XAxis.Value;
-    //     // _previousRotation = _initialRotation;
 
-
-
-    // }
-    // public override void OnNetworkSpawn()
-    // {
 
     private void Update()
     {
@@ -82,6 +64,10 @@ public class CameraController : MonoBehaviour
             ZoomIn();
             ZoomIn();
         }
+        if (!hasFallen && transform.position.y < fallThresholdY)
+        {
+            HandlePlayerFall();
+        }
     }
     public Material MAT1;
     public Material MAT2;
@@ -91,6 +77,16 @@ public class CameraController : MonoBehaviour
     // }
     private void Start()
     {
+        int j = 0;
+        presetOrbits = new Cinemachine.CinemachineFreeLook.Orbit[zoomCount];
+        presetZoomValues = new int[zoomCount];
+        for (int i = 0; i < zoomCount; i++)
+        {
+            presetOrbits[i].m_Height = 2.4f + j * 0.8f;
+            presetOrbits[i].m_Radius = 1.6f + j * 0.6f;
+            presetZoomValues[i] = j * 25;
+            j++;
+        }
         joystickHolder = FindObjectOfType<PlayerControls>().joystickHolder;
         levelGoal = FindFirstObjectByType<LevelGoal>(FindObjectsInactive.Include);
         // if (levelGoal != null && levelGoal.SpawnFallingObstacles)
@@ -103,8 +99,16 @@ public class CameraController : MonoBehaviour
         // mat1Color = MAT1.color;
         // mat2Color = MAT2.color;
 
-        
 
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (!sceneName.ToLower().Contains("city"))
+        {
+            enabled = false;
+            return;
+        }
+
+        // Get the Cinemachine camera in the scene
+        vcam = FindObjectOfType<CinemachineVirtualCamera>();
 
 
 
@@ -333,5 +337,29 @@ public class CameraController : MonoBehaviour
     public void ChangeCameraType()
     {
         mainCamera.orthographic = !mainCamera.orthographic;
+    }
+    public float fallThresholdY = -3f;
+    private bool hasFallen = false;
+
+    private CinemachineVirtualCamera vcam;
+
+
+
+    private void HandlePlayerFall()
+    {
+        hasFallen = true;
+
+        // Create a dummy target at the player's current position
+        GameObject fallCamTarget = new GameObject("FallCamTarget");
+        fallCamTarget.transform.position = transform.position; // player position at fall
+
+        if (vcMain != null)
+        {
+            vcMain.Follow = fallCamTarget.transform;
+            vcMain.LookAt = fallCamTarget.transform;
+        }
+
+        Debug.Log("Player fell off platform. Camera now locked to dummy target.");
+        StartCoroutine(playerController.GetComponent<Player>().LoseLevel(1.25f));
     }
 }

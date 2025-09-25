@@ -7,7 +7,7 @@ using System.Linq;
 
 public class LevelGoal : MonoBehaviour
 {
-   
+
     private Settings settings;
     public LevelProgress levelProgress;
     public float currentTime = 0;
@@ -17,6 +17,14 @@ public class LevelGoal : MonoBehaviour
     public float oneStarTime;
     public float bonusTime;
     public TutorialDialogue tutorialDialogue;
+    [Header("Spawn System Mode")]
+    public bool useNewSpawnSystem; // Toggle between weighted vs fixed-count
+
+
+   
+    public List<FixedSpawnItem<Obstacle>> fixedFallingObstacles = new();
+    public List<FixedSpawnItem<GameObject>> fixedFallingBombs = new();
+    public List<FixedSpawnItem<GameObject>> fixedFallingCollectibles = new();
     [Header("Obstacle Spawn Settings")]
     public Dictionary<System.Tuple<ObstacleType, ObstacleColor>, Obstacle> goalObstaclePrefabs = new();
     private Dictionary<System.Tuple<ObstacleType, ObstacleColor>, Obstacle> _obstacleTemplates = new();
@@ -88,8 +96,8 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
     private const string PREF_FIRST_TIME = "FirstTime";
-    
- 
+
+
     private IEnumerator Start()
     {
 
@@ -118,17 +126,17 @@ public class LevelGoal : MonoBehaviour
             yield return new WaitForSeconds(dualBoxSpawnDelay);
             InvokeRepeating(nameof(SpawnDualBoxes), 5, 5);
         }
-        else if (SpawnFallingObstacles)
+        if (useNewSpawnSystem)
         {
-            StartCoroutine(SpawnBoxes(delayBoxSpawn));
+            if (fixedFallingObstacles.Count > 0) StartCoroutine(SpawnObstaclesNewSystem(delayBoxSpawn));
+            if (fixedFallingBombs.Count > 0) StartCoroutine(SpawnBombsNewSystem(delayBombSpawn));
+            if (fixedFallingCollectibles.Count > 0) StartCoroutine(SpawnCollectiblesNewSystem(delayCollectibleSpawn));
         }
-        if (SpawnFallingBombs)
+        else
         {
-            StartCoroutine(SpawnBombs(delayBombSpawn));
-        }
-        if (SpawnFallingCollectibles)
-        {
-            StartCoroutine(SpawnCollectibles(delayCollectibleSpawn));
+            if (SpawnFallingObstacles) StartCoroutine(SpawnBoxes(delayBoxSpawn));
+            if (SpawnFallingBombs) StartCoroutine(SpawnBombs(delayBombSpawn));
+            if (SpawnFallingCollectibles) StartCoroutine(SpawnCollectibles(delayCollectibleSpawn));
         }
         settings = FindObjectOfType<Settings>();
 
@@ -801,15 +809,70 @@ public class LevelGoal : MonoBehaviour
         StartCoroutine(WinLevel(0.3f));
     }
 
-    // void FindAndAddTilesToList()
-    // {
-    //     Tile[] tiles = FindObjectsOfType<Tile>();
-    //     foreach (Tile tile in tiles)
-    //     {
-    //         if (tile.gameObject.activeSelf)
-    //             tileList.Add(tile);
-    //     }
-    // }
+    #region NEW SYSTEM COROUTINES
+    private IEnumerator SpawnObstaclesNewSystem(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        foreach (var entry in fixedFallingObstacles)
+        {
+            for (int i = 0; i < entry.count; i++)
+            {
+                int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
+                int randomTile = Random.Range(0, tileList.Count);
+
+                Obstacle fallingObstacle = Instantiate(entry.item,
+                    new Vector3(tileList[randomTile].transform.position.x, randomHeight, tileList[randomTile].transform.position.z),
+                    entry.item.transform.rotation);
+
+                spawnedObstacles.Add(fallingObstacle);
+                fallingObstacle.name += "_FixedSpawn";
+
+                yield return new WaitForSeconds(ObstacleSpawnFrequency);
+            }
+        }
+    }
+
+    private IEnumerator SpawnBombsNewSystem(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        foreach (var entry in fixedFallingBombs)
+        {
+            for (int i = 0; i < entry.count; i++)
+            {
+                int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
+                int randomTile = Random.Range(0, tileList.Count);
+
+                Instantiate(entry.item,
+                    new Vector3(tileList[randomTile].transform.position.x, randomHeight, tileList[randomTile].transform.position.z),
+                    entry.item.transform.rotation);
+
+                yield return new WaitForSeconds(bombSpawnFrequency);
+            }
+        }
+    }
+
+    private IEnumerator SpawnCollectiblesNewSystem(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        foreach (var entry in fixedFallingCollectibles)
+        {
+            for (int i = 0; i < entry.count; i++)
+            {
+                int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
+                int randomTile = Random.Range(0, tileList.Count);
+
+                Instantiate(entry.item,
+                    new Vector3(tileList[randomTile].transform.position.x, randomHeight, tileList[randomTile].transform.position.z),
+                    entry.item.transform.rotation);
+
+                yield return new WaitForSeconds(collectibleSpawnFreqency);
+            }
+        }
+    }
+    #endregion
 
     public void TurnOnPullEvent(Component sender, object data)
     {
@@ -933,4 +996,10 @@ public class SpawnableItem<T>
         this.item = item;
         this.weight = weight;
     }
+}
+[System.Serializable]
+public class FixedSpawnItem<T>
+{
+    public T item;
+    public int count; // How many of this item to spawn
 }
