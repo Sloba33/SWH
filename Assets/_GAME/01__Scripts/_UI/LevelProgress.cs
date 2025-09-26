@@ -28,7 +28,7 @@ public class LevelProgress : MonoBehaviour
 
     public void Initialize()
     {
-
+        AutoAssignImages();
         originalScale = transform.localScale;
         Debug.Log("Original scale + " + originalScale);
         transform.localScale = Vector3.zero;
@@ -78,7 +78,36 @@ public class LevelProgress : MonoBehaviour
             }
         }
     }
+    private void AutoAssignImages()
+    {
+        // Get all Image components in children (but not in the parent itself)
+        Image[] childImages = GetComponentsInChildren<Image>(true);
 
+        foreach (Image img in childImages)
+        {
+            // Skip Outline or anything not matching an ObstacleColor
+            if (string.Equals(img.name, "Outline", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            switch (img.name.ToLower())
+            {
+                case "blue": if (Blue == null) Blue = img; break;
+                case "red": if (Red == null) Red = img; break;
+                case "green": if (Green == null) Green = img; break;
+                case "yellow": if (Yellow == null) Yellow = img; break;
+                case "black": if (Black == null) Black = img; break;
+                case "grey": if (Grey == null) Grey = img; break;
+                case "white": if (White == null) White = img; break;
+                case "purple": if (Purple == null) Purple = img; break;
+                case "pink": if (Pink == null) Pink = img; break;
+                case "wood": if (Wood == null) Wood = img; break;
+                case "stone": if (Stone == null) Stone = img; break;
+                case "metal": if (Metal == null) Metal = img; break;
+                case "universal": if (Universal == null) Universal = img; break;
+                case "default": if (Default == null) Default = img; break;
+            }
+        }
+    }
     private void FillImages()
     {
         if (levelGoal.destroyedObstacleCounts == null)

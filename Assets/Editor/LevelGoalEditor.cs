@@ -8,8 +8,10 @@ public class LevelGoalEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+        DrawDefaultInspector();
         LevelGoal goal = (LevelGoal)target;
-
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Spawn Settings", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("delayBoxSpawn"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("delayBombSpawn"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("delayCollectibleSpawn"));
