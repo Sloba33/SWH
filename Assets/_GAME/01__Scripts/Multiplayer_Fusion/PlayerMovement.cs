@@ -622,24 +622,24 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     public void ResetPullConstraints(Obstacle obstacle = null)
     {
-        if (!IsPulling) return;
+        IsPulling = false;
+
+        // Always restore physics
+        _rb.isKinematic = false;
+        _rb.constraints = _originalConstraints;
 
         if (_player != null)
         {
             _player.MoveSpeed = _player.hasSpeedBuff ? _player.buffedSpeed : _player.StartingMoveSpeed;
         }
 
-        if (!_playerAttack.hittingDown) // Assuming playerAttack is available
+        if (!_playerAttack.hittingDown)
             CanMove = true;
-
-        IsPulling = false;
-        _rb.isKinematic = false;
-        _rb.constraints = _originalConstraints;
 
         if (obstacle != null)
         {
             obstacle.recentlyPulled = true;
-            obstacle.ResetObstacle(); // if method exists
+            obstacle.ResetObstacle();
         }
     }
 

@@ -97,6 +97,7 @@ public class LevelProgress : MonoBehaviour
                 case "yellow": if (Yellow == null) Yellow = img; break;
                 case "black": if (Black == null) Black = img; break;
                 case "grey": if (Grey == null) Grey = img; break;
+                case "gray": if (Grey == null) Grey = img; break;
                 case "white": if (White == null) White = img; break;
                 case "purple": if (Purple == null) Purple = img; break;
                 case "pink": if (Pink == null) Pink = img; break;

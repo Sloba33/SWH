@@ -924,15 +924,21 @@ public class PlayerObstacleController : MonoBehaviour
     }
     void StopPull()
     {
-        if (!playerController.AI) AudioManager.Instance.StopObstacleSound_Move();
-        playerController._movement.ResetPullConstraints(pullObstacle);
-        if (pullObstacle != null) pullObstacle.isBeingPulled = false;
-        if (pullObstacle != null) pullObstacle.currentlyUsedPlayerConrtoller = null;
+        if (!playerController.AI)
+            AudioManager.Instance.StopObstacleSound_Move();
+
+        playerMovement.ResetPullConstraints(pullObstacle);
+
+        if (pullObstacle != null)
+        {
+            pullObstacle.isBeingPulled = false;
+            pullObstacle.currentlyUsedPlayerConrtoller = null;
+        }
+
         pullObstacle = null;
-        playerMovement.CanMove = true;
         playerController.StopPull();
-        return;
     }
+
     [SerializeField] private float manualPushDistance = 0.1f; // Manually control how far the player should stand from the obstacle
 
 }
