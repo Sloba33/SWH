@@ -451,6 +451,74 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f597147753d8a5849bb5a3ae07287874, type: 3}
+--- !u!1001 &267361467
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6390644272076231186, guid: 5b76e532431e08f4eb84b05d86cc4700,
+        type: 3}
+      propertyPath: m_Name
+      value: SodaCanCollectibleBlue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5b76e532431e08f4eb84b05d86cc4700, type: 3}
 --- !u!1001 &587432357
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4292,19 +4360,9 @@ MonoBehaviour:
   fixedFallingCollectibles: []
   SpawnFallingObstacles: 0
   FallingObstacles:
-  - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
+  - item: {fileID: -5747806313299232045, guid: 9317d74e0d51a0c4aa2429e2fa2bc9fc, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: 798c02443606707419c46dffb5589fed, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: 3b5621e9c14841d4a85a5ac47cad88bf, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: ef6d583b7c22f27479f932db0e8854f2, type: 3}
-    weight: 10
-  - item: {fileID: 2760922574431167146, guid: e3507a700acbb85408de54d971d9f19f, type: 3}
-    weight: 10
-  - item: {fileID: 1964128455452615959, guid: f2b9311cc643a2b459010a0eaa480325, type: 3}
-    weight: 1
-  obstaclesToSpawn: 1000
+  obstaclesToSpawn: 8
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1
@@ -8141,3 +8199,4 @@ SceneRoots:
   - {fileID: 1601318322}
   - {fileID: 202053354}
   - {fileID: 1174365611}
+  - {fileID: 267361467}
