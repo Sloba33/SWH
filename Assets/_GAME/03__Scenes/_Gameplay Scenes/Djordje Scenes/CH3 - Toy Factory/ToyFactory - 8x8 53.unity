@@ -1128,7 +1128,7 @@ PrefabInstance:
     - target: {fileID: 1738188776415891258, guid: cdff3afa7c7bdcc42afb82a81d5aefe1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.99999475
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1738188776415891258, guid: cdff3afa7c7bdcc42afb82a81d5aefe1,
         type: 3}
@@ -2553,7 +2553,7 @@ Transform:
   m_GameObject: {fileID: 1099247583}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4281,6 +4281,10 @@ MonoBehaviour:
   oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
   SpawnFallingObstacles: 0
   FallingObstacles:
   - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
