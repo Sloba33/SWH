@@ -57,23 +57,20 @@ public class SceneColorRenamer : EditorWindow
                 continue;
             }
 
-            // Collect color names ignoring Metal types
             List<string> colors = new List<string>();
             foreach (var obs in obstacles)
             {
                 if (obs == null) continue;
-                if (obs.obstacleType.ToString().Equals("Metal", StringComparison.OrdinalIgnoreCase))
-                    continue;
 
+                string type = obs.obstacleType.ToString();
                 string color = obs.obstacleColor.ToString();
+
+                // Ignore Metal types and Default colors
+                if (type.Equals("Metal", StringComparison.OrdinalIgnoreCase)) continue;
+                if (color.Equals("Default", StringComparison.OrdinalIgnoreCase)) continue;
+
                 if (!string.IsNullOrWhiteSpace(color))
                     colors.Add(color);
-            }
-
-            if (colors.Count == 0)
-            {
-                Debug.LogWarning($"[SceneRenamer] No valid colors found (only metals?) in {sceneName}");
-                continue;
             }
 
             // Deduplicate, normalize, sort
