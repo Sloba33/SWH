@@ -19,9 +19,17 @@ public class LevelGoal : MonoBehaviour
     public TutorialDialogue tutorialDialogue;
     [Header("Spawn System Mode")]
     public bool useNewSpawnSystem; // Toggle between weighted vs fixed-count
+    [Header("Batch Spawn Settings")]
+    public bool enableBatchSpawning = false;
 
+    [SerializeField]
+    private Vector2Int batchFrequencyRange = new Vector2Int(3, 5); // Spawn batch every X-Y obstacles
+    [SerializeField]
+    private Vector2Int batchSizeRange = new Vector2Int(2, 3); // How many obstacles per batch
 
-   
+    private int spawnCounter = 0;
+    private int nextBatchThreshold = 0;
+
     public List<FixedSpawnItem<Obstacle>> fixedFallingObstacles = new();
     public List<FixedSpawnItem<GameObject>> fixedFallingBombs = new();
     public List<FixedSpawnItem<GameObject>> fixedFallingCollectibles = new();
@@ -813,25 +821,122 @@ public class LevelGoal : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        foreach (var entry in fixedFallingObstacles)
-        {
-            for (int i = 0; i < entry.count; i++)
-            {
-                int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
-                int randomTile = Random.Range(0, tileList.Count);
+        // Create arrays to track remaining counts and total spawns
+        int[] remainingCounts = new int[fixedFallingObstacles.Count];
+        int totalRemainingSpawns = 0;
 
-                Obstacle fallingObstacle = Instantiate(entry.item,
-                    new Vector3(tileList[randomTile].transform.position.x, randomHeight, tileList[randomTile].transform.position.z),
-                    entry.item.transform.rotation);
+        // Initialize the arrays
+        for (int i = 0; i < fixedFallingObstacles.Count; i++)
+        {
+            remainingCounts[i] = fixedFallingObstacles[i].count;
+            totalRemainingSpawns += fixedFallingObstacles[i].count;
+        }
+
+        // Initialize batch spawning if enabled
+        if (enableBatchSpawning)
+        {
+            spawnCounter = 0;
+            nextBatchThreshold = Random.Range(batchFrequencyRange.x, batchFrequencyRange.y + 1);
+        }
+
+        // Continue spawning until all counts are exhausted
+        while (totalRemainingSpawns > 0)
+        {
+            int obstaclesToSpawnThisIteration = 1;
+
+            // Check if we should spawn a batch
+            if (enableBatchSpawning)
+            {
+                spawnCounter++;
+                if (spawnCounter >= nextBatchThreshold)
+                {
+                    obstaclesToSpawnThisIteration = Random.Range(batchSizeRange.x, batchSizeRange.y + 1);
+                    spawnCounter = 0;
+                    nextBatchThreshold = Random.Range(batchFrequencyRange.x, batchFrequencyRange.y + 1);
+                    Debug.Log($"Spawning batch of {obstaclesToSpawnThisIteration} obstacles");
+                }
+            }
+
+            // Get available tiles for this iteration
+            List<int> availableTileIndices = GetAvailableTileIndices(obstaclesToSpawnThisIteration);
+            if (availableTileIndices.Count < obstaclesToSpawnThisIteration)
+            {
+                Debug.LogWarning($"Not enough available tiles for batch spawn. Needed: {obstaclesToSpawnThisIteration}, Available: {availableTileIndices.Count}");
+                obstaclesToSpawnThisIteration = availableTileIndices.Count;
+            }
+
+            // Spawn the obstacles for this iteration
+            for (int i = 0; i < obstaclesToSpawnThisIteration; i++)
+            {
+                if (totalRemainingSpawns <= 0) break;
+
+                // Create a list of available indices (items that still have spawns remaining)
+                List<int> availableIndices = new List<int>();
+                for (int j = 0; j < remainingCounts.Length; j++)
+                {
+                    if (remainingCounts[j] > 0)
+                    {
+                        availableIndices.Add(j);
+                    }
+                }
+
+                if (availableIndices.Count == 0)
+                    break;
+
+                // Randomly select one of the available items
+                int randomListIndex = availableIndices[Random.Range(0, availableIndices.Count)];
+                var selectedEntry = fixedFallingObstacles[randomListIndex];
+
+                // Get tile for this obstacle (ensure no overlap)
+                int tileIndex = availableTileIndices[i % availableTileIndices.Count];
+
+                // Spawn the selected item
+                int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
+
+                Obstacle fallingObstacle = Instantiate(selectedEntry.item,
+                    new Vector3(tileList[tileIndex].transform.position.x, randomHeight, tileList[tileIndex].transform.position.z),
+                    selectedEntry.item.transform.rotation);
 
                 spawnedObstacles.Add(fallingObstacle);
-                fallingObstacle.name += "_FixedSpawn";
+                fallingObstacle.name += $"_FixedSpawn_{randomListIndex}";
 
-                yield return new WaitForSeconds(ObstacleSpawnFrequency);
+                // Decrement the counts
+                remainingCounts[randomListIndex]--;
+                totalRemainingSpawns--;
             }
+
+            yield return new WaitForSeconds(ObstacleSpawnFrequency);
         }
     }
+    private List<int> GetAvailableTileIndices(int countNeeded)
+    {
+        List<int> availableIndices = new List<int>();
 
+        // Create a list of all possible tile indices
+        List<int> allIndices = new List<int>();
+        for (int i = 0; i < tileList.Count; i++)
+        {
+            allIndices.Add(i);
+        }
+
+        // Shuffle the indices to get random selection
+        for (int i = 0; i < allIndices.Count; i++)
+        {
+            int temp = allIndices[i];
+            int randomIndex = Random.Range(i, allIndices.Count);
+            allIndices[i] = allIndices[randomIndex];
+            allIndices[randomIndex] = temp;
+        }
+
+        // Return the requested number of indices (or all if we need more than available)
+        int tilesToReturn = Mathf.Min(countNeeded, allIndices.Count);
+        for (int i = 0; i < tilesToReturn; i++)
+        {
+            availableIndices.Add(allIndices[i]);
+        }
+
+        return availableIndices;
+    }
     private IEnumerator SpawnBombsNewSystem(float delay)
     {
         yield return new WaitForSeconds(delay);
