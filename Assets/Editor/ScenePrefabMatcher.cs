@@ -41,8 +41,111 @@ public class ScenePrefabMatcher : EditorWindow
         {
             MatchScenesToPrefabs();
         }
+
+        EditorGUILayout.Space(10);
+        // --- New fuzzy color match button ---
+        if (GUILayout.Button("🎯 Find Closest Color Match (Logs Only)"))
+        {
+            FindClosestColorMatch();
+        }
     }
 
+    // ------------------------------------------------------
+    // 🎯 NEW FEATURE: Find best color-overlap prefab
+    // ------------------------------------------------------
+    private void FindClosestColorMatch()
+    {
+        if (scenes.Count == 0 || prefabs.Count == 0)
+        {
+            Debug.LogError("[Matcher-Fuzzy] Please assign at least one scene and some prefabs.");
+            return;
+        }
+
+        SceneAsset sceneAsset = scenes[0];
+        if (sceneAsset == null)
+        {
+            Debug.LogError("[Matcher-Fuzzy] First scene in list is null.");
+            return;
+        }
+
+        string scenePath = AssetDatabase.GetAssetPath(sceneAsset);
+        string sceneName = Path.GetFileNameWithoutExtension(scenePath);
+        List<string> sceneColors = ExtractColorList(sceneName);
+
+        if (sceneColors.Count == 0)
+        {
+            Debug.Log($"[Matcher-Fuzzy] Scene {sceneName} has no color info.");
+            return;
+        }
+
+        int colorCount = sceneColors.Count;
+
+        // Build list of all eligible prefabs with overlap scores
+        var scoredPrefabs = new List<(string prefabName, int overlap, List<string> prefabColors)>();
+
+        foreach (var prefab in prefabs)
+        {
+            if (prefab == null) continue;
+            string prefabName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(prefab));
+
+            List<string> prefabColors = ExtractColorList(prefabName);
+            if (prefabColors.Count != colorCount)
+                continue; // must have same number of colors
+
+            int overlap = prefabColors.Intersect(sceneColors, StringComparer.OrdinalIgnoreCase).Count();
+            if (overlap > 0)
+                scoredPrefabs.Add((prefabName, overlap, prefabColors));
+        }
+
+        if (scoredPrefabs.Count == 0)
+        {
+            Debug.Log($"[Matcher-Fuzzy] ❌ No prefab with {colorCount} colors found for {sceneName}");
+            return;
+        }
+
+        // Sort by overlap descending, then alphabetically for stability
+        var topMatches = scoredPrefabs
+            .OrderByDescending(p => p.overlap)
+            .ThenBy(p => p.prefabName, StringComparer.OrdinalIgnoreCase)
+            .Take(3)
+            .ToList();
+
+        Debug.Log($"[Matcher-Fuzzy] 🎯 Top matches for scene '{sceneName}' " +
+                  $"({colorCount} colors: {string.Join(", ", sceneColors)}):");
+
+        int rank = 1;
+        foreach (var match in topMatches)
+        {
+            Debug.Log($"   {rank}. Prefab: {match.prefabName}  " +
+                      $"→ {match.overlap}/{colorCount} matching colors\n" +
+                      $"      Colors: {string.Join(", ", match.prefabColors)}");
+            rank++;
+        }
+    }
+
+    // Helper for fuzzy match
+    private List<string> ExtractColorList(string name)
+    {
+        name = name.Replace("_Matched", "", StringComparison.OrdinalIgnoreCase)
+                   .Replace("_Unmatched", "", StringComparison.OrdinalIgnoreCase);
+
+        int underscoreIndex = name.LastIndexOf('_');
+        if (underscoreIndex == -1 || underscoreIndex == name.Length - 1)
+            return new List<string>();
+
+        string suffix = name.Substring(underscoreIndex + 1);
+        var colorMatches = Regex.Matches(suffix, @"[A-Z][a-z]*");
+        var colors = colorMatches.Cast<Match>().Select(m => m.Value)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        colors.Sort(StringComparer.OrdinalIgnoreCase);
+        return colors;
+    }
+
+    // ------------------------------------------------------
+    // EXISTING MATCHING SYSTEM BELOW (unchanged)
+    // ------------------------------------------------------
     private void MatchScenesToPrefabs()
     {
         if (scenes.Count == 0 || prefabs.Count == 0)
@@ -53,7 +156,6 @@ public class ScenePrefabMatcher : EditorWindow
 
         string activeScenePath = SceneManager.GetActiveScene().path;
 
-        // --- Step 1: Prepare prefab dictionary ---
         var prefabsByKey = new Dictionary<string, List<GameObject>>(StringComparer.OrdinalIgnoreCase);
         var matchedPrefabs = new HashSet<GameObject>();
 
@@ -72,7 +174,6 @@ public class ScenePrefabMatcher : EditorWindow
             }
         }
 
-        // Tracking
         List<string> matchedScenes = new();
         List<string> unmatchedScenes = new();
         List<string> ignoredScenes = new();
@@ -88,7 +189,6 @@ public class ScenePrefabMatcher : EditorWindow
             string scenePath = AssetDatabase.GetAssetPath(sceneAsset);
             string sceneName = Path.GetFileNameWithoutExtension(scenePath);
 
-            // Skip already matched scenes
             if (sceneName.EndsWith("_Matched", StringComparison.OrdinalIgnoreCase))
             {
                 ignoredScenes.Add(sceneName);
@@ -116,7 +216,6 @@ public class ScenePrefabMatcher : EditorWindow
                 matchedScenes.Add($"{sceneName} → {prefabName}");
                 matchedPrefabs.Add(prefabObj);
 
-                // Assign prefab BEFORE renaming the scene
                 if (assignToLevelGoal && performMatch)
                 {
                     Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
@@ -138,20 +237,15 @@ public class ScenePrefabMatcher : EditorWindow
 
                 if (performMatch)
                 {
-                    // Extract scene base name (everything before color suffix)
                     string sceneBase = sceneName;
                     int colorIndex = sceneBase.IndexOf('_');
                     if (colorIndex > 0)
                         sceneBase = sceneBase.Substring(0, colorIndex);
 
-                    // Clean up scene base for safe naming
                     sceneBase = sceneBase.Replace("/", "-").Replace("\\", "-").Trim();
-                    sceneBase = Regex.Replace(sceneBase, @"[^a-zA-Z0-9_\-\s]", ""); // remove weird chars
+                    sceneBase = Regex.Replace(sceneBase, @"[^a-zA-Z0-9_\\-\\s]", "");
 
-                    // Rename scene first
                     RenameWithSuffix(scenePath, "_Matched");
-
-                    // Rename prefab with scene name included
                     RenameWithSuffix(prefabPath, $"_Matched_{sceneBase}");
                 }
             }
@@ -165,7 +259,6 @@ public class ScenePrefabMatcher : EditorWindow
             }
         }
 
-        // --- Step 2: Handle unused prefabs ---
         if (performMatch)
         {
             foreach (var prefab in prefabs)
@@ -187,7 +280,6 @@ public class ScenePrefabMatcher : EditorWindow
             }
         }
 
-        // --- Step 3: Summary ---
         Debug.Log($"[Matcher] ✅ Done! Processed {total} scenes. Matched: {matched}, Unmatched: {unmatched}, Ignored (already matched): {ignoredScenes.Count}");
         Debug.Log("──────────────────────────────");
 
@@ -208,7 +300,6 @@ public class ScenePrefabMatcher : EditorWindow
 
     private string ExtractColorKey(string name)
     {
-        // Remove _Matched/_Unmatched for cleaner comparisons
         name = name.Replace("_Matched", "", StringComparison.OrdinalIgnoreCase)
                    .Replace("_Unmatched", "", StringComparison.OrdinalIgnoreCase);
 

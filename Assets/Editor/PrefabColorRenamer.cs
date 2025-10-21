@@ -26,7 +26,7 @@ public class PrefabColorRenamer : EditorWindow
         so.ApplyModifiedProperties();
 
         EditorGUILayout.Space();
-        if (GUILayout.Button("Rename Prefabs"))
+        if (GUILayout.Button("🧹 Rename Prefabs (Preserve _Unmatched)"))
         {
             RenamePrefabs();
         }
@@ -42,29 +42,30 @@ public class PrefabColorRenamer : EditorWindow
             if (string.IsNullOrEmpty(prefabPath))
                 continue;
 
-            string baseName = Path.GetFileNameWithoutExtension(prefabPath);
+            string originalName = Path.GetFileNameWithoutExtension(prefabPath);
+            bool hadUnmatched = originalName.EndsWith("_Unmatched", StringComparison.OrdinalIgnoreCase);
+
+            // Remove "_Unmatched" before processing
+            string baseName = originalName;
+            if (hadUnmatched)
+                baseName = baseName.Substring(0, baseName.Length - "_Unmatched".Length);
 
             GameObject prefabRoot = PrefabUtility.LoadPrefabContents(prefabPath);
             try
             {
-                // Debug: list children
-                var children = prefabRoot.transform.Cast<Transform>().Select(t => t.name).ToArray();
-                Debug.Log($"[{baseName}] prefab root children: {string.Join(", ", children)}");
-
                 List<string> colors = new List<string>();
+
                 foreach (Transform child in prefabRoot.transform)
                 {
-                    // Skip outlines
                     if (child.name.IndexOf("outline", StringComparison.OrdinalIgnoreCase) >= 0)
                         continue;
 
                     string raw = child.name.Trim();
-                    raw = Regex.Replace(raw, @"\s*\(.*?\)\s*$", ""); // strip (1), (Clone)
+                    raw = Regex.Replace(raw, @"\s*\(.*?\)\s*$", "");
                     raw = raw.Replace("(Clone)", "").Trim();
 
                     if (string.IsNullOrEmpty(raw)) continue;
 
-                    // Normalize
                     string normalized = raw.Length > 1
                         ? char.ToUpper(raw[0]) + raw.Substring(1).ToLower()
                         : raw.ToUpper();
@@ -74,28 +75,46 @@ public class PrefabColorRenamer : EditorWindow
 
                 if (colors.Count == 0)
                 {
-                    Debug.LogWarning($"[{baseName}] No colors found, skipping rename.");
+                    Debug.LogWarning($"[{originalName}] No colors found, skipping rename.");
                     continue;
                 }
 
-                // Deduplicate + sort
+                // Deduplicate + sort alphabetically
                 colors = colors.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
                 colors.Sort(StringComparer.OrdinalIgnoreCase);
 
                 string colorSuffix = string.Join("", colors);
-                string newName = baseName + "_" + colorSuffix;
 
-                if (newName == baseName)
+                // --- build new name ---
+                string newName = baseName;
+
+                // Remove existing color suffix (if present)
+                int lastUnderscore = newName.LastIndexOf('_');
+                if (lastUnderscore >= 0)
                 {
-                    Debug.Log($"[{baseName}] Name already correct, skipping.");
+                    // Remove possible old color suffix like "_BlueRedYellow"
+                    string possibleSuffix = newName.Substring(lastUnderscore + 1);
+                    if (Regex.IsMatch(possibleSuffix, @"^[A-Z][a-zA-Z]+$"))
+                        newName = newName.Substring(0, lastUnderscore);
+                }
+
+                newName += "_" + colorSuffix;
+
+                // Re-append _Unmatched if it was there originally
+                if (hadUnmatched)
+                    newName += "_Unmatched";
+
+                if (newName == originalName)
+                {
+                    Debug.Log($"[{originalName}] Already correct, skipping.");
                     continue;
                 }
 
                 string err = AssetDatabase.RenameAsset(prefabPath, newName);
                 if (!string.IsNullOrEmpty(err))
-                    Debug.LogError($"[{baseName}] Rename error: {err}");
+                    Debug.LogError($"[{originalName}] Rename error: {err}");
                 else
-                    Debug.Log($"[{baseName}] Renamed -> {newName}");
+                    Debug.Log($"[{originalName}] ✅ Renamed → {newName}");
             }
             finally
             {
