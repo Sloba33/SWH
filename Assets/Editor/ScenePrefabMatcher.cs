@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -53,7 +54,6 @@ public class ScenePrefabMatcher : EditorWindow
         string activeScenePath = SceneManager.GetActiveScene().path;
 
         // --- Step 1: Prepare prefab dictionary ---
-        // Group prefabs by color key (multiple prefabs can have same key)
         var prefabsByKey = new Dictionary<string, List<GameObject>>(StringComparer.OrdinalIgnoreCase);
         var matchedPrefabs = new HashSet<GameObject>();
 
@@ -63,13 +63,20 @@ public class ScenePrefabMatcher : EditorWindow
             string path = AssetDatabase.GetAssetPath(prefab);
             string name = Path.GetFileNameWithoutExtension(path);
             string key = ExtractColorKey(name);
-            if (!string.IsNullOrEmpty(key))
+
+            if (!string.IsNullOrEmpty(key) && !name.EndsWith("_Matched", StringComparison.OrdinalIgnoreCase))
             {
                 if (!prefabsByKey.ContainsKey(key))
                     prefabsByKey[key] = new List<GameObject>();
                 prefabsByKey[key].Add(prefab);
             }
         }
+
+        // Tracking
+        List<string> matchedScenes = new();
+        List<string> unmatchedScenes = new();
+        List<string> ignoredScenes = new();
+        List<string> ignoredPrefabs = new();
 
         int total = 0, matched = 0, unmatched = 0;
 
@@ -80,27 +87,36 @@ public class ScenePrefabMatcher : EditorWindow
 
             string scenePath = AssetDatabase.GetAssetPath(sceneAsset);
             string sceneName = Path.GetFileNameWithoutExtension(scenePath);
-            string sceneKey = ExtractColorKey(sceneName);
 
+            // Skip already matched scenes
+            if (sceneName.EndsWith("_Matched", StringComparison.OrdinalIgnoreCase))
+            {
+                ignoredScenes.Add(sceneName);
+                continue;
+            }
+
+            string sceneKey = ExtractColorKey(sceneName);
             if (string.IsNullOrEmpty(sceneKey))
             {
                 Debug.Log($"[Matcher] No color key found for {sceneName}");
                 unmatched++;
+                unmatchedScenes.Add(sceneName);
                 continue;
             }
 
             if (prefabsByKey.TryGetValue(sceneKey, out List<GameObject> availablePrefabs) && availablePrefabs.Count > 0)
             {
-                // Take the first available prefab for this color key
                 GameObject prefabObj = availablePrefabs[0];
-                availablePrefabs.RemoveAt(0); // Remove it so it won't be reused
-                
+                availablePrefabs.RemoveAt(0);
+
                 string prefabPath = AssetDatabase.GetAssetPath(prefabObj);
                 string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
                 Debug.Log($"[Matcher] ✅ Match found for {sceneName} with Prefab {prefabName}");
                 matched++;
+                matchedScenes.Add($"{sceneName} → {prefabName}");
                 matchedPrefabs.Add(prefabObj);
 
+                // Assign prefab BEFORE renaming the scene
                 if (assignToLevelGoal && performMatch)
                 {
                     Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
@@ -122,14 +138,28 @@ public class ScenePrefabMatcher : EditorWindow
 
                 if (performMatch)
                 {
+                    // Extract scene base name (everything before color suffix)
+                    string sceneBase = sceneName;
+                    int colorIndex = sceneBase.IndexOf('_');
+                    if (colorIndex > 0)
+                        sceneBase = sceneBase.Substring(0, colorIndex);
+
+                    // Clean up scene base for safe naming
+                    sceneBase = sceneBase.Replace("/", "-").Replace("\\", "-").Trim();
+                    sceneBase = Regex.Replace(sceneBase, @"[^a-zA-Z0-9_\-\s]", ""); // remove weird chars
+
+                    // Rename scene first
                     RenameWithSuffix(scenePath, "_Matched");
-                    RenameWithSuffix(prefabPath, "_Matched");
+
+                    // Rename prefab with scene name included
+                    RenameWithSuffix(prefabPath, $"_Matched_{sceneBase}");
                 }
             }
             else
             {
                 Debug.Log($"[Matcher] ❌ No match found for {sceneName}");
                 unmatched++;
+                unmatchedScenes.Add(sceneName);
                 if (performMatch)
                     RenameWithSuffix(scenePath, "_Unmatched");
             }
@@ -141,32 +171,52 @@ public class ScenePrefabMatcher : EditorWindow
             foreach (var prefab in prefabs)
             {
                 if (prefab == null) continue;
-                
-                // Check by object reference, not path (path changes after renaming!)
+                string prefabPath = AssetDatabase.GetAssetPath(prefab);
+                string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
+
+                if (prefabName.EndsWith("_Matched", StringComparison.OrdinalIgnoreCase))
+                {
+                    ignoredPrefabs.Add(prefabName);
+                    continue;
+                }
+
                 if (!matchedPrefabs.Contains(prefab))
                 {
-                    string prefabPath = AssetDatabase.GetAssetPath(prefab);
-                    // If it was never matched, mark it as unmatched
                     RenameWithSuffix(prefabPath, "_Unmatched");
                 }
             }
         }
 
-        // --- Step 3: Restore previous scene ---
-        // if (!string.IsNullOrEmpty(activeScenePath))
-        //     EditorSceneManager.OpenScene(activeScenePath, OpenSceneMode.Single);
+        // --- Step 3: Summary ---
+        Debug.Log($"[Matcher] ✅ Done! Processed {total} scenes. Matched: {matched}, Unmatched: {unmatched}, Ignored (already matched): {ignoredScenes.Count}");
+        Debug.Log("──────────────────────────────");
 
-        Debug.Log($"[Matcher] ✅ Done! Processed: {total}, Matched: {matched}, Unmatched: {unmatched}");
+        if (matchedScenes.Count > 0)
+            Debug.Log("[Matcher] ✅ Matched Scenes:\n" + string.Join("\n", matchedScenes));
+
+        if (unmatchedScenes.Count > 0)
+            Debug.Log("[Matcher] ❌ Unmatched Scenes:\n" + string.Join("\n", unmatchedScenes));
+
+        if (ignoredScenes.Count > 0)
+            Debug.Log("[Matcher] 🚫 Ignored Scenes (already _Matched):\n" + string.Join("\n", ignoredScenes));
+
+        if (ignoredPrefabs.Count > 0)
+            Debug.Log("[Matcher] 🚫 Ignored Prefabs (already _Matched):\n" + string.Join("\n", ignoredPrefabs));
+
+        Debug.Log("──────────────────────────────");
     }
 
     private string ExtractColorKey(string name)
     {
+        // Remove _Matched/_Unmatched for cleaner comparisons
+        name = name.Replace("_Matched", "", StringComparison.OrdinalIgnoreCase)
+                   .Replace("_Unmatched", "", StringComparison.OrdinalIgnoreCase);
+
         int underscoreIndex = name.LastIndexOf('_');
         if (underscoreIndex == -1 || underscoreIndex == name.Length - 1)
             return string.Empty;
 
         string suffix = name.Substring(underscoreIndex + 1);
-        suffix = suffix.Replace("_Matched", "").Replace("_Unmatched", "");
         suffix = new string(suffix.Where(char.IsLetter).ToArray());
         return suffix;
     }
@@ -175,7 +225,6 @@ public class ScenePrefabMatcher : EditorWindow
     {
         string name = Path.GetFileNameWithoutExtension(assetPath);
 
-        // Replace suffixes if needed
         if (suffix == "_Matched" && name.EndsWith("_Unmatched", StringComparison.OrdinalIgnoreCase))
             name = name.Substring(0, name.Length - "_Unmatched".Length);
         else if (suffix == "_Unmatched" && name.EndsWith("_Matched", StringComparison.OrdinalIgnoreCase))
