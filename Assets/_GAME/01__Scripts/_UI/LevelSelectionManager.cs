@@ -10,6 +10,8 @@ using System.Collections;
 
 public class LevelSelectionManager : MonoBehaviour
 {
+    private bool initialized = false;
+    private const string LastSelectedChapterKey = "LastSelectedChapterIndex";
     [Header("Chapters")]
     public bool useChapters = false;
     public GameObject chapterSelectionPanel;
@@ -44,17 +46,12 @@ public class LevelSelectionManager : MonoBehaviour
     private void Start()
     {
         sceneLoader = FindObjectOfType<SceneLoader>();
-        if (sceneLoader == null)
-        {
-            Debug.LogWarning("SceneLoader not found. Attempting to use GameFlowManager for scene loading if needed. Please ensure a 'SceneLoader' component exists if you use it for specific scene loading.");
-        }
 
         if (backToChaptersButton != null)
-        {
             backToChaptersButton.onClick.AddListener(OnBackToChapters);
-        }
 
         InitializeLevelSelectionUI();
+
         if (chapterSnapMarker != null && chapterScrollRect != null)
         {
             chapterSnapMarker.SetParent(chapterScrollRect.viewport, false);
@@ -62,18 +59,45 @@ public class LevelSelectionManager : MonoBehaviour
             chapterSnapMarker.anchorMax = new Vector2(1, 1);
             chapterSnapMarker.pivot = new Vector2(0.5f, 1f);
             chapterSnapMarker.anchoredPosition = new Vector2(0, topPixelOffset);
-            chapterSnapMarker.sizeDelta = new Vector2(0, 4); // Full width, 4px height
-        }
-        ScrollDragListener dragListener = chapterScrollRect.GetComponent<ScrollDragListener>();
-        if (dragListener != null)
-        {
-            dragListener.onEndDrag.AddListener(OnChapterScrollEndDrag);
-        }
-        if (useChapters)
-        {
-            StartCoroutine(AutoSelectFirstChapterNextFrame());
+            chapterSnapMarker.sizeDelta = new Vector2(0, 4);
         }
 
+        ScrollDragListener dragListener = chapterScrollRect.GetComponent<ScrollDragListener>();
+        if (dragListener != null)
+            dragListener.onEndDrag.AddListener(OnChapterScrollEndDrag);
+
+        if (useChapters)
+            StartCoroutine(AutoSelectStoredChapterNextFrame());
+    }
+    private IEnumerator AutoSelectStoredChapterNextFrame()
+    {
+        yield return null; // wait for layout
+        if (allChapterDefinitions.Count == 0 || chapterContentTransform.childCount == 0)
+            yield break;
+
+        int storedIndex = PlayerPrefs.GetInt(LastSelectedChapterKey, 0);
+        storedIndex = Mathf.Clamp(storedIndex, 0, allChapterDefinitions.Count - 1);
+
+        ChapterDefinition def = allChapterDefinitions[storedIndex];
+        RectTransform rt = chapterContentTransform.GetChild(storedIndex) as RectTransform;
+
+        currentSelectedChapter = rt;
+        currentSelectedChapterDef = def;
+        OnChapterSelected(def);
+
+        yield return new WaitForSeconds(0.05f);
+
+        if (rt != null)
+        {
+            SetSelectedChapterVisuals(rt);
+
+
+            if (snapCoroutine != null)
+                StopCoroutine(snapCoroutine);
+            snapCoroutine = StartCoroutine(SnapToChapterSmooth(rt));
+        }
+
+        initialized = true;
     }
     private IEnumerator AutoSelectFirstChapterNextFrame()
     {
@@ -120,7 +144,17 @@ public class LevelSelectionManager : MonoBehaviour
         if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(false);
 
         InitializeLevelSelectionUI();
+
+        // 🔁 Restore last selection if available
+        if (useChapters && currentSelectedChapterDef != null)
+        {
+            DisplayLevelsForChapter(currentSelectedChapterDef);
+            SetSelectedChapterVisuals(currentSelectedChapter);
+            if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
+            if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(true);
+        }
     }
+
 
     private void InitializeLevelSelectionUI()
     {
@@ -178,6 +212,12 @@ public class LevelSelectionManager : MonoBehaviour
 
             currentSelectedChapter = closestChapter;
             currentSelectedChapterDef = selectedDef;
+            // Remember last selected chapter persistently
+            if (currentSelectedChapterDef != null)
+            {
+                PlayerPrefs.SetString("LastSelectedChapter", currentSelectedChapterDef.chapterName);
+                PlayerPrefs.Save();
+            }
         }
         Debug.Log($"Selected: {selectedDef.chapterName}");
     }
@@ -185,12 +225,8 @@ public class LevelSelectionManager : MonoBehaviour
 
     public void OnScrollValueChanged(Vector2 pos)
     {
+        if (!initialized) return; // Ignore scroll updates during setup
         UpdateChapterSelectionByScroll();
-
-        // if (snapCoroutine != null)
-        //     StopCoroutine(snapCoroutine);
-        // snapCoroutine = StartCoroutine(WaitThenSnap());
-
     }
 
     private IEnumerator WaitThenSnap()
@@ -369,28 +405,27 @@ public class LevelSelectionManager : MonoBehaviour
     {
         if (CharacterManager.Instance != null) CharacterManager.Instance.PlayClick();
 
-        // Find the RectTransform of the clicked chapter
         int index = allChapterDefinitions.IndexOf(selectedChapterDef);
         if (index >= 0 && index < chapterContentTransform.childCount)
         {
-            RectTransform clickedChapterRT = chapterContentTransform.GetChild(index) as RectTransform;
-
-            SetSelectedChapterVisuals(clickedChapterRT);
-            DisplayLevelsForChapter(selectedChapterDef);
-
-            currentSelectedChapter = clickedChapterRT;
+            RectTransform clickedRT = chapterContentTransform.GetChild(index) as RectTransform;
+            currentSelectedChapter = clickedRT;
             currentSelectedChapterDef = selectedChapterDef;
+            SetSelectedChapterVisuals(clickedRT);
+            DisplayLevelsForChapter(selectedChapterDef);
+            if (currentSelectedChapterDef != null)
+            {
+                PlayerPrefs.SetString("LastSelectedChapter", currentSelectedChapterDef.chapterName);
+                PlayerPrefs.Save();
+            }
+            PlayerPrefs.SetInt(LastSelectedChapterKey, index); // 🆕 Save selection
+            PlayerPrefs.Save();
 
             if (snapCoroutine != null)
                 StopCoroutine(snapCoroutine);
-            snapCoroutine = StartCoroutine(SnapToChapterSmooth(clickedChapterRT));
-        }
-        else
-        {
-            Debug.LogWarning("Clicked chapter definition not found in list.");
+            snapCoroutine = StartCoroutine(SnapToChapterSmooth(clickedRT));
         }
 
-        // if (chapterSelectionPanel != null) chapterSelectionPanel.SetActive(false);
         if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
         if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(true);
     }
@@ -512,7 +547,7 @@ public class LevelSelectionManager : MonoBehaviour
             {
                 levelButtonDisplay.levelSceneName = level.sceneName;
                 levelButtonDisplay.Initialize();
-             
+
             }
             else
             {

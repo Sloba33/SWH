@@ -6300,7 +6300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelProgress: {fileID: 4741343503558475765, guid: 3bc65d064adc40448b3c0038cd758c56,
+  levelProgress: {fileID: 4741343503558475765, guid: 3b9c2db4a9cd7bf449f56a7a5f0cde80,
     type: 3}
   currentTime: 0
   threeStarTime: 0
@@ -6309,6 +6309,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
