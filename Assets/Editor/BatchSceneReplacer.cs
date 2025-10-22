@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -19,7 +20,6 @@ public class BatchSceneReplacer : EditorWindow
     public bool ShouldFixLevelGoal;
     public bool OffsetEnvironment;
     public bool ShouldReplaceSceneName;
-    public bool ShouldReorderSceneName;
 
     [Header("Environment Settings")]
     public GameObject environmentPrefab;
@@ -57,7 +57,6 @@ public class BatchSceneReplacer : EditorWindow
     {
         SerializedObject so = new SerializedObject(this);
 
-        // Scene List
         EditorGUILayout.PropertyField(so.FindProperty("scenesToFix"), true);
 
         EditorGUILayout.Space();
@@ -134,8 +133,6 @@ public class BatchSceneReplacer : EditorWindow
             ResultString = EditorGUILayout.TextField("Result String", ResultString);
         }
 
-        ShouldReorderSceneName = EditorGUILayout.Toggle("Reorder Scene Name (Name - Grid - Number)", ShouldReorderSceneName);
-
         EditorGUILayout.Space();
         if (GUILayout.Button("Fix All Scenes"))
         {
@@ -156,42 +153,141 @@ public class BatchSceneReplacer : EditorWindow
 
             bool modified = false;
 
-            // --- Scene Name Replace ---
-            string path = scene.path;
-            string sceneName = System.IO.Path.GetFileNameWithoutExtension(path);
-
-            if (ShouldReplaceSceneName && !string.IsNullOrEmpty(TargetString))
+            // --- Fix Environment ---
+            if (ShouldFixEnvironment)
             {
-                if (sceneName.Contains(TargetString))
+                string envName = UseCustomEnvironmentName ? EnvironmentObjectName : "Environment";
+                GameObject oldEnv = GameObject.Find(envName);
+
+                if (oldEnv && environmentPrefab)
                 {
-                    string newSceneName = sceneName.Replace(TargetString, ResultString);
-                    AssetDatabase.RenameAsset(path, newSceneName);
-                    sceneName = newSceneName;
+                    Undo.DestroyObjectImmediate(oldEnv);
+                    GameObject newEnv = (GameObject)PrefabUtility.InstantiatePrefab(environmentPrefab, scene);
+                    if (OffsetEnvironment) newEnv.transform.position += EnvironmentOffset;
                     modified = true;
-                    Debug.Log($"Renamed {scene.name} -> {sceneName}");
+                    Debug.Log($"Replaced Environment in {scene.name}");
+                }
+
+                if (!string.IsNullOrEmpty(ExtraObjectName1))
+                {
+                    GameObject extra1 = GameObject.Find(ExtraObjectName1);
+                    if (extra1) { Undo.DestroyObjectImmediate(extra1); modified = true; }
+                }
+                if (!string.IsNullOrEmpty(ExtraObjectName2))
+                {
+                    GameObject extra2 = GameObject.Find(ExtraObjectName2);
+                    if (extra2) { Undo.DestroyObjectImmediate(extra2); modified = true; }
                 }
             }
-            if (ShouldReorderSceneName)
-            {
-                // Regex: captures Name, Grid (e.g. 10x10), and Number
-                // Handles both "Name - 10x10 200" and "Name - 10x10 - 200"
-                Match match = Regex.Match(sceneName, @"^(.*?)[\s-]+(\d+x\d+)[\s-]+(\d+)$", RegexOptions.IgnoreCase);
-                if (match.Success)
-                {
-                    Debug.Log("Old Scene name : " + sceneName);
-                    string name = match.Groups[1].Value.Trim();
-                    string grid = match.Groups[2].Value.Trim();
-                    string number = match.Groups[3].Value.Trim();
 
-                    string newSceneName = $"{name} - {number} - {grid}";
-                    if (!sceneName.Equals(newSceneName, System.StringComparison.OrdinalIgnoreCase))
+            // --- Fix SP_Settings ---
+            if (ShouldFixSettings)
+            {
+                GameObject mainUI = GameObject.Find("Main_UI");
+                if (mainUI)
+                {
+                    string settingsName = UseCustomSettingsName ? SettingsObjectName : "SP_Settings";
+                    GameObject oldSettings = GameObject.Find(settingsName);
+                    if (oldSettings && spSettingsPrefab)
                     {
-                        AssetDatabase.RenameAsset(path, newSceneName);
-                        sceneName = newSceneName;
+                        Vector3 pos = oldSettings.transform.position;
+                        Quaternion rot = oldSettings.transform.rotation;
+
+                        GameObject newSettings = (GameObject)PrefabUtility.InstantiatePrefab(spSettingsPrefab, mainUI.transform);
+                        newSettings.transform.position = pos;
+                        newSettings.transform.rotation = rot;
+
+                        Undo.DestroyObjectImmediate(oldSettings);
                         modified = true;
-                        Debug.Log($"Reordered scene name -> {sceneName}");
+                        Debug.Log($"Replaced SP_Settings in {scene.name}");
                     }
                 }
+            }
+
+            // --- Fix SP_Controls ---
+            if (ShouldFixControls)
+            {
+                GameObject mainUI = GameObject.Find("Main_UI");
+                if (mainUI)
+                {
+                    string controlsName = UseCustomControlsName ? ControlsObjectName : "SP_Controls";
+                    GameObject oldControls = GameObject.Find(controlsName);
+                    if (oldControls && spControlsPrefab)
+                    {
+                        Vector3 pos = oldControls.transform.position;
+                        Quaternion rot = oldControls.transform.rotation;
+
+                        GameObject newControls = (GameObject)PrefabUtility.InstantiatePrefab(spControlsPrefab, mainUI.transform);
+                        newControls.transform.position = pos;
+                        newControls.transform.rotation = rot;
+
+                        Undo.DestroyObjectImmediate(oldControls);
+                        modified = true;
+                        Debug.Log($"Replaced SP_Controls in {scene.name}");
+                    }
+                }
+            }
+
+            // --- Replace Scene Name ---
+            string path = scene.path;
+            string sceneName = System.IO.Path.GetFileNameWithoutExtension(path);
+            if (ShouldReplaceSceneName && !string.IsNullOrEmpty(TargetString) && sceneName.Contains(TargetString))
+            {
+                string newSceneName = sceneName.Replace(TargetString, ResultString);
+                AssetDatabase.RenameAsset(path, newSceneName);
+                modified = true;
+                Debug.Log($"Renamed Scene: {sceneName} → {newSceneName}");
+            }
+
+            // --- Disable Dialogue ---
+            if (ShouldRemoveDialogueIcon)
+            {
+                string dialogueName = UseCustomDialogueName ? DialogueObjectName : "dialogue";
+                GameObject[] allObjs = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+                foreach (var go in allObjs)
+                {
+                    if (go.name.ToLower().Contains(dialogueName.ToLower()))
+                    {
+                        go.SetActive(false);
+                        modified = true;
+                        Debug.Log($"Disabled Dialogue Object: {go.name} in {scene.name}");
+                    }
+                }
+            }
+
+            // --- Fix LevelGoal + Obstacles ---
+            LevelGoal levelGoal = GameObject.FindFirstObjectByType<LevelGoal>();
+            if (levelGoal)
+            {
+                Obstacle[] obstacles = GameObject.FindObjectsByType<Obstacle>(FindObjectsSortMode.None);
+
+                if (ShouldFixLevelGoal)
+                {
+                    List<Obstacle> validObstacles = new();
+                    foreach (var obs in obstacles)
+                    {
+                        if (obs.obstacleType != ObstacleType.Metal && obs.obstacleType != ObstacleType.Concrete)
+                            validObstacles.Add(obs);
+                    }
+                    levelGoal.ObstaclesToDestroy_Player.Clear();
+                    levelGoal.ObstaclesToDestroy_Player.AddRange(validObstacles);
+                    EditorUtility.SetDirty(levelGoal);
+                    modified = true;
+                }
+
+                if (ShouldParentAllObstacles)
+                {
+                    GameObject obstacleParent = GameObject.Find("Obstacles") ?? new GameObject("Obstacles");
+                    obstacleParent.transform.position = Vector3.zero;
+                    foreach (Obstacle obs in obstacles)
+                        obs.transform.SetParent(obstacleParent.transform, true);
+
+                    Debug.Log($"Grouped {obstacles.Length} obstacles under 'Obstacles' in {scene.name}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"No LevelGoal found in scene {scene.name}");
             }
 
             if (modified)
@@ -205,3 +301,4 @@ public class BatchSceneReplacer : EditorWindow
         Debug.Log("✅ Finished processing all scenes.");
     }
 }
+#endif

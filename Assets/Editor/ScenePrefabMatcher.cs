@@ -116,9 +116,25 @@ public class ScenePrefabMatcher : EditorWindow
         int rank = 1;
         foreach (var match in topMatches)
         {
+            var sceneOnly = sceneColors.Except(match.prefabColors, StringComparer.OrdinalIgnoreCase).ToList();
+            var prefabOnly = match.prefabColors.Except(sceneColors, StringComparer.OrdinalIgnoreCase).ToList();
+
             Debug.Log($"   {rank}. Prefab: {match.prefabName}  " +
                       $"→ {match.overlap}/{colorCount} matching colors\n" +
                       $"      Colors: {string.Join(", ", match.prefabColors)}");
+
+            // Add replacement suggestion
+            if (sceneOnly.Count == prefabOnly.Count && sceneOnly.Count > 0)
+            {
+                for (int i = 0; i < sceneOnly.Count; i++)
+                    Debug.Log($"      💡 Suggestion: Replace '{sceneOnly[i]}' in scene with '{prefabOnly[i]}'");
+            }
+            else if (sceneOnly.Count > 0 || prefabOnly.Count > 0)
+            {
+                Debug.Log($"      💡 Suggestion: Adjust colors → Scene has [{string.Join(", ", sceneOnly)}], " +
+                          $"Prefab has [{string.Join(", ", prefabOnly)}]");
+            }
+
             rank++;
         }
     }
