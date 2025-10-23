@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using Coffee.UIEffects;
 using System.Collections;
+using Mono.Cecil;
 
 
 public class LevelSelectionManager : MonoBehaviour
@@ -83,15 +84,18 @@ public class LevelSelectionManager : MonoBehaviour
 
         currentSelectedChapter = rt;
         currentSelectedChapterDef = def;
-        OnChapterSelected(def);
+
+        // 🆕 Show correct chapter visuals + levels
+        DisplayLevelsForChapter(def);
+        SetSelectedChapterVisuals(rt);
+
+        if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
+        if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.05f);
 
         if (rt != null)
         {
-            SetSelectedChapterVisuals(rt);
-
-
             if (snapCoroutine != null)
                 StopCoroutine(snapCoroutine);
             snapCoroutine = StartCoroutine(SnapToChapterSmooth(rt));
@@ -99,6 +103,7 @@ public class LevelSelectionManager : MonoBehaviour
 
         initialized = true;
     }
+
     private IEnumerator AutoSelectFirstChapterNextFrame()
     {
         yield return null; // Wait for layout
@@ -145,15 +150,12 @@ public class LevelSelectionManager : MonoBehaviour
 
         InitializeLevelSelectionUI();
 
-        // 🔁 Restore last selection if available
-        if (useChapters && currentSelectedChapterDef != null)
-        {
-            DisplayLevelsForChapter(currentSelectedChapterDef);
-            SetSelectedChapterVisuals(currentSelectedChapter);
-            if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
-            if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(true);
-        }
+        // Defer re-applying visuals & snapping to next frame so the UI/layout is ready.
+        // This avoids interfering with scroll / layout rebuild and prevents snapping to null.
+        if (useChapters)
+            StartCoroutine(RestoreSelectionNextFrame());
     }
+
 
 
     private void InitializeLevelSelectionUI()
@@ -168,6 +170,71 @@ public class LevelSelectionManager : MonoBehaviour
             if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
             DisplayAllLevels();
         }
+    }
+    private IEnumerator RestoreSelectionNextFrame()
+    {
+        // Wait for the UI to rebuild and for children to exist
+        yield return null;
+        // Extra short wait to allow LayoutRebuilder to complete if needed
+        yield return new WaitForEndOfFrame();
+
+        // If we already have a valid currentSelectedChapterDef, find its index in the newly-built list
+        if (currentSelectedChapterDef != null)
+        {
+            int index = allChapterDefinitions.IndexOf(currentSelectedChapterDef);
+            if (index >= 0 && index < chapterContentTransform.childCount)
+            {
+                currentSelectedChapter = chapterContentTransform.GetChild(index) as RectTransform;
+            }
+            else
+            {
+                // Fall back to stored PlayerPrefs index if the definition can't be found in list
+                int storedIndex = PlayerPrefs.GetInt(LastSelectedChapterKey, 0);
+                storedIndex = Mathf.Clamp(storedIndex, 0, Mathf.Max(0, chapterContentTransform.childCount - 1));
+                if (storedIndex < chapterContentTransform.childCount)
+                    currentSelectedChapter = chapterContentTransform.GetChild(storedIndex) as RectTransform;
+            }
+        }
+        else
+        {
+            // No currentSelectedChapterDef set — try PlayerPrefs index
+            int storedIndex = PlayerPrefs.GetInt(LastSelectedChapterKey, 0);
+            storedIndex = Mathf.Clamp(storedIndex, 0, Mathf.Max(0, chapterContentTransform.childCount - 1));
+            if (storedIndex < chapterContentTransform.childCount)
+            {
+                currentSelectedChapter = chapterContentTransform.GetChild(storedIndex) as RectTransform;
+                currentSelectedChapterDef = allChapterDefinitions.Count > storedIndex ? allChapterDefinitions[storedIndex] : null;
+            }
+        }
+
+        // Now safely re-apply visuals and levels if valid
+        if (currentSelectedChapter != null && currentSelectedChapterDef != null)
+        {
+            // Ensure levels are displayed
+            DisplayLevelsForChapter(currentSelectedChapterDef);
+
+            // Reapply visuals (scale + alpha). SetSelectedChapterVisuals will start coroutines that fade/scale.
+            SetSelectedChapterVisuals(currentSelectedChapter);
+
+            if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
+            if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(true);
+
+            // Smoothly snap to the selected chapter (optional)
+            if (snapCoroutine != null) StopCoroutine(snapCoroutine);
+            snapCoroutine = StartCoroutine(SnapToChapterSmooth(currentSelectedChapter));
+        }
+        else
+        {
+            // Nothing to restore - ensure UI shows at least the first chapter if available
+            if (chapterContentTransform.childCount > 0)
+            {
+                RectTransform first = chapterContentTransform.GetChild(0) as RectTransform;
+                currentSelectedChapter = first;
+                currentSelectedChapterDef = allChapterDefinitions.Count > 0 ? allChapterDefinitions[0] : null;
+                SetSelectedChapterVisuals(first);
+            }
+        }
+        initialized = true;
     }
 
     private void ClearContentPanel(Transform contentParent)
@@ -189,7 +256,7 @@ public class LevelSelectionManager : MonoBehaviour
         RectTransform closestChapter = null;
         ChapterDefinition selectedDef = null;
 
-        Vector3 worldTargetPosition = chapterScrollRect.viewport.TransformPoint(new Vector3(0, topPixelOffset, 0)); // ~top area
+        Vector3 worldTargetPosition = chapterScrollRect.viewport.TransformPoint(new Vector3(0, topPixelOffset, 0));
 
         for (int i = 0; i < chapterContentTransform.childCount; i++)
         {
@@ -201,7 +268,7 @@ public class LevelSelectionManager : MonoBehaviour
             {
                 minDistance = distance;
                 closestChapter = chapterRT;
-                selectedDef = allChapterDefinitions[i]; // assuming same order
+                selectedDef = allChapterDefinitions[i];
             }
         }
 
@@ -212,15 +279,21 @@ public class LevelSelectionManager : MonoBehaviour
 
             currentSelectedChapter = closestChapter;
             currentSelectedChapterDef = selectedDef;
-            // Remember last selected chapter persistently
-            if (currentSelectedChapterDef != null)
+
+            // 🆕 Persist the scroll-based selection
+            int chapterIndex = allChapterDefinitions.IndexOf(selectedDef);
+            if (chapterIndex >= 0)
             {
-                PlayerPrefs.SetString("LastSelectedChapter", currentSelectedChapterDef.chapterName);
+                PlayerPrefs.SetInt(LastSelectedChapterKey, chapterIndex);
+                PlayerPrefs.SetString("LastSelectedChapter", selectedDef.chapterName);
                 PlayerPrefs.Save();
             }
         }
-        Debug.Log($"Selected: {selectedDef.chapterName}");
+
+        if (selectedDef != null)
+            Debug.Log($"[Scroll] Selected Chapter: {selectedDef.chapterName}");
     }
+
     private Coroutine snapCoroutine;
 
     public void OnScrollValueChanged(Vector2 pos)
@@ -301,11 +374,12 @@ public class LevelSelectionManager : MonoBehaviour
         while (t < duration)
         {
             t += Time.deltaTime;
-            target.localScale = Vector3.Lerp(from, toScale, t / duration);
+            if (target != null)
+                target.localScale = Vector3.Lerp(from, toScale, t / duration);
             yield return null;
         }
 
-        target.localScale = toScale;
+        if (target != null) target.localScale = toScale;
     }
     private IEnumerator FadeCanvasImageAlpha(Image img, float toAlpha, float duration)
     {
@@ -411,15 +485,14 @@ public class LevelSelectionManager : MonoBehaviour
             RectTransform clickedRT = chapterContentTransform.GetChild(index) as RectTransform;
             currentSelectedChapter = clickedRT;
             currentSelectedChapterDef = selectedChapterDef;
+
+            // 🆕 Persist the click-based selection
+            PlayerPrefs.SetInt(LastSelectedChapterKey, index);
+            PlayerPrefs.SetString("LastSelectedChapter", selectedChapterDef.chapterName);
+            PlayerPrefs.Save();
+
             SetSelectedChapterVisuals(clickedRT);
             DisplayLevelsForChapter(selectedChapterDef);
-            if (currentSelectedChapterDef != null)
-            {
-                PlayerPrefs.SetString("LastSelectedChapter", currentSelectedChapterDef.chapterName);
-                PlayerPrefs.Save();
-            }
-            PlayerPrefs.SetInt(LastSelectedChapterKey, index); // 🆕 Save selection
-            PlayerPrefs.Save();
 
             if (snapCoroutine != null)
                 StopCoroutine(snapCoroutine);
