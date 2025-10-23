@@ -10,6 +10,7 @@ public class MainMenuManager : MonoBehaviour
 {
     public LevelSelectionManager levelSelectionManager;
     public Image workersUnlockedNotification;
+    public Image upgradeAvailableNotification;
     public TMP_InputField inputField;
     public TextMeshProUGUI inputField_Text;
     public TextMeshProUGUI playerName;

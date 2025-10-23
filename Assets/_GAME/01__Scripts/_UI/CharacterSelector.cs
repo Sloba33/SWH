@@ -53,6 +53,7 @@ public class CharacterSelector : MonoBehaviour
             }
             else notificationImage.SetActive(false);
             LockCharacter(false);
+          
         }
         else
         {

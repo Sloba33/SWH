@@ -35,8 +35,49 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         PlayerPrefs.Save();
         Debug.Log("Coins Granted: " + _coinsGranted);
     }
+    public void CheckIfUpgradesAreAffordable()
+    {
+        bool anyAffordableUpgrades = false;
+        for (int i = 0; i < characters.Count; i++)
+        {
+
+            string characterName = characters[i].characterStats.characterName;
+            bool unlocked = PlayerPrefs.GetInt(characters[i].characterStats.characterName) == 1;
+            if (unlocked)
+            {
+                Debug.Log("------ Checking if we have available upgrades for character: " + characters[i].characterStats.characterName + " ------");
+                int currentLevel = PlayerPrefs.GetInt(characterName + "_level", 0);
+                int upgradeCostCoins = characters[i].characterStats.upgradeCostCoins * (currentLevel + 1);
+                int upgradeCostMoney = characters[i].characterStats.upgradeCostMoney * (currentLevel + 1);
+                Debug.Log("------ Current Level: " + currentLevel + " | Upgrade Cost Coins: " + upgradeCostCoins + " | Upgrade Cost Money: " + upgradeCostMoney);
+                Debug.Log("------Player Coins: " + PlayerPrefs.GetInt("coins", 0) + " | Player Money: " + PlayerPrefs.GetInt("money", 0));
+                if (PlayerPrefs.GetInt("coins", 0) >= upgradeCostCoins && PlayerPrefs.GetInt("money", 0) >= upgradeCostMoney)
+                {
+                    Debug.Log("------We got money");
+                    if (mainMenuManager != null)
+                    {
+                        anyAffordableUpgrades = true;
+                        mainMenuManager.upgradeAvailableNotification.gameObject.SetActive(true);
+                        Debug.Log("------We have enough currency to upgrade, enabling icon");
+                    }
+                    else Debug.Log("------MainMenuManager is null, cannot enable upgrade notification");
+                }
+            }
+            if (!anyAffordableUpgrades)
+            {
+                if (mainMenuManager != null)
+                {
+                   
+                    mainMenuManager.upgradeAvailableNotification.gameObject.SetActive(false);
+                    Debug.Log("------We don't have enough currency to upgrade, disabling icon");
+                }
+                else Debug.Log("------MainMenuManager is null, cannot disable upgrade notification");
+            }
+        }
+    }
     private void Start()
     {
+        MainMenuManager mainMenuManager = FindObjectOfType<MainMenuManager>();
         // IronSource.Agent.validateIntegration();
 
         GrantStarterCoins();
@@ -72,7 +113,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         currentCharacter.SetColors();
         previousWeapon = currentWeapon;
         characterPickerManager.UpdateCharacterStats();
-
+        CheckIfUpgradesAreAffordable();
 
     }
     private IEnumerator SetInitialConfirmedHelmet()
@@ -621,6 +662,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             }
             else levelUpParticle.Play();
         }
+        CheckIfUpgradesAreAffordable();
     }
 
 

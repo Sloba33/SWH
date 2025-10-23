@@ -10,6 +10,7 @@ public class UnlockAndUpgradeButton : MonoBehaviour
         button.onClick.AddListener(() =>
             {
                 action();
+                Debug.Log("Added listener to button of type: " + type + " on button: " + gameObject.name + "action: " + action.Method.Name);
             });
     }
     public void ClearButton()
