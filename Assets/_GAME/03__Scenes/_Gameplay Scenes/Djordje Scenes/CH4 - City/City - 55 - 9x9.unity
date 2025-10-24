@@ -8348,6 +8348,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
@@ -8399,82 +8402,82 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 288406504}
-  - {fileID: 2047136392}
-  - {fileID: 176818779}
-  - {fileID: 1119241846}
-  - {fileID: 80942568}
-  - {fileID: 1090317405}
-  - {fileID: 397731131}
-  - {fileID: 1717536971}
-  - {fileID: 2054755776}
-  - {fileID: 1707972143}
-  - {fileID: 340101013}
-  - {fileID: 465492392}
-  - {fileID: 2128049298}
-  - {fileID: 292060582}
-  - {fileID: 271815777}
-  - {fileID: 1127333626}
-  - {fileID: 957393019}
-  - {fileID: 1146617814}
-  - {fileID: 86749400}
-  - {fileID: 1712125396}
-  - {fileID: 1042954710}
-  - {fileID: 570253915}
-  - {fileID: 1816250841}
-  - {fileID: 441091292}
-  - {fileID: 608406855}
-  - {fileID: 296073668}
-  - {fileID: 1996630799}
-  - {fileID: 1355460417}
-  - {fileID: 1874107126}
-  - {fileID: 1518879221}
-  - {fileID: 357177766}
-  - {fileID: 215584984}
-  - {fileID: 1445123935}
-  - {fileID: 218098027}
-  - {fileID: 417188898}
-  - {fileID: 206818328}
-  - {fileID: 1218246779}
-  - {fileID: 1705309629}
-  - {fileID: 1281398530}
-  - {fileID: 1247523885}
   - {fileID: 1165544381}
-  - {fileID: 1416043989}
-  - {fileID: 685214115}
-  - {fileID: 1608862843}
-  - {fileID: 1007881796}
-  - {fileID: 1281605032}
-  - {fileID: 491105906}
-  - {fileID: 1759008721}
-  - {fileID: 1565697627}
-  - {fileID: 1484461157}
+  - {fileID: 570253915}
+  - {fileID: 271815777}
+  - {fileID: 176818779}
   - {fileID: 1697110363}
-  - {fileID: 973517112}
-  - {fileID: 1986328516}
-  - {fileID: 735827160}
-  - {fileID: 919023073}
-  - {fileID: 1715370972}
-  - {fileID: 391465060}
-  - {fileID: 1283199584}
-  - {fileID: 57770972}
-  - {fileID: 357738097}
+  - {fileID: 1565697627}
+  - {fileID: 1090317405}
+  - {fileID: 1518879221}
+  - {fileID: 1996630799}
   - {fileID: 88530218}
-  - {fileID: 895916821}
-  - {fileID: 413898434}
+  - {fileID: 1119241846}
+  - {fileID: 608406855}
+  - {fileID: 1484461157}
+  - {fileID: 2047136392}
+  - {fileID: 80942568}
+  - {fileID: 340101013}
+  - {fileID: 1707972143}
   - {fileID: 460667558}
+  - {fileID: 1759008721}
+  - {fileID: 1717536971}
+  - {fileID: 1127333626}
   - {fileID: 1194300414}
-  - {fileID: 457920095}
-  - {fileID: 1060127264}
-  - {fileID: 921525114}
-  - {fileID: 42609761}
-  - {fileID: 449127943}
-  - {fileID: 1492331198}
-  - {fileID: 423366892}
-  - {fileID: 268412903}
+  - {fileID: 1416043989}
   - {fileID: 1581669996}
-  - {fileID: 1835144170}
+  - {fileID: 449127943}
+  - {fileID: 1816250841}
+  - {fileID: 957393019}
+  - {fileID: 268412903}
+  - {fileID: 1146617814}
+  - {fileID: 685214115}
+  - {fileID: 1218246779}
+  - {fileID: 413898434}
+  - {fileID: 1247523885}
+  - {fileID: 1445123935}
+  - {fileID: 921525114}
+  - {fileID: 1712125396}
+  - {fileID: 397731131}
+  - {fileID: 215584984}
+  - {fileID: 2128049298}
+  - {fileID: 86749400}
+  - {fileID: 2054755776}
+  - {fileID: 1705309629}
+  - {fileID: 1986328516}
+  - {fileID: 1042954710}
+  - {fileID: 441091292}
+  - {fileID: 218098027}
+  - {fileID: 1874107126}
+  - {fileID: 491105906}
+  - {fileID: 206818328}
+  - {fileID: 57770972}
+  - {fileID: 296073668}
+  - {fileID: 423366892}
+  - {fileID: 1492331198}
+  - {fileID: 1715370972}
+  - {fileID: 457920095}
+  - {fileID: 391465060}
+  - {fileID: 973517112}
+  - {fileID: 1283199584}
+  - {fileID: 1281398530}
+  - {fileID: 465492392}
+  - {fileID: 42609761}
   - {fileID: 1346905661}
+  - {fileID: 288406504}
+  - {fileID: 895916821}
+  - {fileID: 1835144170}
+  - {fileID: 357738097}
+  - {fileID: 1060127264}
+  - {fileID: 1608862843}
+  - {fileID: 1281605032}
+  - {fileID: 919023073}
+  - {fileID: 292060582}
+  - {fileID: 1007881796}
+  - {fileID: 735827160}
+  - {fileID: 357177766}
+  - {fileID: 1355460417}
+  - {fileID: 417188898}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

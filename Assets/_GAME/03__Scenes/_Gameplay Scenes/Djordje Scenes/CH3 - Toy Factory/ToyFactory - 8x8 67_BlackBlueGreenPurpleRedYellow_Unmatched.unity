@@ -4943,6 +4943,13 @@ MonoBehaviour:
   oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
   SpawnFallingObstacles: 1
   FallingObstacles:
   - item: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986, type: 3}
@@ -4991,42 +4998,42 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 311276009}
-  - {fileID: 124730603}
-  - {fileID: 584256761}
-  - {fileID: 809987441}
-  - {fileID: 757583612}
   - {fileID: 1554984405}
+  - {fileID: 757583612}
+  - {fileID: 809987441}
   - {fileID: 2074238765}
-  - {fileID: 1488401373}
-  - {fileID: 729696452}
-  - {fileID: 1665849055}
-  - {fileID: 2025982365}
-  - {fileID: 1749315493}
-  - {fileID: 62235107}
+  - {fileID: 1521089241}
+  - {fileID: 177211437}
   - {fileID: 401467347}
-  - {fileID: 948763418}
+  - {fileID: 584256761}
+  - {fileID: 2113492068}
+  - {fileID: 1665849055}
+  - {fileID: 124730603}
   - {fileID: 51645326}
-  - {fileID: 86148434}
-  - {fileID: 1146469594}
-  - {fileID: 902032398}
-  - {fileID: 604245989}
+  - {fileID: 1500236546}
   - {fileID: 841634919}
   - {fileID: 323315227}
+  - {fileID: 47999270}
   - {fileID: 663632057}
-  - {fileID: 499797819}
-  - {fileID: 1521089241}
-  - {fileID: 1500236546}
-  - {fileID: 177211437}
-  - {fileID: 1638688265}
+  - {fileID: 86148434}
   - {fileID: 570795248}
-  - {fileID: 1259845814}
-  - {fileID: 2113492068}
+  - {fileID: 62235107}
+  - {fileID: 1638688265}
+  - {fileID: 948763418}
+  - {fileID: 2025982365}
+  - {fileID: 1488401373}
   - {fileID: 603061918}
   - {fileID: 1009454166}
   - {fileID: 397821164}
-  - {fileID: 47999270}
+  - {fileID: 1259845814}
+  - {fileID: 729696452}
+  - {fileID: 902032398}
+  - {fileID: 499797819}
+  - {fileID: 1146469594}
+  - {fileID: 1749315493}
+  - {fileID: 311276009}
   - {fileID: 292575921}
+  - {fileID: 604245989}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

@@ -3531,7 +3531,7 @@ PrefabInstance:
     - target: {fileID: 4932447319873661657, guid: d097258405147a940aef8a1fd58b7df1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 4932447319873661657, guid: d097258405147a940aef8a1fd58b7df1,
         type: 3}
@@ -3541,7 +3541,7 @@ PrefabInstance:
     - target: {fileID: 4932447319873661657, guid: d097258405147a940aef8a1fd58b7df1,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4932447319873661657, guid: d097258405147a940aef8a1fd58b7df1,
         type: 3}
@@ -7764,17 +7764,17 @@ PrefabInstance:
     - target: {fileID: 2862863361127572854, guid: e012ba24f09ae7f459320cb5962ebddd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2862863361127572854, guid: e012ba24f09ae7f459320cb5962ebddd,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.00008559227
       objectReference: {fileID: 0}
     - target: {fileID: 2862863361127572854, guid: e012ba24f09ae7f459320cb5962ebddd,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2862863361127572854, guid: e012ba24f09ae7f459320cb5962ebddd,
         type: 3}
@@ -14410,7 +14410,7 @@ PrefabInstance:
     - target: {fileID: 8571017514130306234, guid: 07eb5e67081990f47baf08624fb40124,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8571017514130306234, guid: 07eb5e67081990f47baf08624fb40124,
         type: 3}
@@ -14420,7 +14420,7 @@ PrefabInstance:
     - target: {fileID: 8571017514130306234, guid: 07eb5e67081990f47baf08624fb40124,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8571017514130306234, guid: 07eb5e67081990f47baf08624fb40124,
         type: 3}
@@ -25888,7 +25888,7 @@ PrefabInstance:
     - target: {fileID: 8735938363493058873, guid: 35f0ac6569f90c24bbfb2b5829b2c341,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8735938363493058873, guid: 35f0ac6569f90c24bbfb2b5829b2c341,
         type: 3}
@@ -25898,7 +25898,7 @@ PrefabInstance:
     - target: {fileID: 8735938363493058873, guid: 35f0ac6569f90c24bbfb2b5829b2c341,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8735938363493058873, guid: 35f0ac6569f90c24bbfb2b5829b2c341,
         type: 3}
@@ -57554,6 +57554,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []

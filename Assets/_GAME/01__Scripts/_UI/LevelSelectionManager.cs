@@ -1,4 +1,3 @@
-// LevelSelectionManager.cs (MODIFIED: UIShiny and UIEffectTweener control)
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +10,9 @@ using Mono.Cecil;
 
 public class LevelSelectionManager : MonoBehaviour
 {
+    private bool suppressScrollSelection = false;
+    private float suppressScrollTimer = 0f;
+    [SerializeField] private float scrollSuppressDuration = 0.3f; // duration to block scroll updates after click
     private bool initialized = false;
     private const string LastSelectedChapterKey = "LastSelectedChapterIndex";
     [Header("Chapters")]
@@ -36,6 +38,10 @@ public class LevelSelectionManager : MonoBehaviour
     public List<Level> allLevels;
 
     private SceneLoader sceneLoader;
+    [Header("Level Appearance Animation")]
+    public bool animateLevelsSequentially;
+    public bool animateLevelsScalePop;
+    public bool animateLevelsFadeSlide;
     [SerializeField] private RectTransform chapterSnapMarker;
     private void Awake()
     {
@@ -103,7 +109,15 @@ public class LevelSelectionManager : MonoBehaviour
 
         initialized = true;
     }
-
+    private void Update()
+    {
+        if (suppressScrollSelection)
+        {
+            suppressScrollTimer -= Time.deltaTime;
+            if (suppressScrollTimer <= 0f)
+                suppressScrollSelection = false;
+        }
+    }
     private IEnumerator AutoSelectFirstChapterNextFrame()
     {
         yield return null; // Wait for layout
@@ -298,7 +312,8 @@ public class LevelSelectionManager : MonoBehaviour
 
     public void OnScrollValueChanged(Vector2 pos)
     {
-        if (!initialized) return; // Ignore scroll updates during setup
+        if (!initialized) return;
+        if (suppressScrollSelection) return; // 🚫 Ignore scroll updates right after a click
         UpdateChapterSelectionByScroll();
     }
 
@@ -473,11 +488,106 @@ public class LevelSelectionManager : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(chapterContentTransform);
         }
 
+
+    }
+    private IEnumerator AnimateLevelsSequentially()
+    {
+        float delay = 0.001f;
+        float scaleDuration = 0.02f;
+
+        for (int i = 0; i < levelContentTransform.childCount; i++)
+        {
+            RectTransform level = levelContentTransform.GetChild(i) as RectTransform;
+            level.localScale = Vector3.zero;
+            level.gameObject.SetActive(true);
+
+            float t = 0f;
+            while (t < scaleDuration)
+            {
+                t += Time.deltaTime;
+                float s = Mathf.SmoothStep(0f, 1f, t / scaleDuration);
+                if (level != null) level.localScale = Vector3.one * s;
+                yield return null;
+            }
+
+            if (level != null) level.localScale = Vector3.one;
+            yield return new WaitForSeconds(delay);
+        }
+    }
+    private IEnumerator AnimateLevelsScalePop()
+    {
+        float scaleDuration = 0.15f;
+        for (int i = 0; i < levelContentTransform.childCount; i++)
+        {
+            RectTransform level = levelContentTransform.GetChild(i) as RectTransform;
+            level.localScale = Vector3.zero;
+        }
+
+        yield return null;
+
+        float t = 0f;
+        while (t < scaleDuration)
+        {
+            t += Time.deltaTime;
+            float s = Mathf.SmoothStep(0f, 1f, t / scaleDuration);
+            for (int i = 0; i < levelContentTransform.childCount; i++)
+            {
+                RectTransform level = levelContentTransform.GetChild(i) as RectTransform;
+                if (level != null)
+                    level.localScale = Vector3.one * s;
+            }
+            yield return null;
+        }
+
+        for (int i = 0; i < levelContentTransform.childCount; i++)
+        {
+            RectTransform level = levelContentTransform.GetChild(i) as RectTransform;
+            level.localScale = Vector3.one;
+        }
+    }
+    private IEnumerator AnimateLevelsFadeSlide()
+    {
+        float delayBetween = 0.03f;
+        float animDuration = 0.1f;
+
+        for (int i = 0; i < levelContentTransform.childCount; i++)
+        {
+            RectTransform level = levelContentTransform.GetChild(i) as RectTransform;
+            CanvasGroup cg = level.GetComponent<CanvasGroup>();
+            if (cg == null)
+                cg = level.gameObject.AddComponent<CanvasGroup>();
+
+            cg.alpha = 0f;
+            Vector3 startPos = level.anchoredPosition + new Vector2(0, -50f);
+            Vector3 endPos = level.anchoredPosition;
+            level.anchoredPosition = startPos;
+
+            StartCoroutine(FadeSlideLevel(level, cg, startPos, endPos, animDuration));
+            yield return new WaitForSeconds(delayBetween);
+        }
+    }
+
+    private IEnumerator FadeSlideLevel(RectTransform level, CanvasGroup cg, Vector3 startPos, Vector3 endPos, float duration)
+    {
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.SmoothStep(0f, 1f, t / duration);
+            if (cg != null) cg.alpha = p;
+            if (level != null) level.anchoredPosition = Vector3.Lerp(startPos, endPos, p);
+            yield return null;
+        }
+        if (cg != null) cg.alpha = 1f;
+        if (level != null) level.anchoredPosition = endPos;
     }
 
     public void OnChapterSelected(ChapterDefinition selectedChapterDef)
     {
         if (CharacterManager.Instance != null) CharacterManager.Instance.PlayClick();
+
+        if (currentSelectedChapterDef == selectedChapterDef)
+            return;
 
         int index = allChapterDefinitions.IndexOf(selectedChapterDef);
         if (index >= 0 && index < chapterContentTransform.childCount)
@@ -486,10 +596,15 @@ public class LevelSelectionManager : MonoBehaviour
             currentSelectedChapter = clickedRT;
             currentSelectedChapterDef = selectedChapterDef;
 
+            suppressScrollSelection = true;
+            suppressScrollTimer = scrollSuppressDuration;
+
             // 🆕 Persist the click-based selection
             PlayerPrefs.SetInt(LastSelectedChapterKey, index);
             PlayerPrefs.SetString("LastSelectedChapter", selectedChapterDef.chapterName);
             PlayerPrefs.Save();
+
+
 
             SetSelectedChapterVisuals(clickedRT);
             DisplayLevelsForChapter(selectedChapterDef);
@@ -537,6 +652,12 @@ public class LevelSelectionManager : MonoBehaviour
             layoutGroup.enabled = true;
             LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
         }
+        if (animateLevelsSequentially)
+            StartCoroutine(AnimateLevelsSequentially());
+        else if (animateLevelsScalePop)
+            StartCoroutine(AnimateLevelsScalePop());
+        else if (animateLevelsFadeSlide)
+            StartCoroutine(AnimateLevelsFadeSlide());
     }
 
     private void DisplayAllLevels()

@@ -108,7 +108,13 @@ public class MainMenuManager : MonoBehaviour
         CharacterManager.Instance.currentCharacter.GetComponent<Animator>().SetBool("Profile", true);
         CharacterManager.Instance.currentCharacter.GetComponent<Animator>().SetBool("Picking", true);
     }
+    public void OpenLevelSelectionMenu()
+    {
+        levelSelectionManager.OpenLevelSelection();
+    }
 
+    // When closing level selection menu  
+  
     public void CloseProfileUI()
     {
         CharacterManager.Instance.currentCharacter.canBlink = true;
@@ -417,6 +423,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private SceneLoader sceneLoader;
     public void HandleMainMenuWorkButton()
     {
+
         int currentLevel = PlayerPrefs.GetInt("Level", 0); // Get current level, default to 0 if not set
 
         // If the player hasn't completed all intro levels yet (Level < 3),
@@ -445,6 +452,7 @@ public class MainMenuManager : MonoBehaviour
                 if (!levelSelectionManager.gameObject.activeSelf)
                 {
                     levelSelectionManager.gameObject.SetActive(true);
+                    OpenLevelSelectionMenu();
                 }
 
                 levelSelectionManager.OpenLevelSelection();

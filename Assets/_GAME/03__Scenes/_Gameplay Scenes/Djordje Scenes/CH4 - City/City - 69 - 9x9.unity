@@ -4449,6 +4449,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
@@ -4500,27 +4503,27 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1070931009}
-  - {fileID: 792295711}
-  - {fileID: 1600920830}
-  - {fileID: 508506102}
-  - {fileID: 634385364}
-  - {fileID: 1588198966}
-  - {fileID: 1811476209}
-  - {fileID: 1491511898}
-  - {fileID: 845948230}
   - {fileID: 1774168127}
-  - {fileID: 2141811001}
-  - {fileID: 32855735}
   - {fileID: 564736384}
-  - {fileID: 1785405174}
+  - {fileID: 1791526221}
+  - {fileID: 32855735}
+  - {fileID: 1811476209}
+  - {fileID: 1070931009}
   - {fileID: 302566955}
   - {fileID: 819998986}
+  - {fileID: 792295711}
   - {fileID: 1444761678}
-  - {fileID: 561732829}
-  - {fileID: 964577948}
+  - {fileID: 1600920830}
   - {fileID: 1666170859}
-  - {fileID: 1791526221}
+  - {fileID: 1588198966}
+  - {fileID: 964577948}
+  - {fileID: 508506102}
+  - {fileID: 561732829}
+  - {fileID: 2141811001}
+  - {fileID: 1785405174}
+  - {fileID: 1491511898}
+  - {fileID: 845948230}
+  - {fileID: 634385364}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

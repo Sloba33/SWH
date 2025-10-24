@@ -2607,7 +2607,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 306547278}
     m_Modifications:
     - target: {fileID: 4419652167912196282, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
@@ -2637,7 +2637,7 @@ PrefabInstance:
     - target: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
@@ -2681,6 +2681,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &152701710 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 152701708}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &159071340
 GameObject:
   m_ObjectHideFlags: 0
@@ -4205,6 +4211,9 @@ Transform:
   - {fileID: 1803195198}
   - {fileID: 1181417310}
   - {fileID: 833062628}
+  - {fileID: 1421237485}
+  - {fileID: 516814642}
+  - {fileID: 152701710}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &326985930
@@ -6868,7 +6877,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 306547278}
     m_Modifications:
     - target: {fileID: 4419652167912196282, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
@@ -6898,7 +6907,7 @@ PrefabInstance:
     - target: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
@@ -6942,6 +6951,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &516814642 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 516814640}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &525130369
 GameObject:
   m_ObjectHideFlags: 0
@@ -16794,7 +16809,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 306547278}
     m_Modifications:
     - target: {fileID: 4419652167912196282, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
@@ -16824,7 +16839,7 @@ PrefabInstance:
     - target: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
         type: 3}
@@ -16868,6 +16883,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1421237485 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8769700160430270944, guid: 5a39d6c38317e394d86bf3ece94a13ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 1421237483}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1422837279
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26882,21 +26903,21 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1791675770}
-  - {fileID: 1375287737}
   - {fileID: 833062629}
-  - {fileID: 2071015112}
-  - {fileID: 1672361317}
-  - {fileID: 91395987}
-  - {fileID: 625971664}
-  - {fileID: 152701709}
-  - {fileID: 1231482399}
-  - {fileID: 516814641}
+  - {fileID: 1791675770}
   - {fileID: 446584809}
+  - {fileID: 1375287737}
+  - {fileID: 625971664}
+  - {fileID: 2071015112}
   - {fileID: 1421237484}
   - {fileID: 553145204}
-  - {fileID: 1578129581}
+  - {fileID: 516814641}
+  - {fileID: 152701709}
+  - {fileID: 1672361317}
+  - {fileID: 1231482399}
   - {fileID: 134337641}
+  - {fileID: 1578129581}
+  - {fileID: 91395987}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -27431,6 +27452,3 @@ SceneRoots:
   - {fileID: 1092282391}
   - {fileID: 306547278}
   - {fileID: 91122608}
-  - {fileID: 516814640}
-  - {fileID: 152701708}
-  - {fileID: 1421237483}

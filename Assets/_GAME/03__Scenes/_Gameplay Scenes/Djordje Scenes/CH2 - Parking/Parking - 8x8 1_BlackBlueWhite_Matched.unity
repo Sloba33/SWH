@@ -9526,18 +9526,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 816125447}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &816125449 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -5747806313299232045, guid: a3ee657f4a80b5f4b8cfe9373bd89016,
-    type: 3}
-  m_PrefabInstance: {fileID: 816125447}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &817797945
 GameObject:
   m_ObjectHideFlags: 0
@@ -12166,18 +12154,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1169808898}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1169808900 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -5747806313299232045, guid: a3ee657f4a80b5f4b8cfe9373bd89016,
-    type: 3}
-  m_PrefabInstance: {fileID: 1169808898}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1216124576
 GameObject:
   m_ObjectHideFlags: 0
@@ -21714,19 +21690,17 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1769925040}
-  - {fileID: 718567283}
-  - {fileID: 1063362923}
-  - {fileID: 816125449}
-  - {fileID: 136730409}
   - {fileID: 96747931}
-  - {fileID: 302875}
-  - {fileID: 1169808900}
-  - {fileID: 369884182}
-  - {fileID: 491354395}
   - {fileID: 1581478759}
-  - {fileID: 290943153}
+  - {fileID: 302875}
   - {fileID: 1385955405}
+  - {fileID: 1063362923}
+  - {fileID: 1769925040}
+  - {fileID: 491354395}
+  - {fileID: 369884182}
+  - {fileID: 136730409}
+  - {fileID: 718567283}
+  - {fileID: 290943153}
   - {fileID: 1313308731}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 

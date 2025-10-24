@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MatchThreeObstacle : MonoBehaviour
@@ -12,6 +13,7 @@ public class MatchThreeObstacle : MonoBehaviour
     public bool isDestructible;
 
     private List<Obstacle> obstaclesToProcessForSpawns = new();
+
     private IEnumerator Start()
     {
         Obstacle = GetComponent<Obstacle>();
@@ -57,6 +59,7 @@ public class MatchThreeObstacle : MonoBehaviour
         CheckListForMatches(verticalList);
         CheckListForMatches(horizontalList);
         CheckListForMatches(updownList);
+
         if (obstaclesToProcessForSpawns.Count > 0)
         {
             if (GameManager.Instance != null && GameManager.Instance.levelGoal != null)
@@ -68,110 +71,126 @@ public class MatchThreeObstacle : MonoBehaviour
             }
             ClearObstacleLists();
         }
-
     }
 
-    private int consecutiveCount = 1;
-
+    // 🔥 NEW universal-aware matching system
     private void CheckListForMatches(List<Obstacle> obstacleList)
     {
         if (obstacleList == null || obstacleList.Count < 3)
             return;
 
-        float offset;
-        Vector3 groundPosition;
-        if (groundObject == null)
-        {
-            groundPosition = Obstacle.tile.transform.position;
-            offset = 0.556f;
-        }
-        else
-        {
-            groundPosition = groundObject.transform.position;
-            offset = 0.05f;
-        }
+        var concreteColors = GetConcreteColorsInList(obstacleList);
+        if (concreteColors.Count == 0)
+            return;
 
-        int matchStart = 0;
-        Obstacle currentMatchTarget = obstacleList[0];
-        consecutiveCount = 1;
+        HashSet<int> indicesToDestroy = new();
 
-        for (int i = 1; i < obstacleList.Count; i++)
+        // For each distinct color found, find runs that include universals
+        foreach (var color in concreteColors)
         {
-            float distanceToGround = Vector3.Distance(Obstacle.transform.position, groundPosition);
-
-            if (IsMatchingObstacle(currentMatchTarget, obstacleList[i]) && distanceToGround < (transform.position.y + offset))
+            int i = 0;
+            while (i < obstacleList.Count)
             {
-                consecutiveCount++;
-            }
-            else
-            {
-                if (consecutiveCount >= 3)
+                while (i < obstacleList.Count && !IsColorCompatibleForGrouping(obstacleList[i], color))
+                    i++;
+                if (i >= obstacleList.Count) break;
+
+                int runStart = i;
+                int runEnd = i;
+                int runCount = 0;
+
+                while (runEnd < obstacleList.Count && IsColorCompatibleForGrouping(obstacleList[runEnd], color))
                 {
-                    // Handle match group from matchStart to i - 1
-                    if (CheckAndHandleJackInTheBox(obstacleList.GetRange(matchStart, consecutiveCount)))
-                        return;
-
-                    DestroyConsecutiveObstacles(obstacleList, matchStart, consecutiveCount);
-                    return; // Or remove this if you want to continue scanning for more matches
+                    runCount++;
+                    runEnd++;
                 }
 
-                // Reset
-                consecutiveCount = 1;
-                matchStart = i;
-                currentMatchTarget = obstacleList[i];
+                if (runCount >= 3)
+                {
+                    for (int k = runStart; k < runEnd; k++)
+                        indicesToDestroy.Add(k);
+                }
+
+                i = runEnd;
             }
         }
 
-        // Final match check at end of list
-        if (consecutiveCount >= 3)
-        {
-            if (CheckAndHandleJackInTheBox(obstacleList.GetRange(matchStart, consecutiveCount)))
-                return;
+        if (indicesToDestroy.Count == 0)
+            return;
 
-            DestroyConsecutiveObstacles(obstacleList, matchStart, consecutiveCount);
+        var obstaclesMarked = indicesToDestroy.OrderBy(x => x)
+            .Select(idx => obstacleList[idx])
+            .Where(o => o != null)
+            .ToList();
+
+        // Check for JackInTheBox in the union-set
+        if (CheckAndHandleJackInTheBox(obstaclesMarked))
+            return;
+
+        // Group consecutive indices into batches
+        var consecutiveGroups = GroupConsecutiveIndices(indicesToDestroy.OrderBy(x => x).ToList());
+
+        foreach (var grp in consecutiveGroups)
+        {
+            int startIndex = grp.Item1;
+            int count = grp.Item2;
+            if (startIndex >= 0 && startIndex + count <= obstacleList.Count)
+            {
+                DestroyConsecutiveObstacles(obstacleList, startIndex, count);
+            }
         }
     }
 
-
-    /// <summary>
-    /// Checks if two obstacles match based on Type, Color, and Modifier (especially Universal).
-    /// </summary>
-    /// <param name="mainObstacle">The reference obstacle for comparison.</param>
-    /// <param name="compareObstacle">The obstacle to compare against the reference.</param>
-    /// <returns>True if they match, false otherwise.</returns>
-    private bool IsMatchingObstacle(Obstacle mainObstacle, Obstacle compareObstacle)
+    private bool IsColorCompatibleForGrouping(Obstacle obstacle, ObstacleColor targetColor)
     {
-        // A null obstacle cannot match
-        if (mainObstacle == null || compareObstacle == null) return false;
+        if (obstacle == null) return false;
+        return obstacle.obstacleColor == targetColor || obstacle.obstacleColor == ObstacleColor.Universal;
+    }
 
-        // If either obstacle has a Universal modifier, it matches anything
-        if (mainObstacle.obstacleModifier == ObstacleModifier.Universal || compareObstacle.obstacleModifier == ObstacleModifier.Universal)
+    private List<ObstacleColor> GetConcreteColorsInList(List<Obstacle> obstacleList)
+    {
+        HashSet<ObstacleColor> set = new();
+        foreach (var o in obstacleList)
         {
-            return true;
+            if (o == null) continue;
+            if (o.obstacleColor != ObstacleColor.Universal)
+                set.Add(o.obstacleColor);
         }
+        return set.ToList();
+    }
 
-        // If either obstacle has a Universal type, it matches the other's type (and implicitly color for Universal type)
-        // This part might need careful consideration if Universal type should *also* imply Universal modifier
-        // For now, it means if one is universal type, it matches the other type, then we check color.
-        if (mainObstacle.obstacleType == ObstacleType.Universal || compareObstacle.obstacleType == ObstacleType.Universal)
+    private List<System.Tuple<int, int>> GroupConsecutiveIndices(List<int> sortedIndices)
+    {
+        List<System.Tuple<int, int>> groups = new();
+        if (sortedIndices == null || sortedIndices.Count == 0)
+            return groups;
+
+        int runStart = sortedIndices[0];
+        int runPrev = sortedIndices[0];
+        int runCount = 1;
+
+        for (int i = 1; i < sortedIndices.Count; i++)
         {
-            // If one is Universal type, and the other is a specific type, it still counts as a type match.
-            // Then we must also check for color match.
-            return (mainObstacle.obstacleColor == compareObstacle.obstacleColor ||
-                    mainObstacle.obstacleColor == ObstacleColor.Universal ||
-                    compareObstacle.obstacleColor == ObstacleColor.Universal);
+            int idx = sortedIndices[i];
+            if (idx == runPrev + 1)
+            {
+                runPrev = idx;
+                runCount++;
+            }
+            else
+            {
+                groups.Add(System.Tuple.Create(runStart, runCount));
+                runStart = idx;
+                runPrev = idx;
+                runCount = 1;
+            }
         }
-
-        // If neither is Universal in type or modifier, then match based on exact Type, Color, and Modifier
-        // This assumes non-Universal modifiers must also match exactly if they exist.
-        return (mainObstacle.obstacleType == compareObstacle.obstacleType &&
-                mainObstacle.obstacleColor == compareObstacle.obstacleColor &&
-                mainObstacle.obstacleModifier == compareObstacle.obstacleModifier);
+        groups.Add(System.Tuple.Create(runStart, runCount));
+        return groups;
     }
 
     private bool CheckAndHandleJackInTheBox(List<Obstacle> obstacleList)
     {
-        Debug.Log("Checking for JackInTheBox in obstacle list of size: " + obstacleList.Count);
         foreach (Obstacle obstacle in obstacleList)
         {
             JackInTheBox jackInTheBox = obstacle.GetComponent<JackInTheBox>();
@@ -183,6 +202,28 @@ public class MatchThreeObstacle : MonoBehaviour
         }
         return false;
     }
+
+    private bool IsMatchingObstacle(Obstacle mainObstacle, Obstacle compareObstacle)
+    {
+        if (mainObstacle == null || compareObstacle == null) return false;
+
+        if (mainObstacle.obstacleModifier == ObstacleModifier.Universal ||
+            compareObstacle.obstacleModifier == ObstacleModifier.Universal)
+            return true;
+
+        if (mainObstacle.obstacleType == ObstacleType.Universal ||
+            compareObstacle.obstacleType == ObstacleType.Universal)
+        {
+            return (mainObstacle.obstacleColor == compareObstacle.obstacleColor ||
+                    mainObstacle.obstacleColor == ObstacleColor.Universal ||
+                    compareObstacle.obstacleColor == ObstacleColor.Universal);
+        }
+
+        return (mainObstacle.obstacleType == compareObstacle.obstacleType &&
+                mainObstacle.obstacleColor == compareObstacle.obstacleColor &&
+                mainObstacle.obstacleModifier == compareObstacle.obstacleModifier);
+    }
+
     private bool IsCenteredOnTile()
     {
         if (Obstacle == null || Obstacle.tile == null)
@@ -191,15 +232,10 @@ public class MatchThreeObstacle : MonoBehaviour
         Vector3 obstaclePos = transform.position;
         Vector3 tileCenter = Obstacle.tile.transform.position;
 
-        // Ignore Y-axis for distance check
-        Vector2 obstacleXZ = new Vector2(obstaclePos.x, obstaclePos.z);
-        Vector2 tileCenterXZ = new Vector2(tileCenter.x, tileCenter.z);
-
-        float distanceXZ = Vector2.Distance(obstacleXZ, tileCenterXZ);
-
-        return distanceXZ <= 0.2f; // Adjust threshold to taste
+        Vector2 obstacleXZ = new(obstaclePos.x, obstaclePos.z);
+        Vector2 tileCenterXZ = new(tileCenter.x, tileCenter.z);
+        return Vector2.Distance(obstacleXZ, tileCenterXZ) <= 0.2f;
     }
-
 
     private void DestroyConsecutiveObstacles(List<Obstacle> obstacleList, int startIndex, int count)
     {
@@ -218,7 +254,6 @@ public class MatchThreeObstacle : MonoBehaviour
         }
     }
 
-
     private void FillVerticalHorizontalLists()
     {
         verticalList = CombineObstacleLists(ObstacleListForward, ObstacleListBackward);
@@ -228,15 +263,14 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private List<Obstacle> CombineObstacleLists(List<Obstacle> list1, List<Obstacle> list2)
     {
-        HashSet<Obstacle> uniqueObstacles = new HashSet<Obstacle>(list1);
+        HashSet<Obstacle> uniqueObstacles = new(list1);
         uniqueObstacles.UnionWith(list2);
         return new List<Obstacle>(uniqueObstacles);
     }
 
     private void CastRays()
     {
-        ClearObstacleLists(); // Ensure lists are clear before casting new rays
-        // Add the obstacle itself to its own lists so it's always included in the checks
+        ClearObstacleLists();
         AddObstacleToAllLists(Obstacle);
 
         CastRayFromObstacleCenter(Vector3.left);
@@ -257,7 +291,6 @@ public class MatchThreeObstacle : MonoBehaviour
         ObstacleListDown.Add(obstacle);
     }
 
-
     private void CastRayFromObstacleCenter(Vector3 direction)
     {
         Vector3 rayOrigin = Obstacle.transform.position;
@@ -267,17 +300,12 @@ public class MatchThreeObstacle : MonoBehaviour
         while (Physics.Raycast(rayOrigin, direction, out hit, currentRayLength, obstacleLayer))
         {
             Obstacle hitObstacle = hit.collider.GetComponent<Obstacle>();
-
-            // Use the new IsMatchingObstacle for raycast condition
-            if (hitObstacle != null && IsMatchingObstacle(Obstacle, hitObstacle)) // Use the script's own Obstacle as the reference
+            if (hitObstacle != null && IsMatchingObstacle(Obstacle, hitObstacle))
             {
                 AddToObstacleList(hitObstacle, direction);
                 rayOrigin = hit.point + direction * 0.02f;
             }
-            else
-            {
-                break; // Stop if no match or no obstacle hit
-            }
+            else break;
         }
     }
 
@@ -293,10 +321,7 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private void AddObstacleToList(List<Obstacle> list, Obstacle hitObstacle)
     {
-        if (!list.Contains(hitObstacle))
-        {
-            list.Add(hitObstacle);
-        }
+        if (!list.Contains(hitObstacle)) list.Add(hitObstacle);
     }
 
     public void ClearObstacleLists()
@@ -309,7 +334,6 @@ public class MatchThreeObstacle : MonoBehaviour
         ObstacleListDown.Clear();
     }
 
-    // List declarations for each direction
     public List<Obstacle> ObstacleListForward = new();
     public List<Obstacle> ObstacleListBackward = new();
     public List<Obstacle> ObstacleListLeft = new();

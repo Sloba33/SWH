@@ -5272,6 +5272,13 @@ MonoBehaviour:
   oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
   SpawnFallingObstacles: 0
   FallingObstacles:
   - item: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986, type: 3}
@@ -5320,33 +5327,33 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 30183804}
-  - {fileID: 1716742507}
-  - {fileID: 803724558}
-  - {fileID: 923809412}
-  - {fileID: 51652933}
   - {fileID: 1077990134}
-  - {fileID: 143847268}
-  - {fileID: 122707391}
-  - {fileID: 1082472022}
-  - {fileID: 2123485286}
-  - {fileID: 2030957694}
-  - {fileID: 302098449}
-  - {fileID: 1925762830}
-  - {fileID: 747536105}
-  - {fileID: 363769419}
-  - {fileID: 1916637410}
-  - {fileID: 1139458029}
-  - {fileID: 2116646150}
+  - {fileID: 1716742507}
   - {fileID: 1354883543}
-  - {fileID: 845449480}
-  - {fileID: 1999811025}
-  - {fileID: 863534615}
-  - {fileID: 278307925}
   - {fileID: 391082833}
+  - {fileID: 863534615}
+  - {fileID: 2123485286}
+  - {fileID: 1999811025}
+  - {fileID: 923809412}
+  - {fileID: 1916637410}
+  - {fileID: 122707391}
+  - {fileID: 143847268}
+  - {fileID: 803724558}
   - {fileID: 440325019}
-  - {fileID: 1823310514}
+  - {fileID: 363769419}
+  - {fileID: 302098449}
+  - {fileID: 278307925}
+  - {fileID: 2116646150}
+  - {fileID: 30183804}
+  - {fileID: 1139458029}
   - {fileID: 462122236}
+  - {fileID: 747536105}
+  - {fileID: 1823310514}
+  - {fileID: 2030957694}
+  - {fileID: 1925762830}
+  - {fileID: 1082472022}
+  - {fileID: 51652933}
+  - {fileID: 845449480}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

@@ -5651,6 +5651,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
@@ -5702,51 +5705,51 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 2130049463}
-  - {fileID: 2069694922}
-  - {fileID: 583304835}
-  - {fileID: 289845623}
-  - {fileID: 1205337663}
-  - {fileID: 2047875999}
-  - {fileID: 2038662869}
-  - {fileID: 671423614}
-  - {fileID: 1967654399}
-  - {fileID: 509620711}
-  - {fileID: 2032660039}
-  - {fileID: 1024422561}
-  - {fileID: 2004875785}
-  - {fileID: 1072071894}
-  - {fileID: 1652607859}
-  - {fileID: 1173427550}
-  - {fileID: 295746015}
-  - {fileID: 1575639300}
-  - {fileID: 1732076152}
-  - {fileID: 1408663765}
-  - {fileID: 367333870}
-  - {fileID: 1668451339}
-  - {fileID: 58927509}
-  - {fileID: 579289506}
-  - {fileID: 345533997}
-  - {fileID: 983971253}
-  - {fileID: 1157259715}
-  - {fileID: 1559404478}
-  - {fileID: 1882877536}
-  - {fileID: 807332631}
-  - {fileID: 1896915875}
-  - {fileID: 1962860010}
-  - {fileID: 462545154}
-  - {fileID: 1431079422}
-  - {fileID: 1625735505}
-  - {fileID: 1836689009}
-  - {fileID: 443240219}
-  - {fileID: 1789377506}
-  - {fileID: 766132064}
-  - {fileID: 72960504}
-  - {fileID: 2021886124}
-  - {fileID: 1535807396}
   - {fileID: 1571931856}
-  - {fileID: 492279240}
+  - {fileID: 807332631}
+  - {fileID: 1431079422}
+  - {fileID: 295746015}
+  - {fileID: 1652607859}
+  - {fileID: 2130049463}
+  - {fileID: 1024422561}
+  - {fileID: 1173427550}
+  - {fileID: 1962860010}
+  - {fileID: 1896915875}
+  - {fileID: 1836689009}
+  - {fileID: 1789377506}
+  - {fileID: 58927509}
+  - {fileID: 1559404478}
+  - {fileID: 289845623}
+  - {fileID: 1625735505}
+  - {fileID: 983971253}
+  - {fileID: 579289506}
+  - {fileID: 766132064}
+  - {fileID: 1205337663}
+  - {fileID: 509620711}
+  - {fileID: 1575639300}
+  - {fileID: 462545154}
+  - {fileID: 2032660039}
+  - {fileID: 367333870}
+  - {fileID: 671423614}
+  - {fileID: 1535807396}
+  - {fileID: 72960504}
+  - {fileID: 1882877536}
+  - {fileID: 1157259715}
+  - {fileID: 2021886124}
+  - {fileID: 443240219}
+  - {fileID: 1732076152}
+  - {fileID: 2069694922}
+  - {fileID: 1967654399}
+  - {fileID: 1408663765}
   - {fileID: 176963683}
+  - {fileID: 1072071894}
+  - {fileID: 2038662869}
+  - {fileID: 2004875785}
+  - {fileID: 345533997}
+  - {fileID: 1668451339}
+  - {fileID: 583304835}
+  - {fileID: 2047875999}
+  - {fileID: 492279240}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

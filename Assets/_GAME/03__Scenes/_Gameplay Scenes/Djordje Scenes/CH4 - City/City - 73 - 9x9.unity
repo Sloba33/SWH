@@ -10833,6 +10833,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
@@ -10884,109 +10887,109 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1297724262}
-  - {fileID: 721309401}
-  - {fileID: 305838589}
-  - {fileID: 600653596}
-  - {fileID: 221350753}
-  - {fileID: 393988965}
-  - {fileID: 2050032147}
-  - {fileID: 1716744516}
-  - {fileID: 2100208544}
-  - {fileID: 1863197129}
-  - {fileID: 792393739}
-  - {fileID: 69816220}
-  - {fileID: 502908938}
-  - {fileID: 966023517}
-  - {fileID: 1079934325}
-  - {fileID: 586414694}
-  - {fileID: 1857880583}
-  - {fileID: 1367067102}
-  - {fileID: 1937930734}
-  - {fileID: 1860449337}
-  - {fileID: 1626037082}
-  - {fileID: 1735634058}
-  - {fileID: 1929621292}
-  - {fileID: 888430228}
-  - {fileID: 1797905391}
-  - {fileID: 1873436718}
-  - {fileID: 1749876631}
-  - {fileID: 1883615512}
   - {fileID: 1080690154}
-  - {fileID: 953695215}
-  - {fileID: 1742783645}
-  - {fileID: 1703747624}
-  - {fileID: 166691750}
-  - {fileID: 1107722052}
-  - {fileID: 17958554}
-  - {fileID: 1657227260}
-  - {fileID: 268819720}
-  - {fileID: 147909985}
-  - {fileID: 219319054}
-  - {fileID: 1949732760}
-  - {fileID: 1963915927}
-  - {fileID: 72666536}
-  - {fileID: 259197868}
-  - {fileID: 1991707972}
-  - {fileID: 887479345}
-  - {fileID: 120511277}
-  - {fileID: 985300150}
-  - {fileID: 205391448}
-  - {fileID: 629498098}
-  - {fileID: 1265382932}
-  - {fileID: 87352218}
-  - {fileID: 452917020}
-  - {fileID: 1417867282}
-  - {fileID: 1941186650}
-  - {fileID: 698768649}
-  - {fileID: 358346071}
-  - {fileID: 1516212969}
-  - {fileID: 1163408318}
-  - {fileID: 1047771918}
-  - {fileID: 177139661}
-  - {fileID: 2012613753}
-  - {fileID: 1085972679}
-  - {fileID: 723451082}
-  - {fileID: 980044761}
-  - {fileID: 1880527612}
-  - {fileID: 4591527}
-  - {fileID: 1572225744}
-  - {fileID: 649259095}
-  - {fileID: 644758123}
-  - {fileID: 221955901}
-  - {fileID: 922826919}
-  - {fileID: 366702322}
-  - {fileID: 1049939018}
-  - {fileID: 265192234}
-  - {fileID: 2068782531}
-  - {fileID: 712753344}
-  - {fileID: 412998228}
-  - {fileID: 1304195377}
+  - {fileID: 1929621292}
+  - {fileID: 69816220}
   - {fileID: 121849876}
-  - {fileID: 833452580}
-  - {fileID: 1890693715}
-  - {fileID: 264592424}
-  - {fileID: 888420913}
-  - {fileID: 1836246304}
-  - {fileID: 2006620569}
-  - {fileID: 1966325826}
-  - {fileID: 989342238}
-  - {fileID: 1544264434}
-  - {fileID: 1701905837}
-  - {fileID: 2114810459}
-  - {fileID: 784656691}
-  - {fileID: 1338701306}
-  - {fileID: 1239805747}
-  - {fileID: 141890180}
-  - {fileID: 486547296}
-  - {fileID: 904460596}
-  - {fileID: 1667393877}
-  - {fileID: 1973218216}
-  - {fileID: 30486473}
+  - {fileID: 1417867282}
+  - {fileID: 1949732760}
   - {fileID: 1165606814}
-  - {fileID: 1078832252}
+  - {fileID: 366702322}
+  - {fileID: 600653596}
+  - {fileID: 141890180}
+  - {fileID: 1860449337}
+  - {fileID: 1937930734}
+  - {fileID: 1749876631}
+  - {fileID: 644758123}
+  - {fileID: 1163408318}
+  - {fileID: 219319054}
+  - {fileID: 1797905391}
+  - {fileID: 17958554}
+  - {fileID: 1890693715}
+  - {fileID: 1703747624}
+  - {fileID: 784656691}
+  - {fileID: 1047771918}
+  - {fileID: 412998228}
+  - {fileID: 1516212969}
+  - {fileID: 1973218216}
+  - {fileID: 922826919}
+  - {fileID: 712753344}
+  - {fileID: 1941186650}
+  - {fileID: 1239805747}
+  - {fileID: 1880527612}
+  - {fileID: 393988965}
+  - {fileID: 1107722052}
+  - {fileID: 904460596}
+  - {fileID: 452917020}
+  - {fileID: 1873436718}
+  - {fileID: 502908938}
+  - {fileID: 265192234}
+  - {fileID: 2012613753}
+  - {fileID: 629498098}
+  - {fileID: 2068782531}
+  - {fileID: 205391448}
+  - {fileID: 1667393877}
   - {fileID: 1396932614}
+  - {fileID: 264592424}
+  - {fileID: 1836246304}
+  - {fileID: 1735634058}
+  - {fileID: 259197868}
+  - {fileID: 1544264434}
+  - {fileID: 4591527}
+  - {fileID: 1991707972}
+  - {fileID: 792393739}
+  - {fileID: 1338701306}
+  - {fileID: 888420913}
   - {fileID: 385748714}
+  - {fileID: 268819720}
+  - {fileID: 1049939018}
+  - {fileID: 1857880583}
+  - {fileID: 649259095}
+  - {fileID: 1863197129}
+  - {fileID: 887479345}
+  - {fileID: 966023517}
+  - {fileID: 30486473}
+  - {fileID: 953695215}
+  - {fileID: 221955901}
+  - {fileID: 1657227260}
+  - {fileID: 1265382932}
+  - {fileID: 221350753}
+  - {fileID: 833452580}
+  - {fileID: 87352218}
+  - {fileID: 721309401}
+  - {fileID: 1367067102}
+  - {fileID: 1966325826}
+  - {fileID: 1085972679}
+  - {fileID: 2050032147}
+  - {fileID: 1297724262}
+  - {fileID: 1304195377}
+  - {fileID: 358346071}
+  - {fileID: 723451082}
+  - {fileID: 985300150}
+  - {fileID: 1079934325}
+  - {fileID: 486547296}
+  - {fileID: 1883615512}
+  - {fileID: 177139661}
+  - {fileID: 1742783645}
+  - {fileID: 120511277}
+  - {fileID: 1078832252}
+  - {fileID: 1626037082}
+  - {fileID: 2114810459}
+  - {fileID: 989342238}
+  - {fileID: 72666536}
+  - {fileID: 1572225744}
+  - {fileID: 980044761}
+  - {fileID: 586414694}
+  - {fileID: 2100208544}
+  - {fileID: 888430228}
+  - {fileID: 698768649}
+  - {fileID: 305838589}
+  - {fileID: 1963915927}
+  - {fileID: 2006620569}
+  - {fileID: 147909985}
+  - {fileID: 1701905837}
+  - {fileID: 1716744516}
+  - {fileID: 166691750}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

@@ -3093,7 +3093,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1819177075}
     m_Modifications:
     - target: {fileID: 5009936899231337774, guid: f2b9311cc643a2b459010a0eaa480325,
         type: 3}
@@ -3123,17 +3123,17 @@ PrefabInstance:
     - target: {fileID: 5672946733639585834, guid: f2b9311cc643a2b459010a0eaa480325,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5672946733639585834, guid: f2b9311cc643a2b459010a0eaa480325,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5672946733639585834, guid: f2b9311cc643a2b459010a0eaa480325,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5672946733639585834, guid: f2b9311cc643a2b459010a0eaa480325,
         type: 3}
@@ -3155,6 +3155,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2b9311cc643a2b459010a0eaa480325, type: 3}
+--- !u!4 &705267898 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5672946733639585834, guid: f2b9311cc643a2b459010a0eaa480325,
+    type: 3}
+  m_PrefabInstance: {fileID: 705267897}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &705267899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1964128455452615959, guid: f2b9311cc643a2b459010a0eaa480325,
+    type: 3}
+  m_PrefabInstance: {fileID: 705267897}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &729521206
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8101,6 +8119,7 @@ Transform:
   - {fileID: 2065629204}
   - {fileID: 1583225161}
   - {fileID: 639960209}
+  - {fileID: 705267898}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1820094401
@@ -9933,6 +9952,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
@@ -9984,84 +10006,85 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1595833902}
-  - {fileID: 1752458900}
-  - {fileID: 1763376477}
-  - {fileID: 169018134}
-  - {fileID: 1837577103}
-  - {fileID: 165170059}
-  - {fileID: 290435470}
-  - {fileID: 1994577262}
-  - {fileID: 62717469}
-  - {fileID: 921801931}
-  - {fileID: 986200633}
-  - {fileID: 630275912}
-  - {fileID: 355818480}
-  - {fileID: 539997867}
-  - {fileID: 876995361}
-  - {fileID: 687252794}
-  - {fileID: 1514843398}
   - {fileID: 1749519882}
-  - {fileID: 1360422166}
-  - {fileID: 640850819}
-  - {fileID: 2035246139}
   - {fileID: 873414903}
-  - {fileID: 552694554}
-  - {fileID: 1390015665}
-  - {fileID: 1628426585}
-  - {fileID: 1288157750}
-  - {fileID: 383915582}
-  - {fileID: 1047478493}
-  - {fileID: 1144514640}
-  - {fileID: 897645809}
-  - {fileID: 576304901}
-  - {fileID: 1383422094}
-  - {fileID: 779559127}
-  - {fileID: 1121462997}
-  - {fileID: 729521208}
-  - {fileID: 894264200}
-  - {fileID: 1780005190}
-  - {fileID: 1094937329}
-  - {fileID: 189138916}
-  - {fileID: 1656672963}
-  - {fileID: 1659040657}
-  - {fileID: 1893671894}
-  - {fileID: 1013679955}
-  - {fileID: 179389645}
-  - {fileID: 528265443}
-  - {fileID: 811740462}
-  - {fileID: 989942213}
-  - {fileID: 352009925}
   - {fileID: 1713575512}
-  - {fileID: 902916671}
-  - {fileID: 428474728}
-  - {fileID: 2133632994}
-  - {fileID: 1867442417}
+  - {fileID: 1628426585}
+  - {fileID: 249068092}
   - {fileID: 23520519}
-  - {fileID: 1258340347}
-  - {fileID: 1783299205}
-  - {fileID: 529590014}
+  - {fileID: 705267899}
+  - {fileID: 687252794}
+  - {fileID: 671004616}
+  - {fileID: 179389645}
+  - {fileID: 876995361}
+  - {fileID: 2035246139}
+  - {fileID: 355818480}
+  - {fileID: 189138916}
+  - {fileID: 1390015665}
+  - {fileID: 1094937329}
+  - {fileID: 2133632994}
+  - {fileID: 1893671894}
+  - {fileID: 1976994136}
+  - {fileID: 639960210}
+  - {fileID: 630275912}
+  - {fileID: 2032450225}
+  - {fileID: 986200633}
+  - {fileID: 729521208}
+  - {fileID: 157683860}
+  - {fileID: 1661686032}
+  - {fileID: 1994577262}
+  - {fileID: 989942213}
+  - {fileID: 1659040657}
+  - {fileID: 169018134}
+  - {fileID: 1066424701}
+  - {fileID: 352009925}
+  - {fileID: 539997867}
+  - {fileID: 1595833902}
+  - {fileID: 290435470}
+  - {fileID: 1837577103}
+  - {fileID: 1360422166}
+  - {fileID: 1013679955}
   - {fileID: 613348806}
   - {fileID: 197153047}
-  - {fileID: 946919533}
-  - {fileID: 2032450225}
-  - {fileID: 1913383373}
-  - {fileID: 1253389436}
-  - {fileID: 1066424701}
-  - {fileID: 607643533}
-  - {fileID: 1771786446}
-  - {fileID: 304915374}
-  - {fileID: 249068092}
-  - {fileID: 157683860}
-  - {fileID: 1976994136}
-  - {fileID: 1661686032}
-  - {fileID: 1892948685}
-  - {fileID: 671004616}
+  - {fileID: 1867442417}
   - {fileID: 2098021826}
-  - {fileID: 1196820893}
-  - {fileID: 154749236}
+  - {fileID: 921801931}
+  - {fileID: 894264200}
+  - {fileID: 1780005190}
+  - {fileID: 528265443}
+  - {fileID: 62717469}
+  - {fileID: 552694554}
+  - {fileID: 902916671}
+  - {fileID: 811740462}
+  - {fileID: 607643533}
+  - {fileID: 1288157750}
+  - {fileID: 1913383373}
   - {fileID: 1583225162}
-  - {fileID: 639960210}
+  - {fileID: 1752458900}
+  - {fileID: 640850819}
+  - {fileID: 529590014}
+  - {fileID: 1253389436}
+  - {fileID: 1121462997}
+  - {fileID: 1144514640}
+  - {fileID: 1383422094}
+  - {fileID: 165170059}
+  - {fileID: 1258340347}
+  - {fileID: 1783299205}
+  - {fileID: 1196820893}
+  - {fileID: 1771786446}
+  - {fileID: 428474728}
+  - {fileID: 1656672963}
+  - {fileID: 1514843398}
+  - {fileID: 897645809}
+  - {fileID: 1047478493}
+  - {fileID: 1763376477}
+  - {fileID: 154749236}
+  - {fileID: 779559127}
+  - {fileID: 1892948685}
+  - {fileID: 383915582}
+  - {fileID: 946919533}
+  - {fileID: 576304901}
+  - {fileID: 304915374}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -10483,4 +10506,3 @@ SceneRoots:
   - {fileID: 952868772}
   - {fileID: 1819177075}
   - {fileID: 755138440}
-  - {fileID: 705267897}

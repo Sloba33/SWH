@@ -6,6 +6,7 @@ public class Chapter : MonoBehaviour
 {
    
     [SerializeField] public TextMeshProUGUI chapterNameText;
+    public GameObject levelsPanel;
     public Image chapterImage;
 
     private void Awake()
