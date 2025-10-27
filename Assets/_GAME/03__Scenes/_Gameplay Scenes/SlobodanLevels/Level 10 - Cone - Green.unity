@@ -5637,6 +5637,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wood_Green_New
       objectReference: {fileID: 0}
+    - target: {fileID: 4586241151906607370, guid: e3b9067d4217d1442ab853f1cc37581c,
+        type: 3}
+      propertyPath: Weight
+      value: 17
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14127,6 +14132,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Wood_Green_New_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586241151906607370, guid: e3b9067d4217d1442ab853f1cc37581c,
+        type: 3}
+      propertyPath: Weight
+      value: 17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22783,6 +22793,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Obstacle_Cardboard_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+      propertyPath: Weight
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -31798,6 +31813,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wood_Green_New_2
       objectReference: {fileID: 0}
+    - target: {fileID: 4586241151906607370, guid: e3b9067d4217d1442ab853f1cc37581c,
+        type: 3}
+      propertyPath: Weight
+      value: 17
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -32845,6 +32865,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Obstacle_Cardboard_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
+        type: 3}
+      propertyPath: Weight
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -47938,6 +47963,8 @@ MonoBehaviour:
   isPulling: 0
   tutorialHandler: {fileID: 0}
   specialButton: {fileID: 3477240574997560888}
+  settings: {fileID: 0}
+  specialChargeImage: {fileID: 0}
   _isInteractable: 0
 --- !u!1 &884812664037741486
 GameObject:
@@ -55825,7 +55852,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2744728016033912553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56037,8 +56064,18 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: 0f5a0d5424ef2b74597966c8444ab7a0,
     type: 3}
   currentTime: 0
+  threeStarTime: 0
+  twoStarTime: 0
+  oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
   SpawnFallingObstacles: 0
   FallingObstacles:
   - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
