@@ -3737,6 +3737,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 148487046}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &150654961 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5953617630515698670, guid: 6b0e0b80d7569594ba39d1d422c99b47,
+    type: 3}
+  m_PrefabInstance: {fileID: 247730006}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &157142524
 GameObject:
   m_ObjectHideFlags: 0
@@ -6099,6 +6105,11 @@ PrefabInstance:
     - target: {fileID: 4451805851247758153, guid: 6b0e0b80d7569594ba39d1d422c99b47,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6694546399514946850, guid: 6b0e0b80d7569594ba39d1d422c99b47,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -52360,7 +52371,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 247730006}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 150654961}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa9c5bf30545a7442a2f69b58fd3b2e0, type: 3}
@@ -52573,7 +52584,7 @@ PrefabInstance:
         type: 3}
       propertyPath: dialogueBox
       value: 
-      objectReference: {fileID: 7358427168740354997}
+      objectReference: {fileID: 150654961}
     - target: {fileID: 6253680068863941257, guid: 266cdb07e3d2de749beb20b6a10df70e,
         type: 3}
       propertyPath: objectToTurnOn
@@ -54870,6 +54881,8 @@ MonoBehaviour:
   isPulling: 0
   tutorialHandler: {fileID: 0}
   specialButton: {fileID: 3477240574997560888}
+  settings: {fileID: 0}
+  specialChargeImage: {fileID: 0}
   _isInteractable: 0
 --- !u!1 &884812664037741486
 GameObject:
@@ -62969,8 +62982,18 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: f46ce02842a944241924107eee047b8a,
     type: 3}
   currentTime: 0
+  threeStarTime: 0
+  twoStarTime: 0
+  oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
   SpawnFallingObstacles: 0
   FallingObstacles:
   - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
