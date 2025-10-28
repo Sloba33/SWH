@@ -196,9 +196,59 @@ public class LevelGoal : MonoBehaviour
             CheckForMissingObstaclesAndSpawn(typeColorPair.Item1, typeColorPair.Item2);
         }
 
+        CheckForSingleColorSpawnOpportunity();
         // Clear the queue for the next frame
         _obstaclesDestroyedThisFrame.Clear();
         Debug.Log("ProcessDestroyedObstaclesInternal: Finished processing batch and cleared queue.");
+    }
+    private void CheckForSingleColorSpawnOpportunity()
+    {
+        ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
+
+        // Filter all relevant obstacles
+        var activeObstacles = ObstaclesToDestroy_Player
+            .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
+            .ToList();
+
+        // Count unique colors
+        var uniqueColors = new HashSet<ObstacleColor>(activeObstacles.Select(o => o.obstacleColor));
+
+        // Only proceed if exactly one color remains
+        if (uniqueColors.Count != 1)
+            return;
+
+        var remainingColor = uniqueColors.First();
+
+        // Determine the most common type of this color (to know what to spawn)
+        var obstaclesOfThatColor = activeObstacles.Where(o => o.obstacleColor == remainingColor).ToList();
+        if (obstaclesOfThatColor.Count == 0) return; // None left, color cleared
+
+        // Pick the first one as a representative (all same color anyway)
+        var sample = obstaclesOfThatColor[0];
+        var key = System.Tuple.Create(sample.obstacleType, sample.obstacleColor);
+
+        // Skip ignored types
+        if (ignoredTypes.Contains(sample.obstacleType))
+            return;
+
+        // Only spawn if 1 or 2 remain
+        int remaining = obstaclesOfThatColor.Count;
+        if (remaining > 0 && remaining < 3)
+        {
+            int toSpawn = 3 - remaining;
+
+            if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
+            {
+                Debug.LogWarning($"[SingleColorCheck] Missing template for {sample.obstacleType}-{sample.obstacleColor}");
+                return;
+            }
+
+            Debug.Log($"[SingleColorCheck] Only {remaining} {sample.obstacleType}-{sample.obstacleColor} left → spawning {toSpawn} more.");
+            for (int i = 0; i < toSpawn; i++)
+            {
+                StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
+            }
+        }
     }
 
     private void AddObstaclesToInitialCounts()
@@ -610,66 +660,72 @@ public class LevelGoal : MonoBehaviour
     // }
     private void CheckForMissingObstaclesAndSpawn(ObstacleType destroyedType, ObstacleColor destroyedColor)
     {
-        var keySuppressed = System.Tuple.Create(destroyedType, destroyedColor);
-        if (suppressedSpawnTypes.Contains(keySuppressed))
+        // --- Ignore irrelevant types completely ---
+        ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
+        if (ignoredTypes.Contains(destroyedType))
         {
-            Debug.Log($"CDOS: [SPAWN BLOCKED] Skipping spawn for {destroyedType}-{destroyedColor} due to recovery cleanup.");
+            Debug.Log($"[CDOS] Ignored type {destroyedType}, skipping spawn logic.");
             return;
         }
-        // NEW LOG
-        Debug.Log($"CDOS: Start for Type={destroyedType}, Color={destroyedColor}");
 
-        if (!Tutorial)
+        var key = System.Tuple.Create(destroyedType, destroyedColor);
+
+        // --- Skip suppressed types (used only after full cleanup) ---
+        if (suppressedSpawnTypes.Contains(key))
         {
-            int remainingCountForTypeColor = ObstaclesToDestroy_Player
-                                                 .Count(o => o != null && o.obstacleType == destroyedType && o.obstacleColor == destroyedColor);
+            Debug.Log($"[CDOS] Spawn blocked for {destroyedType}-{destroyedColor} (suppressed).");
+            return;
+        }
 
-            System.Tuple<ObstacleType, ObstacleColor> key = System.Tuple.Create(destroyedType, destroyedColor);
-            if (!initialObstacleCounts.TryGetValue(key, out int initialCount))
+        // --- Count active colors (excluding ignored types) ---
+        var activeColors = new HashSet<ObstacleColor>(
+            ObstaclesToDestroy_Player
+                .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
+                .Select(o => o.obstacleColor)
+        );
+
+        // Only spawn if exactly one color remains in the scene
+        if (activeColors.Count > 1)
+        {
+            Debug.Log($"[CDOS] Multiple colors remain ({string.Join(", ", activeColors)}). Skipping spawn.");
+            return;
+        }
+
+        // --- Determine how many of this type/color remain ---
+        int remaining = ObstaclesToDestroy_Player
+            .Count(o => o != null && o.obstacleType == destroyedType && o.obstacleColor == destroyedColor);
+
+        if (remaining >= 3)
+        {
+            Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: already has {remaining}, no need to spawn.");
+            return;
+        }
+
+        // ✅ Only trigger if there are 1 or 2 remaining (not 0)
+        if (remaining > 0 && remaining < 3)
+        {
+            int toSpawn = 3 - remaining;
+
+            if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
             {
-                Debug.LogWarning($"CDOS: Initial count for {destroyedType}-{destroyedColor} not found. Cannot determine if respawn is needed.");
+                Debug.LogWarning($"[CDOS] Missing template for {destroyedType}-{destroyedColor}, cannot spawn.");
                 return;
             }
 
-            // NEW LOGS
-            Debug.Log($"CDOS: Remaining for {destroyedType}-{destroyedColor}: {remainingCountForTypeColor}");
-            Debug.Log($"CDOS: Initial count for {destroyedType}-{destroyedColor}: {initialCount}");
-
-
-            if (remainingCountForTypeColor < 3 && initialCount >= 3)
+            Debug.Log($"[CDOS] Spawning {toSpawn} new recovery {destroyedType}-{destroyedColor} obstacles.");
+            for (int i = 0; i < toSpawn; i++)
             {
-                int neededToReachThree = 3 - remainingCountForTypeColor;
-                if (neededToReachThree > 0)
-                {
-                    Debug.Log($"CDOS: Spawning {neededToReachThree} of {destroyedType}-{destroyedColor} to enable match-3.");
-
-                    System.Tuple<ObstacleType, ObstacleColor> templateKey = System.Tuple.Create(destroyedType, destroyedColor);
-                    if (_obstacleTemplates.TryGetValue(templateKey, out Obstacle templateObstacle))
-                    {
-                        if (templateObstacle == null)
-                        {
-                            Debug.LogError($"CDOS Template obstacle for {destroyedType}-{destroyedColor} is null/destroyed! This should not happen.");
-                            return;
-                        }
-
-                        // NEW LOG
-                        Debug.Log($"CDOS: About to loop {neededToReachThree} times for spawning {templateObstacle.name}.");
-                        for (int i = 0; i < neededToReachThree; i++)
-                        {
-                            // NEW LOG
-                            Debug.Log($"CDOS: Spawning iteration {i + 1} of {neededToReachThree} for {templateObstacle.name}");
-                            StartCoroutine(SpawnSpecificFallingObstacle(templateObstacle, ObstacleSpawnFrequency, 0f));
-                            Debug.Log("$CDOS: Spawned a new obstacle of type {destroyedType} and color {destroyedColor} and name {templateObstacle.name}");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"CDOS Could not find template for {destroyedType}-{destroyedColor}. Make sure an initial instance exists in the scene and CreateObstacleTemplates ran correctly.");
-                    }
-                }
+                StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
             }
         }
+        else
+        {
+            // 0 left → color cleared → do nothing
+            Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: fully cleared, not spawning.");
+        }
     }
+
+
     private void FindAndAddTilesToList()
     {
         // Example: Find all obstacles in the scene. You might need to filter these.

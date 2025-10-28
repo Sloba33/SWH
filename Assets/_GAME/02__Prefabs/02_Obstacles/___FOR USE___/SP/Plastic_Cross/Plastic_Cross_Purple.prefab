@@ -102,16 +102,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 2716594035088818229, guid: 3b5621e9c14841d4a85a5ac47cad88bf,
     type: 3}
   obstacleSprite: {fileID: 21300000, guid: 2a782776303885549bcacb06353414e9, type: 3}
   obstacleFallPS: {fileID: 7602442951908165281, guid: 92ce7f324cf4a2146a11a0d3c8082354,
     type: 3}
-  fallIndicator: {fileID: 6784415547297523, guid: e465fa2fc14eccd4a95177df097e13db,
+  fallIndicator: {fileID: 6784415547297523, guid: 42a78800b08300e4b89ed3cf8b1f0e1a,
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 2
   obstacleColor: 9

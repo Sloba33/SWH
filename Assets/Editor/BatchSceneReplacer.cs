@@ -266,7 +266,7 @@ public class BatchSceneReplacer : EditorWindow
                     List<Obstacle> validObstacles = new();
                     foreach (var obs in obstacles)
                     {
-                        if (obs.obstacleType != ObstacleType.Metal && obs.obstacleType != ObstacleType.Concrete)
+                        if (obs.obstacleType != ObstacleType.Metal && obs.obstacleType != ObstacleType.Concrete && obs.obstacleType != ObstacleType.Cardboard)
                             validObstacles.Add(obs);
                     }
                     levelGoal.ObstaclesToDestroy_Player.Clear();
