@@ -4176,18 +4176,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 298885673}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &298885675 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
-    type: 3}
-  m_PrefabInstance: {fileID: 298885673}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &326985930
 GameObject:
   m_ObjectHideFlags: 0
@@ -7043,18 +7031,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 551234671}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &551234673 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
-    type: 3}
-  m_PrefabInstance: {fileID: 551234671}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &553771475
 GameObject:
   m_ObjectHideFlags: 0
@@ -15131,6 +15107,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Helmet_PowerUP
       objectReference: {fileID: 0}
+    - target: {fileID: 5282656863312337320, guid: e0cc3e844296e2947afc298f66a734d5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7162968851575994340, guid: e0cc3e844296e2947afc298f66a734d5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -16789,18 +16770,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1410281063}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1410281065 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7236831677288256046, guid: 0153bd70a4b921a4b891feb326c8d986,
-    type: 3}
-  m_PrefabInstance: {fileID: 1410281063}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1414733353
 GameObject:
   m_ObjectHideFlags: 0
@@ -26789,24 +26758,21 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1835943613}
-  - {fileID: 1455276950}
-  - {fileID: 298885675}
-  - {fileID: 1773842795}
   - {fileID: 977049369}
-  - {fileID: 2079926054}
-  - {fileID: 1843889989}
-  - {fileID: 551234673}
-  - {fileID: 665086010}
-  - {fileID: 1373868936}
-  - {fileID: 652925962}
-  - {fileID: 2081870543}
-  - {fileID: 1410281065}
-  - {fileID: 2116274895}
-  - {fileID: 629733874}
-  - {fileID: 637027983}
-  - {fileID: 563679024}
   - {fileID: 1744035801}
+  - {fileID: 1843889989}
+  - {fileID: 652925962}
+  - {fileID: 2116274895}
+  - {fileID: 1373868936}
+  - {fileID: 2081870543}
+  - {fileID: 1455276950}
+  - {fileID: 637027983}
+  - {fileID: 2079926054}
+  - {fileID: 665086010}
+  - {fileID: 629733874}
+  - {fileID: 563679024}
+  - {fileID: 1835943613}
+  - {fileID: 1773842795}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
