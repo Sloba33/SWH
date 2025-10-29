@@ -140,5 +140,6 @@ public class Pause : MonoBehaviour
 
         Time.timeScale = 1f;
         settings.pausePanel.SetActive(false);
+        
     }
 }

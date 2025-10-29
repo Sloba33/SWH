@@ -83,7 +83,10 @@ public class Player : MonoBehaviour
     {
 
         newMoveSpeed = Strength / obstacleWeight;
-
+        if (newMoveSpeed > StartingMoveSpeed)
+        {
+            newMoveSpeed = StartingMoveSpeed;
+        }
         return newMoveSpeed;
     }
     public void SpawnHelmet()
