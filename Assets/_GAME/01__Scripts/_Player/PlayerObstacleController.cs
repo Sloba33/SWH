@@ -58,6 +58,17 @@ public class PlayerObstacleController : MonoBehaviour
     {
         if (playerController.isPulling && pullObstacle != null && pullObstacle.isFalling)
         {
+            // **** NEW VALIDATION CHECK ****
+            // Check if the obstacle has fallen too far below the player
+            float yDifference = transform.position.y - pullObstacle.transform.position.y;
+            if (yDifference > 0.8f) // Assuming player height is ~1.0, 0.8f seems like a safe threshold
+            {
+                Debug.Log("Obstacle fell too far during repositioning. Stopping pull.");
+                StopPull(); // This will also stop the repositioning
+                return;
+            }
+            // ****************************
+
             // Prevent syncing Y if player is standing on anything
             if (!playerMovement.IsGrounded)
             {
@@ -77,6 +88,7 @@ public class PlayerObstacleController : MonoBehaviour
         if (isRepositioning)
         {
             HandleSmoothRepositioning();
+            ControlPlayerFallWhilePulling(); // Keep player Y synced *during* repositioning
         }
 
         if (!playerController.isPushing && previousPushObstacle != null)
@@ -85,12 +97,32 @@ public class PlayerObstacleController : MonoBehaviour
             previousPushObstacle = null;
         }
         HandlePush();
-        playerController._movement.SetPullConstraints(pullObstacle);
+        
+        // Removed: playerController._movement.SetPullConstraints(pullObstacle);
+
         if (playerController.isPulling && !playerController.pullButtonReleased)
         {
-            ControlPlayerFallWhilePulling();
-            HandlePull();
+            // This is the main "Pulling" loop
+
+            if (!isRepositioning && !_rb.isKinematic)
+            {
+                // State: Pull button is held, but we are not in position.
+                // Try to initiate the pull (which starts repositioning).
+                HandlePull_Initiate(); // Renamed from HandlePull
+            }
+            else if (!isRepositioning && _rb.isKinematic)
+            {
+                // State: Pull button is held, we are in position and kinematic.
+                // This is the active "Pulling" state.
+                HandlePull_Continue();
+            }
+            // else if (isRepositioning)
+            // {
+            //    // State: Pull button is held, we are moving into position.
+            //    // Handled by the isRepositioning block at the top of FixedUpdate.
+            // }
         }
+
         if (!pullConstraintsReset && !playerController.pullButtonHeld && playerController.pullButtonReleased)
         {
             Debug.Log("Pull stopped");
@@ -109,6 +141,12 @@ public class PlayerObstacleController : MonoBehaviour
             transform.position = targetPosition;
             isRepositioning = false;
             repositionProgress = 0f;
+
+            // **** NEW LOGIC ****
+            // Finished repositioning, now lock player for pulling
+            _rb.isKinematic = true; 
+            _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+            // *******************
         }
         else
         {
@@ -140,7 +178,7 @@ public class PlayerObstacleController : MonoBehaviour
     {
         // Debug.Log("[HandlePush] START");
         // Debug.Log($"isPulling: {playerController.isPulling}, justLanded: {playerMovement.justLanded}, justJumpedOutOfPush: {playerMovement.justJumpedOutOfPush}, linearVelocity.y: {_rb.linearVelocity.y}");
-        if (playerController.isPulling)
+        if (playerController.isPulling || isRepositioning) // Do not allow push while pulling or repositioning to pull
             return;
 
         if (playerMovement.justLanded && lastLandTime == 0f)
@@ -483,8 +521,12 @@ public class PlayerObstacleController : MonoBehaviour
     public float delayTimer;
     private bool started, ended;
 
-    public void HandlePull()
+    /// <summary>
+    /// Checks for a pullable obstacle and starts the repositioning process.
+    /// </summary>
+    public void HandlePull_Initiate()
     {
+        
         Ray ray = new Ray(transform.position, transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hitCollectible, 0.5f, playerController._movement._collectibleMask))
         {
@@ -501,49 +543,114 @@ public class PlayerObstacleController : MonoBehaviour
             if (pullObstacle != null && pullObstacle.grounded && pullObstacle.isPullable)
             {
                 pullObstacle.SphereFlags();
-                if (playerController.isPulling)
+                
+                // We know from FixedUpdate that isPulling is true, and we are not repositioning or kinematic.
+                playerController._movement.SetPullConstraints(pullObstacle); // Set flags (IsPulling=true, CanMove=false)
+
+                pullObstacle.playerController = playerController;
+                pullDirection = -playerController._movement.GetFacingDirection();
+
+                if (playerCollider == null)
                 {
-                    playerController._movement.CanMove = false;
-                    pullObstacle.playerController = playerController;
-                    pullDirection = -playerController._movement.GetFacingDirection();
-
-                    if (playerCollider == null)
-                    {
-                        Debug.LogError("Player collider not assigned. Cannot snap during pull.");
-                        StopPull();
-                        return;
-                    }
-
-                    Vector3 normalizedPullDirection = pullDirection.normalized;
-                    float obstacleHalfSize = 0.5f;
-                    float playerHalfSize = ((CapsuleCollider)playerCollider).radius;
-
-                    Vector3 targetPlayerPosition = pullObstacle.transform.position +
-                        (normalizedPullDirection * (obstacleHalfSize + playerHalfSize + pullDistance));
-
-                    // Dynamic reposition speed based on player velocity
-                    float playerSpeed = _rb.linearVelocity.magnitude;
-                    float dynamicRepositionSpeed = Mathf.Max(pullRepositionSpeed, playerSpeed * 2f);
-
-                    StartSmoothRepositioning(targetPlayerPosition, dynamicRepositionSpeed);
-
-                    movementDirection = Vector3.zero;
-                    pullConstraintsReset = false;
-                    if (pullObstacle.MoveOverride) _anim.SetBool("Pull", true);
-                    else
-                        StartPull(pullObstacle);
+                    Debug.LogError("Player collider not assigned. Cannot snap during pull.");
+                    StopPull();
+                    return;
                 }
+
+                Vector3 normalizedPullDirection = pullDirection.normalized;
+                float obstacleHalfSize = 0.5f;
+                float playerHalfSize = ((CapsuleCollider)playerCollider).radius;
+
+                Vector3 targetPlayerPosition = pullObstacle.transform.position +
+                    (normalizedPullDirection * (obstacleHalfSize + playerHalfSize + pullDistance));
+                
+                // Ensure target Y is player's current Y to prevent vertical snapping during reposition
+                targetPlayerPosition.y = transform.position.y; 
+
+                // Dynamic reposition speed based on player velocity
+                float playerSpeed = _rb.linearVelocity.magnitude;
+                float dynamicRepositionSpeed = Mathf.Max(pullRepositionSpeed, playerSpeed * 2f);
+
+                StartSmoothRepositioning(targetPlayerPosition, dynamicRepositionSpeed); // This sets isRepositioning = true
+
+                movementDirection = Vector3.zero;
+                pullConstraintsReset = false;
+                _anim.SetBool("Pull", true); // Start animation
+                _anim.SetBool("Idle", false);
+                
+                // DO NOT CALL StartPull(pullObstacle);
             }
         }
         else
         {
+            // No obstacle found, but pull button is held. Stop.
             StopPull();
         }
-
-
-
-
     }
+
+
+    /// <summary>
+    /// Runs every FixedUpdate while player is kinematic and pulling.
+    /// Moves the obstacle and "attaches" the player to it to prevent jitter.
+    /// </summary>
+    private void HandlePull_Continue()
+    {
+        if (pullObstacle == null)
+        {
+            StopPull();
+            return;
+        }
+
+        // **** NEW VALIDATION CHECK ****
+        // Check if the obstacle has fallen too far below the player
+        float yDifference = transform.position.y - pullObstacle.transform.position.y;
+        if (yDifference > 0.8f) // Assuming player height is ~1.0, 0.8f seems like a safe threshold
+        {
+            Debug.Log("Obstacle fell too far below player. Stopping pull.");
+            StopPull();
+            return;
+        }
+        // ****************************
+
+
+        // --- 1. Move the Obstacle ---
+        pullDirection = -playerController._movement.GetFacingDirection();
+        if (pullObstacle.MoveOverride)
+        {
+            _anim.SetBool("Pull", true); // Ensure anim is playing
+        }
+        else
+        {
+            // StartPull is now modified to ONLY move the obstacle
+            StartPull(pullObstacle); 
+        }
+
+        // --- 2. "Attach" Player to Obstacle ---
+        Vector3 normalizedPullDirection = pullDirection.normalized;
+        float obstacleHalfSize = 0.5f;
+        float playerHalfSize = ((CapsuleCollider)playerCollider).radius;
+        float offsetDistance = obstacleHalfSize + playerHalfSize + pullDistance;
+        Vector3 offset = normalizedPullDirection * offsetDistance;
+
+        Vector3 targetPlayerPosition = pullObstacle.transform.position + offset;
+
+        // --- 3. Handle Falling (Replaces ControlPlayerFallWhilePulling) ---
+        if (pullObstacle.isFalling && !playerMovement.IsGrounded)
+        {
+             targetPlayerPosition.y = pullObstacle.transform.position.y;
+        }
+        else
+        {
+             // Maintain player's current Y if they are grounded or obstacle is grounded
+             targetPlayerPosition.y = transform.position.y; 
+        }
+
+        _rb.MovePosition(targetPlayerPosition);
+    }
+
+    /// <summary>
+    /// This function now ONLY moves the obstacle. The player is moved in HandlePull_Continue.
+    /// </summary>
     void StartPull(Obstacle obs)
     {
         if (!_anim.GetBool("Pull"))
@@ -555,14 +662,16 @@ public class PlayerObstacleController : MonoBehaviour
         if (obs != null && !playerController.AI) obs.currentlyUsedPlayerConrtoller = playerController;
         float speed = player.PushAndPullSpeed(obs.Weight);
         obs.PullObstacle(pullDirection, speed, playerController._movement.obstacleBehind);
-        _rb.MovePosition(_rb.transform.position + pullDirection * speed * Time.fixedDeltaTime);
+        
+        // --- REMOVED THIS LINE ---
+        // _rb.MovePosition(_rb.transform.position + pullDirection * speed * Time.fixedDeltaTime);
     }
     void StopPull()
     {
         if (!playerController.AI)
             AudioManager.Instance.StopObstacleSound_Move();
 
-        playerMovement.ResetPullConstraints(pullObstacle);
+        playerMovement.ResetPullConstraints(pullObstacle); // This resets kinematic state
 
         if (pullObstacle != null)
         {
@@ -572,6 +681,9 @@ public class PlayerObstacleController : MonoBehaviour
 
         pullObstacle = null;
         playerController.StopPull();
+
+        isRepositioning = false; // Reset repositioning flag
+        repositionProgress = 0f; // Reset repositioning progress
     }
 
     [SerializeField] private float manualPushDistance = 0.1f; // Manually control how far the player should stand from the obstacle

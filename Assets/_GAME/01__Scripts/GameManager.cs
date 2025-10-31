@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     public GoalSetter playerGoalSetter, AIGoalSetter;
     public bool ShouldHaveMainMenuButton;
     public bool SendsBackToMainMenu;
+    public List<Obstacle> ObstaclesToModify = new List<Obstacle>();
+    public float ObstacleWeightModifier = 1f;
     public static GameManager Instance
     {
         get
@@ -60,7 +62,7 @@ public class GameManager : MonoBehaviour
     public bool Testing;
     private void Start()
     {
-       
+
         if (Application.isMobilePlatform)
         {
             int wid = Screen.width;
@@ -100,7 +102,12 @@ public class GameManager : MonoBehaviour
                 AIGoalSetter = goalSetters[1];
                 playerGoalSetter = goalSetters[0];
             }
+        ObstaclesToModify = new List<Obstacle>(FindObjectsOfType<Obstacle>());
+        for (int i = 0; i < ObstaclesToModify.Count; i++)
+        {
+            ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
 
+        }
     }
     public float fragScaleFactor = 1;
 

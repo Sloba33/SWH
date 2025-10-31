@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-
 public class Settings : MonoBehaviour
 {
     public GameObject winPanelPrefab, losePanelPrefab, pausePanelPrefab;
@@ -23,12 +22,10 @@ public class Settings : MonoBehaviour
                {
                    cameraController.RotateRight();
                });
-        Debug.Log("ADDED CAMERA ONCLICK");
         rotateRight.onClick.AddListener(() =>
         {
             cameraController.RotateLeft();
         });
-        Debug.Log("ADDED CAMERA ONCLICK");
         zoomIn.onClick.AddListener(() =>
           {
               cameraController.ZoomIn();
@@ -52,12 +49,17 @@ public class Settings : MonoBehaviour
     }
     public void ActivatePausePanel()
     {
-
         if (pausePanel != null)
+        {
+            Debug.Log("Toggling pause panel to " + !pausePanel.activeSelf);
             pausePanel.SetActive(!pausePanel.activeSelf);
+        }
         else
         {
             pausePanel = Instantiate(pausePanelPrefab, transform.parent);
+            Debug.Log("Spawning pause panel to ");
+
+
             pausePanel.gameObject.SetActive(true);
         }
 

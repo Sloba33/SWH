@@ -301,7 +301,7 @@ public class PlayerControllerAI : MonoBehaviour
         // Start pulling the obstacle
         playerController.pullButtonHeld = true;
         playerController.pullButtonReleased = false;
-        playerObstacleController.HandlePull();
+        playerObstacleController.HandlePull_Initiate();
 
         // Ensure the player moves backward while pulling
         // Vector3 pullDirection = -transform.forward;
@@ -314,7 +314,7 @@ public class PlayerControllerAI : MonoBehaviour
         {
             // playerController._dir = pullDirection;
 
-            playerObstacleController.HandlePull();
+            playerObstacleController.HandlePull_Initiate();
             elapsedTime += Time.deltaTime;
             yield return null;
         }

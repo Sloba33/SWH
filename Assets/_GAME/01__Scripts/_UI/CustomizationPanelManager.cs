@@ -91,7 +91,11 @@ public class CustomizationPanelManager : MonoBehaviour
     {
         foreach (CustomizationTab tab in customizationTabs)
         {
-            if (tab.tabType != CustomizationTab.TabType.Character) tab.GetComponent<Button>().interactable = state;
+            if (tab.tabType != CustomizationTab.TabType.Character)
+            {
+                Debug.Log("Setting tab :" + tab.name + " interactable to :" + state);
+                tab.GetComponent<Button>().interactable = state;
+            }
         }
     }
     public void ToggleEditingTabs(bool state)

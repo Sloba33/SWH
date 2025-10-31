@@ -1458,6 +1458,89 @@ Transform:
   - {fileID: 1042293628}
   m_Father: {fileID: 1298911971}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &70827833
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.249861
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2461569
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2042742
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.4869
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.4775
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005778797779658199, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6002763800007450696, guid: 0241fa5ec12eb6b4f880303e9a83a911,
+        type: 3}
+      propertyPath: m_Name
+      value: Square_Frame_3D_7x7
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0241fa5ec12eb6b4f880303e9a83a911, type: 3}
 --- !u!1 &72305184
 GameObject:
   m_ObjectHideFlags: 0
@@ -42401,6 +42484,8 @@ MonoBehaviour:
   AIGoalSetter: {fileID: 0}
   ShouldHaveMainMenuButton: 0
   SendsBackToMainMenu: 0
+  ObstaclesToModify: []
+  ObstacleWeightModifier: 1.4
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -43664,7 +43749,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2008203287
 Transform:
   m_ObjectHideFlags: 0
@@ -48495,6 +48580,8 @@ MonoBehaviour:
   isPulling: 0
   tutorialHandler: {fileID: 0}
   specialButton: {fileID: 3477240574997560888}
+  settings: {fileID: 0}
+  specialChargeImage: {fileID: 0}
   _isInteractable: 0
 --- !u!1 &884812664037741486
 GameObject:
@@ -56594,8 +56681,18 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: 499ff3cece66727498dcdef8ef0d8ae4,
     type: 3}
   currentTime: 0
+  threeStarTime: 0
+  twoStarTime: 0
+  oneStarTime: 0
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
   SpawnFallingObstacles: 0
   FallingObstacles:
   - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
@@ -115956,3 +116053,4 @@ SceneRoots:
   - {fileID: 1985443510}
   - {fileID: 906542016}
   - {fileID: 518503509}
+  - {fileID: 70827833}

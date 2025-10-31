@@ -567,7 +567,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            return CurrentTile.transform.position + facingDirection; //
+            return CurrentTile.transform.position + facingDirection;
         }
     }
 
@@ -604,16 +604,19 @@ public class PlayerMovement : MonoBehaviour
 
     /// <summary>
     /// Applies constraints and disables movement during pull.
+    /// This is now modified to ONLY set flags, not change kinematic state.
     /// </summary>
     public void SetPullConstraints(Obstacle obstacle = null)
     {
-        if (obstacle != null && obstacle.grounded)
+        if (obstacle != null && (obstacle.grounded || obstacle.isFalling)) // Allow pulling falling blocks
         {
             IsPulling = true;
             IsPushing = false;
             CanMove = false;
-            _rb.isKinematic = true;
-            _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+            
+            // --- REMOVED ---
+            // _rb.isKinematic = true;
+            // _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
         }
     }
 
@@ -642,5 +645,6 @@ public class PlayerMovement : MonoBehaviour
             obstacle.ResetObstacle();
         }
     }
+
 
 }

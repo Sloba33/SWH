@@ -20,6 +20,8 @@ public class BatchSceneReplacer : EditorWindow
     public bool ShouldFixLevelGoal;
     public bool OffsetEnvironment;
     public bool ShouldReplaceSceneName;
+    public bool ShouldFixObstacleWeights;
+
 
     [Header("Environment Settings")]
     public GameObject environmentPrefab;
@@ -46,6 +48,12 @@ public class BatchSceneReplacer : EditorWindow
     [Header("Name Replace Settings")]
     public string TargetString = "ToyFactory";
     public string ResultString = "City";
+    
+    [Header("Obstacle Weight Modifier")]
+    public float ObstacleWeightModifier = 1f;
+    public bool UseIncrementalWeight;
+    public float WeightIncrement = 0.03f;
+    public int ScenesPerIncrement = 3;
 
     [MenuItem("Tools/Batch Scene Fixer")]
     public static void ShowWindow()
@@ -132,6 +140,20 @@ public class BatchSceneReplacer : EditorWindow
             TargetString = EditorGUILayout.TextField("Target String", TargetString);
             ResultString = EditorGUILayout.TextField("Result String", ResultString);
         }
+        
+        // --- Obstacle Weight Modifier ---
+        ShouldFixObstacleWeights = EditorGUILayout.Toggle("Modify Obstacle Weights", ShouldFixObstacleWeights);
+        using (new EditorGUI.DisabledScope(!ShouldFixObstacleWeights))
+        {
+            ObstacleWeightModifier = EditorGUILayout.FloatField("Base Weight Modifier", ObstacleWeightModifier);
+            
+            UseIncrementalWeight = EditorGUILayout.Toggle("Use Incremental Weight", UseIncrementalWeight);
+            using (new EditorGUI.DisabledScope(!UseIncrementalWeight))
+            {
+                WeightIncrement = EditorGUILayout.FloatField("Weight Increment", WeightIncrement);
+                ScenesPerIncrement = EditorGUILayout.IntField("Scenes Per Increment", ScenesPerIncrement);
+            }
+        }
 
         EditorGUILayout.Space();
         if (GUILayout.Button("Fix All Scenes"))
@@ -144,6 +166,9 @@ public class BatchSceneReplacer : EditorWindow
 
     private void FixScenes()
     {
+        int sceneCounter = 0;
+        float currentWeightModifier = ObstacleWeightModifier;
+
         foreach (SceneAsset sceneAsset in scenesToFix)
         {
             if (sceneAsset == null) continue;
@@ -290,11 +315,34 @@ public class BatchSceneReplacer : EditorWindow
                 Debug.LogWarning($"No LevelGoal found in scene {scene.name}");
             }
 
+            // --- Fix Obstacle Weights ---
+            if (ShouldFixObstacleWeights)
+            {
+                GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+                if (gm != null)
+                {
+                    // Calculate the current weight modifier based on incremental settings
+                    float weightToApply = ObstacleWeightModifier;
+                    
+                    if (UseIncrementalWeight && ScenesPerIncrement > 0)
+                    {
+                        int incrementGroup = sceneCounter / ScenesPerIncrement;
+                        weightToApply = ObstacleWeightModifier + (incrementGroup * WeightIncrement);
+                    }
+                    
+                    gm.ObstacleWeightModifier = weightToApply;
+                    modified = true;
+                    Debug.Log($"Set obstacle weight modifier to {weightToApply} in scene {scene.name} (scene #{sceneCounter + 1})");
+                }
+            }
+
             if (modified)
             {
                 EditorSceneManager.MarkSceneDirty(scene);
                 EditorSceneManager.SaveScene(scene);
             }
+
+            sceneCounter++;
         }
 
         AssetDatabase.SaveAssets();
