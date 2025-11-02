@@ -5920,6 +5920,74 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd806eb82ac02b84f9152191e0018e9a, type: 3}
+--- !u!1001 &1316964046
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 266093931455438587, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_Name
+      value: Rocket
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.86709595
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9238798
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.38268274
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9fb5b008e2749b249a1265e747440c9b, type: 3}
 --- !u!1 &1318119972
 GameObject:
   m_ObjectHideFlags: 0
@@ -9048,6 +9116,8 @@ MonoBehaviour:
   AIGoalSetter: {fileID: 0}
   ShouldHaveMainMenuButton: 0
   SendsBackToMainMenu: 0
+  ObstaclesToModify: []
+  ObstacleWeightModifier: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -11153,6 +11223,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles:
   - item: {fileID: 6889721395128037314, guid: 38a48ca577edf0d4d806476876d62ad1, type: 3}
     count: 12
@@ -15138,3 +15211,4 @@ SceneRoots:
   - {fileID: 435395952}
   - {fileID: 1865820724}
   - {fileID: 1253567420}
+  - {fileID: 1316964046}

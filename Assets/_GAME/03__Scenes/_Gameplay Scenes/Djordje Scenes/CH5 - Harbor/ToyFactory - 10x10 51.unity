@@ -3268,6 +3268,74 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd806eb82ac02b84f9152191e0018e9a, type: 3}
+--- !u!1001 &1302231316
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458437943206846959, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7444141568096717815, guid: 576e207dc8f004547a1c48daf9cda4fe,
+        type: 3}
+      propertyPath: m_Name
+      value: EnergyPowerUP
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 576e207dc8f004547a1c48daf9cda4fe, type: 3}
 --- !u!1 &1318119972
 GameObject:
   m_ObjectHideFlags: 0
@@ -4764,6 +4832,8 @@ MonoBehaviour:
   AIGoalSetter: {fileID: 0}
   ShouldHaveMainMenuButton: 0
   SendsBackToMainMenu: 0
+  ObstaclesToModify: []
+  ObstacleWeightModifier: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -10494,3 +10564,4 @@ SceneRoots:
   - {fileID: 830756045}
   - {fileID: 1840771662}
   - {fileID: 379655921}
+  - {fileID: 1302231316}

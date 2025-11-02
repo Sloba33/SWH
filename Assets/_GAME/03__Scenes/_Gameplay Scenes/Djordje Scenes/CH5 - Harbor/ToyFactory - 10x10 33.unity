@@ -25572,6 +25572,8 @@ MonoBehaviour:
   AIGoalSetter: {fileID: 0}
   ShouldHaveMainMenuButton: 0
   SendsBackToMainMenu: 0
+  ObstaclesToModify: []
+  ObstacleWeightModifier: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -30329,6 +30331,9 @@ MonoBehaviour:
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
   fixedFallingObstacles:
   - item: {fileID: 6889721395128037314, guid: 38a48ca577edf0d4d806476876d62ad1, type: 3}
     count: 12
@@ -30402,9 +30407,9 @@ MonoBehaviour:
     weight: 3
   - item: {fileID: 266093931455438587, guid: 9fb5b008e2749b249a1265e747440c9b, type: 3}
     weight: 2
-  - item: {fileID: 7335002144845053451, guid: 71c07529ef231c447bb10d275e121ab8, type: 3}
+  - item: {fileID: 6989674221227821592, guid: a79fe9a367d3f1447b8a4a0b3bd2ede2, type: 3}
     weight: 4
-  - item: {fileID: 7335002144845053451, guid: 71c07529ef231c447bb10d275e121ab8, type: 3}
+  - item: {fileID: 7444141568096717815, guid: 576e207dc8f004547a1c48daf9cda4fe, type: 3}
     weight: 4
   - item: {fileID: 5282656863312337320, guid: e0cc3e844296e2947afc298f66a734d5, type: 3}
     weight: 4
