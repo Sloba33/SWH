@@ -43,6 +43,11 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
             string characterName = characters[i].characterStats.characterName;
             bool unlocked = PlayerPrefs.GetInt(characters[i].characterStats.characterName) == 1;
+            if(PlayerPrefs.GetInt(characterName + "_level", 0) >= 6)
+            {
+                Debug.Log("------ Character " + characters[i].characterStats.characterName + " is at max level, skipping upgrade check ------");
+                continue; // Skip characters that are already at max level
+            }
             if (unlocked)
             {
                 Debug.Log("------ Checking if we have available upgrades for character: " + characters[i].characterStats.characterName + " ------");
@@ -614,8 +619,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         {
             // Increase character level and stats
             currentLevel++;
-            // float newStrength = PlayerPrefs.GetFloat(charName + "_strength", currentCharacter.characterStats.strength)
-            //                     + ((currentCharacter.characterStats.strength / 4) * currentCharacter.characterStats.strenghtMultiplier);
+        ;
             float newStrength = PlayerPrefs.GetFloat(charName + "_strength", currentCharacter.characterStats.strength)
            + currentCharacter.characterStats.strenghtMultiplier;
 
@@ -648,9 +652,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             audioObject.GetComponent<AudioSource>().clip = audioClip;
             audioObject.GetComponent<AudioSource>().Play();
             Destroy(audioObject, audioObject.GetComponent<AudioSource>().clip.length);
-            // AudioManager.Instance.PlaySound(2);
-            // AudioManager.Instance.PlaySound(2);
-            // characterPickerManager.levelImage.KillAllTweens();
+
             if (!DOTween.IsTweening(characterPickerManager.levelImage))
             {
                 characterPickerManager.levelImage.DOPunchScale(new Vector3(0.6f, 0.6f, 0.6f), 0.75f, 1).Play();

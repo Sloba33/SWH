@@ -12,7 +12,7 @@ public class CharacterPickerManager : MonoBehaviour
     public List<CharacterSelector> characterSelectors = new();
     public CharacterSelector currentCharacter;
     public Transform content;
-    public Button upgradeButton, purchaseButton, adRewardButton;
+    public Button upgradeButton, purchaseButton, adRewardButton, maxButton;
     public TextMeshProUGUI upgradePriceText_coins, upgradePriceText_money, buyPriceText, adRewardText;
     public RectTransform levelImage;
     private CharacterSelector previousCharacter;
@@ -66,7 +66,7 @@ public class CharacterPickerManager : MonoBehaviour
         int index = PlayerPrefs.GetInt("SelectedCharacterID", 0);
         return characterSelectors[index].playerMenu;
     }
-
+    private int maxLevel = 6;
     public void UpdateCharacterStats()
     {
         Debug.Log("Current character is :" + currentCharacter);
@@ -112,15 +112,19 @@ public class CharacterPickerManager : MonoBehaviour
 
 
                 // Disable upgrade button if level is maxed
-                if (lvl >= 6)
+                if (lvl >= maxLevel)
                 {
-                    Debug.Log("Level was higher than 6");
+                    Debug.Log("Maxed");
                     upgradeButton.interactable = false;
+                    maxButton.gameObject.SetActive(true);
+                    upgradeButton.gameObject.SetActive(false);
                 }
                 else
                 {
-                    Debug.Log("Level was lower than 6");
+
                     upgradeButton.interactable = true;
+                    maxButton.gameObject.SetActive(false);
+                    upgradeButton.gameObject.SetActive(true);
                 }
             }
             else if (!currentCharacter.isAdReward && !currentCharacter.unlocked)
@@ -145,12 +149,17 @@ public class CharacterPickerManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Toby is unlocked?: " + currentCharacter.unlocked);
+
                 adRewardButton.gameObject.SetActive(true);
                 purchaseButton.gameObject.SetActive(false);
                 upgradeButton.gameObject.SetActive(false);
                 adRewardText.text = GetCharacterAdTokensAmount(currentCharacter.characterStats).ToString() + " / " + currentCharacter.characterStats.Ad_unlock_price;
                 currentCharacter.characterStats.Ad_Tokens = GetCharacterAdTokensAmount(currentCharacter.characterStats);
+                if (!TrophyRoadTempFlag)
+                {
+                    Debug.Log("Trophy road flag was false, meaning we didnt call  it from  trophy road");
+                    StartCoroutine(HandleFillBars(str, speed, special, lvl));
+                }
             }
             if (currentCharacter.customizationPanelManager != null)
                 if (!currentCharacter.isEditable || !currentCharacter.unlocked)
@@ -169,12 +178,14 @@ public class CharacterPickerManager : MonoBehaviour
     {
         if (uiEffect != null)
         {
+            Debug.Log("Removing UI Effect from previous character");
             uiEffect.enabled = false;
             uiEffect = null;
         }
-
+        Debug.LogWarning("Currently selected character for UI effect :" + currentlySelectedCharacter);
         uiEffect = currentlySelectedCharacter.GetComponent<UIEffect>();
-        if (currentlySelectedCharacter.uiEffect != null)
+        Debug.Log("UI Effect found: " + uiEffect);
+        if (uiEffect != null)
         {
             uiEffect.enabled = true;
             if (unlocked)
@@ -191,22 +202,29 @@ public class CharacterPickerManager : MonoBehaviour
             Debug.LogWarning("UIShadow component not found on the character selector.");
         }
     }
-    public void UpgradeStrength(float amount)
-    {
-        currentCharacter.playerMenu.characterStats.strength += amount;
-        SaveCharacterStats();
-        UpdateCharacterStats();
-    }
+
 
     public IEnumerator HandleFillBars(float str, float spd, float spc, int lvl)
     {
-        if (lvl == 6)
+        if (lvl == maxLevel)
         {
             str = currentCharacter.playerMenu.characterStats.maxStrenght;
             spd = currentCharacter.playerMenu.characterStats.maxSpeed;
             spc = currentCharacter.playerMenu.characterStats.maxSpecial;
+            int tarStr = (int)(str * 10);
+            int tarSpd = (int)(spd * 100);
+            int tarSpc = (int)(spc * 10);
+            // Update text fields
+            mainMenuManager.strengthStatText.text = tarStr.ToString();
+            mainMenuManager.speedStatText.text = tarSpd.ToString() + "";
+            mainMenuManager.specialStatText.text = tarSpc.ToString() + "";
+            mainMenuManager.strengthFillBar.fillAmount = 1;
+            mainMenuManager.speedFillBar.fillAmount = 1;
+            mainMenuManager.specialFillBar.fillAmount = 1;
+            Debug.Log("Breaking Coroutine at max level");
+            yield break;
         }
-
+        Debug.Log("Continuing Coroutine - not max level");
         // Base fill calculations for strength, speed, and special power
         float baseStrengthFill = currentCharacter.playerMenu.characterStats.strength / 20;
         float strengthFillChunk = (1 - baseStrengthFill) / 6;
