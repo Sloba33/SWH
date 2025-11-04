@@ -56,17 +56,28 @@ public class PlayerAnimation : MonoBehaviour
         bool isMoving = CurrentMoveDirection != Vector3.zero;
         bool isRunning = isMoving && IsGrounded && MoveSpeed >= 3f;
         bool isWalking = isMoving && IsGrounded && MoveSpeed < 3f;
+        bool isAttacking = IsAttacking(); // NEW: Check attack state
 
-        // Prioritize states
-        if (_playerController.isPushing || _playerMovement.IsPushing)
+        // **** HIGHEST PRIORITY: Attack states ****
+        if (isAttacking)
         {
-            var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
-            UnityEngine.Debug.LogWarning($"Set to push:\n{stackTrace}");
-            return PlayerAnimState.Push;
+            if (_anim.GetBool("HitDown"))
+                return PlayerAnimState.HitDown;
+            else if (_anim.GetBool("Hit") || _anim.GetBool("HitSpecial"))
+                return PlayerAnimState.Hit;
         }
-        if (_playerMovement.IsPulling)
-            return PlayerAnimState.Pull;
 
+        // **** SECOND PRIORITY: Push/Pull states (but not during attacks) ****
+        if (!isAttacking)
+        {
+            if (_playerController.isPushing || _playerMovement.IsPushing)
+                return PlayerAnimState.Push;
+
+            if (_playerMovement.IsPulling)
+                return PlayerAnimState.Pull;
+        }
+
+        // **** MOVEMENT STATES ****
         if (IsJumping)
             return PlayerAnimState.Jump;
 
@@ -80,18 +91,18 @@ public class PlayerAnimation : MonoBehaviour
             if (isWalking)
                 return PlayerAnimState.Walk;
 
-            if (!isMoving && (!_playerMovement.IsPushing || !_playerController.isPushing) && !_playerMovement.IsPulling)
+            if (!isMoving && !isAttacking && !_playerMovement.IsPulling)
             {
-                // Debug.Log("REASONING :" + !isMoving + " " + (!_playerMovement.IsPushing || !_playerController.isPushing) + " " + !_playerMovement.IsPulling);
-                var stackTrace = new System.Diagnostics.StackTrace(1, true); // Skip the property setter itself
-                // UnityEngine.Debug.LogWarning($"Set to Idle:\n{stackTrace}");
                 return PlayerAnimState.Idle;
             }
         }
 
         return CurrentAnimState; // Fallback
     }
-
+    private bool IsAttacking()
+    {
+        return _anim.GetBool("Hit") || _anim.GetBool("HitSpecial") || _anim.GetBool("HitDown");
+    }
     private void EnterState(PlayerAnimState state)
     {
         _anim.SetBool("Grounded", IsGrounded);
@@ -105,6 +116,7 @@ public class PlayerAnimation : MonoBehaviour
         _anim.SetBool("Dead", false);
         _anim.SetBool("Pull", false);
         _anim.SetBool("Push", false);
+        _anim.SetBool("HitSpecial", false); // NEW
 
         switch (state)
         {
@@ -132,6 +144,9 @@ public class PlayerAnimation : MonoBehaviour
                 break;
             case PlayerAnimState.Dead:
                 _anim.SetBool("Dead", true);
+                break;
+            case PlayerAnimState.HitSpecial:
+                _anim.SetBool("HitSpecial", true);
                 break;
             case PlayerAnimState.Pull:
                 _anim.SetBool("Pull", true);
@@ -194,5 +209,6 @@ public enum PlayerAnimState
     HitDown,
     Dead,
     Pull,
-    Push
+    Push,
+    HitSpecial
 }

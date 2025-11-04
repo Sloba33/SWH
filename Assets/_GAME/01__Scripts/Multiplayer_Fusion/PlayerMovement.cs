@@ -444,7 +444,7 @@ public class PlayerMovement : MonoBehaviour
 #endif
         Ray rayBack = new Ray(transform.position, transform.forward * -1);
         RaycastHit hitBack;
-        obstacleBehind = Physics.Raycast(rayBack, out hitBack, 0.6f, _behindObstacleMask);
+        obstacleBehind = Physics.Raycast(rayBack, out hitBack, 0.5f, _behindObstacleMask);
         // if (obstacleBehind) Debug.Log("Theres an obstacle behind");
         /**
        **Forward Cast
@@ -608,15 +608,19 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     public void SetPullConstraints(Obstacle obstacle = null)
     {
-        if (obstacle != null && (obstacle.grounded || obstacle.isFalling)) // Allow pulling falling blocks
+        // **** ADD ATTACK CHECK ****
+        PlayerAttack playerAttack = GetComponent<PlayerAttack>();
+        if (playerAttack != null && playerAttack.IsAttacking())
+        {
+            Debug.Log("Cannot set pull constraints while attacking");
+            return;
+        }
+
+        if (obstacle != null && (obstacle.grounded || obstacle.isFalling))
         {
             IsPulling = true;
             IsPushing = false;
             CanMove = false;
-            
-            // --- REMOVED ---
-            // _rb.isKinematic = true;
-            // _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
         }
     }
 

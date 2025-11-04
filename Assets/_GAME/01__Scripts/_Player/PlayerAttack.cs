@@ -108,7 +108,10 @@ public class PlayerAttack : MonoBehaviour
         }
         else return null;
     }
-
+    public bool IsAttacking()
+    {
+        return _anim.GetBool("Hit") || _anim.GetBool("HitSpecial") || _anim.GetBool("HitDown");
+    }
     public void Hit()
     {
 
