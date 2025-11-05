@@ -170,9 +170,9 @@ public class TrophyRoadManager : MonoBehaviour
         }
 
     }
-
     private void GrantReward(TrophyRoadReward reward)
-    { Debug.Log("Granting +Reward");
+    { Debug.Log("Granting +Reward in TR");
+    
         // Implement logic to grant reward based on type
         switch (reward.rewardType)
         {
