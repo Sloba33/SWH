@@ -27,8 +27,8 @@ public class TrophyRoadManager : MonoBehaviour
         customScrollTrophyRoad = FindObjectOfType<CustomScrollTrophyRoad>(true);
         characterTokenManager = FindObjectOfType<CharacterTokenManager>(true);
         SetTrophiesAtStart();
-            Debug.Log("Trophy road child count :" + trophyRoadFillParent.childCount);
-            Debug.Log("Trophy road child count :" + trophyRoadData.milestones.Count);
+        Debug.Log("Trophy road child count :" + trophyRoadFillParent.childCount);
+        Debug.Log("Trophy road child count :" + trophyRoadData.milestones.Count);
         // for (int i = 0; i < trophyRoadFillParent.childCount; i++)
         // {
         //     if (trophyRoadFillParent.GetChild(i).GetComponent<TrophyRoadFill>() != null)
@@ -39,16 +39,16 @@ public class TrophyRoadManager : MonoBehaviour
         //         trophyRoadFills[i].trophyText.text = trophyRoadData.milestones[i].trophyRequirement.ToString();
         //     }
         // }
-        for (int i = 0; i < trophyRoadData.milestones.Count; i++)
-        {
-            if (trophyRoadFillParent.GetChild(i).GetComponent<TrophyRoadFill>() != null)
-            {
-                Debug.Log("Looking at child :" +i +" and comparing with :"+ trophyRoadData.milestones[i].trophyRequirement);
-                trophyRoadFills.Add(trophyRoadFillParent.GetChild(i).GetComponent<TrophyRoadFill>());
-                int trophyCount = trophyRoadData.milestones[i].trophyRequirement;
-                trophyRoadFills[i].trophyText.text = trophyRoadData.milestones[i].trophyRequirement.ToString();
-            }
-        }
+        // for (int i = 0; i < trophyRoadData.milestones.Count; i++)
+        // {
+        //     if (trophyRoadFillParent.GetChild(i).GetComponent<TrophyRoadFill>() != null)
+        //     {
+        //         Debug.Log("Looking at child :" + i + " and comparing with :" + trophyRoadData.milestones[i].trophyRequirement);
+        //         trophyRoadFills.Add(trophyRoadFillParent.GetChild(i).GetComponent<TrophyRoadFill>());
+        //         int trophyCount = trophyRoadData.milestones[i].trophyRequirement;
+        //         trophyRoadFills[i].trophyText.text = trophyRoadData.milestones[i].trophyRequirement.ToString();
+        //     }
+        // }
 
         GenerateRewards();
         UpdateFillBars();
@@ -171,8 +171,9 @@ public class TrophyRoadManager : MonoBehaviour
 
     }
     private void GrantReward(TrophyRoadReward reward)
-    { Debug.Log("Granting +Reward in TR");
-    
+    {
+        Debug.Log("Granting +Reward in TR");
+
         // Implement logic to grant reward based on type
         switch (reward.rewardType)
         {
@@ -337,72 +338,226 @@ public class TrophyRoadManager : MonoBehaviour
 
     public Transform rewardButtonContainer;
     public Transform fillContainer;
+    public Transform fillBarPanel;
+    public Transform rewardsPanel;
     public GameObject rewardButtonPrefab, rewardButtonCharacterPrefab, trophyChestPrefab;
-    public GameObject fillPrefab;
+    public GameObject fillPrefab_130px, fillPrefab_500px;
     public Sprite singleSprite;
-    private void GenerateRewards()
+    public Transform trophyRoadContainer; // assign Content here
+    public void UpdateGridContentWidth(GridLayoutGroup grid, RectTransform contentRect, RectTransform rewardsPanel)
     {
-        foreach (var milestone in trophyRoadData.milestones)
+        if (grid == null || contentRect == null)
         {
-            GameObject rewardButtonObj;
-            bool character;
-            float width, height;
-            if (milestone.reward.rewardType == TrophyRewardType.Chest_Currency)
-            {
-                rewardButtonObj = Instantiate(trophyChestPrefab, rewardButtonContainer);
-                character = false;
-                width = 150;
-                height = 200;
-
-            }
-            else if (milestone.reward.rewardType == TrophyRewardType.Character_Female || milestone.reward.rewardType == TrophyRewardType.Character_Green || milestone.reward.rewardType == TrophyRewardType.Character_Red
-            || milestone.reward.rewardType == TrophyRewardType.Weapon_Axe || milestone.reward.rewardType == TrophyRewardType.Weapon_Bat || milestone.reward.rewardType == TrophyRewardType.Weapon_Pickaxe || milestone.reward.rewardType == TrophyRewardType.Character_Token)
-            {
-                rewardButtonObj = Instantiate(rewardButtonCharacterPrefab, rewardButtonContainer);
-                character = true;
-                if (milestone.reward.rewardType == TrophyRewardType.Character_Token) character = false;
-                width = 190;
-                height = 250;
-            }
-            else
-            {
-
-                rewardButtonObj = Instantiate(rewardButtonPrefab, rewardButtonContainer);
-                if (milestone.reward.rewardType == TrophyRewardType.Helmet_Bike || milestone.reward.rewardType == TrophyRewardType.Helmet_Rugby)
-                {
-                    character = true;
-                }
-                else character = false;
-
-                width = 150;
-                height = 150;
-                Debug.Log("Instantiated :" + rewardButtonObj.name);
-            }
-
-            TrophyRoadButton rewardButton = rewardButtonObj.GetComponent<TrophyRoadButton>();
-            // singleSprite = GetCurrencyIcon(milestone.reward.rewardType);
-
-
-            rewardButton.Initialize(
-                milestone.trophyRequirement,
-                milestone.reward.amount.ToString(),
-                milestone.reward.description,
-                GetSpriteForRewardType(milestone.reward.rewardType),
-                GetBackgroundForRewardType(milestone.reward.rewardType),
-                this,
-                trophyRoadPanel,
-                character,
-                milestone.reward.rewardType,
-                trophyRoadData,
-                GetAudioClipForSoundReward(milestone.reward.rewardType)
-            );
-            FitImageToBox(rewardButton.rewardImage, width, height);
-
-            // FitImageToBox(rewardButton.smallCurrencyIcon, 185, 182);
+            Debug.LogWarning("UpdateGridContentWidth: grid or contentRect is null.");
+            return;
         }
 
-        // UpdateRewardButtons();
+        // Make sure layout values are up to date
+        LayoutRebuilder.ForceRebuildLayoutImmediate(grid.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
+
+        int totalChildren = rewardsPanel.transform.childCount;
+        if (totalChildren == 0)
+        {
+            // nothing instantiated yet
+            contentRect.sizeDelta = new Vector2(0f, contentRect.sizeDelta.y);
+            return;
+        }
+
+        // Rows (we expect Fixed Row Count == 2)
+        int rows = 2;
+        if (grid.constraint == GridLayoutGroup.Constraint.FixedRowCount)
+            rows = Mathf.Max(1, grid.constraintCount);
+        else if (grid.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+            rows = 1; // if you constrained columns this logic would change
+
+        int columns = Mathf.CeilToInt((float)totalChildren / rows);
+
+        float cellWidth = grid.cellSize.x;
+        float spacingX = grid.spacing.x;
+        float paddingLR = grid.padding.left + grid.padding.right;
+
+        float requiredWidth = columns * cellWidth + Mathf.Max(0, columns - 1) * spacingX + paddingLR;
+
+        // Keep current height
+        contentRect.sizeDelta = new Vector2(requiredWidth, contentRect.sizeDelta.y);
+        grid.cellSize = new Vector2(totalChildren*grid.cellSize.x, grid.cellSize.y);
+
+        // Debug
+        Debug.Log($"Grid children: {totalChildren}, rows: {rows}, columns: {columns}, cellWidth: {cellWidth}, requiredContentWidth: {requiredWidth}");
     }
+    private void GenerateRewards()
+    {
+        // Clear old content
+        foreach (Transform child in rewardsPanel)
+            Destroy(child.gameObject);
+        foreach (Transform child in fillBarPanel)
+            Destroy(child.gameObject);
+        trophyRoadFills.Clear();
+
+        for (int i = 0; i < trophyRoadData.milestones.Count; i++)
+        {
+            TrophyRoadMilestone milestone = trophyRoadData.milestones[i];
+
+            // --- FILL ---
+            GameObject fillPrefabToUse = (i == 0) ? fillPrefab_130px : fillPrefab_500px;
+            GameObject fillObj = Instantiate(fillPrefabToUse, fillBarPanel);
+            fillObj.name = $"Fill_{milestone.trophyRequirement}_{i}";
+
+            TrophyRoadFill fill = fillObj.GetComponent<TrophyRoadFill>();
+            if (fill != null)
+            {
+                trophyRoadFills.Add(fill);
+                fill.trophyText.text = milestone.trophyRequirement.ToString();
+            }
+
+            // --- REWARD ---
+            GameObject rewardObj = CreateRewardObject(milestone);
+            rewardObj.transform.SetParent(rewardsPanel, false);
+            rewardObj.name = $"Reward_{milestone.trophyRequirement}_{i}";
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(fillContainer.GetComponent<RectTransform>());
+        // Now that both panels are populated, make sure they align properly
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rewardsPanel.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(fillBarPanel.GetComponent<RectTransform>());
+        UpdateGridContentWidth(fillContainer.GetComponent<GridLayoutGroup>(), fillContainer.GetComponent<RectTransform>(), rewardsPanel.GetComponent<RectTransform>());
+    }
+    private GameObject CreateRewardObject(TrophyRoadMilestone milestone)
+    {
+        GameObject rewardButtonObj = null;
+        bool character = false;
+        float width = 150f, height = 150f;
+
+        TrophyRewardType type = milestone.reward.rewardType;
+
+        if (type == TrophyRewardType.Chest_Currency)
+        {
+            rewardButtonObj = Instantiate(trophyChestPrefab);
+            character = false;
+            width = 150f;
+            height = 200f;
+        }
+        else if (type == TrophyRewardType.Character_Female
+              || type == TrophyRewardType.Character_Green
+              || type == TrophyRewardType.Character_Red
+              || type == TrophyRewardType.Weapon_Axe
+              || type == TrophyRewardType.Weapon_Bat
+              || type == TrophyRewardType.Weapon_Pickaxe
+              || type == TrophyRewardType.Character_Token)
+        {
+            rewardButtonObj = Instantiate(rewardButtonCharacterPrefab);
+            // character rewards except Character_Token
+            character = (type != TrophyRewardType.Character_Token);
+            width = 190f;
+            height = 250f;
+        }
+        else
+        {
+            rewardButtonObj = Instantiate(rewardButtonPrefab);
+            // helmets count as character visually
+            character = (type == TrophyRewardType.Helmet_Bike || type == TrophyRewardType.Helmet_Rugby);
+            width = 150f;
+            height = 150f;
+        }
+
+        if (rewardButtonObj == null)
+        {
+            Debug.LogError("Failed to instantiate reward prefab. Check prefab references.");
+            return null;
+        }
+
+        rewardButtonObj.name = $"Reward_{milestone.trophyRequirement}_{type}";
+
+        TrophyRoadButton rewardButton = rewardButtonObj.GetComponent<TrophyRoadButton>();
+        if (rewardButton == null)
+        {
+            Debug.LogWarning("Reward prefab missing TrophyRoadButton component.");
+            return rewardButtonObj;
+        }
+
+        // Initialize using your existing Initialize signature
+        rewardButton.Initialize(
+            milestone.trophyRequirement,
+            milestone.reward.amount.ToString(),
+            milestone.reward.description,
+            GetSpriteForRewardType(milestone.reward.rewardType),
+            GetBackgroundForRewardType(milestone.reward.rewardType),
+            this,                      // TrophyRoadManager reference
+            trophyRoadPanel,
+            character,
+            milestone.reward.rewardType,
+            trophyRoadData,
+            GetAudioClipForSoundReward(milestone.reward.rewardType)
+        );
+
+        // Fit the image to the designed box
+        FitImageToBox(rewardButton.rewardImage, width, height);
+
+        return rewardButtonObj;
+    }
+    // private void GenerateRewards()
+    // {
+    //     foreach (var milestone in trophyRoadData.milestones)
+    //     {
+    //         GameObject rewardButtonObj;
+    //         bool character;
+    //         float width, height;
+    //         if (milestone.reward.rewardType == TrophyRewardType.Chest_Currency)
+    //         {
+    //             rewardButtonObj = Instantiate(trophyChestPrefab, rewardButtonContainer);
+    //             character = false;
+    //             width = 150;
+    //             height = 200;
+
+    //         }
+    //         else if (milestone.reward.rewardType == TrophyRewardType.Character_Female || milestone.reward.rewardType == TrophyRewardType.Character_Green || milestone.reward.rewardType == TrophyRewardType.Character_Red
+    //         || milestone.reward.rewardType == TrophyRewardType.Weapon_Axe || milestone.reward.rewardType == TrophyRewardType.Weapon_Bat || milestone.reward.rewardType == TrophyRewardType.Weapon_Pickaxe || milestone.reward.rewardType == TrophyRewardType.Character_Token)
+    //         {
+    //             rewardButtonObj = Instantiate(rewardButtonCharacterPrefab, rewardButtonContainer);
+    //             character = true;
+    //             if (milestone.reward.rewardType == TrophyRewardType.Character_Token) character = false;
+    //             width = 190;
+    //             height = 250;
+    //         }
+    //         else
+    //         {
+
+    //             rewardButtonObj = Instantiate(rewardButtonPrefab, rewardButtonContainer);
+    //             if (milestone.reward.rewardType == TrophyRewardType.Helmet_Bike || milestone.reward.rewardType == TrophyRewardType.Helmet_Rugby)
+    //             {
+    //                 character = true;
+    //             }
+    //             else character = false;
+
+    //             width = 150;
+    //             height = 150;
+    //             Debug.Log("Instantiated :" + rewardButtonObj.name);
+    //         }
+
+    //         TrophyRoadButton rewardButton = rewardButtonObj.GetComponent<TrophyRoadButton>();
+    //         // singleSprite = GetCurrencyIcon(milestone.reward.rewardType);
+
+
+    //         rewardButton.Initialize(
+    //             milestone.trophyRequirement,
+    //             milestone.reward.amount.ToString(),
+    //             milestone.reward.description,
+    //             GetSpriteForRewardType(milestone.reward.rewardType),
+    //             GetBackgroundForRewardType(milestone.reward.rewardType),
+    //             this,
+    //             trophyRoadPanel,
+    //             character,
+    //             milestone.reward.rewardType,
+    //             trophyRoadData,
+    //             GetAudioClipForSoundReward(milestone.reward.rewardType)
+    //         );
+    //         FitImageToBox(rewardButton.rewardImage, width, height);
+
+    //         // FitImageToBox(rewardButton.smallCurrencyIcon, 185, 182);
+    //     }
+
+    //     // UpdateRewardButtons();
+    // }
 
     void FitImageToBox(Image image, float maxWidth, float maxHeight)
     {

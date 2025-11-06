@@ -1,149 +1,89 @@
 using System.Collections;
-using System.Collections.Generic;
-using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomScrollTrophyRoad : MonoBehaviour
 {
+    [Header("References")]
     public ScrollRect scrollRect;
-    public RectTransform otherScrollPanel;
-    public RectTransform selectedItem; // Reference to the selected item's RectTransform
-    public int itemIndex;
-    public float smoothScrollTime = 0.05f; // Time for the smooth scroll
+    public RectTransform rewardsPanel;
+
+    [Header("Settings")]
+    [Tooltip("Smooth scroll duration in seconds.")]
+    public float smoothScrollTime = 0.2f;
+    [Tooltip("Optional normalized offset (0–1). Positive = scroll slightly further right.")]
     public float adjustableOffset;
 
     private Coroutine smoothScrollCoroutine;
 
-    private void Update()
+    public void CenterOnSelectedItem(int childIndex)
     {
-        Vector2 scrollContentPosition = scrollRect.content.anchoredPosition;
-        otherScrollPanel.anchoredPosition = new Vector2(scrollContentPosition.x, otherScrollPanel.anchoredPosition.y);
-    }
-
-    private void OnEnable()
-    {
-        TrophyRoadManager trophyRoadManager = FindObjectOfType<TrophyRoadManager>(true);
-        itemIndex = trophyRoadManager.itemIndex;
-
-
-    }
-
-    [TetraCreations.Attributes.Button("Test")]
-    public void ScrollToItemDelay()
-    {
-        StartCoroutine(ScrollToItemDelay(0.05f));
-    }
-    public IEnumerator ScrollToItemDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-         StartSmoothScroll(itemIndex);
-    }
-    public void CenterOnSelectedItem()
-    {
-        StartSmoothScroll(itemIndex);
-    }
-
-    public void CenterOnSelectedItem(int index)
-    {
-        StartSmoothScroll(index);
-        Debug.Log("Scrolling now to Item Index :" + itemIndex);
-    }
-
-    private void StartSmoothScroll(int index)
-    {
-        if (index < 0)
+        if (scrollRect == null || scrollRect.content == null)
         {
-            Debug.Log("Scroll canceled, index too small");
+            Debug.LogWarning("[CustomScrollTrophyRoad] ScrollRect or Content not assigned.");
             return;
         }
 
-
-        RectTransform item = GetItemRectTransform(index);
-
-        if (item == null) { Debug.Log("Scroll canceled, item is null"); return; }
-
-        float targetOffset = CalculateCenterOffset(item) - adjustableOffset;
-
-        if (smoothScrollCoroutine != null)
+        if (childIndex < 0 || childIndex >= rewardsPanel.childCount)
         {
-            StopCoroutine(smoothScrollCoroutine);
+            Debug.LogWarning($"[CustomScrollTrophyRoad] Invalid index {childIndex} (child count = {rewardsPanel.childCount}).");
+            return;
         }
 
-        smoothScrollCoroutine = StartCoroutine(SmoothScroll(targetOffset));
-        Debug.Log("Scrolling now to Item Index :" + itemIndex + " Rect item : " + item);
+        if (smoothScrollCoroutine != null)
+            StopCoroutine(smoothScrollCoroutine);
+
+        smoothScrollCoroutine = StartCoroutine(SmoothScrollToIndex(childIndex));
     }
 
-    private IEnumerator SmoothScroll(float targetOffset)
+    private IEnumerator SmoothScrollToIndex(int childIndex)
     {
-        Debug.Log("Using offset Scroll");
-        float startOffset = scrollRect.horizontalNormalizedPosition;
-        float elapsedTime = 0;
-
-        // Capture the starting and target positions for the otherScrollPanel
-        Vector2 startOtherScrollPanelPosition = otherScrollPanel.anchoredPosition;
-
-        // Calculate the target position based on the targetOffset
-        Vector2 targetOtherScrollPanelPosition = new Vector2(-targetOffset * (scrollRect.content.rect.width - scrollRect.viewport.rect.width), otherScrollPanel.anchoredPosition.y);
-
-        while (elapsedTime < smoothScrollTime)
+        RectTransform target = rewardsPanel.GetChild(childIndex) as RectTransform;
+        if (target == null)
         {
-            elapsedTime += Time.deltaTime;
-            float normalizedTime = elapsedTime / smoothScrollTime;
-            scrollRect.horizontalNormalizedPosition = Mathf.Lerp(startOffset, targetOffset, normalizedTime);
+            Debug.LogWarning("[CustomScrollTrophyRoad] Target RectTransform not found.");
+            yield break;
+        }
 
-            // Smoothly interpolate the otherScrollPanel's position
-            otherScrollPanel.anchoredPosition = Vector2.Lerp(startOtherScrollPanelPosition, targetOtherScrollPanelPosition, normalizedTime);
+        // Wait one frame in case layout hasn’t updated yet
+        yield return null;
 
-            // Log the values for debugging
-            Debug.Log($"scrollRect.content.anchoredPosition.x: {scrollRect.content.anchoredPosition.x}, targetOtherScrollPanelPosition.x: {targetOtherScrollPanelPosition.x}");
+        float targetNormalized = CalculateCenterOffset(target) - adjustableOffset;
+        targetNormalized = Mathf.Clamp01(targetNormalized);
 
+        Debug.Log($"[CustomScrollTrophyRoad] Target = {target.name}, Normalized = {targetNormalized:F3}");
+
+        float startNormalized = scrollRect.horizontalNormalizedPosition;
+        float elapsed = 0f;
+
+        while (elapsed < smoothScrollTime)
+        {
+            elapsed += Time.deltaTime;
+            scrollRect.horizontalNormalizedPosition = Mathf.Lerp(startNormalized, targetNormalized, elapsed / smoothScrollTime);
             yield return null;
         }
 
-        // Ensure the final position is set accurately
-        scrollRect.horizontalNormalizedPosition = targetOffset;
-        otherScrollPanel.anchoredPosition = targetOtherScrollPanelPosition;
-        smoothScrollCoroutine = null;
+        scrollRect.horizontalNormalizedPosition = targetNormalized;
+
+        Debug.Log($"[CustomScrollTrophyRoad] Final position = {scrollRect.horizontalNormalizedPosition:F3}");
     }
 
-    private RectTransform GetItemRectTransform(int index)
-    {
-        if (index >= scrollRect.content.childCount) return null;
-        return scrollRect.content.GetChild(index).GetComponent<RectTransform>();
-    }
-
-    [NaughtyAttributes.Button("Yes")]
-    public float CalculateCenterOffset(RectTransform item)
+    private float CalculateCenterOffset(RectTransform target)
     {
         float viewportWidth = scrollRect.viewport.rect.width;
         float contentWidth = scrollRect.content.rect.width;
-        float itemWidth = item.rect.width;
-        float itemPositionX = item.anchoredPosition.x;
-        float itemCenter = itemPositionX + (itemWidth / 2);
-        float targetPosition = itemCenter - (viewportWidth / 2);
-        float normalizedPosition = Mathf.Clamp01(targetPosition / (contentWidth - viewportWidth));
 
-        Debug.Log($"Viewport Width: {viewportWidth}, Content Width: {contentWidth}, Item Width: {itemWidth}, " +
-                  $"Item Position X: {itemPositionX}, Item Center: {itemCenter}, " +
-                  $"Target Position: {targetPosition}, Normalized Position: {normalizedPosition}, " +
-                  $"Item Name: {item.name}, Item Index: {item.transform.GetSiblingIndex()}");
+        // localPosition.x is inverted if pivot is left-aligned (0)
+        // Safer to use anchoredPosition.x instead (UI layout space)
+        float targetX = Mathf.Abs(target.anchoredPosition.x); 
+        float itemCenter = targetX + (target.rect.width / 2f);
+        float targetPosition = itemCenter - (viewportWidth / 2f);
 
-        return normalizedPosition;
-    }
+        float normalized = targetPosition / Mathf.Max(1f, (contentWidth - viewportWidth));
 
-    private void DebugCenteringValues(RectTransform item)
-    {
-        float viewportWidth = scrollRect.viewport.rect.width;
-        float contentWidth = scrollRect.content.rect.width;
-        float itemWidth = item.rect.width;
-        float itemPositionX = item.anchoredPosition.x;
-        float itemCenter = itemPositionX + (itemWidth / 2);
-        float targetPosition = itemCenter - (viewportWidth / 2);
-        float normalizedPosition = Mathf.Clamp01(targetPosition / (contentWidth - viewportWidth));
+        Debug.Log($"[CustomScrollTrophyRoad] ViewportW={viewportWidth:F1}, ContentW={contentWidth:F1}, " +
+                  $"TargetX={targetX:F1}, ItemCenter={itemCenter:F1}, TargetPos={targetPosition:F1}, Normalized={normalized:F3}");
 
-        Debug.Log($"Item PosX: {itemPositionX}, Viewport Width: {viewportWidth}, Content Width: {contentWidth}, " +
-                  $"Item Width: {itemWidth}, Item Center: {itemCenter}, Target Position: {targetPosition}, " +
-                  $"Normalized Position: {normalizedPosition}");
+        return normalized;
     }
 }
