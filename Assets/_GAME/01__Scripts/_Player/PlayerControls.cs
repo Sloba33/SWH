@@ -307,7 +307,7 @@ public class PlayerControls : MonoBehaviour
 
     private void PlaceBombViaBind() //
     {
-        Debug.Log("Placing bomb"); //
+        Debug.Log("Placing bomb on tile"); //
         if (playerController == null) { Debug.LogError("PlayerController is null for bomb placement via bind."); return; } // Safety check
         Vector3 position = playerController._movement.FindNeighbouringTilePosition(); //
         position.y = Mathf.Round(playerController.transform.position.y); //
