@@ -23541,6 +23541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14417ea3cdbcb7640bd97dcc6af4c2e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipButton: {fileID: 0}
   IsMultiplayer: 0
   characterCollection: {fileID: 11400000, guid: 6d8e44334f4723e45a8a604684cadfd5,
     type: 2}
@@ -26737,21 +26738,21 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 237127889}
-  - {fileID: 2008009921}
-  - {fileID: 811948593}
-  - {fileID: 1842406527}
-  - {fileID: 1690543869}
-  - {fileID: 1644409374}
-  - {fileID: 1848949799}
-  - {fileID: 1410896315}
-  - {fileID: 2138078687}
-  - {fileID: 737146804}
   - {fileID: 187348154}
-  - {fileID: 1984386642}
-  - {fileID: 1484419976}
   - {fileID: 679116916}
   - {fileID: 464481071}
+  - {fileID: 1984386642}
+  - {fileID: 1848949799}
+  - {fileID: 1410896315}
+  - {fileID: 1644409374}
+  - {fileID: 2008009921}
+  - {fileID: 737146804}
+  - {fileID: 237127889}
+  - {fileID: 2138078687}
+  - {fileID: 1690543869}
+  - {fileID: 1842406527}
+  - {fileID: 1484419976}
+  - {fileID: 811948593}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -26776,8 +26777,8 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
+  xp: 25
+  trophies: 3
   BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []

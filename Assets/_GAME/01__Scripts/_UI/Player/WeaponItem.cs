@@ -6,6 +6,9 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class WeaponItem : MonoBehaviour
 {
+    private bool isPurchased;
+    public bool unlocked;
+    public bool isTrophyRoadItem;
     public string weaponName;
     public WeaponItemManager weaponItemManager;
     public Weapon weaponToSpawn;
@@ -17,14 +20,13 @@ public class WeaponItem : MonoBehaviour
     public GameObject lockImage;
     public GameObject notificationImage;
     public Color lockedColor, unlockedColor;
-    private bool isPurchased;
-    public bool unlocked;
+
     public Button purchaseButton;
     public int weaponPrice;
     public UIShadow uiShadow;
     private void Start()
     {
-        
+
         if (button == null)
             button = GetComponent<Button>();
         id = transform.GetSiblingIndex();

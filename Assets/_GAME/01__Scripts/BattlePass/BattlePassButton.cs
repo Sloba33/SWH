@@ -36,6 +36,7 @@ public class BattlePassButton : MonoBehaviour
         backgroundSprite = bgSprite;
         itemSprite = sprite;
         claimButton.onClick.AddListener(OnClaimButtonClick);
+        claimButton.onClick.AddListener(() => CharacterManager.Instance.CheckIfUpgradesAreAffordable());
         parent = parentPanel;
         audioSource.clip = audioClip;
 
@@ -96,11 +97,11 @@ public class BattlePassButton : MonoBehaviour
     public void SetButtonClaimed()
     {
         // Color faded = new(1, 1, 0.65f, 0.5f);
-        
+
         claimButton.GetComponent<Image>().color = fadedColor;
         itemImage.color = new Color(1, 1, 1, 0.5f);
         claimText.gameObject.SetActive(false);
-        Debug.Log("Battle Pass : Setting as claimed" + gameObject.name +  " at index " + transform.GetSiblingIndex());
+        Debug.Log("Battle Pass : Setting as claimed" + gameObject.name + " at index " + transform.GetSiblingIndex());
         KillTween();
         claimButton.interactable = false;
     }

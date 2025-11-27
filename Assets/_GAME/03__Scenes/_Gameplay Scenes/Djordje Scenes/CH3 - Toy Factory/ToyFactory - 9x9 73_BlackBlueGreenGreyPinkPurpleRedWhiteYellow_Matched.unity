@@ -9528,6 +9528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14417ea3cdbcb7640bd97dcc6af4c2e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipButton: {fileID: 0}
   IsMultiplayer: 0
   characterCollection: {fileID: 11400000, guid: 6d8e44334f4723e45a8a604684cadfd5,
     type: 2}
@@ -20144,6 +20145,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: xp
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: trophies
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: levelProgress

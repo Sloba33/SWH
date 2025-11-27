@@ -11,7 +11,7 @@ public class CustomizationTab : MonoBehaviour
     public TabType tabType;
     public CustomizationPanelManager customizationPanelManager;
     public GameObject weaponInHandParent;
-    public Vector3 startingScale;   
+    public Vector3 startingScale;
     public Vector3 targetScale;
     private void Start()
     {
@@ -30,8 +30,10 @@ public class CustomizationTab : MonoBehaviour
         HighlightSeletedButton(this);
         if (tabType == TabType.Weapon)
         {
-            Debug.Log("Weapon tab selected, enabling weapons in hand"); 
+            Debug.Log("Weapon tab selected, enabling weapons in hand");
             ToggleWeaponsInHand(true);
+            WeaponItemManager weaponItemManager = FindObjectOfType<WeaponItemManager>();
+            weaponItemManager.CheckWeaponUpgradePurchaseButton();
             customizationPanelManager.mainMenuManager.SetWeaponCamera();
         }
         else if (tabType == TabType.Color)

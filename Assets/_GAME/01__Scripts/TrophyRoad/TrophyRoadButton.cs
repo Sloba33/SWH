@@ -48,6 +48,7 @@ public class TrophyRoadButton : MonoBehaviour
         button.onClick.AddListener(() => ShowReward(trophyRoadData));
         if (trophyReward == TrophyRewardType.Character_Token) button.onClick.AddListener(() => manager.ClaimReward(trophyRequirement, 4f));
         else button.onClick.AddListener(() => manager.ClaimReward(trophyRequirement, 1f));
+        button.onClick.AddListener(() => CharacterManager.Instance.CheckIfUpgradesAreAffordable());
         trophyRoadRewardType = trophyReward;
         this.trophyRoadData = trophyRoadData;
         parent = parentPanel;
@@ -94,6 +95,8 @@ public class TrophyRoadButton : MonoBehaviour
             case TrophyRewardType.Weapon_Bat:
             case TrophyRewardType.Helmet_Bike:
             case TrophyRewardType.Helmet_Rugby:
+            case TrophyRewardType.Weapon_Hammer:
+            case TrophyRewardType.Weapon_Hammer2:
                 SpawnCurrencyPanel();
                 break;
 

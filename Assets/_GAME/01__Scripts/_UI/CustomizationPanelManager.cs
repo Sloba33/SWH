@@ -104,6 +104,7 @@ public class CustomizationPanelManager : MonoBehaviour
         {
             if (tab.tabType == CustomizationTab.TabType.Color) tab.GetComponent<Button>().interactable = state;
             if (tab.tabType == CustomizationTab.TabType.Helmet) tab.GetComponent<Button>().interactable = state;  //consider disabling
+            if (tab.tabType == CustomizationTab.TabType.Weapon) tab.GetComponent<Button>().interactable = state;  //consider disabling
         }
     }
     public void UpdateDefaultColors()

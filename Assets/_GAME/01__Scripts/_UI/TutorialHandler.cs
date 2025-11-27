@@ -50,11 +50,20 @@ public class TutorialHandler : OnScreenStick, IPointerDownHandler, IPointerUpHan
     }
     public bool isDragValid = false;
     private int activePointerId = -1; // Track the active pointer ID
+    private bool IsPointerInsideJoystick(PointerEventData eventData)
+    {
+        return RectTransformUtility.RectangleContainsScreenPoint(
+            background,
+            eventData.position,
+            eventData.pressEventCamera
+        );
+    }
+    private bool fixedDragAllowed = false;
     public new void OnPointerDown(PointerEventData eventData)
     {
 
         if (!RectTransformUtility.RectangleContainsScreenPoint(parentCanvas, eventData.position, null)) return;
-
+        activePointerId = eventData.pointerId; // Store the pointer ID
         if (!IsPointerInLeftHalf(eventData.position))
         {
             // Debug.Log("Click ignored: outside the left half of the screen.");
@@ -68,8 +77,10 @@ public class TutorialHandler : OnScreenStick, IPointerDownHandler, IPointerUpHan
         {
             backgroundImage.enabled = true;
             handleImage.enabled = true;
+
+            activePointerId = eventData.pointerId;
+            // ALLOW press anywhere on left half
             base.OnPointerDown(eventData);
-            activePointerId = eventData.pointerId; // Store the pointer ID
             return;
         }
         GameObject clickedObject = GetClickedObject(eventData);
@@ -106,6 +117,7 @@ public class TutorialHandler : OnScreenStick, IPointerDownHandler, IPointerUpHan
     {
         if (eventData.pointerId == activePointerId) // Check if the pointer ID matches
         {
+            fixedDragAllowed = false;
             if (joystickType != JoystickType.Fixed)
             {
                 backgroundImage.enabled = false;
@@ -126,6 +138,8 @@ public class TutorialHandler : OnScreenStick, IPointerDownHandler, IPointerUpHan
     public new void OnDrag(PointerEventData eventData)
     {
         if (!isDragValid) return;
+        
+
         if (!IsPointerInLeftHalf(eventData.position))
         {
             // Debug.Log("Click ignored: outside the left half of the screen.");

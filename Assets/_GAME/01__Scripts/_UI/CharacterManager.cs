@@ -109,6 +109,8 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         StartCoroutine(LoadHelmet(false));
         StartCoroutine(SetInitialConfirmedHelmet());
         weaponItemManager.SetReferencesStart();
+        // weaponItemManager.SelectWeapon(weaponItemManager.weaponItem);
+        Debug.Log("Set weapon to : " + weaponItemManager.weaponItem.name);
         LoadWeapon(false);
 
         currentCharacter.GetComponent<Animator>().SetBool("Picking", false);

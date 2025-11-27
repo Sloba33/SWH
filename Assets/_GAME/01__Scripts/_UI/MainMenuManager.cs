@@ -63,6 +63,10 @@ public class MainMenuManager : MonoBehaviour
     public TextMeshProUGUI strengthStatText, speedStatText, specialStatText;
 
     public ImageGallery imageGallery;
+    public void UpdateCurrency()
+    {
+        CharacterManager.Instance.CheckIfUpgradesAreAffordable();
+    }
     private void Awake()
     {
         PlayerPrefs.SetInt("Toby", 1);
@@ -114,7 +118,7 @@ public class MainMenuManager : MonoBehaviour
     }
 
     // When closing level selection menu  
-  
+
     public void CloseProfileUI()
     {
         CharacterManager.Instance.currentCharacter.canBlink = true;
@@ -150,7 +154,7 @@ public class MainMenuManager : MonoBehaviour
         {
             BackgroundContinueButton.gameObject.SetActive(false);
         }
-        imageGallery.Initialize();
+        imageGallery.StartGallery();
     }
 
     public ParticleSystem xpPrefab;

@@ -3958,6 +3958,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Epic Axe
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 7983652240379305141, guid: 821ada62613c5b44098fb01bfe4ab508,
@@ -3965,14 +3967,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 3198405956445337224, guid: efc899b0aa1420d4bb1b370d01c6ea64,
     type: 3}
   button: {fileID: 46352516}
-  id: 0
+  id: 11
   weaponImage: {fileID: 1753418786}
   weaponType: 11
   lockImage: {fileID: 1123648526}
   notificationImage: {fileID: 986568283}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 400
   uiShadow: {fileID: 46352519}
@@ -5511,7 +5512,7 @@ MonoBehaviour:
   - {fileID: 4741343503558475765, guid: c4eeac8c0081b914e8d8b1f5edf55604, type: 3}
   Content: {fileID: 1100185267}
   AreAllImagesFilled: 0
-  trophyRoadManager: {fileID: 0}
+  trophyRoadManager: {fileID: 1247810570}
   trophyroadData: {fileID: 11400000, guid: 2c8780ef53c0ebf4a9d0dfd3d2e7c89d, type: 2}
   gridLayout: {fileID: 1100185269}
   viewportRect: {fileID: 1221510823}
@@ -7425,7 +7426,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -7662,6 +7663,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Bat+
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 433237228585502296, guid: f7ef4d17612af064aa3f8e2b9227605c,
@@ -7669,14 +7672,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 3371525600076978535, guid: 99b4faa607b9df54080192f675ead808,
     type: 3}
   button: {fileID: 86901350}
-  id: 0
+  id: 6
   weaponImage: {fileID: 583573659}
   weaponType: 6
   lockImage: {fileID: 315135739}
   notificationImage: {fileID: 813446508}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 300
   uiShadow: {fileID: 86901353}
@@ -12456,6 +12458,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Hockey Stick
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 6755590594641866998, guid: 5c840f6b42a35f747b40c340f9d8139e,
@@ -12463,14 +12467,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 8543160751233530861, guid: b28d03f707dec3d40a71b43b47c79ddf,
     type: 3}
   button: {fileID: 147743235}
-  id: 0
+  id: 9
   weaponImage: {fileID: 585982049}
   weaponType: 9
   lockImage: {fileID: 1303285949}
   notificationImage: {fileID: 2064194951}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 300
   uiShadow: {fileID: 147743238}
@@ -16717,8 +16720,9 @@ MonoBehaviour:
   weaponName: {fileID: 1596536624}
   weaponContentPanel: {fileID: 0}
   purchaseButton: {fileID: 1147623645}
-  currencyImage: {fileID: 749150850}
-  priceText: {fileID: 247197503}
+  upgradeButton: {fileID: 443840425}
+  currencyImage: {fileID: 0}
+  priceText: {fileID: 0}
   weaponCheckmarkIndex: 0
   checkmarkPrefab: {fileID: 362690578}
 --- !u!1 &204071091
@@ -20582,7 +20586,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -20721,7 +20725,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -26527,8 +26531,8 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2046654441}
         m_TargetAssemblyTypeName: CustomScrollTrophyRoad, Assembly-CSharp
-        m_MethodName: CenterOnSelectedItem
-        m_Mode: 3
+        m_MethodName: CenterOnSelectedItemButtonClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -29071,6 +29075,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Plunger
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 2709063627193499266, guid: d5059859a65f4dd4e8659d094f5eb39d,
@@ -29078,14 +29084,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 2275661800768170320, guid: ae5abb16cc77dfa44b07bb80bebbe53e,
     type: 3}
   button: {fileID: 349139767}
-  id: 0
+  id: 13
   weaponImage: {fileID: 1555979905}
   weaponType: 13
   lockImage: {fileID: 2044858976}
   notificationImage: {fileID: 1182147099}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 500
   uiShadow: {fileID: 349139770}
@@ -30358,7 +30363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &358384713
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37597,7 +37602,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -237}
+  m_AnchoredPosition: {x: 0, y: -143.6}
   m_SizeDelta: {x: 232.21, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &443840425
@@ -42334,6 +42339,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Hammer
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 2249632350806877729, guid: 730f28539c9737748886a26dc137ef5f,
@@ -42348,7 +42355,6 @@ MonoBehaviour:
   notificationImage: {fileID: 1789573521}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 200
   uiShadow: {fileID: 512527541}
@@ -52318,6 +52324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Pipe Wrench
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 4455746330105859555, guid: e394ed1cef0ea6b4a882d29fd97e6a47,
@@ -52325,14 +52333,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 370397045976658128, guid: fdf585368d4bc2349ae02597fc670b72,
     type: 3}
   button: {fileID: 670991423}
-  id: 0
+  id: 8
   weaponImage: {fileID: 1851326002}
   weaponType: 8
   lockImage: {fileID: 1844053270}
   notificationImage: {fileID: 1564056148}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 300
   uiShadow: {fileID: 670991426}
@@ -88306,7 +88313,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -90458,7 +90465,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -100342,7 +100349,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -145}
+  m_AnchoredPosition: {x: 0, y: -142.10008}
   m_SizeDelta: {x: 147, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1147623645
@@ -104604,6 +104611,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Epic Mace
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 982646640272966204, guid: c203c90f1e082324daf552ee26070022,
@@ -104611,14 +104620,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 1308761578283269575, guid: d999f3e19a9785c45892c992081ff8c8,
     type: 3}
   button: {fileID: 1196660144}
-  id: 0
+  id: 12
   weaponImage: {fileID: 1764782932}
   weaponType: 12
   lockImage: {fileID: 1042532582}
   notificationImage: {fileID: 76915129}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 400
   uiShadow: {fileID: 1196660147}
@@ -114626,12 +114634,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2082744934}
+  - {fileID: 1418825403}
+  - {fileID: 512527535}
   - {fileID: 1913249319}
   - {fileID: 1991961399}
-  - {fileID: 512527535}
+  - {fileID: 2082744934}
   - {fileID: 1903041462}
-  - {fileID: 1418825403}
   - {fileID: 86901348}
   - {fileID: 1962904374}
   - {fileID: 670991421}
@@ -121638,7 +121646,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -121724,6 +121732,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Fantasy Hammer
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 2780880865745533952, guid: e4561a557cc73c446a476c3d08d7be7c,
@@ -121731,14 +121741,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 3382931719905627127, guid: a6f9ac5dd7b1e9847a152b508c0e8590,
     type: 3}
   button: {fileID: 1369677066}
-  id: 0
+  id: 10
   weaponImage: {fileID: 556885775}
   weaponType: 10
   lockImage: {fileID: 769362934}
   notificationImage: {fileID: 13203173}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 400
   uiShadow: {fileID: 1369677069}
@@ -124352,6 +124361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 1
+  isTrophyRoadItem: 1
   weaponName: Hammer+
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 4108434624025166086, guid: db7b033add19bdc47b3268b94b1fd571,
@@ -124359,14 +124370,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 9163909771695640943, guid: b4ad8105a9d7f5d46ba243cbe01368fb,
     type: 3}
   button: {fileID: 1418825405}
-  id: 0
+  id: 5
   weaponImage: {fileID: 859454510}
   weaponType: 5
   lockImage: {fileID: 735758183}
   notificationImage: {fileID: 894120283}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 300
   uiShadow: {fileID: 1418825408}
@@ -134245,7 +134255,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -141026,7 +141036,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -168772,6 +168782,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Mace
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 8510940076681098679, guid: b3c786df96d453144b11e9aa88adc83a,
@@ -168779,14 +168791,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 8109047104429142235, guid: ef2d88a2590a1e149adb5eb5db334b20,
     type: 3}
   button: {fileID: 1903041464}
-  id: 0
+  id: 4
   weaponImage: {fileID: 248608738}
   weaponType: 4
   lockImage: {fileID: 371570111}
   notificationImage: {fileID: 1927038578}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 200
   uiShadow: {fileID: 1903041468}
@@ -169628,6 +169639,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Axe
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 4950961224176313832, guid: 9a0e9cd2f8e973d469d849036b1c3acc,
@@ -169635,14 +169648,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 4580896969324104993, guid: e7ee712b3762307459bc2bcfd40ff936,
     type: 3}
   button: {fileID: 1913249321}
-  id: 0
+  id: 1
   weaponImage: {fileID: 1736962826}
   weaponType: 1
   lockImage: {fileID: 931997807}
   notificationImage: {fileID: 177231100}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 200
   uiShadow: {fileID: 1913249325}
@@ -173380,6 +173392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Crowbar
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 6309650373860279753, guid: 1e85cc146229a07449066350c842f890,
@@ -173387,14 +173401,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 4787162286266572984, guid: 8693879a6bde9b54baa2bad3b54725e8,
     type: 3}
   button: {fileID: 1962904376}
-  id: 0
+  id: 7
   weaponImage: {fileID: 1577011142}
   weaponType: 7
   lockImage: {fileID: 1664951633}
   notificationImage: {fileID: 1387851667}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 300
   uiShadow: {fileID: 1962904379}
@@ -175676,6 +175689,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Bat
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 278599813600002996, guid: 5ad88845fdf9e0b41823edda33ced6e6,
@@ -175683,14 +175698,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 8767260766890906345, guid: 6e774096c7f731f4d88c7996c0bb2595,
     type: 3}
   button: {fileID: 1991961401}
-  id: 0
+  id: 2
   weaponImage: {fileID: 1363712614}
   weaponType: 2
   lockImage: {fileID: 1251028901}
   notificationImage: {fileID: 259720544}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 200
   uiShadow: {fileID: 1991961405}
@@ -179945,7 +179959,8 @@ MonoBehaviour:
   scrollRect: {fileID: 2046654442}
   rewardsPanel: {fileID: 1276005643}
   smoothScrollTime: 0
-  adjustableOffset: 0.046
+  adjustableOffset: 0
+  trophyRoadManager: {fileID: 1247810570}
 --- !u!114 &2046654442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183969,6 +183984,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51287f0a21f20f94d9326a448109937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlocked: 0
+  isTrophyRoadItem: 0
   weaponName: Pickaxe
   weaponItemManager: {fileID: 0}
   weaponToSpawn: {fileID: 8426030454813485489, guid: 25c2dde5a9fb2e4408af016425dd0245,
@@ -183976,14 +183993,13 @@ MonoBehaviour:
   weaponAtBox: {fileID: 8514903901142273447, guid: 35de2d0bdc873104bb99049a5995df22,
     type: 3}
   button: {fileID: 2082744936}
-  id: 0
+  id: 3
   weaponImage: {fileID: 1957136325}
   weaponType: 0
   lockImage: {fileID: 987411197}
   notificationImage: {fileID: 1632065565}
   lockedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  unlocked: 0
   purchaseButton: {fileID: 0}
   weaponPrice: 200
   uiShadow: {fileID: 2082744940}

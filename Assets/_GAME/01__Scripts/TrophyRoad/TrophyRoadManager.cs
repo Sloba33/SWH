@@ -207,6 +207,12 @@ public class TrophyRoadManager : MonoBehaviour
             case TrophyRewardType.Weapon_Bat:
                 UnlockWeapon(WeaponType.Weapon_Bat);
                 break;
+            case TrophyRewardType.Weapon_Hammer:
+                UnlockWeapon(WeaponType.Weapon_Hammer);
+                break;
+            case TrophyRewardType.Weapon_Hammer2:
+                UnlockWeapon(WeaponType.Weapon_Hammer2);
+                break;
             case TrophyRewardType.Character_Token:
                 Debug.Log("Adding Tokens +" + reward.amount);
                 AddCharacterToken(reward.amount);
@@ -443,7 +449,9 @@ public class TrophyRoadManager : MonoBehaviour
               || type == TrophyRewardType.Weapon_Axe
               || type == TrophyRewardType.Weapon_Bat
               || type == TrophyRewardType.Weapon_Pickaxe
-              || type == TrophyRewardType.Character_Token)
+              || type == TrophyRewardType.Character_Token
+              || type == TrophyRewardType.Weapon_Hammer2
+              || type == TrophyRewardType.Weapon_Hammer)
         {
             rewardButtonObj = Instantiate(rewardButtonCharacterPrefab);
             // character rewards except Character_Token
@@ -597,6 +605,8 @@ public class TrophyRoadManager : MonoBehaviour
             TrophyRewardType.Helmet_Bike => trophyRoadData.helmet_Bike,
             TrophyRewardType.Helmet_Rugby => trophyRoadData.helmet_Rugby,
             TrophyRewardType.Character_Token => trophyRoadData.characterTokenSprite,
+            TrophyRewardType.Weapon_Hammer => trophyRoadData.weapon_Hammer,
+            TrophyRewardType.Weapon_Hammer2 => trophyRoadData.weapon_Hammer2,
 
             _ => null,
         };

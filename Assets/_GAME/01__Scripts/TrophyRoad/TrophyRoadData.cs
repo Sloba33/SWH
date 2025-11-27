@@ -10,7 +10,7 @@ public class TrophyRoadData : ScriptableObject
     public Sprite moneySprite_Small, moneySprite_Medium, moneySprite_Large;
     public Sprite backgroundBlue, backgroundGreen, backgroundPink, backgroundYellow;
     public Sprite character_Female, character_Green, character_Red;
-    public Sprite weapon_Pickaxe, weapon_Axe, weapon_Bat;
+    public Sprite weapon_Pickaxe, weapon_Axe, weapon_Bat, weapon_Hammer, weapon_Hammer2;
     public Sprite helmet_Bike, helmet_Rugby;
     public Sprite singleCoin, singleGem, singleMoney;
     public Sprite chestSprite;
@@ -44,6 +44,6 @@ public enum TrophyRewardType
     Weapon_Pickaxe, Weapon_Axe, Weapon_Bat,
     Chest_Currency,
     Helmet_Bike, Helmet_Rugby,
-    Character_Token
+    Character_Token, Weapon_Hammer, Weapon_Hammer2
     // Add more reward types here
 }

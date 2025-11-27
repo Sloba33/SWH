@@ -142,8 +142,7 @@ public class GameManager : MonoBehaviour
         // }
         if (!IsMultiplayer)
         {
-
-            if (characterCollection != null && !Testing)
+            if (characterCollection != null)
             {
                 Instantiate(characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)], playerSpawnPoint.position, characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)].transform.rotation);
             }

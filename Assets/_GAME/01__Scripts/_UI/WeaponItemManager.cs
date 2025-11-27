@@ -19,7 +19,7 @@ public class WeaponItemManager : MonoBehaviour
     public Image energyRechargeBar;
     public TextMeshProUGUI weaponName;
     public Transform weaponContentPanel;
-    public Button purchaseButton;
+    public Button purchaseButton, upgradeButton;
     public Image currencyImage;
     public TextMeshProUGUI priceText;
 
@@ -38,7 +38,41 @@ public class WeaponItemManager : MonoBehaviour
             energyRechargeBar.fillAmount = weaponItem.weaponToSpawn.energyRecharge * 0.2f;
             priceText.text = weaponItem.weaponPrice + "";
         }
-        else Debug.LogError("Weapon item null");
+        else Debug.LogError("Weaponitem null");
+    }
+    public void CheckWeaponUpgradePurchaseButton()
+    {
+        if (!weaponItem.unlocked)
+        {
+
+            purchaseButton.gameObject.SetActive(true);
+            upgradeButton.gameObject.SetActive(false);
+            purchaseButton.onClick.AddListener(() =>
+                              {
+                                  PurchaseWeapon(weaponItem);
+                              });
+            priceText.text = weaponItem.weaponPrice + "";
+            if (PlayerPrefs.GetInt("gems") < weaponItem.weaponPrice)
+            {
+                priceText.color = Color.red;
+            }
+            else priceText.color = Color.white;
+        }
+        else purchaseButton.gameObject.SetActive(false);
+        if (weaponItem.isTrophyRoadItem)
+        {
+            Debug.Log("Is trophy road item");
+            if (weaponItem.unlocked)
+            {
+                purchaseButton.gameObject.SetActive(false);
+                upgradeButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                purchaseButton.gameObject.SetActive(false);
+                upgradeButton.gameObject.SetActive(false);
+            }
+        }
     }
     public void SetReferencesStart()
     {
@@ -59,6 +93,9 @@ public class WeaponItemManager : MonoBehaviour
         weaponItem = weaponItems[id];
         // SelectWeapon(weaponItem);
         SetStartingCheckmarks();
+
+        // SelectWeapon(weaponItem); // testing purpose << 
+        Debug.Log("Selected Weapon ID at start: " + id);
     }
     public WeaponItem FindWeaponByID()
     {
@@ -70,10 +107,12 @@ public class WeaponItemManager : MonoBehaviour
     {
         if (uiShadow != null) uiShadow.enabled = false;
         purchaseButton.onClick.RemoveAllListeners();
+
         if (!weaponItem.unlocked)
         {
 
             purchaseButton.gameObject.SetActive(true);
+            upgradeButton.gameObject.SetActive(false);
             purchaseButton.onClick.AddListener(() =>
                               {
                                   PurchaseWeapon(weaponItem);
@@ -86,11 +125,36 @@ public class WeaponItemManager : MonoBehaviour
             else priceText.color = Color.white;
         }
         else purchaseButton.gameObject.SetActive(false);
-        this.weaponItem = weaponItem;
-        SetWeaponStats();
+        if (weaponItem.isTrophyRoadItem)
+        {
+            if (weaponItem.unlocked)
+            {
+                purchaseButton.gameObject.SetActive(false);
+                upgradeButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                purchaseButton.gameObject.SetActive(false);
+                upgradeButton.gameObject.SetActive(false);
+            }
+        }
+
 
         if (weaponItem.unlocked)
+        {
+            Debug.Log("Weapon is unlocked, showing upgrade button");
+            purchaseButton.gameObject.SetActive(false);
+            upgradeButton.gameObject.SetActive(true);
             PlayerPrefs.SetInt("SelectedWeaponID", weaponItem.id);
+        }
+        else
+        {
+            Debug.Log("Weapon is locked, showing purchase button");
+            upgradeButton.gameObject.SetActive(false);
+            purchaseButton.gameObject.SetActive(true);
+        }
+        this.weaponItem = weaponItem;
+        SetWeaponStats();
         weaponItem.uiShadow.enabled = true;
         if (weaponItem.unlocked) weaponItem.uiShadow.effectColor = Color.green;
         else weaponItem.uiShadow.effectColor = Color.red;
@@ -131,7 +195,7 @@ public class WeaponItemManager : MonoBehaviour
     public void SetStartingCheckmarks()
     {
         weaponCheckmarkIndex = PlayerPrefs.GetInt("SelectedWeaponID", 0);
-        if(content.GetChild(weaponCheckmarkIndex).GetComponent<WeaponItem>().unlocked)
+        if (content.GetChild(weaponCheckmarkIndex).GetComponent<WeaponItem>().unlocked)
         {
             checkmarkPrefab.SetActive(true);
         }

@@ -13,9 +13,16 @@ public class CustomScrollTrophyRoad : MonoBehaviour
     public float smoothScrollTime = 0.2f;
     [Tooltip("Optional normalized offset (0–1). Positive = scroll slightly further right.")]
     public float adjustableOffset;
+    public TrophyRoadManager trophyRoadManager;
 
     private Coroutine smoothScrollCoroutine;
-
+    public void CenterOnSelectedItemButtonClick()
+    {
+        int childIndex = trophyRoadManager.itemIndex;
+        Debug.Log("TrophyRoad Opened - Centering on index: " + childIndex);
+        if (childIndex > 2)
+            CenterOnSelectedItem(childIndex);
+    }
     public void CenterOnSelectedItem(int childIndex)
     {
         if (scrollRect == null || scrollRect.content == null)

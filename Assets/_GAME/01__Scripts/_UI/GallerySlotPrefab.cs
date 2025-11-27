@@ -24,6 +24,8 @@ public class GallerySlotPrefab : MonoBehaviour
         trophyRoadManager = manager;
         imageGallery = gallery;
         claimButton.onClick.AddListener(ClaimReward);
+        claimButton.onClick.AddListener(CharacterManager.Instance.CheckIfUpgradesAreAffordable);
+        
         backgroundImage.sprite = claimableSprite;
      
         StartTweening();
