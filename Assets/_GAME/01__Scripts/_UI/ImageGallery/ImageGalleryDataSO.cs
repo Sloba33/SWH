@@ -27,6 +27,28 @@ public class ImageGalleryDataSO : ScriptableObject
             }
         }
     }
+    private void OnValidate()
+    {
+        // Rebuild dictionaries if inspector changed
+        BuildSpriteDictionary();
+        BuildBackgroundDictionary();
+
+        // Auto-fill new items
+        foreach (RewardData reward in rewards)
+        {
+            // Default amount
+            if (reward.amount == 0)
+                reward.amount = 50;
+
+            // Auto-assign sprites
+            if (rewardSprites.TryGetValue(reward.rewardType, out Sprite rewardSpr))
+                reward.rewardSprite = rewardSpr;
+
+
+            if (backgroundSprites.TryGetValue(reward.rewardType, out Sprite bgSpr))
+                reward.backgroundSprite = bgSpr;
+        }
+    }
 
     private void BuildSpriteDictionary()
     {
@@ -70,7 +92,7 @@ public class ImageGalleryDataSO : ScriptableObject
     }
     public enum RewardType
     {
-        Coins, Cash, Gems, XP, Token
+        XP, Token, Coins, Cash, Gems,
     }
     [System.Serializable]
     public class SpriteAssignment

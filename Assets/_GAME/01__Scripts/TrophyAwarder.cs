@@ -24,7 +24,7 @@ public class TrophyAwarder : MonoBehaviour
     private int currencyAmount;
     public Transform target;
     public bool isTrophies;
-    private int  trophyLevel;
+    private int trophyLevel;
     private int trophyPerLevelIncrease = 5;
     void Awake()
     {
@@ -41,7 +41,7 @@ public class TrophyAwarder : MonoBehaviour
         LoadPlayerLevelData();
 
         if (PlayerPrefs.GetInt("TrophyGain") == 0) return;
-        currencyAmount = pileOfCurrency.transform.childCount; 
+        currencyAmount = pileOfCurrency.transform.childCount;
 
         initialPos = new Vector2[currencyAmount];
         initialRotation = new Quaternion[currencyAmount];
@@ -168,10 +168,10 @@ public class TrophyAwarder : MonoBehaviour
 
     public void LoadPlayerLevelData()
     {
-        trophyRoadManager = FindObjectOfType<TrophyRoadManager>();
+        // trophyRoadManager = FindObjectOfType<TrophyRoadManager>();
         trophyLevel = PlayerPrefs.GetInt("TrophyLevel", 1);
         if (trophyLevel < 1) trophyLevel = 1;
-
+        if(trophyRoadManager.currentFillBar!=null)
         fillBar.fillAmount = trophyRoadManager.currentFillBar.fillBar.fillAmount;
         trophyCountText.text = PlayerPrefs.GetInt("Trophies", 0).ToString();
 

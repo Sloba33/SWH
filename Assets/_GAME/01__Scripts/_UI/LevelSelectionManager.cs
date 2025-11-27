@@ -1,12 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Coffee.UIEffects;
-using System.Collections;
-using Mono.Cecil;
-
 
 public class LevelSelectionManager : MonoBehaviour
 {
@@ -15,6 +13,7 @@ public class LevelSelectionManager : MonoBehaviour
     [SerializeField] private float scrollSuppressDuration = 0.3f; // duration to block scroll updates after click
     private bool initialized = false;
     private const string LastSelectedChapterKey = "LastSelectedChapterIndex";
+
     [Header("Chapters")]
     public bool useChapters = false;
     public GameObject chapterSelectionPanel;
@@ -26,26 +25,41 @@ public class LevelSelectionManager : MonoBehaviour
     private RectTransform currentSelectedChapter = null;
     private ChapterDefinition currentSelectedChapterDef = null;
     [SerializeField] private float snapDuration = 0.25f;
+
     [Header("Levels")]
-
     public GameObject levelSelectionPanel;
-    public RectTransform levelContentTransform;
-
-
+    public RectTransform levelContentTransform;    // CONTENT (GridLayoutGroup on this)
+    public GridLayoutGroup levelGrid;              // Assign the GridLayoutGroup component on levelContentTransform
+    public RectTransform levelViewport;            // Assign the viewport RectTransform used by levels ScrollRect
     public RectTransform levelButtonPrefab;
     public GameObject checkmarkPrefab;
-
     public List<Level> allLevels;
 
-    private SceneLoader sceneLoader;
+    [Header("Preload / Performance")]
+    [Tooltip("When true, all chapters' level buttons are instantiated once on start and reused (recommended).")]
+    public bool preloadAllChapters = true;
+
     [Header("Level Appearance Animation")]
     public bool animateLevelsSequentially;
     public bool animateLevelsScalePop;
     public bool animateLevelsFadeSlide;
+
+    [Header("Level Scrolling")]
+    [Tooltip("If true, scrolling to a target row is animated.")]
+    public bool smoothLevelScroll = true;
+    [Tooltip("Higher = faster scroll animation.")]
+    public float smoothLevelScrollSpeed = 8f;
+
     [SerializeField] private RectTransform chapterSnapMarker;
+
+    private SceneLoader sceneLoader;
+
+    // Internal pooled list for preloaded buttons (if using preload)
+    // Each child is the instantiated button (parented to levelContentTransform).
+    private List<RectTransform> preloadedButtons = new List<RectTransform>();
+
     private void Awake()
     {
-        // if (chapterSelectionPanel != null) chapterSelectionPanel.SetActive(false);
         if (levelSelectionPanel != null) levelSelectionPanel.SetActive(false);
         if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(false);
     }
@@ -57,6 +71,7 @@ public class LevelSelectionManager : MonoBehaviour
         if (backToChaptersButton != null)
             backToChaptersButton.onClick.AddListener(OnBackToChapters);
 
+        // Display chapters (build chapter buttons)
         InitializeLevelSelectionUI();
 
         if (chapterSnapMarker != null && chapterScrollRect != null)
@@ -69,13 +84,14 @@ public class LevelSelectionManager : MonoBehaviour
             chapterSnapMarker.sizeDelta = new Vector2(0, 4);
         }
 
-        ScrollDragListener dragListener = chapterScrollRect.GetComponent<ScrollDragListener>();
+        ScrollDragListener dragListener = chapterScrollRect != null ? chapterScrollRect.GetComponent<ScrollDragListener>() : null;
         if (dragListener != null)
             dragListener.onEndDrag.AddListener(OnChapterScrollEndDrag);
 
         if (useChapters)
             StartCoroutine(AutoSelectStoredChapterNextFrame());
     }
+
     private IEnumerator AutoSelectStoredChapterNextFrame()
     {
         yield return null; // wait for layout
@@ -91,7 +107,7 @@ public class LevelSelectionManager : MonoBehaviour
         currentSelectedChapter = rt;
         currentSelectedChapterDef = def;
 
-        // 🆕 Show correct chapter visuals + levels
+        // Show correct chapter visuals + levels
         DisplayLevelsForChapter(def);
         SetSelectedChapterVisuals(rt);
 
@@ -109,6 +125,7 @@ public class LevelSelectionManager : MonoBehaviour
 
         initialized = true;
     }
+
     private void Update()
     {
         if (suppressScrollSelection)
@@ -118,6 +135,7 @@ public class LevelSelectionManager : MonoBehaviour
                 suppressScrollSelection = false;
         }
     }
+
     private IEnumerator AutoSelectFirstChapterNextFrame()
     {
         yield return null; // Wait for layout
@@ -145,6 +163,7 @@ public class LevelSelectionManager : MonoBehaviour
             snapCoroutine = StartCoroutine(SnapToChapterSmooth(firstRT));
         }
     }
+
     private void OnChapterScrollEndDrag()
     {
         if (snapCoroutine != null)
@@ -152,11 +171,21 @@ public class LevelSelectionManager : MonoBehaviour
 
         snapCoroutine = StartCoroutine(SnapToChapterSmooth(currentSelectedChapter));
     }
-
+    public GameObject levelSelectionPanelRoot; 
     public void OpenLevelSelection()
     {
-        ClearContentPanel(chapterContentTransform);
-        ClearContentPanel(levelContentTransform);
+        levelSelectionPanelRoot.SetActive(true);
+        // If not using preload, clear as before. If preload, keep preloaded children.
+        if (!preloadAllChapters)
+        {
+            ClearContentPanel(chapterContentTransform);
+            ClearContentPanel(levelContentTransform);
+        }
+        else
+        {
+            ClearContentPanel(chapterContentTransform);
+            // Do NOT Clear levelContentTransform — preloaded buttons will be reused
+        }
 
         if (chapterSelectionPanel != null) chapterSelectionPanel.SetActive(false);
         if (levelSelectionPanel != null) levelSelectionPanel.SetActive(false);
@@ -164,13 +193,9 @@ public class LevelSelectionManager : MonoBehaviour
 
         InitializeLevelSelectionUI();
 
-        // Defer re-applying visuals & snapping to next frame so the UI/layout is ready.
-        // This avoids interfering with scroll / layout rebuild and prevents snapping to null.
         if (useChapters)
             StartCoroutine(RestoreSelectionNextFrame());
     }
-
-
 
     private void InitializeLevelSelectionUI()
     {
@@ -182,17 +207,25 @@ public class LevelSelectionManager : MonoBehaviour
         else
         {
             if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
+            // If not using chapters and preload is enabled, preload single "chapter" (all levels)
+            if (preloadAllChapters)
+                PreloadAllLevels();
             DisplayAllLevels();
         }
+
+        // If using preload, ensure levels are created now (once)
+        if (preloadAllChapters && useChapters)
+        {
+            PreloadAllLevels();
+        }
     }
+
     private IEnumerator RestoreSelectionNextFrame()
     {
         // Wait for the UI to rebuild and for children to exist
         yield return null;
-        // Extra short wait to allow LayoutRebuilder to complete if needed
         yield return new WaitForEndOfFrame();
 
-        // If we already have a valid currentSelectedChapterDef, find its index in the newly-built list
         if (currentSelectedChapterDef != null)
         {
             int index = allChapterDefinitions.IndexOf(currentSelectedChapterDef);
@@ -202,7 +235,6 @@ public class LevelSelectionManager : MonoBehaviour
             }
             else
             {
-                // Fall back to stored PlayerPrefs index if the definition can't be found in list
                 int storedIndex = PlayerPrefs.GetInt(LastSelectedChapterKey, 0);
                 storedIndex = Mathf.Clamp(storedIndex, 0, Mathf.Max(0, chapterContentTransform.childCount - 1));
                 if (storedIndex < chapterContentTransform.childCount)
@@ -211,7 +243,6 @@ public class LevelSelectionManager : MonoBehaviour
         }
         else
         {
-            // No currentSelectedChapterDef set — try PlayerPrefs index
             int storedIndex = PlayerPrefs.GetInt(LastSelectedChapterKey, 0);
             storedIndex = Mathf.Clamp(storedIndex, 0, Mathf.Max(0, chapterContentTransform.childCount - 1));
             if (storedIndex < chapterContentTransform.childCount)
@@ -221,25 +252,20 @@ public class LevelSelectionManager : MonoBehaviour
             }
         }
 
-        // Now safely re-apply visuals and levels if valid
         if (currentSelectedChapter != null && currentSelectedChapterDef != null)
         {
-            // Ensure levels are displayed
             DisplayLevelsForChapter(currentSelectedChapterDef);
 
-            // Reapply visuals (scale + alpha). SetSelectedChapterVisuals will start coroutines that fade/scale.
             SetSelectedChapterVisuals(currentSelectedChapter);
 
             if (levelSelectionPanel != null) levelSelectionPanel.SetActive(true);
             if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(true);
 
-            // Smoothly snap to the selected chapter (optional)
             if (snapCoroutine != null) StopCoroutine(snapCoroutine);
             snapCoroutine = StartCoroutine(SnapToChapterSmooth(currentSelectedChapter));
         }
         else
         {
-            // Nothing to restore - ensure UI shows at least the first chapter if available
             if (chapterContentTransform.childCount > 0)
             {
                 RectTransform first = chapterContentTransform.GetChild(0) as RectTransform;
@@ -262,10 +288,19 @@ public class LevelSelectionManager : MonoBehaviour
         {
             Destroy(contentParent.GetChild(i).gameObject);
         }
+
+        // If we cleared the levelContentTransform (legacy mode) also clear preloaded list
+        if (contentParent == levelContentTransform)
+        {
+            preloadedButtons.Clear();
+        }
     }
+
     public float topPixelOffset = 160f;
     private void UpdateChapterSelectionByScroll()
     {
+        if (chapterContentTransform == null || chapterContentTransform.childCount == 0) return;
+
         float minDistance = float.MaxValue;
         RectTransform closestChapter = null;
         ChapterDefinition selectedDef = null;
@@ -294,7 +329,6 @@ public class LevelSelectionManager : MonoBehaviour
             currentSelectedChapter = closestChapter;
             currentSelectedChapterDef = selectedDef;
 
-            // 🆕 Persist the scroll-based selection
             int chapterIndex = allChapterDefinitions.IndexOf(selectedDef);
             if (chapterIndex >= 0)
             {
@@ -313,7 +347,7 @@ public class LevelSelectionManager : MonoBehaviour
     public void OnScrollValueChanged(Vector2 pos)
     {
         if (!initialized) return;
-        if (suppressScrollSelection) return; // 🚫 Ignore scroll updates right after a click
+        if (suppressScrollSelection) return; // Ignore scroll updates right after a click
         UpdateChapterSelectionByScroll();
     }
 
@@ -352,6 +386,7 @@ public class LevelSelectionManager : MonoBehaviour
 
         chapterScrollRect.content.anchoredPosition = endPos;
     }
+
     private void SetSelectedChapterVisuals(RectTransform selected)
     {
         float duration = 0.2f; // duration for scale/opacity animations
@@ -363,24 +398,21 @@ public class LevelSelectionManager : MonoBehaviour
             RectTransform child = chapterContentTransform.GetChild(i) as RectTransform;
             bool isSelected = (child == selected);
 
-            // Smooth scale (optional: use DOTween or LeanTween for smoother easing)
             Vector3 targetScale = isSelected ? Vector3.one * 1.2f : Vector3.one;
-            // StopAllCoroutines(); // Optional: Prevent overlapping coroutines
             StartCoroutine(AnimateScale(child, targetScale, duration));
 
             Chapter chapter = child.GetComponent<Chapter>();
             if (chapter != null)
             {
-                // Image fade
                 if (chapter.chapterImage != null)
                     StartCoroutine(FadeCanvasImageAlpha(chapter.chapterImage, isSelected ? selectedAlpha : targetAlpha, duration));
 
-                // Text fade
                 if (chapter.chapterNameText != null)
                     StartCoroutine(FadeTextAlpha(chapter.chapterNameText, isSelected ? selectedAlpha : targetAlpha, duration));
             }
         }
     }
+
     private IEnumerator AnimateScale(Transform target, Vector3 toScale, float duration)
     {
         Vector3 from = target.localScale;
@@ -396,6 +428,7 @@ public class LevelSelectionManager : MonoBehaviour
 
         if (target != null) target.localScale = toScale;
     }
+
     private IEnumerator FadeCanvasImageAlpha(Image img, float toAlpha, float duration)
     {
         Color fromColor = img.color;
@@ -412,6 +445,7 @@ public class LevelSelectionManager : MonoBehaviour
 
         img.color = new Color(fromColor.r, fromColor.g, fromColor.b, toAlpha);
     }
+
     private IEnumerator FadeTextAlpha(TextMeshProUGUI text, float toAlpha, float duration)
     {
         Color fromColor = text.color;
@@ -428,6 +462,7 @@ public class LevelSelectionManager : MonoBehaviour
 
         text.color = new Color(fromColor.r, fromColor.g, fromColor.b, toAlpha);
     }
+
     private void DisplayChapters()
     {
         if (chapterContentTransform == null)
@@ -460,9 +495,9 @@ public class LevelSelectionManager : MonoBehaviour
             RectTransform chapterButtonGO = Instantiate(chapterButtonPrefab, chapterContentTransform);
             Chapter chapterMono = chapterButtonGO.GetComponent<Chapter>();
             Button buttonComponent = chapterButtonGO.GetComponent<Button>();
-            chapterMono.chapterImage.sprite = chapterDef.chapterSprite;
             if (chapterMono != null)
             {
+                chapterMono.chapterImage.sprite = chapterDef.chapterSprite;
                 chapterMono.SetChapterName(chapterDef.chapterName);
             }
             else
@@ -487,9 +522,8 @@ public class LevelSelectionManager : MonoBehaviour
             layoutGroup.enabled = true;
             LayoutRebuilder.ForceRebuildLayoutImmediate(chapterContentTransform);
         }
-
-
     }
+
     private IEnumerator AnimateLevelsSequentially()
     {
         float delay = 0.001f;
@@ -514,6 +548,7 @@ public class LevelSelectionManager : MonoBehaviour
             yield return new WaitForSeconds(delay);
         }
     }
+
     private IEnumerator AnimateLevelsScalePop()
     {
         float scaleDuration = 0.15f;
@@ -545,6 +580,7 @@ public class LevelSelectionManager : MonoBehaviour
             level.localScale = Vector3.one;
         }
     }
+
     private IEnumerator AnimateLevelsFadeSlide()
     {
         float delayBetween = 0.03f;
@@ -599,12 +635,9 @@ public class LevelSelectionManager : MonoBehaviour
             suppressScrollSelection = true;
             suppressScrollTimer = scrollSuppressDuration;
 
-            // 🆕 Persist the click-based selection
             PlayerPrefs.SetInt(LastSelectedChapterKey, index);
             PlayerPrefs.SetString("LastSelectedChapter", selectedChapterDef.chapterName);
             PlayerPrefs.Save();
-
-
 
             SetSelectedChapterVisuals(clickedRT);
             DisplayLevelsForChapter(selectedChapterDef);
@@ -626,32 +659,131 @@ public class LevelSelectionManager : MonoBehaviour
             return;
         }
 
-        ClearContentPanel(levelContentTransform);
+        // If not preloading, keep original behaviour: clear+instantiate
+        if (!preloadAllChapters)
+        {
+            ClearContentPanel(levelContentTransform);
 
+            if (chapterDef.levelsInChapter == null || chapterDef.levelsInChapter.Count == 0)
+            {
+                Debug.LogWarning($"Chapter '{chapterDef.chapterName}' has no Level assets assigned. No levels to display.");
+                return;
+            }
+
+            chapterDef.levelsInChapter.Sort((a, b) => a.levelNumber.CompareTo(b.levelNumber));
+
+            LayoutGroup layoutGroup = levelContentTransform.GetComponent<LayoutGroup>();
+            if (layoutGroup != null) layoutGroup.enabled = false;
+
+            int currentUnlockedLevel = PlayerPrefs.GetInt("Level", 0);
+
+            foreach (Level level in chapterDef.levelsInChapter)
+            {
+                InstantiateLevelButton(level, currentUnlockedLevel, levelContentTransform);
+            }
+
+            if (layoutGroup != null)
+            {
+                layoutGroup.enabled = true;
+                LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
+            }
+
+            // Resize content dynamically now that children exist
+            int chapterIndex = allChapterDefinitions.IndexOf(chapterDef);
+            ResizeLevelContentForChapter(chapterIndex);
+
+            // scroll so next available level row is at top
+            int nextLevel = FindNextAvailableLevelInChapter(chapterDef);
+            ScrollLevelRowToTop(nextLevel, smoothLevelScroll);
+
+            if (animateLevelsSequentially)
+                StartCoroutine(AnimateLevelsSequentially());
+            else if (animateLevelsScalePop)
+                StartCoroutine(AnimateLevelsScalePop());
+            else if (animateLevelsFadeSlide)
+                StartCoroutine(AnimateLevelsFadeSlide());
+
+            return;
+        }
+
+        // --- PRELOAD MODE: show/hide preloaded children based on metadata ---
         if (chapterDef.levelsInChapter == null || chapterDef.levelsInChapter.Count == 0)
         {
             Debug.LogWarning($"Chapter '{chapterDef.chapterName}' has no Level assets assigned. No levels to display.");
             return;
         }
 
-        // Sort levels by their levelNumber to ensure correct progression order
         chapterDef.levelsInChapter.Sort((a, b) => a.levelNumber.CompareTo(b.levelNumber));
 
-        LayoutGroup layoutGroup = levelContentTransform.GetComponent<LayoutGroup>();
-        if (layoutGroup != null) layoutGroup.enabled = false;
+        int chapterIdx = allChapterDefinitions.IndexOf(chapterDef);
+        int currentUnlocked = PlayerPrefs.GetInt("Level", 0);
 
-        int currentUnlockedLevel = PlayerPrefs.GetInt("Level", 0);
-
-        foreach (Level level in chapterDef.levelsInChapter)
+        // Activate only buttons that belong to this chapter; also update their visuals (interactable/checkmarks/ui effects)
+        int shownCount = 0;
+        for (int i = 0; i < preloadedButtons.Count; i++)
         {
-            InstantiateLevelButton(level, currentUnlockedLevel, levelContentTransform);
+            RectTransform btn = preloadedButtons[i];
+            LevelMeta meta = btn.GetComponent<LevelMeta>();
+            if (meta == null)
+            {
+                btn.gameObject.SetActive(false);
+                continue;
+            }
+
+            if (meta.chapterIndex == chapterIdx)
+            {
+                btn.gameObject.SetActive(true);
+                shownCount++;
+
+                // Update visuals based on level data (in case PlayerPrefs changed since preload)
+                Level level = meta.associatedLevel;
+                Button btnComp = btn.GetComponent<Button>();
+                LevelButtonDisplay levelDisplay = btn.GetComponent<LevelButtonDisplay>();
+
+                if (btnComp != null && level != null)
+                {
+                    btnComp.interactable = level.levelNumber <= (currentUnlocked + 1);
+
+                    bool isLatest = (level.levelNumber == (currentUnlocked + 1));
+                    UIShiny uiShiny = btn.GetComponent<UIShiny>();
+                    UIEffectTweener uiEffectTweener = btn.GetComponent<UIEffectTweener>();
+                    if (uiShiny != null) uiShiny.enabled = isLatest;
+                    if (uiEffectTweener != null) uiEffectTweener.enabled = isLatest;
+                }
+
+                // Ensure checkmark shows for completed levels (avoid duplicates)
+                if (checkmarkPrefab != null && level != null && level.levelNumber <= currentUnlocked)
+                {
+                    bool hasCheck = btn.Find("Checkmark(Clone)") != null;
+                    if (!hasCheck)
+                    {
+                        GameObject checkmarkInstance = Instantiate(checkmarkPrefab, btn);
+                        RectTransform checkmarkRect = checkmarkInstance.GetComponent<RectTransform>();
+                        if (checkmarkRect != null)
+                        {
+                            checkmarkRect.anchorMin = new Vector2(1, 1);
+                            checkmarkRect.anchorMax = new Vector2(1, 1);
+                            checkmarkRect.pivot = new Vector2(1, 1);
+                            checkmarkRect.anchoredPosition = new Vector2(-10, -10);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                btn.gameObject.SetActive(false);
+            }
         }
 
-        if (layoutGroup != null)
-        {
-            layoutGroup.enabled = true;
-            LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
-        }
+        // Force layout rebuild then resize content based on number of levels in chapter
+        LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
+        int nextAvailable = FindNextAvailableLevelInChapter(chapterDef);
+        ResizeLevelContentForChapter(chapterIdx);
+
+        // Scroll to next available level (so its row sits at top)
+        ScrollLevelRowToTop(nextAvailable, smoothLevelScroll);
+
+        // Play animations (affects active children)
         if (animateLevelsSequentially)
             StartCoroutine(AnimateLevelsSequentially());
         else if (animateLevelsScalePop)
@@ -668,33 +800,51 @@ public class LevelSelectionManager : MonoBehaviour
             return;
         }
 
-        ClearContentPanel(levelContentTransform);
-
-        if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(false);
-
-        if (allLevels == null || allLevels.Count == 0)
+        if (!preloadAllChapters)
         {
-            Debug.LogWarning("LevelSelectionManager: No Level assets assigned to 'allLevels' list. Please assign them in the Inspector if 'useChapters' is false.");
-            return;
+            ClearContentPanel(levelContentTransform);
+            if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(false);
+
+            if (allLevels == null || allLevels.Count == 0)
+            {
+                Debug.LogWarning("LevelSelectionManager: No Level assets assigned to 'allLevels' list. Please assign them in the Inspector if 'useChapters' is false.");
+                return;
+            }
+
+            allLevels.Sort((a, b) => a.levelNumber.CompareTo(b.levelNumber));
+
+            LayoutGroup layoutGroup = levelContentTransform.GetComponent<LayoutGroup>();
+            if (layoutGroup != null) layoutGroup.enabled = false;
+
+            int currentUnlockedLevel = PlayerPrefs.GetInt("Level", 0);
+
+            foreach (Level level in allLevels)
+            {
+                InstantiateLevelButton(level, currentUnlockedLevel, levelContentTransform);
+            }
+
+            if (layoutGroup != null)
+            {
+                layoutGroup.enabled = true;
+                LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
+            }
+
+            // Resize to fit all levels (single "chapter")
+            ResizeLevelContentForCount(allLevels.Count);
         }
-
-        // Sort all levels by their levelNumber to ensure correct progression order
-        allLevels.Sort((a, b) => a.levelNumber.CompareTo(b.levelNumber));
-
-        LayoutGroup layoutGroup = levelContentTransform.GetComponent<LayoutGroup>();
-        if (layoutGroup != null) layoutGroup.enabled = false;
-
-        int currentUnlockedLevel = PlayerPrefs.GetInt("Level", 0);
-
-        foreach (Level level in allLevels)
+        else
         {
-            InstantiateLevelButton(level, currentUnlockedLevel, levelContentTransform);
-        }
+            // Preload mode with single list: ensure preloaded exist and show those whose chapterIndex == -1 (or all)
+            if (preloadedButtons.Count == 0)
+                PreloadAllLevels(); // fallback
 
-        if (layoutGroup != null)
-        {
-            layoutGroup.enabled = true;
+            foreach (RectTransform btn in preloadedButtons)
+            {
+                btn.gameObject.SetActive(true);
+            }
+
             LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
+            ResizeLevelContentForCount(preloadedButtons.Count);
         }
     }
 
@@ -706,7 +856,6 @@ public class LevelSelectionManager : MonoBehaviour
             return;
         }
 
-        // Safety check for sceneBuildIndex
         if (level.sceneBuildIndex < 0 || level.sceneBuildIndex >= SceneManager.sceneCountInBuildSettings)
         {
             Debug.LogWarning($"Level '{level.levelNumber}' (Scene Build Index: {level.sceneBuildIndex}) has an invalid sceneBuildIndex. Scene not found in Build Settings. Button will not be created.");
@@ -730,23 +879,19 @@ public class LevelSelectionManager : MonoBehaviour
 
         if (buttonComponent != null)
         {
-            // Set interactability: A level is unlocked if its levelNumber is less than or equal to
-            // the currentUnlockedLevel (from PlayerPrefs) + 1.
             buttonComponent.interactable = level.levelNumber <= (currentUnlockedLevel + 1);
 
-            // Control UIShiny and UIEffectTweener components
-            // The "latest unlocked that wasn't completed yet" is the level with levelNumber == (currentUnlockedLevel + 1)
             bool isLatestUnbeatenLevel = (level.levelNumber == (currentUnlockedLevel + 1));
             if (levelButtonDisplay != null)
             {
                 levelButtonDisplay.levelSceneName = level.sceneName;
                 levelButtonDisplay.Initialize();
-
             }
             else
             {
                 Debug.LogWarning($"Level button prefab '{levelButtonPrefab.name}' is missing a LevelButtonDisplay component.");
             }
+
             UIShiny uiShiny = levelButtonGO.GetComponent<UIShiny>();
             UIEffectTweener uiEffectTweener = levelButtonGO.GetComponent<UIEffectTweener>();
 
@@ -759,8 +904,6 @@ public class LevelSelectionManager : MonoBehaviour
                 uiEffectTweener.enabled = isLatestUnbeatenLevel;
             }
 
-            // Check if the level is completed: A level is completed if its levelNumber is less than or equal to
-            // the currentUnlockedLevel (from PlayerPrefs).
             if (checkmarkPrefab != null && level.levelNumber <= currentUnlockedLevel)
             {
                 GameObject checkmarkInstance = Instantiate(checkmarkPrefab, levelButtonGO.transform);
@@ -768,16 +911,10 @@ public class LevelSelectionManager : MonoBehaviour
 
                 if (checkmarkRect != null)
                 {
-                    // Position the checkmark in the top-right corner of the button
                     checkmarkRect.anchorMin = new Vector2(1, 1);
                     checkmarkRect.anchorMax = new Vector2(1, 1);
                     checkmarkRect.pivot = new Vector2(1, 1);
-
-                    // Adjust anchored position for a slight offset from the very corner
-                    // You might need to tweak these values based on your UI design and checkmark size
                     checkmarkRect.anchoredPosition = new Vector2(-10, -10);
-                    // Optional: Set a specific size for the checkmark if it's not handled by its prefab
-                    // checkmarkRect.sizeDelta = new Vector2(20, 20); 
                 }
             }
 
@@ -817,4 +954,218 @@ public class LevelSelectionManager : MonoBehaviour
         if (chapterSelectionPanel != null) chapterSelectionPanel.SetActive(true);
         if (backToChaptersButton != null) backToChaptersButton.gameObject.SetActive(false);
     }
+
+    // -------------------- NEW: PRELOAD LOGIC --------------------
+
+    private void PreloadAllLevels()
+    {
+        // If already preloaded, no-op but refresh meta
+        if (preloadedButtons.Count > 0)
+        {
+            // ensure meta.associatedLevel is set
+            return;
+        }
+
+        if (levelButtonPrefab == null)
+        {
+            Debug.LogError("LevelSelectionManager: Level Button Prefab is not assigned! Cannot preload levels.");
+            return;
+        }
+
+        // Create all buttons for all chapters and keep them (inactive except for shown chapter)
+        for (int c = 0; c < allChapterDefinitions.Count; c++)
+        {
+            ChapterDefinition def = allChapterDefinitions[c];
+            if (def == null || def.levelsInChapter == null) continue;
+
+            def.levelsInChapter.Sort((a, b) => a.levelNumber.CompareTo(b.levelNumber));
+
+            for (int li = 0; li < def.levelsInChapter.Count; li++)
+            {
+                Level level = def.levelsInChapter[li];
+
+                RectTransform btn = Instantiate(levelButtonPrefab, levelContentTransform);
+                btn.gameObject.name = $"CH{c}_Level_{level.levelNumber}";
+                btn.gameObject.SetActive(false); // initially hidden; DisplayLevelsForChapter will show relevant
+                LevelMeta meta = btn.gameObject.AddComponent<LevelMeta>();
+                meta.chapterIndex = c;
+                meta.levelNumber = level.levelNumber;
+                meta.associatedLevel = level;
+
+                preloadedButtons.Add(btn);
+
+                // Initialize visuals now
+                Button btnComp = btn.GetComponent<Button>();
+                LevelButtonDisplay levelButtonDisplay = btn.GetComponent<LevelButtonDisplay>();
+                TextMeshProUGUI tmpText = btn.GetComponentInChildren<TextMeshProUGUI>();
+                if (tmpText != null) tmpText.text = level.levelNumber.ToString();
+                if (levelButtonDisplay != null)
+                {
+                    levelButtonDisplay.levelSceneName = level.sceneName;
+                    levelButtonDisplay.Initialize();
+                }
+
+                int currentUnlocked = PlayerPrefs.GetInt("Level", 0);
+                if (btnComp != null)
+                {
+                    btnComp.interactable = level.levelNumber <= (currentUnlocked + 1);
+                    int sceneToLoadIndex = level.sceneBuildIndex;
+                    btnComp.onClick.AddListener(() => OnLevelSelected(sceneToLoadIndex));
+                }
+
+                // Add checkmark if necessary
+                if (checkmarkPrefab != null && level.levelNumber <= PlayerPrefs.GetInt("Level", 0))
+                {
+                    GameObject checkmarkInstance = Instantiate(checkmarkPrefab, btn);
+                    RectTransform checkmarkRect = checkmarkInstance.GetComponent<RectTransform>();
+                    if (checkmarkRect != null)
+                    {
+                        checkmarkRect.anchorMin = new Vector2(1, 1);
+                        checkmarkRect.anchorMax = new Vector2(1, 1);
+                        checkmarkRect.pivot = new Vector2(1, 1);
+                        checkmarkRect.anchoredPosition = new Vector2(-10, -10);
+                    }
+                }
+            }
+        }
+
+        // Force a rebuild so Content size is correct when first shown
+        LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
+    }
+
+    // -------------------- NEW: RESIZE/SCROLL HELPERS --------------------
+
+    private void ResizeLevelContentForChapter(int chapterIndex)
+    {
+        if (levelGrid == null || levelContentTransform == null) return;
+        int count = 0;
+        if (preloadAllChapters)
+        {
+            // count how many preloaded buttons have this chapterIndex
+            for (int i = 0; i < preloadedButtons.Count; i++)
+            {
+                LevelMeta m = preloadedButtons[i].GetComponent<LevelMeta>();
+                if (m != null && m.chapterIndex == chapterIndex) count++;
+            }
+        }
+        else
+        {
+            // if not preloaded, count children in content (they are only this chapter)
+            count = levelContentTransform.childCount;
+        }
+
+        ResizeLevelContentForCount(count);
+    }
+
+    private void ResizeLevelContentForCount(int count)
+    {
+        if (levelGrid == null || levelContentTransform == null || levelViewport == null) return;
+
+        int columns = Mathf.Max(1, levelGrid.constraintCount);
+        int rows = Mathf.CeilToInt(count / (float)columns);
+        float cellH = levelGrid.cellSize.y;
+        float spacingY = levelGrid.spacing.y;
+        float padTop = levelGrid.padding.top;
+        float padBottom = levelGrid.padding.bottom;
+
+        float height = padTop + padBottom + rows * cellH + Mathf.Max(0, rows - 1) * spacingY;
+
+        levelContentTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(levelContentTransform);
+    }
+
+    private int FindNextAvailableLevelInChapter(ChapterDefinition def)
+    {
+        if (def == null || def.levelsInChapter == null || def.levelsInChapter.Count == 0) return 0;
+        def.levelsInChapter.Sort((a, b) => a.levelNumber.CompareTo(b.levelNumber));
+        int unlocked = PlayerPrefs.GetInt("Level", 0);
+
+        // Next available is the first level whose levelNumber == unlocked + 1 (or first if none)
+        for (int i = 0; i < def.levelsInChapter.Count; i++)
+        {
+            if (def.levelsInChapter[i].levelNumber == unlocked + 1)
+                return i;
+        }
+
+        // fallback - return 0 (first)
+        return 0;
+    }
+
+    /// <summary>
+    /// Scrolls the levels ScrollRect so that the row containing the given levelIndex (index within chapter) is positioned at the top of the viewport.
+    /// levelIndex is index within the chapter (0-based). If invalid, it will clamp.
+    /// </summary>
+    private void ScrollLevelRowToTop(int levelIndexInChapter, bool useSmooth)
+    {
+        if (levelGrid == null || levelContentTransform == null || levelViewport == null) return;
+        // clamp
+        int chapterIdx = allChapterDefinitions.IndexOf(currentSelectedChapterDef);
+        int count = 0;
+        if (chapterIdx >= 0 && chapterIdx < allChapterDefinitions.Count)
+            count = allChapterDefinitions[chapterIdx].levelsInChapter.Count;
+
+        if (count == 0) return;
+
+        levelIndexInChapter = Mathf.Clamp(levelIndexInChapter, 0, count - 1);
+
+        int columns = Mathf.Max(1, levelGrid.constraintCount);
+        int row = levelIndexInChapter / columns;
+
+        float cellH = levelGrid.cellSize.y;
+        float spacingY = levelGrid.spacing.y;
+        float padTop = levelGrid.padding.top;
+
+        // Top edge of the row measured from top of content (y increasing downward in anchoredPosition)
+        // We need distance from top: rowTop = padTop + row * (cellH + spacingY)
+        float rowTop = padTop + row * (cellH + spacingY);
+
+        // Convert that position to a normalized verticalNormalizedPosition:
+        float contentHeight = levelContentTransform.rect.height;
+        float viewportHeight = levelViewport.rect.height;
+        float maxScroll = contentHeight - viewportHeight;
+        if (maxScroll <= 0)
+        {
+            // no scroll needed
+            return;
+        }
+
+        // requiredScroll is pixels from top to put that row at top
+        float requiredScroll = rowTop;
+        float normalizedY = Mathf.Clamp01(1f - (requiredScroll / maxScroll));
+
+        if (useSmooth)
+        {
+            StartCoroutine(SmoothScrollLevelTo(normalizedY));
+        }
+        else
+        {
+            // find ScrollRect controlling levels (if any)
+            ScrollRect sr = levelContentTransform.GetComponentInParent<ScrollRect>();
+            if (sr != null)
+                sr.verticalNormalizedPosition = normalizedY;
+        }
+    }
+
+    private IEnumerator SmoothScrollLevelTo(float targetNormalized)
+    {
+        ScrollRect sr = levelContentTransform.GetComponentInParent<ScrollRect>();
+        if (sr == null) yield break;
+        float start = sr.verticalNormalizedPosition;
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * smoothLevelScrollSpeed;
+            sr.verticalNormalizedPosition = Mathf.Lerp(start, targetNormalized, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+        sr.verticalNormalizedPosition = targetNormalized;
+    }
+}
+
+// ------------------- small helper/meta component for preloaded buttons -------------------
+public class LevelMeta : MonoBehaviour
+{
+    public int chapterIndex = -1;
+    public int levelNumber = -1; // human level number
+    public Level associatedLevel;
 }

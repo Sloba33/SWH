@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject skipButton;
+    bool DeveloperMode;
     public bool IsMultiplayer;
     public CharacterCollection characterCollection;
     public CharacterCollection multiplayerCharacterCollection;
@@ -59,6 +62,66 @@ public class GameManager : MonoBehaviour
         _instance = this;
 
     }
+    private void GenerateSkipButton()
+    {
+        Canvas canvas = Object.FindObjectOfType<Canvas>();
+        GameObject buttonObj = new GameObject("DEBUG BUTTON");
+        buttonObj.transform.SetParent(canvas.transform, false);
+
+        Image image = buttonObj.AddComponent<Image>();
+        image.color = new Color(0.9f, 0.2f, 0.2f, 0.95f); // Red-ish semi-transparent
+
+        Button button = buttonObj.AddComponent<Button>();
+        button.targetGraphic = image;
+
+        // Add Text child
+        GameObject textObj = new GameObject("Text");
+        textObj.transform.SetParent(buttonObj.transform, false);
+
+        Text text = textObj.AddComponent<Text>();
+        text.text = "SKIP";
+        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.fontSize = 24;
+        text.alignment = TextAnchor.MiddleCenter;
+        text.color = Color.white;
+
+        // Position: 500px from Top-Left
+        RectTransform rect = buttonObj.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0, 1);
+        rect.anchorMax = new Vector2(0, 1);
+        rect.pivot = new Vector2(0, 1);
+        rect.anchoredPosition = new Vector2(500, -50); // 500px right, 50px down from top-left
+
+        rect.sizeDelta = new Vector2(160, 60);
+
+        // Make text fill the button
+        RectTransform textRect = textObj.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+
+        // Optional: Add action (e.g. restart level)
+        button.onClick.AddListener(() =>
+        {
+            Debug.Log("<color=red>DEBUG BUTTON PRESSED!</color>");
+            SkipLevel();
+            // Example: UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        });
+        skipButton = buttonObj;
+        skipButton.SetActive(true);
+
+    }
+   
+    private void SkipLevel()
+    {
+        LevelGoal levelGoal = FindObjectOfType<LevelGoal>();
+        for (int i = 0; i < levelGoal.ObstaclesToDestroy_Player.Count; i++)
+        {
+            levelGoal.ObstaclesToDestroy_Player[i].ParticleDestroy();
+        }
+        skipButton.gameObject.SetActive(false);
+    }
     public bool Testing;
     private void Start()
     {
@@ -108,6 +171,7 @@ public class GameManager : MonoBehaviour
             ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
 
         }
+            GenerateSkipButton();
     }
     public float fragScaleFactor = 1;
 

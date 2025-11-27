@@ -7,9 +7,11 @@ using UnityEngine.UI;
 
 public class ImageGallery : MonoBehaviour
 {
+    [SerializeField] public int minBuildIndex = 3;
+    [SerializeField] public int maxBuildIndex = 500;
     public ImageGalleryDataSO imageGalleryDataSO;
     public GameObject gallerySlotPrefab;
-    public LevelProgress[] levelProgressPrefabs;
+    [SerializeField] public LevelProgress[] levelProgressPrefabs;
     public Transform Content;
     private List<int> claimedGalleryRewards = new List<int>();
     public bool AreAllImagesFilled;
@@ -167,20 +169,24 @@ public class ImageGallery : MonoBehaviour
                 if (levelProgressInstance.transform.childCount > 0)
                 {
                     Transform firstChild = levelProgressInstance.transform.GetChild(0);
+                    Debug.Log("Looking at object: " + firstChild.name);
                     if (firstChild != null && firstChild.name.ToLower().Contains("outline"))
                     {
                         outlineImage = firstChild.GetComponent<Image>();
+                        Debug.Log("Assigned targetted  " + outlineImage.name);
                     }
                 }
 
                 // 2. Fallback to recursive search
                 if (outlineImage == null)
                 {
+                    Debug.Log("Targeting img : " + levelProgressInstance.GetComponentsInChildren<Image>());
                     foreach (Image img in levelProgressInstance.GetComponentsInChildren<Image>(true))
                     {
                         if (img.gameObject.name.ToLower().Contains("outline"))
                         {
                             outlineImage = img;
+                            Debug.Log("Targetted image was null : " + outlineImage.name);
                             break;
                         }
                     }
@@ -213,6 +219,7 @@ public class ImageGallery : MonoBehaviour
 
         Transform slotTransform = Content.GetChild(levelProgressIndex);
         LevelProgress levelProgress = slotTransform.GetComponentInChildren<LevelProgress>();
+        levelProgress.Initialize();
         if (levelProgress != null)
         {
             // Set all images to full fill

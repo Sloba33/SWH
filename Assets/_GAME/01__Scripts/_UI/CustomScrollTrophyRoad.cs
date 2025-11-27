@@ -23,7 +23,10 @@ public class CustomScrollTrophyRoad : MonoBehaviour
             Debug.LogWarning("[CustomScrollTrophyRoad] ScrollRect or Content not assigned.");
             return;
         }
-
+        if (rewardsPanel == null)
+        {
+            Debug.LogWarning("REwards panel unassigned in Custrom scroll trophy road");
+        }
         if (childIndex < 0 || childIndex >= rewardsPanel.childCount)
         {
             Debug.LogWarning($"[CustomScrollTrophyRoad] Invalid index {childIndex} (child count = {rewardsPanel.childCount}).");
@@ -75,7 +78,7 @@ public class CustomScrollTrophyRoad : MonoBehaviour
 
         // localPosition.x is inverted if pivot is left-aligned (0)
         // Safer to use anchoredPosition.x instead (UI layout space)
-        float targetX = Mathf.Abs(target.anchoredPosition.x); 
+        float targetX = Mathf.Abs(target.anchoredPosition.x);
         float itemCenter = targetX + (target.rect.width / 2f);
         float targetPosition = itemCenter - (viewportWidth / 2f);
 

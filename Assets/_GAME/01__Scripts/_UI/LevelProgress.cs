@@ -53,6 +53,7 @@ public class LevelProgress : MonoBehaviour
 
     public void GalleryInit()
     {
+        AutoAssignImages();
         string progressKeyPrefix = gameObject.name + "_LevelProgress"; // Use GameObject name
 
         foreach (ObstacleColor color in Enum.GetValues(typeof(ObstacleColor)))
@@ -86,7 +87,7 @@ public class LevelProgress : MonoBehaviour
         foreach (Image img in childImages)
         {
             // Skip Outline or anything not matching an ObstacleColor
-            if (string.Equals(img.name, "Outline", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(img.name, "---OUTLINE---", StringComparison.OrdinalIgnoreCase))
                 continue;
 
             switch (img.name.ToLower())
@@ -107,6 +108,7 @@ public class LevelProgress : MonoBehaviour
                 case "universal": if (Universal == null) Universal = img; break;
                 case "default": if (Default == null) Default = img; break;
             }
+          
         }
     }
     private void FillImages()
