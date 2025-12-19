@@ -5,6 +5,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 public class BatchSceneReplacer : EditorWindow
 {
@@ -21,6 +22,12 @@ public class BatchSceneReplacer : EditorWindow
     public bool OffsetEnvironment;
     public bool ShouldReplaceSceneName;
     public bool ShouldFixObstacleWeights;
+    public bool ShouldFixDefaultZoom;
+    public bool AddBackToMainMenuButton; // <-- New Toggle Added
+
+    // Added new field for Default Zoom value
+    [Header("Camera Zoom Settings")]
+    public int DefaultZoomValue = 2;
 
 
     [Header("Environment Settings")]
@@ -155,6 +162,16 @@ public class BatchSceneReplacer : EditorWindow
             }
         }
 
+        // --- Camera Zoom Modifier ---
+        ShouldFixDefaultZoom = EditorGUILayout.Toggle("Modify Camera Zoom", ShouldFixDefaultZoom);
+        using (new EditorGUI.DisabledScope(!ShouldFixDefaultZoom))
+        {
+            DefaultZoomValue = EditorGUILayout.IntField("Default Zoom", DefaultZoomValue);
+        }
+
+        // --- New: Back to Main Menu Button ---
+        AddBackToMainMenuButton = EditorGUILayout.Toggle("Add Back to Main Menu Button", AddBackToMainMenuButton);
+        
         EditorGUILayout.Space();
         if (GUILayout.Button("Fix All Scenes"))
         {
@@ -177,6 +194,10 @@ public class BatchSceneReplacer : EditorWindow
             Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
 
             bool modified = false;
+
+            // --- Existing Scene Fixes (omitted for brevity, assume they are still here) ---
+            
+            // ... (All previous fixes like Environment, Settings, Controls, Dialogue, Naming, LevelGoal, Obstacles)
 
             // --- Fix Environment ---
             if (ShouldFixEnvironment)
@@ -298,6 +319,7 @@ public class BatchSceneReplacer : EditorWindow
                     levelGoal.ObstaclesToDestroy_Player.AddRange(validObstacles);
                     EditorUtility.SetDirty(levelGoal);
                     modified = true;
+                    Debug.Log($"Fixed LevelGoal's ObstaclesToDestroy list in {scene.name}");
                 }
 
                 if (ShouldParentAllObstacles)
@@ -308,6 +330,7 @@ public class BatchSceneReplacer : EditorWindow
                         obs.transform.SetParent(obstacleParent.transform, true);
 
                     Debug.Log($"Grouped {obstacles.Length} obstacles under 'Obstacles' in {scene.name}");
+                    modified = true;
                 }
             }
             else
@@ -316,23 +339,52 @@ public class BatchSceneReplacer : EditorWindow
             }
 
             // --- Fix Obstacle Weights ---
-            if (ShouldFixObstacleWeights)
+            GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+            
+            if (ShouldFixObstacleWeights && gm != null)
             {
-                GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+                // Calculate the current weight modifier based on incremental settings
+                float weightToApply = ObstacleWeightModifier;
+                
+                if (UseIncrementalWeight && ScenesPerIncrement > 0)
+                {
+                    int incrementGroup = sceneCounter / ScenesPerIncrement;
+                    weightToApply = ObstacleWeightModifier + (incrementGroup * WeightIncrement);
+                }
+                
+                gm.ObstacleWeightModifier = weightToApply;
+                EditorUtility.SetDirty(gm);
+                modified = true;
+                Debug.Log($"Set obstacle weight modifier to {weightToApply} in scene {scene.name} (scene #{sceneCounter + 1})");
+            }
+            
+            // --- FIX CAMERA ZOOM ---
+            if (ShouldFixDefaultZoom && gm != null)
+            {
+                gm.defaultZoomValue = DefaultZoomValue;
+                EditorUtility.SetDirty(gm);
+                modified = true;
+                Debug.Log($"Set GameManager.defaultZoomValue to {DefaultZoomValue} in scene {scene.name}");
+            }
+
+            // --- NEW: ADD BACK TO MAIN MENU BUTTON ---
+            if (AddBackToMainMenuButton)
+            {
+                if (gm == null)
+                {
+                    gm = GameObject.FindFirstObjectByType<GameManager>(); // Try one more time in case it was missed above
+                }
+                
                 if (gm != null)
                 {
-                    // Calculate the current weight modifier based on incremental settings
-                    float weightToApply = ObstacleWeightModifier;
-                    
-                    if (UseIncrementalWeight && ScenesPerIncrement > 0)
-                    {
-                        int incrementGroup = sceneCounter / ScenesPerIncrement;
-                        weightToApply = ObstacleWeightModifier + (incrementGroup * WeightIncrement);
-                    }
-                    
-                    gm.ObstacleWeightModifier = weightToApply;
+                    gm.ShouldHaveMainMenuButton = true;
+                    EditorUtility.SetDirty(gm);
                     modified = true;
-                    Debug.Log($"Set obstacle weight modifier to {weightToApply} in scene {scene.name} (scene #{sceneCounter + 1})");
+                    Debug.Log($"Set GameManager.ShouldHaveMainMenuButton to TRUE in scene {scene.name}");
+                }
+                else
+                {
+                    Debug.LogWarning($"Cannot set Main Menu Button: No GameManager found in scene {scene.name}");
                 }
             }
 

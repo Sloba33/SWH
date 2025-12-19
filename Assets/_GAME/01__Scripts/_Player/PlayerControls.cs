@@ -87,8 +87,8 @@ public class PlayerControls : MonoBehaviour
         // {
         //     Debug.LogWarning("Jump Button not assigned in PlayerControls. Ensure it's hooked up in the Inspector."); //
         // }
-
-        Invoke(nameof(SetReferences), 1f); //
+SetReferences();
+        // Invoke(nameof(SetReferences), 0f); //
 
         // --- All tutorial-related UI active/inactive logic is fine as is ---
         if (levelGoal != null && levelGoal.Tutorial) //
@@ -222,6 +222,7 @@ public class PlayerControls : MonoBehaviour
             jumpPointerDownEntry.eventID = EventTriggerType.PointerDown;
             jumpPointerDownEntry.callback.AddListener((data) => { OnPointerDownDelegateJump((PointerEventData)data); });
             jumpEventTrigger.triggers.Add(jumpPointerDownEntry);
+            Debug.Log("Jump button added");
         }
         else
         {

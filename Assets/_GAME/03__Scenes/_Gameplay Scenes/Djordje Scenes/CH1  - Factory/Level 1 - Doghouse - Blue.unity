@@ -42090,6 +42090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14417ea3cdbcb7640bd97dcc6af4c2e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipButton: {fileID: 0}
   IsMultiplayer: 0
   characterCollection: {fileID: 11400000, guid: 6d8e44334f4723e45a8a604684cadfd5,
     type: 2}
@@ -42115,6 +42116,9 @@ MonoBehaviour:
   AIGoalSetter: {fileID: 0}
   ShouldHaveMainMenuButton: 0
   SendsBackToMainMenu: 0
+  ObstaclesToModify: []
+  ObstacleWeightModifier: 1
+  defaultZoomValue: 2
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -72754,7 +72758,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 150aee38b5d848b42b75593618992bb7, type: 2}
+  - {fileID: 2100000, guid: 5165a7af84427124b9d1144ef55eb89d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

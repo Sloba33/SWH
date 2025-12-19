@@ -8,6 +8,7 @@ using TMPro;
 using System.Data;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class CameraController : MonoBehaviour
 {
@@ -75,7 +76,13 @@ public class CameraController : MonoBehaviour
     private Color originalMat2Color;
     [SerializeField] private Renderer staircaseRenderer;
     // }
-    private void Start()
+    private void OnEnable()
+    {
+        SetStartZoom();
+        playerCamera.enabled = false;
+
+    }
+    private void Awake()
     {
         int j = 0;
         presetOrbits = new Cinemachine.CinemachineFreeLook.Orbit[zoomCount];
@@ -87,6 +94,11 @@ public class CameraController : MonoBehaviour
             presetZoomValues[i] = j * 25;
             j++;
         }
+    }
+    private void Start()
+    {
+
+
         joystickHolder = FindObjectOfType<PlayerControls>().joystickHolder;
         levelGoal = FindFirstObjectByType<LevelGoal>(FindObjectsInactive.Include);
         // if (levelGoal != null && levelGoal.SpawnFallingObstacles)
@@ -99,18 +111,20 @@ public class CameraController : MonoBehaviour
         // mat1Color = MAT1.color;
         // mat2Color = MAT2.color;
 
-
-        string sceneName = SceneManager.GetActiveScene().name;
-        if (!sceneName.ToLower().Contains("city"))
-        {
-            enabled = false;
-            return;
-        }
-
-        // Get the Cinemachine camera in the scene
         vcam = FindObjectOfType<CinemachineVirtualCamera>();
 
 
+        StartCoroutine(EnableCameraNextFrame());
+        // StartCoroutine(FixZoomEndOfFrame());
+        string sceneName = SceneManager.GetActiveScene().name;
+        // if (!sceneName.ToLower().Contains("city"))
+        // {
+        //     Debug.Log("Disabling CameraController - not a city scene!");
+        //     enabled = false;
+        //     return;
+        // }
+
+        // Get the Cinemachine camera in the scene
 
         // mat1_color_illusive = new Color(mat1Color.r, mat1Color.g, mat1Color.b, 0);
         // mat2_color_illusive = new Color(mat2Color.r, mat2Color.g, mat2Color.b, 0);
@@ -293,6 +307,40 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    // private IEnumerator FixZoomEndOfFrame()
+    // {
+    //     yield return new WaitForEndOfFrame();  // Lets Cinemachine complete its first pass
+
+    //     // Re-apply the snap as a "force refresh" (harmless if already correct)
+    //     playerCamera.m_YAxis.Value = (float)currentOrbit / (zoomCount - 1f);
+    // }
+    public void SetStartZoom()
+    {
+        currentZoom = GameManager.Instance.defaultZoomValue;
+        currentOrbit = currentZoom;
+
+
+        playerCamera.m_Orbits[1].m_Height = presetOrbits[currentOrbit].m_Height;
+
+        playerCamera.m_Orbits[1].m_Radius = presetOrbits[currentOrbit].m_Radius;
+
+
+        playerCamera.m_YAxis.Value = 0.5f;
+
+        if (zoomValue != null)
+            zoomValue.text = presetZoomValues[currentZoom].ToString() + "%";
+
+        if (currentOrbit < 1)
+        {
+            zoomOut.interactable = false;
+        }
+    }
+    private IEnumerator EnableCameraNextFrame()
+    {
+        yield return null; // Wait one frame to ensure Cinemachine processes orbits
+        playerCamera.enabled = true; // Now safe to go Live
+        Debug.Log($"Camera enabled with orbit {currentOrbit}, Y-Value: {playerCamera.m_YAxis.Value}");
+    }
     public void ZoomOut()
     {
         Debug.Log("Zooming Out");

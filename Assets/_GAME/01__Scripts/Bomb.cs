@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Cinemachine;
+using DG.Tweening;
 public class Bomb : MonoBehaviour
 {
     public AudioClip spawnSound;
@@ -80,11 +82,37 @@ public class Bomb : MonoBehaviour
                 PlayerController playerController = collider.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
-                    // playerController.ShakeCamera(); // Replace with your function
+                    CinemachineFreeLook cmfl = FindObjectOfType<CinemachineFreeLook>();
+                    if (cmfl != null)
+                    {
+
+                        CinemachineBasicMultiChannelPerlin noise = cmfl.GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+
+                        if (noise == null)
+                        {
+                            Debug.LogError("No Basic Multi Channel Perlin noise component found on the FreeLook camera!");
+                            return;
+                        }
+                        Debug.Log("SHAKING CAMERA");
+                        noise.m_AmplitudeGain = 1f;
+
+                        // Animate: 0 → 1 over 0.5s, then 1 → 0 over 0.5s (total 1 second)
+                        // You can tweak duration/intensity here
+                        DOTween.To(() => noise.m_AmplitudeGain,
+                                   x => noise.m_AmplitudeGain = x,
+                                   1f, 0.5f) // Rise to full strength
+                               .SetEase(Ease.OutQuad).Play() // Smooth start, quick peak
+                               .OnComplete(() =>
+                               {
+                                   DOTween.To(() => noise.m_AmplitudeGain,
+                                              x => noise.m_AmplitudeGain = x,
+                                              0f, 0.5f) // Fade back to zero
+                                          .SetEase(Ease.InQuad).Play();
+                               });
+                    }
                 }
             }
         }
-
 
     }
 
@@ -200,7 +228,7 @@ public class Bomb : MonoBehaviour
         List<Obstacle> obstaclesToNuke = new List<Obstacle>();
         foreach (Obstacle obstacle in obstacles)
         {
-        Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
+            Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
             if (obstacle.obstacleColor == bombColor || bombColor == ObstacleColor.Universal)
             {
                 Debug.Log("Matching obstacle found: " + obstacle.name);

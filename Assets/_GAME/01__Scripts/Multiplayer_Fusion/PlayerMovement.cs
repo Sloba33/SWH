@@ -181,8 +181,15 @@ public class PlayerMovement : MonoBehaviour
             _jumpInputReceivedThisFrame = false;
         }
 
-        if (jumpInputDetected && IsGrounded && !IsJumping && !IsPulling && !_playerController.isPushing && !_playerController.isPulling)
+        if (jumpInputDetected && IsGrounded && !IsJumping && !_playerController.isPulling)
         {
+            if (_playerController.isPushing)
+            {
+                _playerController.playerObstacleController.StopPush();
+                _playerController.isPushing = false;
+                justJumpedOutOfPush = true;
+            }
+
             Jump();
         }
         else if (jumpInputDetected)

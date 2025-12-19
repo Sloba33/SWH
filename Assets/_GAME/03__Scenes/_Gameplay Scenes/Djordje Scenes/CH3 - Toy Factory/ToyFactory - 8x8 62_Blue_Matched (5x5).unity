@@ -11085,6 +11085,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45484a8630efb0e449ca7ff0764f3d4b, type: 3}
+--- !u!114 &479217518 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5534357508943873803, guid: 45484a8630efb0e449ca7ff0764f3d4b,
+    type: 3}
+  m_PrefabInstance: {fileID: 479217517}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &482565160
 GameObject:
   m_ObjectHideFlags: 0
@@ -14501,6 +14513,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 585885382}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &586406222 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1964128455452615959, guid: f2b9311cc643a2b459010a0eaa480325,
+    type: 3}
+  m_PrefabInstance: {fileID: 978942587}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &603838982
 GameObject:
   m_ObjectHideFlags: 0
@@ -22169,6 +22193,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45484a8630efb0e449ca7ff0764f3d4b, type: 3}
+--- !u!114 &1013094617 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5534357508943873803, guid: 45484a8630efb0e449ca7ff0764f3d4b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1013094616}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1013584494
 GameObject:
   m_ObjectHideFlags: 0
@@ -42447,10 +42483,11 @@ MonoBehaviour:
   goalSetters: []
   playerGoalSetter: {fileID: 0}
   AIGoalSetter: {fileID: 0}
-  ShouldHaveMainMenuButton: 0
+  ShouldHaveMainMenuButton: 1
   SendsBackToMainMenu: 1
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.06
+  defaultZoomValue: 3
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -56500,9 +56537,9 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1013094617}
+  - {fileID: 479217518}
+  - {fileID: 586406222}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

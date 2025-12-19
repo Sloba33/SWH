@@ -48718,6 +48718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14417ea3cdbcb7640bd97dcc6af4c2e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipButton: {fileID: 0}
   IsMultiplayer: 0
   characterCollection: {fileID: 11400000, guid: 6d8e44334f4723e45a8a604684cadfd5,
     type: 2}
@@ -48742,6 +48743,9 @@ MonoBehaviour:
   AIGoalSetter: {fileID: 0}
   ShouldHaveMainMenuButton: 1
   SendsBackToMainMenu: 0
+  ObstaclesToModify: []
+  ObstacleWeightModifier: 1
+  defaultZoomValue: 3
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801

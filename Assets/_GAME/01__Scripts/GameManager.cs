@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+
     public GameObject skipButton;
     bool DeveloperMode;
     public bool IsMultiplayer;
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
     public bool SendsBackToMainMenu;
     public List<Obstacle> ObstaclesToModify = new List<Obstacle>();
     public float ObstacleWeightModifier = 1f;
+    public int defaultZoomValue = 2;
     public static GameManager Instance
     {
         get
@@ -112,7 +114,7 @@ public class GameManager : MonoBehaviour
         skipButton.SetActive(true);
 
     }
-   
+
     private void SkipLevel()
     {
         LevelGoal levelGoal = FindObjectOfType<LevelGoal>();
@@ -170,7 +172,7 @@ public class GameManager : MonoBehaviour
             ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
 
         }
-            GenerateSkipButton();
+        GenerateSkipButton();
     }
     public float fragScaleFactor = 1;
 
