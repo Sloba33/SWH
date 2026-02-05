@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 525382644740210563}
   - component: {fileID: 7950438657445611636}
   - component: {fileID: 2470235035810018112}
+  - component: {fileID: -3540859131674423479}
   m_Layer: 7
   m_Name: Helmet_FireFighter
   m_TagString: Untagged
@@ -66,7 +67,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 8736603183003784053, guid: 47d6d3e2d3012e949a46ab002b8b2580, type: 3}
-  - {fileID: 1840035539215654679, guid: 47d6d3e2d3012e949a46ab002b8b2580, type: 3}
+  - {fileID: 2100000, guid: 7a53ced195d717f428cd981c99ae98e3, type: 2}
   - {fileID: -6056682150832676986, guid: 47d6d3e2d3012e949a46ab002b8b2580, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -101,13 +102,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d27dd0563f47742b4d3ec89a65d0f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  helmetName: Helmet_Security
+  helmetName: Helmet_FireFighter
   playerAttack: {fileID: 0}
   mesh: {fileID: 7950438657445611636}
   material: {fileID: 2100000, guid: 7a53ced195d717f428cd981c99ae98e3, type: 2}
-  defaultColor: {r: 0.5176471, g: 0.36078432, b: 0.20784314, a: 1}
+  defaultColor: {r: 0.74509805, g: 0.11372549, b: 0.09411765, a: 1}
   cracked1: {fileID: 2800000, guid: e3aa086691ff7bb4b81ea523c60b7c40, type: 3}
   cracked2: {fileID: 2800000, guid: 0b9fd734ae3f1a744a087e5be0721bdc, type: 3}
-  helmetDurability: 0
+  helmetDurability: 3
   startDurability: 0
   defaultTexture: {fileID: 0}
+  isPaintable: 1
+--- !u!114 &-3540859131674423479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3480493927603542280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0.07
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Coffee.UIEffects;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 
@@ -23,6 +24,11 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     [SerializeField] private AudioClip audioClip;
     private bool _coinsGranted;
     public bool ColorChanged;
+    public CharacterSelector characterSelector;
+    public GameObject confirmedHelmetPrefab;
+    private bool previewingLockedCharacter;
+    public GameObject previewHelmet;
+    public TrophyRoadManager trophyRoadManager;
     // private CharacterPickerManager characterPickerManager;
     private void GrantStarterCoins()
     {
@@ -43,7 +49,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
             string characterName = characters[i].characterStats.characterName;
             bool unlocked = PlayerPrefs.GetInt(characters[i].characterStats.characterName) == 1;
-            if(PlayerPrefs.GetInt(characterName + "_level", 0) >= 6)
+            if (PlayerPrefs.GetInt(characterName + "_level", 0) >= 6)
             {
                 Debug.Log("------ Character " + characters[i].characterStats.characterName + " is at max level, skipping upgrade check ------");
                 continue; // Skip characters that are already at max level
@@ -63,6 +69,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
                     {
                         anyAffordableUpgrades = true;
                         mainMenuManager.upgradeAvailableNotification.gameObject.SetActive(true);
+
                         Debug.Log("------We have enough currency to upgrade, enabling icon");
                     }
                     else Debug.Log("------MainMenuManager is null, cannot enable upgrade notification");
@@ -72,7 +79,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             {
                 if (mainMenuManager != null)
                 {
-                   
+
                     mainMenuManager.upgradeAvailableNotification.gameObject.SetActive(false);
                     Debug.Log("------We don't have enough currency to upgrade, disabling icon");
                 }
@@ -121,6 +128,12 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         previousWeapon = currentWeapon;
         characterPickerManager.UpdateCharacterStats();
         CheckIfUpgradesAreAffordable();
+        // if (PlayerPrefs.GetInt("gems") < 2000) PlayerPrefs.SetInt("gems", 5000);
+        // if (PlayerPrefs.GetInt("coins") < 2000) PlayerPrefs.SetInt("coins", 5000);
+        // if (PlayerPrefs.GetInt("money") < 2000) PlayerPrefs.SetInt("money", 5000);
+        // PlayerPrefs.SetInt("coins", 300);
+        // PlayerPrefs.SetInt("money", 300);
+
 
     }
     private IEnumerator SetInitialConfirmedHelmet()
@@ -175,7 +188,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         return helmetItemManager.helmetItems[0];
     }
     public GameObject boxWeapon;
-    private WeaponItem weaponItem;
+    public WeaponItem weaponItem;
     public GameObject previousWeapon;
     public GameObject previousHelmet;
     public void SetWeapon(Component sender, object data)
@@ -221,6 +234,11 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     public bool wasPreviewingHelmet = false;
     public void RevertSelectionStates()
     {
+        if (previewHelmet != null)
+        {
+            Destroy(previewHelmet);
+            previewHelmet = null;
+        }
         Debug.Log("[REVERT] RevertSelectionStates CALLED");
         ClearShadows();
         Debug.Log("[REVERT] previousHelmet: " + previousHelmet + ", wasPreviewingHelmet: " + wasPreviewingHelmet);
@@ -230,14 +248,20 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             Debug.Log("[REVERT] Helmet is locked, reverting to previousHelmet prefab");
 
             if (currentHelmet != null)
+            {
+                Debug.Log("[HELMET] - destroying current helmet : " + currentHelmet);
+
                 Destroy(currentHelmet);
+            }
 
             currentHelmet = Instantiate(confirmedHelmetPrefab, currentCharacter.helmetParent);
+            Debug.Log("[HELMET] - spawning  helmet : " + currentHelmet);
             currentHelmet.SetActive(true);
 
             revertedHelmet = currentHelmet.GetComponent<Helmet>();
             if (revertedHelmet != null && !ColorChanged)
             {
+                // helmet = revertedHelmet; 
                 Debug.Log("[REVERT] Helmet Name: " + revertedHelmet.helmetName);
                 Debug.Log("[REVERT] DefaultColor: " + revertedHelmet.defaultColor);
                 revertedHelmet.material.color = helmet.defaultColor;
@@ -279,11 +303,32 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
                 currentCharacter.gameObject.SetActive(true);
             }
 
-            if (currentCharacterSelector != null && currentCharacterSelector.unlocked)
+            if (!previewingLockedCharacter)
+            {
+                // Normal revert (unlocked character flow)
                 StartCoroutine(LoadHelmet(false));
+            }
             else
-                StartCoroutine(LoadHelmet(true));
+            {
+                // Locked character preview → restore last confirmed helmet (if any)
 
+                if (currentHelmet != null)
+                    Destroy(currentHelmet);
+
+                if (confirmedHelmetPrefab != null)
+                {
+                    currentHelmet = Instantiate(confirmedHelmetPrefab, currentCharacter.helmetParent);
+                    currentHelmet.SetActive(true);
+
+                    helmet = currentHelmet.GetComponent<Helmet>();
+                }
+                else
+                {
+                    // Safety fallback: no confirmed helmet yet → use character default
+                    StartCoroutine(LoadHelmet(true));
+                }
+            }
+            previewingLockedCharacter = false;
             characterChanged = false;
 
             // ✅ Update external references now that currentCharacter has been reverted
@@ -317,74 +362,102 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     public void LoadWeapon(bool reset)
     {
         Debug.Log("Loading weapon");
-        WeaponItem weaponItem;
+        WeaponItem wepItem;
 
         if (reset)
         {
-            weaponItem = weaponItemManager.weaponItems[0];
-            Debug.Log("Weapon item : " + weaponItem.name);
+            wepItem = weaponItemManager.weaponItems[0];
+            Debug.Log("Weapon item : " + wepItem.name);
         }
         else
         {
 
-            weaponItem = weaponItemManager.FindWeaponByID();
-            Debug.Log("Weapon item : " + weaponItem.name);
+            wepItem = weaponItemManager.FindWeaponByID();
+            Debug.Log("Weapon item : " + wepItem.name);
         }
 
         PlayerAttack playerAttack = currentGameplayCharacter.GetComponent<PlayerAttack>();
-        playerAttack.weapon = weaponItem.weaponToSpawn;
+        playerAttack.weapon = wepItem.weaponToSpawn;
 
         if (currentWeapon != null)
         {
+            Debug.Log("Destroying box weapon");
             Destroy(currentWeapon);
             Destroy(boxWeapon);
         }
-        currentWeapon = Instantiate(weaponItem.weaponToSpawn.GetComponent<Weapon>().WeaponStandard, currentCharacter.GetComponent<PlayerMenu>().weaponsInHand);
+        currentWeapon = Instantiate(wepItem.weaponToSpawn.GetComponent<Weapon>().WeaponStandard, currentCharacter.GetComponent<PlayerMenu>().weaponsInHand);
+        Debug.Log("WeaponName-- :" + currentWeapon);
         currentWeapon.SetActive(true);
-        // boxWeapon = Instantiate(weaponItem.weaponAtBox, weaponsAtBoxParent);
+        weaponItem = wepItem;
+        EnableBoxWeapon();
         // uncomment above line to make weapons on box spawn
     }
-    public void SelectHelmet()
-    {
 
-    }
-    public GameObject confirmedHelmetPrefab;
-    public void PreviewHelmet(HelmetItem helmetItem)
+    public void EnableBoxWeapon()
     {
+        if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 1)
+        {   
+           
+            if (weaponItem != null)
+                boxWeapon = Instantiate(weaponItem.weaponAtBox, weaponsAtBoxParent);
+            else Debug.LogWarning("weapon item is NULL");
+        }
+    }
+    public void PreviewHelmet(HelmetItem helmetItem, bool isLockedCharacterPreview = false)
+    {
+        Debug.Log("Previewing Helmet");
+
         wasPreviewingHelmet = true;
 
-        if (confirmedHelmetPrefab == null && helmet != null)
+
+        if (isLockedCharacterPreview)
         {
-            confirmedHelmetPrefab = helmet.gameObject;
+            Debug.Log("Character is locked Preview");
+            if (previewHelmet != null)
+                Destroy(previewHelmet);
+
+            previewHelmet = Instantiate(helmetItem.helmet.gameObject, currentCharacter.helmetParent);
+            previewHelmet.SetActive(true);
+
+            Helmet instanceHelmet = previewHelmet.GetComponent<Helmet>();
+            if (instanceHelmet != null)
+            {
+                Material newMat = new Material(instanceHelmet.mesh.material);
+                instanceHelmet.mesh.material = newMat;
+                instanceHelmet.material = newMat;
+                Debug.Log("--- Locked preview Helmet item : " + helmetItem.helmet.name);
+                Debug.Log("Helmet item color :" + helmetItem.helmet.defaultColor);
+                newMat.color = helmetItem.helmet.defaultColor;
+                instanceHelmet.SetTex(newMat);
+            }
+
+            return;
         }
 
+
+        if (confirmedHelmetPrefab == null && helmet != null)
+            confirmedHelmetPrefab = helmet.gameObject;
+
         if (currentHelmet != null)
+        {
+            Debug.Log("Destroying current helmet :" + currentHelmet.name);
             Destroy(currentHelmet);
+        }
 
         currentHelmet = Instantiate(helmetItem.helmet.gameObject, currentCharacter.helmetParent);
         currentHelmet.SetActive(true);
 
-        Helmet instanceHelmet = currentHelmet.GetComponent<Helmet>();
-        if (instanceHelmet != null)
+        Helmet normalHelmet = currentHelmet.GetComponent<Helmet>();
+        if (normalHelmet != null)
         {
-            // Always create a clean material per helmet preview
-            Material newMat = new Material(instanceHelmet.mesh.material);
-            instanceHelmet.mesh.material = newMat;
-            instanceHelmet.material = newMat;
+            Material newMat = new Material(normalHelmet.mesh.material);
+            normalHelmet.mesh.material = newMat;
+            normalHelmet.material = newMat;
 
             newMat.color = helmetItem.helmet.defaultColor;
-            instanceHelmet.SetTex(newMat);
+            normalHelmet.SetTex(newMat);
 
-            helmet = instanceHelmet;
-        }
-
-        for (int j = 0; j < customizationPanelManager.colorButtonManagers.Count; j++)
-        {
-            if (customizationPanelManager.colorButtonManagers[j].clothesType == ColorButtonManager.ClothesType.Hat)
-            {
-                customizationPanelManager.colorButtonManagers[j].colorButtons[0].color = helmetItem.helmet.defaultColor;
-                customizationPanelManager.colorButtonManagers[j].SetSpecificCheckmark();
-            }
+            helmet = normalHelmet;
         }
     }
 
@@ -403,7 +476,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
         // Preview default helmet
         HelmetItem previewHelmetItem = character.defaultHelmetItem;
-        PreviewHelmet(previewHelmetItem);
+        PreviewHelmet(previewHelmetItem, true);
 
         characterChanged = true;
     }
@@ -438,7 +511,8 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         helmet.material.color = helmet.defaultColor;
         helmet.SetTex(currentCharacter.helmetMaterial);
 
-        confirmedHelmetPrefab = helmetItem.helmet.gameObject;
+        // confirmedHelmetPrefab = helmetItem.helmet.gameObject;
+        confirmedHelmetPrefab = currentHelmet;
         wasPreviewingHelmet = false;
         helmetIndex = helmetItem.id;
         PlayerPrefs.SetInt("SelectedHelmetID", helmetIndex);
@@ -483,6 +557,9 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
         currentHelmet.SetActive(true);
         helmet = helmetItem.helmet;
+        confirmedHelmetPrefab = currentHelmet;
+        wasPreviewingHelmet = false;
+        ColorChanged = false;
         Player player = currentGameplayCharacter.GetComponent<Player>();
         player.helmetToSpawn = helmet;
 
@@ -525,6 +602,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
         if (!isUnlocked)
         {
+            previewingLockedCharacter = true;
             PreviewCharacter(selectedCharacter);
             return;
         }
@@ -552,7 +630,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
         currentCharacter.gameObject.SetActive(true);
         currentCharacter.GetComponent<Animator>().SetBool("Picking", true);
-
+        previewingLockedCharacter = false;
         characterChanged = true;
     }
     public void LoadCharacter(bool reset)
@@ -621,7 +699,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         {
             // Increase character level and stats
             currentLevel++;
-        ;
+            ;
             float newStrength = PlayerPrefs.GetFloat(charName + "_strength", currentCharacter.characterStats.strength)
            + currentCharacter.characterStats.strenghtMultiplier;
 
@@ -667,6 +745,57 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             else levelUpParticle.Play();
         }
         CheckIfUpgradesAreAffordable();
+        CheckIfCharactersAreUpgradeable();
+    }
+
+    public void CheckIfCharactersAreUpgradeable()
+    {
+        for (int i = 0; i < characterPickerManager.characterSelectors.Count; i++)
+        {
+            if (characterPickerManager.characterSelectors[i].unlocked)
+            {
+                string characterName = characterPickerManager.characterSelectors[i].playerMenu.characterStats.characterName;
+                int currentLevel = PlayerPrefs.GetInt(characterName + "_level", 0);
+                int upgradeCostCoins = characterPickerManager.characterSelectors[i].playerMenu.characterStats.upgradeCostCoins * (currentLevel + 1);
+                int upgradeCostMoney = characterPickerManager.characterSelectors[i].playerMenu.characterStats.upgradeCostMoney * (currentLevel + 1);
+                Debug.Log("Looking at Selector : " + characterPickerManager.characterSelectors[i].playerMenu.name + " Checking Upgrades for Character : " + characterName + ", at level : " + currentLevel);
+                if (CheckPrice(upgradeCostCoins, upgradeCostMoney))
+                {
+                    Debug.Log("-Checking for upgrades, current level is : " + currentLevel);
+                    if (currentLevel < 6)
+                    {
+
+                        characterPickerManager.characterSelectors[i].upgradeableImage.gameObject.SetActive(true);
+                    }
+                    else characterPickerManager.characterSelectors[i].upgradeableImage.gameObject.SetActive(false);
+                }
+
+            }
+        }
+    }
+    public void CheckIfUpgradesAreAvailableForCurrentCharacter(CharacterSelector characterSelector)
+    {
+        if (characterSelector.unlocked)
+        {
+            string characterName = characterSelector.playerMenu.characterStats.characterName;
+            int currentLevel = PlayerPrefs.GetInt(characterName + "_level", 0);
+            int upgradeCostCoins = characterSelector.playerMenu.characterStats.upgradeCostCoins * (currentLevel + 1);
+            int upgradeCostMoney = characterSelector.playerMenu.characterStats.upgradeCostMoney * (currentLevel + 1);
+            if (CheckPrice(upgradeCostCoins, upgradeCostMoney))
+            {
+                Debug.Log("-Checking for upgrades, current level is : " + currentLevel);
+                if (currentLevel < 5)
+                {
+                    characterSelector.upgradeableImage.gameObject.SetActive(true);
+                }
+            }
+            else characterSelector.upgradeableImage.gameObject.SetActive(false);
+        }
+    }
+    private bool CheckPrice(int coins, int money)
+    {
+        if (PlayerPrefs.GetInt("coins", 0) >= coins && PlayerPrefs.GetInt("money", 0) >= money) return true;
+        else return false;
     }
 
 

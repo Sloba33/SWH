@@ -20,8 +20,13 @@ public class CharacterSelector : MonoBehaviour
     public bool unlocked;
     public UIShadow uiShadow;
     public GameObject notificationImage;
+    public GameObject upgradeableImage;
     public CustomizationPanelManager customizationPanelManager;
     private void Awake()
+    {
+        CheckReferences();
+    }
+    public void CheckReferences()
     {
         if (characterStats == null) return;
         if (button == null) button = GetComponent<Button>();
@@ -53,7 +58,7 @@ public class CharacterSelector : MonoBehaviour
             }
             else notificationImage.SetActive(false);
             LockCharacter(false);
-          
+
         }
         else
         {
@@ -80,5 +85,10 @@ public class CharacterSelector : MonoBehaviour
         else notificationImage.SetActive(false);
 
     }
+    void Start()
+    {
+        CharacterManager.Instance.CheckIfCharactersAreUpgradeable();
+    }
+
 }
 

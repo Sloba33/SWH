@@ -3,9 +3,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 
 /// <summary>
-/// A simple base class to simplify object pooling in Unity 2021.
-/// Derive from this class, call InitPool and you can Get and Release to your hearts content.
-/// If you enjoyed the video or this script, make sure you give me a like on YT and let me know what you thought :)
+
 /// </summary>
 /// <typeparam name="T">A MonoBehaviour object you'd like to perform pooling on.</typeparam>
 public abstract class PoolerBase<T> : MonoBehaviour where T : MonoBehaviour 

@@ -139,7 +139,8 @@ public class PlayerAttack : MonoBehaviour
                 player.specialCharges++;
                 if (player.specialCharges >= player.specialChargesMax && player.pc != null && player.pc.specialButton != null) //
                 {
-                    player.pc.specialButton.gameObject.SetActive(true);
+                    //SPECIAL ATTACK DISABLED
+                    // player.pc.specialButton.gameObject.SetActive(true);
                 }
             }
 

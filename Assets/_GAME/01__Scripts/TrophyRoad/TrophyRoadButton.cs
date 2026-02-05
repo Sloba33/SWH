@@ -46,6 +46,7 @@ public class TrophyRoadButton : MonoBehaviour
 
         // button.onClick.AddListener(() => TrophyRoadFlagChanger(true));
         button.onClick.AddListener(() => ShowReward(trophyRoadData));
+
         if (trophyReward == TrophyRewardType.Character_Token) button.onClick.AddListener(() => manager.ClaimReward(trophyRequirement, 4f));
         else button.onClick.AddListener(() => manager.ClaimReward(trophyRequirement, 1f));
         button.onClick.AddListener(() => CharacterManager.Instance.CheckIfUpgradesAreAffordable());
@@ -60,7 +61,7 @@ public class TrophyRoadButton : MonoBehaviour
             Debug.Log("Audio clip name " + audioclip.name);
             audioSource.clip = audioclip;
         }
-
+        button.onClick.AddListener(() => manager.CheckIfWeaponIsUnlocked());
 
     }
 
@@ -174,7 +175,7 @@ public class TrophyRoadButton : MonoBehaviour
 
     public IEnumerator SpawnTokenPanelCoroutineSingle(CharacterStats characterStats)
     {
-        int currentTokens = PlayerPrefs.GetInt("CharacterTokens", 0)+100;
+        int currentTokens = PlayerPrefs.GetInt("CharacterTokens", 0) + 100;
         Debug.Log("Current Tokens : " + currentTokens);
         int neededTokens = characterStats.tokensRequired;
         Debug.Log("Needed Tokens : " + neededTokens);
@@ -184,6 +185,7 @@ public class TrophyRoadButton : MonoBehaviour
 
         CharacterTokenPanel ctp = Instantiate(characterTokenPanel, manager.tokenPanelSpawnParent);
         ctp.SetPortrait(characterStats);
+        ctp.fillAmount.fillAmount = PlayerPrefs.GetFloat("CharacterFillAmount_" + characterStats.characterPortrait.name);
         RectTransform ctpRect = ctp.GetComponent<RectTransform>();
 
         // Reset local rotation and scale to ensure it's aligned properly

@@ -32,6 +32,7 @@ public class WinScreen : MonoBehaviour
     public LevelProgress levelProgress;
     public Transform playerGameObject;
     public UIParticle uIParticle;
+    public GameObject endChapterScreen;
 
 
     private void Start()
@@ -88,16 +89,30 @@ public class WinScreen : MonoBehaviour
        });
         if (proceedButton != null)
         {
-            proceedButton.GetComponent<Button>().onClick.AddListener(() =>
-                         {
-
-                             if (GameManager.Instance != null)
+            if (!GameManager.Instance.isFinalChapterLevel)
+                proceedButton.GetComponent<Button>().onClick.AddListener(() =>
                              {
-                                 Destroy(GameManager.Instance.gameObject);
-                             }
 
-                             sceneLoader.LoadMainMenu();
-                         });
+                                 if (GameManager.Instance != null)
+                                 {
+                                     Destroy(GameManager.Instance.gameObject);
+                                 }
+
+                                 sceneLoader.LoadMainMenu();
+                             });
+            else
+            {
+                proceedButton.GetComponent<Button>().onClick.AddListener(() =>
+                            {
+
+                                if (GameManager.Instance != null)
+                                {
+                                    Destroy(GameManager.Instance.gameObject);
+                                }
+                                endChapterScreen.transform.SetSiblingIndex(50);
+                                endChapterScreen.gameObject.SetActive(true);
+                            });
+            }
         }
         Debug.Log("MP : " + MP);
         Debug.Log("levelGoal : " + levelGoal);
@@ -360,7 +375,7 @@ public class WinScreen : MonoBehaviour
     }
     public IEnumerator ProceedCoroutine()
     {
-        Debug.Log("Generating gains and proceednig");
+        Debug.Log("Generating gains and proceeding");
         proceedButton.SetActive(false);
         if (rewardsPanel != null)
         {
@@ -375,28 +390,37 @@ public class WinScreen : MonoBehaviour
     }
     public void ActivateButtons()
     {
-
-        if (GameManager.Instance.ShouldHaveMainMenuButton)
+        if (!GameManager.Instance.isFinalChapterLevel)
         {
-            proceedButton.SetActive(false);
-            nextLevelButton.gameObject.SetActive(true);
-            mainMenuButton.gameObject.SetActive(true);
+
+            if (GameManager.Instance.ShouldHaveMainMenuButton)
+            {
+                proceedButton.SetActive(false);
+                nextLevelButton.gameObject.SetActive(true);
+                mainMenuButton.gameObject.SetActive(true);
+            }
+            else if (GameManager.Instance.SendsBackToMainMenu)
+            {
+                proceedButton.SetActive(true);
+                nextLevelButton.gameObject.SetActive(false);
+                mainMenuButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.Log("Setting next level button to proceed button position");
+                proceedButton.SetActive(false);
+                mainMenuButton.gameObject.SetActive(false);
+                nextLevelButton.transform.localPosition = proceedButton.transform.localPosition;
+                nextLevelButton.GetComponent<PopoutButton>().startScale = proceedButton.transform.localScale;
+                nextLevelButton.GetComponent<PopoutButton>().wasScaleAssigned = true;
+                nextLevelButton.gameObject.SetActive(true);
+            }
         }
-        else if (GameManager.Instance.SendsBackToMainMenu)
+        else
         {
             proceedButton.SetActive(true);
             nextLevelButton.gameObject.SetActive(false);
             mainMenuButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            Debug.Log("Setting next level button to proceed button position");
-            proceedButton.SetActive(false);
-            mainMenuButton.gameObject.SetActive(false);
-            nextLevelButton.transform.localPosition = proceedButton.transform.localPosition;
-            nextLevelButton.GetComponent<PopoutButton>().startScale = proceedButton.transform.localScale;
-            nextLevelButton.GetComponent<PopoutButton>().wasScaleAssigned = true;
-            nextLevelButton.gameObject.SetActive(true);
         }
 
     }

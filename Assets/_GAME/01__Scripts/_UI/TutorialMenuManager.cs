@@ -242,8 +242,23 @@ public class TutorialMenuManager : MonoBehaviour
             if (go != null)
             {
                 go.SetActive(true);
+                Debug.Log("Object we're turning on name : " + go.name);
+                if (go.name == "Button_TrophyRoad")
+                {
+                    go.GetComponent<Image>().color = new Color(0.6f, 0.6f, 0.6f, 1);
+                    go.GetComponent<Button>().interactable = false;
+                }
+                StartCoroutine(EnableButtonInteractability(1.5f, go));
+
             }
         }
+    }
+    private IEnumerator EnableButtonInteractability(float delay, GameObject go)
+    {
+        yield return new WaitForSeconds(delay);
+        go.GetComponent<Button>().interactable = true;
+        go.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+
     }
 
     private void AddTutorialButtonListener(Button button, string stepName)
@@ -434,19 +449,25 @@ public class TutorialMenuManager : MonoBehaviour
         switch (previousStep)
         {
             case MenuTutorialStep.TrophyRoadBack: // Completed Trophy Road sequence
-                Button trophyRoadButton = GetTutorialStepData(MenuTutorialStep.TrophyRoadButton)?.actualButtonComponent;
-                if (trophyRoadButton != null)
                 {
-                    // trophyRoadButton.interactable = false; // Interactability is now managed by other systems
+                    var trophyRoadData = GetTutorialStepData(MenuTutorialStep.TrophyRoadButton);
+                    if (trophyRoadData != null && trophyRoadData.buttonGameObject != null)
+                    {
+                        trophyRoadData.buttonGameObject.SetActive(false);
+                        activePersistentButtonGameObjects.Remove(trophyRoadData.buttonGameObject);
+                    }
+                    break;
                 }
-                break;
             case MenuTutorialStep.WorkersScreenBack: // Completed Workers sequence
-                Button workersButton = GetTutorialStepData(MenuTutorialStep.WorkersButton)?.actualButtonComponent;
-                if (workersButton != null)
                 {
-                    // workersButton.interactable = false; // Interactability is now managed by other systems
+                    var workersData = GetTutorialStepData(MenuTutorialStep.WorkersButton);
+                    if (workersData != null && workersData.buttonGameObject != null)
+                    {
+                        workersData.buttonGameObject.SetActive(false);
+                        activePersistentButtonGameObjects.Remove(workersData.buttonGameObject);
+                    }
+                    break;
                 }
-                break;
                 // Add more cases here for other sub-menu sequences if needed later
         }
 
@@ -490,7 +511,7 @@ public class TutorialMenuManager : MonoBehaviour
 
     public void EndMenuTutorial()
     {
-      
+
         PlayerPrefs.SetInt(PREF_INTRO_MENU_TUTORIAL_STAGE, (int)MenuTutorialStep.Completed);
         PlayerPrefs.Save(); // Ensure completion state is saved
 

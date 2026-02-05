@@ -14,6 +14,7 @@ public class Helmet : MonoBehaviour
     public Texture cracked1, cracked2;
     public int helmetDurability, startDurability;
     public Texture defaultTexture;
+    public bool isPaintable;
     private void Start()
     {
         startDurability = helmetDurability;
@@ -66,6 +67,7 @@ public class Helmet : MonoBehaviour
             }
         }
     }
+    
     public void SetTex(Material material)
     {
         if (defaultTexture != null)

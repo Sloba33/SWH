@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Coffee.UIEffects;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class CharacterPickerManager : MonoBehaviour
@@ -44,6 +45,7 @@ public class CharacterPickerManager : MonoBehaviour
         Debug.Log("ID: " + id);
         currentCharacter = characterSelectors[id];
         characterSelectorCurrent = currentCharacter;
+        currentCharacter.CheckReferences();
         UpdateCharacterStats();
         StartCoroutine(ToggleEditingTabs());
     }
@@ -129,6 +131,7 @@ public class CharacterPickerManager : MonoBehaviour
             }
             else if (!currentCharacter.isAdReward && !currentCharacter.unlocked)
             {
+                Debug.Log("This character is NOT an AD Character and is NOT UNLOCKED - turning on purchase button");
                 Debug.Log(currentCharacter.name + "  is unlocked?: " + currentCharacter.unlocked);
                 purchaseButton.gameObject.SetActive(true);
                 adRewardButton.gameObject.SetActive(false);
@@ -167,6 +170,7 @@ public class CharacterPickerManager : MonoBehaviour
                     currentCharacter.customizationPanelManager.ToggleEditingTabs(false);
                 }
                 else currentCharacter.customizationPanelManager.ToggleEditingTabs(true);
+            if (!currentCharacter.unlocked) maxButton.gameObject.SetActive(false);
         }
         else
         {
@@ -345,6 +349,7 @@ public class CharacterPickerManager : MonoBehaviour
             switch (type)
             {
                 case UnlockAndUpgradeButtonType.Unlock:
+                    Debug.Log("PURCHASE BUTTON");
                     purchaseButton.gameObject.SetActive(true);
                     upgradeButton.gameObject.SetActive(false);
                     adRewardButton.gameObject.SetActive(false);
@@ -354,6 +359,7 @@ public class CharacterPickerManager : MonoBehaviour
                              });
                     break;
                 case UnlockAndUpgradeButtonType.Ad:
+                    Debug.Log("AD BUTTON");
                     purchaseButton.gameObject.SetActive(false);
                     upgradeButton.gameObject.SetActive(false);
                     adRewardButton.gameObject.SetActive(true);
@@ -364,6 +370,7 @@ public class CharacterPickerManager : MonoBehaviour
                                 });
                     break;
                 case UnlockAndUpgradeButtonType.Upgrade:
+                    Debug.Log("UPGRADE BUTTON");
                     purchaseButton.gameObject.SetActive(false);
                     upgradeButton.gameObject.SetActive(true);
                     adRewardButton.gameObject.SetActive(false);
@@ -419,6 +426,7 @@ public class CharacterPickerManager : MonoBehaviour
             TrophyRoadTempFlag = false;
             return;
         }
+
         characterSelectorCurrent = characterSelector;
         currentCharacter = characterSelector;
 
@@ -432,8 +440,14 @@ public class CharacterPickerManager : MonoBehaviour
             characterSelector.notificationImage.SetActive(false);
 
         }
+
         Debug.Log("Sending character setter event");
         characterSetterEvent.Raise(this, currentCharacter.playerMenu);
+        if (!characterSelector.unlocked)
+        {
+            PreviewCharacter(characterSelector, characterSelector.isAdReward);
+            return;
+        }
         currentCharacter.playerMenu.SetDefaultColors();
 
         TrophyRoadTempFlag = false; // reset this after claimign in trouphy road
@@ -487,7 +501,8 @@ public class CharacterPickerManager : MonoBehaviour
                     characterManager.helmetItemManager.UnlockHelmet(currentCharacter.playerMenu.defaultHelmet);
                 }
                 UpdateCharacterStats();
-                mainMenuManager.EnableWorkersNotification(true);
+                // mainMenuManager.EnableWorkersNotification(true); This should not turn on here since we just unlocked it and selected it via buying
+                characterManager.CheckIfCharactersAreUpgradeable();
             }
             else
                 Debug.Log(" NO MONEY ");
@@ -505,6 +520,7 @@ public class CharacterPickerManager : MonoBehaviour
             Debug.Log("Character selector" + characterSelector.characterStats.characterName + " unlocked? : " + characterSelector.unlocked);
             SetCharacter(characterSelector, TrophyRoadTempFlag);
         }
+
     }
     public int characterCheckmarkIndex;
     public GameObject checkmarkPrefab;
@@ -532,8 +548,16 @@ public class CharacterPickerManager : MonoBehaviour
             {
                 upgradePriceText_coins.text = "" + currentCharacter.playerMenu.characterStats.upgradeCostCoins * (level + 1);
                 upgradePriceText_money.text = "" + currentCharacter.playerMenu.characterStats.upgradeCostMoney * (level + 1);
-                upgradePriceText_coins.color = PlayerPrefs.GetInt("coins") < currentCharacter.playerMenu.characterStats.upgradeCostCoins * level ? Color.red : Color.white;
-                upgradePriceText_money.color = PlayerPrefs.GetInt("money") < currentCharacter.playerMenu.characterStats.upgradeCostMoney * level ? Color.red : Color.white;
+
+                int playerCoins = PlayerPrefs.GetInt("coins");
+                int currentUpgradePriceCoins = currentCharacter.playerMenu.characterStats.upgradeCostCoins * (level + 1);
+                Debug.Log("Current Player_Coins = " + playerCoins + " Current Upgrade_Price =  " + currentUpgradePriceCoins);
+                upgradePriceText_coins.color = playerCoins < currentUpgradePriceCoins ? Color.red : Color.white;
+
+                int playerMoney = PlayerPrefs.GetInt("money");
+                int currentUpgradePriceMoney = currentCharacter.playerMenu.characterStats.upgradeCostMoney * (level + 1);
+                Debug.Log("Current Player_Coins = " + playerCoins + " Current Upgrade_Price =  " + currentUpgradePriceMoney);
+                upgradePriceText_money.color = playerMoney < currentUpgradePriceMoney ? Color.red : Color.white;
             }
             else Debug.Log("price text not assigned");
 

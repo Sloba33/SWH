@@ -26052,7 +26052,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4207328832343989884}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.41317147, y: -0.3422825, z: 0.17114127, w: 0.826343}
+  m_LocalRotation: {x: 0.41317153, y: -0.3422825, z: 0.17114127, w: 0.826343}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -26197,7 +26197,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4699529089400867856}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38917497, y: -0.34707448, z: 0.16120157, w: 0.83791184}
+  m_LocalRotation: {x: 0.38917503, y: -0.34707445, z: 0.1612016, w: 0.8379118}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -26554,6 +26554,9 @@ GameObject:
   - component: {fileID: 2822554595056459448}
   - component: {fileID: 2963297448575836306}
   - component: {fileID: 3507727445029364341}
+  - component: {fileID: 2249750205079217465}
+  - component: {fileID: 332382148724272002}
+  - component: {fileID: 3793763431007580388}
   m_Layer: 7
   m_Name: Cop_Gameplay
   m_TagString: Player
@@ -26696,9 +26699,9 @@ MonoBehaviour:
   flashlightEnabled: 0
   flashlight: {fileID: 3608244905394106931}
   spotlight: {fileID: 7181022338878919870}
-  followCamera: {fileID: 0}
-  playerCamera: {fileID: 8938165192270720118}
-  cameraFollowTarget: {fileID: 0}
+  followCamera: {fileID: 7969564625245894772}
+  playerCamera: {fileID: 2732751433447144903}
+  cameraFollowTarget: {fileID: 4284065540269251218}
   isPulling: 0
   isPushing: 0
 --- !u!114 &7578264257754639301
@@ -26862,13 +26865,13 @@ MonoBehaviour:
   previousMoveDirection: {x: 0, y: 0, z: 0}
   currentMoveDirection: {x: 0, y: 0, z: 0}
   playerCollider: {fileID: 0}
-  repositionSpeed: 15
+  repositionSpeed: 7
   pullRepositionSpeed: 25
-  pullDistance: 0.75
+  pullDistance: 0.1
   pushCenteringSmoothFactor: 0.15
   pushDirectionChanged: 0
   delayTimer: 0
-  manualPushDistance: 0.1
+  manualPushDistance: 0.11
 --- !u!114 &6011264303830029667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26916,7 +26919,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   weaponIndex: 0
-  weapon: {fileID: 8426030454813485489, guid: 25c2dde5a9fb2e4408af016425dd0245, type: 3}
+  weapon: {fileID: 4108434624025166086, guid: db7b033add19bdc47b3268b94b1fd571, type: 3}
   backWeaponSlot: {fileID: 3542194721956242850}
   backWeapon: {fileID: 0}
   ObstacleToHit: {fileID: 0}
@@ -26999,6 +27002,93 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.3, y: 1.5802814, z: 2.762488}
   m_Center: {x: 0, y: 0.2901407, z: 1.881244}
+--- !u!114 &2249750205079217465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5154228952446481981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868bfb2a67b87af4297a5e55d8066c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowFallOffEdges: 0
+  justLanded: 0
+  landedTime: 0
+  LAND_GRACE_PERIOD: 0.15
+  _walkSpeed: 2
+  _jumpForce: 5.8
+  _jumpParticle: {fileID: 3135647410058858460}
+  justJumpedOutOfPush: 0
+  hasRecentlyFallen: 0
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1288
+  fallHeight: 0
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _bombObstacleMask:
+    serializedVersion: 2
+    m_Bits: 393472
+  _tileObstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
+  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
+  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
+  raycastDistance: 1
+  avoidanceMultiplier: 1
+  raycastAngle: 5
+  leftEyeOffset: {x: 0.025, y: 0, z: 0}
+  rightEyeOffset: {x: -0.025, y: 0, z: 0}
+  canMove: 1
+  _tileLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  tileRayLength: 50
+  forwardOffset: {x: 0, y: 0.48, z: 0}
+  backOffset: {x: 0, y: 0.48, z: 0}
+  canPush: 1
+  moveDirection: {x: 0, y: 0, z: 0}
+  groundHits:
+  - {fileID: 0}
+  wallHits:
+  - {fileID: 0}
+  pullObstacleFlag: 0
+  obstacleBehind: 0
+  _behindObstacleMask:
+    serializedVersion: 2
+    m_Bits: 524544
+  _collectibleMask:
+    serializedVersion: 2
+    m_Bits: 131072
+--- !u!114 &332382148724272002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5154228952446481981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0628cfda9d275434097dfc2b6657539c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <CurrentAnimState>k__BackingField: 0
+--- !u!114 &3793763431007580388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5154228952446481981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe50128d80046b409c8e47d0a907974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5527017149409877024
 GameObject:
   m_ObjectHideFlags: 0
@@ -76610,7 +76700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4f114933c5f4a347af0a666c70c977d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
+  playerController: {fileID: 1123230808343928940}
 --- !u!54 &5415900649391605240
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -77164,7 +77254,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9154896523406036081}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.36501667, y: -0.35154903, z: 0.15119486, w: 0.8487145}
+  m_LocalRotation: {x: 0.36501673, y: -0.35154906, z: 0.1511949, w: 0.8487145}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

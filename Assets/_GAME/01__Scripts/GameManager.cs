@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public List<Obstacle> ObstaclesToModify = new List<Obstacle>();
     public float ObstacleWeightModifier = 1f;
     public int defaultZoomValue = 2;
+    public bool isFinalChapterLevel;
     public static GameManager Instance
     {
         get

@@ -107,6 +107,13 @@ public class CustomizationPanelManager : MonoBehaviour
             if (tab.tabType == CustomizationTab.TabType.Weapon) tab.GetComponent<Button>().interactable = state;  //consider disabling
         }
     }
+    public void ToggleColoringTab(bool state)
+    {
+        foreach (CustomizationTab tab in customizationTabs)
+        {
+            if (tab.tabType == CustomizationTab.TabType.Color) tab.GetComponent<Button>().interactable = state;  //consider disabling
+        }
+    }
     public void UpdateDefaultColors()
     {
         Debug.Log("Setting default colors for buttons");

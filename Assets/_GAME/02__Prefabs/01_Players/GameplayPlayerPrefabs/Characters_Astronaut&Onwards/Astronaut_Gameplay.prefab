@@ -5038,6 +5038,9 @@ GameObject:
   - component: {fileID: 7585832014168077526}
   - component: {fileID: 8748700207631645936}
   - component: {fileID: 2416286495818854311}
+  - component: {fileID: 3659739084882686250}
+  - component: {fileID: 7473844338766863592}
+  - component: {fileID: 5376634629899324771}
   m_Layer: 7
   m_Name: Astronaut_Gameplay
   m_TagString: Player
@@ -5180,9 +5183,9 @@ MonoBehaviour:
   flashlightEnabled: 0
   flashlight: {fileID: 8618854566134381663}
   spotlight: {fileID: 7746823129086826075}
-  followCamera: {fileID: 0}
-  playerCamera: {fileID: 2969427861746501714}
-  cameraFollowTarget: {fileID: 0}
+  followCamera: {fileID: 8485116412320823385}
+  playerCamera: {fileID: 9127490021772337519}
+  cameraFollowTarget: {fileID: 7219570329031503724}
   isPulling: 0
   isPushing: 0
 --- !u!114 &1437830107852000844
@@ -5346,13 +5349,13 @@ MonoBehaviour:
   previousMoveDirection: {x: 0, y: 0, z: 0}
   currentMoveDirection: {x: 0, y: 0, z: 0}
   playerCollider: {fileID: 0}
-  repositionSpeed: 15
+  repositionSpeed: 7
   pullRepositionSpeed: 25
-  pullDistance: 0.75
+  pullDistance: 0.1
   pushCenteringSmoothFactor: 0.15
   pushDirectionChanged: 0
   delayTimer: 0
-  manualPushDistance: 0.1
+  manualPushDistance: 0.11
 --- !u!114 &4799245531101300976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5400,7 +5403,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   weaponIndex: 0
-  weapon: {fileID: 8426030454813485489, guid: 25c2dde5a9fb2e4408af016425dd0245, type: 3}
+  weapon: {fileID: 4108434624025166086, guid: db7b033add19bdc47b3268b94b1fd571, type: 3}
   backWeaponSlot: {fileID: 2432350348242460742}
   backWeapon: {fileID: 0}
   ObstacleToHit: {fileID: 0}
@@ -5483,6 +5486,93 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.3, y: 1.5802814, z: 2.762488}
   m_Center: {x: 0, y: 0.2901407, z: 1.881244}
+--- !u!114 &3659739084882686250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441450881376027825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868bfb2a67b87af4297a5e55d8066c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowFallOffEdges: 0
+  justLanded: 0
+  landedTime: 0
+  LAND_GRACE_PERIOD: 0.15
+  _walkSpeed: 2
+  _jumpForce: 5.8
+  _jumpParticle: {fileID: 913328645704577311}
+  justJumpedOutOfPush: 0
+  hasRecentlyFallen: 0
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1288
+  fallHeight: 0
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _bombObstacleMask:
+    serializedVersion: 2
+    m_Bits: 393472
+  _tileObstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
+  WallDetectionOffset: {x: 0, y: -0.12, z: 0}
+  BombDetectionOffset: {x: 0, y: -0.12, z: 0}
+  raycastDistance: 1
+  avoidanceMultiplier: 1
+  raycastAngle: 5
+  leftEyeOffset: {x: 0.025, y: 0, z: 0}
+  rightEyeOffset: {x: -0.025, y: 0, z: 0}
+  canMove: 1
+  _tileLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  tileRayLength: 50
+  forwardOffset: {x: 0, y: 0.48, z: 0}
+  backOffset: {x: 0, y: 0.48, z: 0}
+  canPush: 1
+  moveDirection: {x: 0, y: 0, z: 0}
+  groundHits:
+  - {fileID: 0}
+  wallHits:
+  - {fileID: 0}
+  pullObstacleFlag: 0
+  obstacleBehind: 0
+  _behindObstacleMask:
+    serializedVersion: 2
+    m_Bits: 524544
+  _collectibleMask:
+    serializedVersion: 2
+    m_Bits: 131072
+--- !u!114 &7473844338766863592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441450881376027825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0628cfda9d275434097dfc2b6657539c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <CurrentAnimState>k__BackingField: 0
+--- !u!114 &5376634629899324771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441450881376027825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe50128d80046b409c8e47d0a907974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &483214407493316448
 GameObject:
   m_ObjectHideFlags: 0
@@ -10432,7 +10522,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1519299982286869255}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.36501667, y: -0.35154903, z: 0.15119486, w: 0.8487145}
+  m_LocalRotation: {x: 0.36501673, y: -0.35154906, z: 0.1511949, w: 0.8487145}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -30484,7 +30574,7 @@ Transform:
   m_GameObject: {fileID: 2432350348242460742}
   serializedVersion: 2
   m_LocalRotation: {x: 0.569383, y: -0.6994154, z: 0.3033777, w: 0.30754364}
-  m_LocalPosition: {x: 0.08, y: -0.248, z: -0.102}
+  m_LocalPosition: {x: 0.08, y: -0.236, z: -0.266}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -71820,7 +71910,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8092207679707362094}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.41317147, y: -0.3422825, z: 0.17114127, w: 0.826343}
+  m_LocalRotation: {x: 0.41317153, y: -0.3422825, z: 0.17114127, w: 0.826343}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -76815,7 +76905,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8625422253292077707}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38917497, y: -0.34707448, z: 0.16120157, w: 0.83791184}
+  m_LocalRotation: {x: 0.38917503, y: -0.34707445, z: 0.1612016, w: 0.8379118}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

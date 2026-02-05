@@ -32,7 +32,7 @@ public class CharacterTokenPanel : MonoBehaviour
 
         // Load the saved fill amount from PlayerPrefs
         float savedFillAmount = PlayerPrefs.GetFloat("CharacterFillAmount_" + characterImage.sprite.name, 0f);
-
+        Debug.Log("---LoadingSavedFillAmount---for : " + characterImage.sprite.name + " value : " + savedFillAmount);
         // Set the current fillAmount UI to the saved value
         fillAmount.fillAmount = savedFillAmount;
 
@@ -96,6 +96,7 @@ public class CharacterTokenPanel : MonoBehaviour
 
         // Save the updated fill amount to PlayerPrefs
         PlayerPrefs.SetFloat("CharacterFillAmount_" + characterImage.sprite.name, fillAmount.fillAmount);
+         Debug.Log("---SavingFillAmount---for : " + characterImage.sprite.name + " value : " + fillAmount.fillAmount);
         PlayerPrefs.Save();
 
         if (full)

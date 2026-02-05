@@ -249,12 +249,16 @@ public class TrophyRoadManager : MonoBehaviour
     public void UnlockWeapon(WeaponType weaponType)
     {
         PlayerPrefs.SetInt(weaponType.ToString(), 1);
+
         WeaponItem[] weaponItems = FindObjectsOfType<WeaponItem>(true);
         for (int i = 0; i < weaponItems.Length; i++)
         {
             if (weaponItems[i].weaponType == weaponType)
             {
+                if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 0)
+                    CharacterManager.Instance.weaponItem = weaponItems[i];
                 weaponItems[i].LockWeapon(false);
+                PlayerPrefs.SetInt("AnyWeaponUnlocked", 1);
             }
         }
     }
@@ -387,7 +391,7 @@ public class TrophyRoadManager : MonoBehaviour
 
         // Keep current height
         contentRect.sizeDelta = new Vector2(requiredWidth, contentRect.sizeDelta.y);
-        grid.cellSize = new Vector2(totalChildren*grid.cellSize.x, grid.cellSize.y);
+        grid.cellSize = new Vector2(totalChildren * grid.cellSize.x, grid.cellSize.y);
 
         // Debug
         Debug.Log($"Grid children: {totalChildren}, rows: {rows}, columns: {columns}, cellWidth: {cellWidth}, requiredContentWidth: {requiredWidth}");
@@ -656,7 +660,14 @@ public class TrophyRoadManager : MonoBehaviour
 
         }
     }
+    public void CheckIfWeaponIsUnlocked()
+    {
+        if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 1)
+        {
+            CharacterManager.Instance.EnableBoxWeapon();
+        }
 
+    }
     public Image backgroundImage;
     public Sprite claimableImage, unclaimableImage;
     public List<TrophyRoadMilestone> unclaimedMilestones = new List<TrophyRoadMilestone>();

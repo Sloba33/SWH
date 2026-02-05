@@ -86,6 +86,10 @@ public class HelmetItemManager : MonoBehaviour
         }
         helmetSetterEvent.Raise(this, helmetItem);
         SetStartingCheckmarks();
+        if (!helmet.isPaintable && characterPickerManager != null && characterPickerManager.customizationPanelManager != null)
+        {
+            characterPickerManager.customizationPanelManager.ToggleColoringTab(false);
+        }
     }
     public void PurchaseHelmet(HelmetItem helmetItem)
     {
