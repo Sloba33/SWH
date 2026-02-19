@@ -12064,6 +12064,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18a6a6483a4c5364985ae06e2f3e54bf, type: 3}
+--- !u!114 &518503510 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7096056937501911605, guid: 18a6a6483a4c5364985ae06e2f3e54bf,
+    type: 3}
+  m_PrefabInstance: {fileID: 518503509}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &523402512
 GameObject:
   m_ObjectHideFlags: 0
@@ -20180,6 +20192,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18a6a6483a4c5364985ae06e2f3e54bf, type: 3}
+--- !u!114 &906542017 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7096056937501911605, guid: 18a6a6483a4c5364985ae06e2f3e54bf,
+    type: 3}
+  m_PrefabInstance: {fileID: 906542016}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &908265890
 GameObject:
   m_ObjectHideFlags: 0
@@ -42950,11 +42974,12 @@ MonoBehaviour:
   goalSetters: []
   playerGoalSetter: {fileID: 0}
   AIGoalSetter: {fileID: 0}
-  ShouldHaveMainMenuButton: 1
-  SendsBackToMainMenu: 0
+  ShouldHaveMainMenuButton: 0
+  SendsBackToMainMenu: 1
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.4
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -43658,6 +43683,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18a6a6483a4c5364985ae06e2f3e54bf, type: 3}
+--- !u!114 &1985443511 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7096056937501911605, guid: 18a6a6483a4c5364985ae06e2f3e54bf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1985443510}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1985507201
 GameObject:
   m_ObjectHideFlags: 0
@@ -57147,6 +57184,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xp: 50
+  trophies: 5
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: 75c98b2603fc8ee408f1bd5807d1ca31,
     type: 3}
   currentTime: 0
@@ -57223,6 +57263,9 @@ MonoBehaviour:
   - {fileID: 2099909621}
   - {fileID: 235896655}
   - {fileID: 757689259}
+  - {fileID: 1985443511}
+  - {fileID: 906542017}
+  - {fileID: 518503510}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -57247,9 +57290,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -90424,7 +90464,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &5398846352785607117
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -49435,6 +49435,8 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.33
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -64092,6 +64094,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xp: 0
+  trophies: 0
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: 86e5a92e254ed1a4dbd87b938c63029a,
     type: 3}
   currentTime: 0
@@ -64182,9 +64187,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -96743,8 +96745,8 @@ Transform:
   m_GameObject: {fileID: 262583654258523993}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.72, y: 1.09, z: 8.17}
-  m_LocalScale: {x: 35.9765, y: 35.9765, z: 35.9765}
+  m_LocalPosition: {x: -4.0929, y: 1.41, z: 8.6217}
+  m_LocalScale: {x: 40.746983, y: 40.746983, z: 40.746983}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3296256466405498763}

@@ -21,6 +21,7 @@ public class CharacterStats : ScriptableObject
     public int upgradeCostMultiplier;
     public int tokensCurrent, tokensRequired, unlockPrice;
     public int Ad_Tokens, Ad_Tokens_Required, Ad_unlock_price;
+    
     public float MaxStrength
     {
         get

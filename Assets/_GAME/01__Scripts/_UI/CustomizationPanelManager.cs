@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class CustomizationPanelManager : MonoBehaviour
@@ -20,8 +21,8 @@ public class CustomizationPanelManager : MonoBehaviour
         defaultBodyPocketColor,
         defaultHatColor,
         defaultShoesColor;
-
-
+    public CustomizationTab colorTab, helmetTab, weaponTab, characterTab;
+    public CustomizationTab currentTab;
     public void SetCurrentCharacter(PlayerMenu pm)
     {
         currentCharacter = pm;
@@ -73,6 +74,7 @@ public class CustomizationPanelManager : MonoBehaviour
 
     public void CloseAllTabs()
     {
+
         TurnOnTabs();
         mainMenuManager.OpenCustomizationPanel();
         CloseAllPanels();
@@ -98,14 +100,13 @@ public class CustomizationPanelManager : MonoBehaviour
             }
         }
     }
-    public void ToggleEditingTabs(bool state)
+   
+    public void ToggleEachTab(bool helmetFlag, bool colorFlag, bool weaponFlag, bool characterFlag)
     {
-        foreach (CustomizationTab tab in customizationTabs)
-        {
-            if (tab.tabType == CustomizationTab.TabType.Color) tab.GetComponent<Button>().interactable = state;
-            if (tab.tabType == CustomizationTab.TabType.Helmet) tab.GetComponent<Button>().interactable = state;  //consider disabling
-            if (tab.tabType == CustomizationTab.TabType.Weapon) tab.GetComponent<Button>().interactable = state;  //consider disabling
-        }
+        helmetTab.GetComponent<Button>().interactable = helmetFlag;
+        colorTab.GetComponent<Button>().interactable = colorFlag;
+        weaponTab.GetComponent<Button>().interactable = weaponFlag;
+        characterTab.GetComponent<Button>().interactable = characterFlag;
     }
     public void ToggleColoringTab(bool state)
     {
@@ -174,7 +175,7 @@ public class CustomizationPanelManager : MonoBehaviour
         }
         Debug.Log("Default colors updated");
     }
-
+    
     public void StopPickingCharacter()
     {
         mainMenuManager.isCharacterPicking = false;

@@ -12,24 +12,44 @@ public class SceneLoader : MonoBehaviour
     public int nextLevelIndex;
     public bool isLoadingScene;
     public bool isMainMenuScene;
-
+    // public SceneLoader Instance { get; private set; }
     [Header("Loading Settings")]
-    [SerializeField] private float minimumLoadingTime = 2.0f; // Minimum time loading screen is visible
+    [SerializeField] private float minimumLoadingTime = 5f; // Minimum time loading screen is visible
     [SerializeField] private bool allowSceneActivationOnProgress = true; // Set to false for manual activation
 
-    private void Awake()
-    {
-        // Optional: Make this a Singleton if you want it to persist and be easily accessible
-        // Example:
-        // if (Instance != null && Instance != this)
-        // {
-        //     Destroy(gameObject);
-        //     return;
-        // }
-        // Instance = this;
-        // DontDestroyOnLoad(gameObject);
-    }
+    private bool waitingForFirebase;
 
+
+    public void ContinueTutorialLevel()
+    {
+        int level = PlayerPrefs.GetInt("Level", 0);
+        if (level < 3)
+        {
+            Debug.Log("---SceneLoader---Intro levels were NOT completed");
+        }
+        if (PlayerPrefs.GetInt("IntroMenuTutorialStage", 0) == 1)
+        {
+            StartCoroutine(LoadLevelInternal(1));
+
+        }
+        else if (level == 0)
+        {
+            Debug.Log("---SceneLoader---Loading level : " + level);
+            StartCoroutine(LoadLevelInternal(3));
+        }
+        else if (level == 1)
+        {
+            Debug.Log("---SceneLoader---Loading level : " + level);
+            StartCoroutine(LoadLevelInternal(4));
+        }
+        else if (level == 2)
+        {
+            Debug.Log("---SceneLoader---Loading level : " + level);
+            StartCoroutine(LoadLevelInternal(5));
+        }
+
+
+    }
     private void OnEnable()
     {
         // Subscribe to the sceneLoaded event to handle disabling the loading screen
@@ -44,6 +64,7 @@ public class SceneLoader : MonoBehaviour
 
     private void Start()
     {
+        int level = PlayerPrefs.GetInt("Level", 0);
         // PlayerPrefs.SetInt("IsSeparateBuild", 1); // Setting for separate bui
         PlayerPrefs.SetInt("IsSeparateBuild", 0); // Setting for separate bui
         bool separateBuild = PlayerPrefs.GetInt("IsSeparateBuild", 0) == 1;
@@ -59,8 +80,13 @@ public class SceneLoader : MonoBehaviour
             nextLevelIndex = currentLevelIndex; // Or handle end-of-game logic
             Debug.LogWarning("Attempted to load next level beyond build settings. Looping to current level or custom end logic.");
         }
-
         int firstTime = PlayerPrefs.GetInt("FirstTime", 0);
+        if (PlayerPrefs.GetInt("GameplayTutorialCompleted", 0) == 1 && isLoadingScene && level < 3)
+        {
+
+            ContinueTutorialLevel();
+            return;
+        }
         if (isLoadingScene && firstTime != 0)
         {
             // If it's a loading scene and not the first time, load the main menu
@@ -74,7 +100,7 @@ public class SceneLoader : MonoBehaviour
             // in your onboarding/tutorial scene (scene 2) once it's complete.
             StartCoroutine(LoadLevelInternal(2)); // Use the internal loading method
         }
-        
+
     }
 
     public void LoadNextJob()
@@ -135,9 +161,9 @@ public class SceneLoader : MonoBehaviour
         loadingScreen.SetActive(true);
         float startTime = Time.time;
 
-        while (operation.progress < 0.9f)
+        while (operation.progress < 300f)
         {
-            float progressValue = Mathf.Clamp01(operation.progress / 0.9f);
+            float progressValue = Mathf.Clamp01(operation.progress / 300f);
             loadingBarFill.fillAmount = progressValue;
             yield return null;
         }

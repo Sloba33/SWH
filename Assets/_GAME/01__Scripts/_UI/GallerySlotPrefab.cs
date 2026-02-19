@@ -18,6 +18,9 @@ public class GallerySlotPrefab : MonoBehaviour
     public Sprite claimableSprite, claimedSprite, unavailableSprite;
     public Color claimedColor = new();
     public Color unclaimedColor = new();
+    public bool isFilled;
+    public bool isClaimed;
+    public GameObject xpPile;
     public void Initialize(int index, TrophyRoadManager manager, ImageGallery gallery)
     {
         levelProgressIndex = index;
@@ -87,6 +90,6 @@ public class GallerySlotPrefab : MonoBehaviour
     private IEnumerator DelayScroll()
     {
         yield return new WaitForSeconds(0.2f);
-        imageGallery.ClaimGalleryReward(levelProgressIndex, this);
+        imageGallery.ClaimGalleryReward(levelProgressIndex, this, 5, 50);
     }
 }

@@ -38,8 +38,8 @@ public class WinScreen : MonoBehaviour
     private void Start()
     {
 
-
-        AudioManager.Instance.BGMVolume = 0;
+        GameManager.Instance.FreezeObstacles();
+        AudioManager.Instance.BGMVolume = 0.1f;
         playerEmoteObject = FindObjectOfType<Player>().gameObject;
         if (playerEmoteObject != null)
         {

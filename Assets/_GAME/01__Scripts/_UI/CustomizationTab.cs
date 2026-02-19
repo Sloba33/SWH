@@ -24,28 +24,39 @@ public class CustomizationTab : MonoBehaviour
 
     public void SelectTab()
     {
+        if (customizationPanelManager.currentTab == this) return;
         Debug.Log("Selecting tab");
-        Debug.Log("Current character that the tab sees :" + customizationPanelManager.currentCharacter.characterStats.characterName);
+
+        // 🔑 Cancel helmet preview ONLY if we are leaving the Helmet tab
+
+
+        Debug.Log("Current character that the tab sees : " +
+                  customizationPanelManager.currentCharacter.characterStats.characterName);
+
         customizationPanelManager.SelecTab(this);
         HighlightSeletedButton(this);
+
         if (tabType == TabType.Weapon)
         {
             Debug.Log("Weapon tab selected, enabling weapons in hand");
             ToggleWeaponsInHand(true);
             WeaponItemManager weaponItemManager = FindObjectOfType<WeaponItemManager>();
             weaponItemManager.CheckWeaponUpgradePurchaseButton();
+            CharacterManager.Instance.CancelHelmetPreview();
             customizationPanelManager.mainMenuManager.SetWeaponCamera();
         }
         else if (tabType == TabType.Color)
         {
             Debug.Log("Color tab selected, disabling weapons in hand");
             ToggleWeaponsInHand(false);
+            CharacterManager.Instance.CancelHelmetPreview();
             customizationPanelManager.mainMenuManager.SetColorCamera();
         }
         else if (tabType == TabType.Character)
         {
             Debug.Log("Character tab selected, disabling weapons in hand");
             ToggleWeaponsInHand(false);
+            CharacterManager.Instance.CancelHelmetPreview();
             customizationPanelManager.mainMenuManager.SetCharacterCamera();
             HighlightSeletedButton(this);
         }
@@ -53,9 +64,12 @@ public class CustomizationTab : MonoBehaviour
         {
             Debug.Log("Helmet tab selected, disabling weapons in hand");
             ToggleWeaponsInHand(false);
+
             customizationPanelManager.mainMenuManager.SetHelmetCamera();
         }
+        customizationPanelManager.currentTab = this;
     }
+
 
     public enum TabType
     {
@@ -69,7 +83,8 @@ public class CustomizationTab : MonoBehaviour
 
     public void ToggleWeaponsInHand(bool flag)
     {
-        customizationPanelManager.currentCharacter.weaponsInHand.gameObject.SetActive(flag);
+        if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 0) Debug.LogWarning("Selecting weapon when none are unlocked");
+        else customizationPanelManager.currentCharacter.weaponsInHand.gameObject.SetActive(flag);
     }
 
     private void HighlightSeletedButton(CustomizationTab ct)

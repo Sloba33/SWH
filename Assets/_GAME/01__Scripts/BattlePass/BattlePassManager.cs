@@ -17,6 +17,7 @@ public class BattlePassManager : MonoBehaviour
     public Image BPFillBarGlobal;
     public TextMeshProUGUI BPFillBarText;
     public TextMeshProUGUI BPLevelTextGlobal;
+    public Transform xpFillBar;
 
     private void Start()
     {
@@ -423,7 +424,7 @@ public class BattlePassManager : MonoBehaviour
     {
         int unclaimedCount = 0;
         int playerLevel = PlayerPrefs.GetInt("PlayerLevel", 1);
-        
+
         foreach (var slot in battlePassData.slots)
         {
             if (

@@ -224,7 +224,14 @@ public class TutorialMenuManager : MonoBehaviour
 
             if (currentStepData.hintGameObject != null)
             {
-                currentStepData.hintGameObject.SetActive(true);
+                if (currentTutorialStep == MenuTutorialStep.TrophyRoadBack)
+                {
+                    StartCoroutine(DelayedHintActivation(currentStepData.hintGameObject));
+                }
+                else
+                {
+                    currentStepData.hintGameObject.SetActive(true);
+                }
             }
 
             if (currentStepData.actualButtonComponent != null)
@@ -260,7 +267,16 @@ public class TutorialMenuManager : MonoBehaviour
         go.GetComponent<Image>().color = new Color(1, 1, 1, 1);
 
     }
+    private IEnumerator DelayedHintActivation(GameObject hintObject)
+    {
+        yield return new WaitForSeconds(1f);
 
+        // Safety check in case tutorial step changed during delay
+        if (currentTutorialStep == MenuTutorialStep.TrophyRoadBack && hintObject != null)
+        {
+            hintObject.SetActive(true);
+        }
+    }
     private void AddTutorialButtonListener(Button button, string stepName)
     {
         if (button != null)

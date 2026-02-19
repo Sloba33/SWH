@@ -42930,11 +42930,12 @@ MonoBehaviour:
   goalSetters: []
   playerGoalSetter: {fileID: 0}
   AIGoalSetter: {fileID: 0}
-  ShouldHaveMainMenuButton: 1
-  SendsBackToMainMenu: 0
+  ShouldHaveMainMenuButton: 0
+  SendsBackToMainMenu: 1
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.4
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -56979,6 +56980,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xp: 50
+  trophies: 5
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: 1440b89e4196f3440821b56c578409db,
     type: 3}
   currentTime: 0
@@ -57082,9 +57086,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -90259,7 +90260,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &5398846352785607117
 BoxCollider:
   m_ObjectHideFlags: 0

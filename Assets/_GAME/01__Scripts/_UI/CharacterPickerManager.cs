@@ -55,12 +55,12 @@ public class CharacterPickerManager : MonoBehaviour
         if (currentCharacter != null && !currentCharacter.isEditable)
         {
             Debug.Log("Current character is not editable, toggling editing tabs off");
-            currentCharacter.customizationPanelManager.ToggleEditingTabs(false);
+            currentCharacter.customizationPanelManager.ToggleEachTab(false, false, true, true);
         }
         else if (currentCharacter != null && currentCharacter.isEditable)
         {
             Debug.Log("Current character is editable, toggling editing tabs on");
-            currentCharacter.customizationPanelManager.ToggleEditingTabs(true);
+            currentCharacter.customizationPanelManager.ToggleEachTab(true, true, true, true);
         }
     }
     public PlayerMenu FindCharacterByID()
@@ -141,7 +141,8 @@ public class CharacterPickerManager : MonoBehaviour
                 buyPriceText.text = GetCharacterPrice(currentCharacter.characterStats).ToString();
                 buyPriceText.color = PlayerPrefs.GetInt("gems") < GetCharacterPrice(currentCharacter.characterStats) ? Color.red : Color.white;
                 Debug.Log("Buy Price Text is : " + GetCharacterPrice(currentCharacter.characterStats).ToString());
-                currentCharacter.characterStats.unlockPrice = GetCharacterPrice(currentCharacter.characterStats);
+                int unlockPrice = GetCharacterPrice(currentCharacter.characterStats);
+                // currentCharacter.characterStats.unlockPrice = GetCharacterPrice(currentCharacter.characterStats);// Caused endless cost reduction ---
 
                 mainMenuManager.characterName.text = currentCharacter.characterStats.characterName;
                 if (!TrophyRoadTempFlag)
@@ -165,11 +166,19 @@ public class CharacterPickerManager : MonoBehaviour
                 }
             }
             if (currentCharacter.customizationPanelManager != null)
-                if (!currentCharacter.isEditable || !currentCharacter.unlocked)
+                if (!currentCharacter.isEditable && !currentCharacter.unlocked)
                 {
-                    currentCharacter.customizationPanelManager.ToggleEditingTabs(false);
+                    currentCharacter.customizationPanelManager.ToggleEachTab(false, false, false, true);
                 }
-                else currentCharacter.customizationPanelManager.ToggleEditingTabs(true);
+                else if (!currentCharacter.isEditable && currentCharacter.unlocked)
+                {
+                    currentCharacter.customizationPanelManager.ToggleEachTab(false, false, true, true);
+                }
+                else if (currentCharacter.isEditable && !currentCharacter.unlocked)
+                {
+                    currentCharacter.customizationPanelManager.ToggleEachTab(false, false, false, true);
+                }
+                else currentCharacter.customizationPanelManager.ToggleEachTab(true, true, true, true);
             if (!currentCharacter.unlocked) maxButton.gameObject.SetActive(false);
         }
         else
@@ -212,6 +221,7 @@ public class CharacterPickerManager : MonoBehaviour
     {
         if (lvl == maxLevel)
         {
+            Debug.Log("----FILLBAR STATS---- Character is max level");
             str = currentCharacter.playerMenu.characterStats.maxStrenght;
             spd = currentCharacter.playerMenu.characterStats.maxSpeed;
             spc = currentCharacter.playerMenu.characterStats.maxSpecial;
@@ -307,26 +317,28 @@ public class CharacterPickerManager : MonoBehaviour
             mainMenuManager.specialFillBar.fillAmount = targetSpecialFill;
             mainMenuManager.specialStatText.text = targetSpecialText.ToString() + "";
         }
+        if (lvl + 1 == maxLevel)
+        {
+            mainMenuManager.strengthFillBar.fillAmount = 1;
+            mainMenuManager.speedFillBar.fillAmount = 1;
+            mainMenuManager.specialFillBar.fillAmount = 1;
+        }
     }
     public MainMenuManager mainMenuManager;
 
 
     public void PreviewCharacter(CharacterSelector characterSelector, bool isAdReward)
     {
-        characterSelector.customizationPanelManager.ToggleAllCustomizationTabs(false);
+        characterSelector.customizationPanelManager.ToggleEachTab(false, false, false, true);
 
         if (isAdReward)
         {
 
             ActivateButton(UnlockAndUpgradeButtonType.Ad, characterSelector);
-
-
         }
         else
         {
             ActivateButton(UnlockAndUpgradeButtonType.Unlock, characterSelector);
-
-
         }
         SetUiEffect(characterSelector, false);
 
@@ -405,8 +417,8 @@ public class CharacterPickerManager : MonoBehaviour
             }
 
             if (!characterSelector.isEditable)
-                characterSelector.customizationPanelManager.ToggleEditingTabs(false);
-            else characterSelector.customizationPanelManager.ToggleEditingTabs(true);
+                characterSelector.customizationPanelManager.ToggleEachTab(false, false, true, true);
+            else characterSelector.customizationPanelManager.ToggleEachTab(true, true, true, true);
 
             SetUiEffect(characterSelector, true);
         }
@@ -433,8 +445,9 @@ public class CharacterPickerManager : MonoBehaviour
         SelectCharacter(currentCharacter, currentCharacter.unlocked, currentCharacter.isAdReward);
 
         bool characterNotificationClicked = PlayerPrefs.GetInt(characterSelector.characterStats.characterName.ToString() + "_clicked") != 1;
-        if (characterNotificationClicked)
+        if (characterNotificationClicked && characterSelector.unlocked)
         {
+
             PlayerPrefs.SetInt(characterSelector.characterStats.characterName + "_clicked", 1);
             Debug.Log("Item clicked? :" + PlayerPrefs.GetInt(characterSelector.characterStats.characterName + "_clicked"));
             characterSelector.notificationImage.SetActive(false);
@@ -468,8 +481,22 @@ public class CharacterPickerManager : MonoBehaviour
     public int GetCharacterPrice(CharacterStats characterStats)
     {
         int tokensCollected = PlayerPrefs.GetInt("CharacterTokens");
-        int remainingTokens = characterStats.tokensRequired - tokensCollected;
-        float tokenRatio = (float)remainingTokens / characterStats.tokensRequired;
+        int remainingTokens = 0;
+        float tokenRatio = 1;
+        if (characterStats.tokensRequired == 0)
+        {
+            characterStats.tokensRequired = 0;
+            remainingTokens = 0;
+            tokenRatio = 1;
+        }
+        else
+        {
+            remainingTokens = characterStats.tokensRequired - tokensCollected;
+            tokenRatio = (float)remainingTokens / characterStats.tokensRequired;
+        }
+
+        Debug.Log("||||||Tokens Collected = " + tokensCollected + " Remaining Tokens =" + remainingTokens + " tokenRatio = " + tokenRatio);
+        Debug.Log("|||| Character price SHOULD be : " + (characterStats.unlockPrice * tokenRatio));
         return Mathf.CeilToInt(characterStats.unlockPrice * tokenRatio);
     }
     public int GetCharacterAdTokensAmount(CharacterStats characterStats)

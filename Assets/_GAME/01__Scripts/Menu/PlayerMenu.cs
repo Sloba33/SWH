@@ -7,6 +7,7 @@ public class PlayerMenu : MonoBehaviour
     public CharacterStats characterStats;
     public Transform weaponsInHand;
     public Material shirtMaterial, shirtMaterial_SecondPart, shirtMaterial_ThirdPart, shirtMaterial_Darker, overallsMaterial, overallsPocketMaterial, shoesMaterial, helmetMaterial;
+    public Material helmetMaterial_alt;
     public GameObject playerStand;
     public Helmet defaultHelmet;
     public HelmetItem defaultHelmetItem;

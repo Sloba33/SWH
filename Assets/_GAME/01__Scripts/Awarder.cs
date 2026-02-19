@@ -46,9 +46,11 @@ public class Awarder : MonoBehaviour
             AwardCurrency(10, 10);
         }
     }
-
+    private Canvas xpCanvas;
+    private Coroutine hideSortingCoroutine;
     void Start()
     {
+        xpCanvas = battlePassManager.xpFillBar.GetComponent<Canvas>();
         if (battlePassManager == null) battlePassManager = FindObjectOfType<BattlePassManager>();
         audioSource = GetComponent<AudioSource>();
         audioClip = audioSource.clip;
@@ -115,8 +117,6 @@ public class Awarder : MonoBehaviour
     }
     public void AwardCurrency(int amt, int actualGain)
     {
-
-
         for (int i = 0; i < amt; i++)
         {
             targetPosition = pileOfCurrency
@@ -181,9 +181,123 @@ public class Awarder : MonoBehaviour
 
         StartCoroutine(FillBar(1f, actualGain, currentLevelProgress, requiredXP));
     }
+    private IEnumerator XpBarOverrideSortingToggle(bool flag, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        battlePassManager.xpFillBar.GetComponent<Canvas>().overrideSorting = flag;
+    }
+    public int activeXpAnimations = 0;
+    public void AwardCurrencyManual(int actualGain, GameObject targetPosition, GameObject xpPile, RectTransform startPos)
+    {
+        activeXpAnimations++;
+
+        if (hideSortingCoroutine != null)
+        {
+            StopCoroutine(hideSortingCoroutine);
+            hideSortingCoroutine = null;
+        }
+
+        if (activeXpAnimations == 1)
+        {
+            xpCanvas.overrideSorting = true;
+        }
+        if (activeXpAnimations == 1)
+        {
+            var canvas = battlePassManager.xpFillBar.GetComponent<Canvas>();
+            canvas.overrideSorting = true;
+        }
+
+        xpPile.transform.SetAsLastSibling();
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 tarPos = targetPosition
+                .transform.GetChild(i)
+                .GetComponent<RectTransform>()
+                .position;
+            xpPile.transform.GetChild(i).GetComponent<RectTransform>().position =
+                startPos.position;
+            xpPile.transform.GetChild(i).gameObject.SetActive(true);
+            xpPile.transform.GetChild(i).DOMove(tarPos, 0.4f).Play();
+
+        }
+        var delay = 0f;
+        for (int i = 0; i < 5; i++)
+        {
+            xpPile
+                .transform.GetChild(i)
+                .DOScale(1.2f, 0.3f)
+                .SetDelay(delay)
+                .SetEase(Ease.OutBack)
+                .Play();
+
+            xpPile
+                .transform.GetChild(i)
+                .GetComponent<RectTransform>()
+                .DOMove(target.transform.position, 0.8f)
+                .SetDelay(delay + 0.5f)
+                .SetEase(Ease.InBack)
+                .Play();
+
+            xpPile
+                .transform.GetChild(i)
+                .DORotate(Vector3.zero, 0.5f)
+                .SetDelay(delay + 0.5f)
+                .SetEase(Ease.Flash)
+                .Play();
+
+            xpPile
+                .transform.GetChild(i)
+                .DOScale(0f, 0.2f)
+                .SetDelay(delay + 1.30f)
+                .SetEase(Ease.OutBack)
+                .Play();
+
+            delay += 0.05f;
+
+            counter
+                .transform.parent.GetChild(0)
+                .transform.DOScale(1.1f, 0.1f)
+                .SetLoops(10, LoopType.Yoyo)
+                .SetEase(Ease.InOutSine)
+                .SetDelay(1.2f)
+                .Play();
+            target
+                .transform.DOScale(1.4f, 0.05f)
+                .SetLoops(10, LoopType.Yoyo)
+                .SetEase(Ease.InOutSine)
+                .SetDelay(1.3f)
+                .Play();
+
+        }
+
+        AddXp(actualGain);
+
+    }
     AudioSource audioSource;
     AudioClip audioClip;
+    public void AddXp(int amount)
+    {
+        pendingXp += amount;
 
+        if (!isProcessingXp)
+        {
+            StartCoroutine(ProcessXp());
+        }
+    }
+    private IEnumerator ProcessXp()
+    {
+        isProcessingXp = true;
+
+        while (pendingXp > 0)
+        {
+            int xpToApply = pendingXp;
+            pendingXp = 0;
+
+            yield return StartCoroutine(FillBarInternal(xpToApply));
+        }
+
+        isProcessingXp = false;
+    }
     public void LoadPlayerLevelData()
     {
         playerLevel = PlayerPrefs.GetInt("PlayerLevel", 1);
@@ -208,6 +322,8 @@ public class Awarder : MonoBehaviour
         SetBattlePassLevelFill(fillBar.fillAmount, fillText.text, playerLevel);
     }
     bool firstLevelUp;
+    private int pendingXp = 0;
+    private bool isProcessingXp = false;
     IEnumerator FillBar(float delay, int gainedXP, int currentLevelXP, int requiredXP)
     {
         Debug.Log(
@@ -296,8 +412,95 @@ public class Awarder : MonoBehaviour
             );
         }
         StartCoroutine(RevertTargetScale(target));
+        activeXpAnimations--;
+
+        if (activeXpAnimations <= 0)
+        {
+            activeXpAnimations = 0;
+            hideSortingCoroutine = StartCoroutine(DisableSortingWithDelay(1f));
+        }
+    }
+    private int currentLevelXP;
+ 
+
+    private float xpFillDelay = 1f;
+    private IEnumerator FillBarInternal(int gainedXP)
+{
+    yield return new WaitForSeconds(xpFillDelay);
+
+    while (gainedXP > 0)
+    {
+        int xpToLevel = requiredXP - currentLevelXP;
+
+        // Determine how much XP we apply this cycle
+        int xpThisStep = Mathf.Min(gainedXP, xpToLevel);
+
+        float startFill = (float)currentLevelXP / requiredXP;
+        float endFill = (float)(currentLevelXP + xpThisStep) / requiredXP;
+
+        float duration = firstLevelUp ? 0.08f : 0.5f;
+        firstLevelUp = true;
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            float fill = Mathf.Lerp(startFill, endFill, t);
+            fillBar.fillAmount = fill;
+
+            int displayedXP = Mathf.FloorToInt(fill * requiredXP);
+            fillText.text = displayedXP + "/" + requiredXP;
+
+            yield return null;
+        }
+
+        // Apply XP to authoritative state
+        currentLevelXP += xpThisStep;
+        gainedXP -= xpThisStep;
+
+        // Level up if needed
+        if (currentLevelXP >= requiredXP)
+        {
+            LevelUp(); // this resets currentLevelXP to 0 and updates requiredXP
+        }
+        else
+        {
+            SaveCurrentLevel(currentLevelXP);
+            SetBattlePassLevelFill(
+                fillBar.fillAmount,
+                fillText.text,
+                playerLevel
+            );
+        }
     }
 
+    // Post animation effects
+    StartCoroutine(RevertTargetScale(target));
+
+    activeXpAnimations--;
+
+    if (activeXpAnimations <= 0)
+    {
+        activeXpAnimations = 0;
+        hideSortingCoroutine = StartCoroutine(DisableSortingWithDelay(1f));
+    }
+}
+
+    private IEnumerator DisableSortingWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Double-check nothing started meanwhile
+        if (activeXpAnimations == 0)
+        {
+            xpCanvas.overrideSorting = false;
+        }
+
+        hideSortingCoroutine = null;
+    }
     public IEnumerator RevertTargetScale(Transform target)
     {
         yield return new WaitForSeconds(0.1f);

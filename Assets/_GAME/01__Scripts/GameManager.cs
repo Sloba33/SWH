@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     public float ObstacleWeightModifier = 1f;
     public int defaultZoomValue = 2;
     public bool isFinalChapterLevel;
+    public Obstacle[] obstaclesToFreeze;
     public static GameManager Instance
     {
         get
@@ -44,7 +45,14 @@ public class GameManager : MonoBehaviour
     }
 
 
-
+    public void FreezeObstacles()
+    {
+        obstaclesToFreeze = FindObjectsByType<Obstacle>(FindObjectsSortMode.None);
+        for (int i = 0; i < obstaclesToFreeze.Length; i++)
+        {
+            obstaclesToFreeze[i].isFrozen=true;
+        }
+    }
     private void SetTestBuildPrefs()
     {
         if (PlayerPrefs.GetInt("Level") < 3)

@@ -31534,6 +31534,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: SP_Settings_OnlySettings and Timer
       objectReference: {fileID: 0}
+    - target: {fileID: 6612589289750731862, guid: b247f82768ed7b34386087967f68986d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8371680852469022841, guid: b247f82768ed7b34386087967f68986d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8469627572841131465, guid: b247f82768ed7b34386087967f68986d,
         type: 3}
       propertyPath: m_Pivot.x
@@ -43351,6 +43361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14417ea3cdbcb7640bd97dcc6af4c2e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipButton: {fileID: 0}
   IsMultiplayer: 0
   characterCollection: {fileID: 11400000, guid: 6d8e44334f4723e45a8a604684cadfd5,
     type: 2}
@@ -43378,6 +43389,8 @@ MonoBehaviour:
   SendsBackToMainMenu: 0
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.03
+  defaultZoomValue: 2
+  isFinalChapterLevel: 0
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -57443,6 +57456,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xp: 0
+  trophies: 0
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: 48a71da25a4c06744bb403e512855ea9,
     type: 3}
   currentTime: 0
@@ -57543,9 +57559,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7

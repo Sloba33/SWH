@@ -232,6 +232,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     public CharacterSelector currentCharacterSelector;
     public Helmet revertedHelmet;
     public bool wasPreviewingHelmet = false;
+
     public void RevertSelectionStates()
     {
         if (previewHelmet != null)
@@ -392,12 +393,37 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         EnableBoxWeapon();
         // uncomment above line to make weapons on box spawn
     }
+    public void CancelHelmetPreview()
+    {
+        Debug.Log("[Helmet] Cancel preview");
 
+        if (!wasPreviewingHelmet)
+            return;
+
+        // Destroy ONLY the preview
+        if (previewHelmet != null)
+        {
+            Destroy(previewHelmet);
+            previewHelmet = null;
+        }
+
+        // Re-enable equipped helmet
+        if (currentHelmet != null)
+        {
+            currentHelmet.SetActive(true);
+
+            helmet = currentHelmet.GetComponent<Helmet>();
+            helmet.SetTex(currentCharacter.helmetMaterial);
+        }
+
+        wasPreviewingHelmet = false;
+        previewingLockedCharacter = false;
+    }
     public void EnableBoxWeapon()
     {
         if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 1)
-        {   
-           
+        {
+
             if (weaponItem != null)
                 boxWeapon = Instantiate(weaponItem.weaponAtBox, weaponsAtBoxParent);
             else Debug.LogWarning("weapon item is NULL");
@@ -409,10 +435,13 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
         wasPreviewingHelmet = true;
 
-
+        // ─────────────────────────────────────────
+        // LOCKED CHARACTER PREVIEW (already correct)
+        // ─────────────────────────────────────────
         if (isLockedCharacterPreview)
         {
             Debug.Log("Character is locked Preview");
+
             if (previewHelmet != null)
                 Destroy(previewHelmet);
 
@@ -425,8 +454,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
                 Material newMat = new Material(instanceHelmet.mesh.material);
                 instanceHelmet.mesh.material = newMat;
                 instanceHelmet.material = newMat;
-                Debug.Log("--- Locked preview Helmet item : " + helmetItem.helmet.name);
-                Debug.Log("Helmet item color :" + helmetItem.helmet.defaultColor);
+
                 newMat.color = helmetItem.helmet.defaultColor;
                 instanceHelmet.SetTex(newMat);
             }
@@ -434,20 +462,26 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             return;
         }
 
+        // ─────────────────────────────────────────
+        // NORMAL HELMET PREVIEW (THIS IS THE FIX)
+        // ─────────────────────────────────────────
 
-        if (confirmedHelmetPrefab == null && helmet != null)
-            confirmedHelmetPrefab = helmet.gameObject;
+        if (confirmedHelmetPrefab == null && currentHelmet != null)
+            confirmedHelmetPrefab = currentHelmet;
 
+        // 🔑 Hide equipped helmet instead of destroying it
         if (currentHelmet != null)
-        {
-            Debug.Log("Destroying current helmet :" + currentHelmet.name);
-            Destroy(currentHelmet);
-        }
+            currentHelmet.SetActive(false);
 
-        currentHelmet = Instantiate(helmetItem.helmet.gameObject, currentCharacter.helmetParent);
-        currentHelmet.SetActive(true);
+        // 🔑 Destroy previous preview if any
+        if (previewHelmet != null)
+            Destroy(previewHelmet);
 
-        Helmet normalHelmet = currentHelmet.GetComponent<Helmet>();
+        // 🔑 Spawn preview helmet
+        previewHelmet = Instantiate(helmetItem.helmet.gameObject, currentCharacter.helmetParent);
+        previewHelmet.SetActive(true);
+
+        Helmet normalHelmet = previewHelmet.GetComponent<Helmet>();
         if (normalHelmet != null)
         {
             Material newMat = new Material(normalHelmet.mesh.material);
@@ -456,10 +490,9 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
             newMat.color = helmetItem.helmet.defaultColor;
             normalHelmet.SetTex(newMat);
-
-            helmet = normalHelmet;
         }
     }
+
 
     public void PreviewCharacter(PlayerMenu character)
     {
@@ -482,6 +515,12 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     public void SetHelmet(Component sender, object data)
     {
+        if (previewHelmet != null)
+        {
+            Destroy(previewHelmet);
+            previewHelmet = null;
+        }
+
         HelmetItem helmetItem = (HelmetItem)data;
 
         bool characterUnlocked = characterPickerManager.characterSelectorCurrent.unlocked;
@@ -759,17 +798,27 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
                 int upgradeCostCoins = characterPickerManager.characterSelectors[i].playerMenu.characterStats.upgradeCostCoins * (currentLevel + 1);
                 int upgradeCostMoney = characterPickerManager.characterSelectors[i].playerMenu.characterStats.upgradeCostMoney * (currentLevel + 1);
                 Debug.Log("Looking at Selector : " + characterPickerManager.characterSelectors[i].playerMenu.name + " Checking Upgrades for Character : " + characterName + ", at level : " + currentLevel);
+                Debug.Log("Character = " + characterPickerManager.characterSelectors[i].name + " is upgradeable = " + CheckPrice(upgradeCostCoins, upgradeCostMoney));
                 if (CheckPrice(upgradeCostCoins, upgradeCostMoney))
                 {
                     Debug.Log("-Checking for upgrades, current level is : " + currentLevel);
                     if (currentLevel < 6)
                     {
-
+                        Debug.Log("-Upgrade-Character is upgradeable, toggling notif ON");
                         characterPickerManager.characterSelectors[i].upgradeableImage.gameObject.SetActive(true);
                     }
-                    else characterPickerManager.characterSelectors[i].upgradeableImage.gameObject.SetActive(false);
+                    else
+                    {
+                        Debug.Log("-Upgrade-Character is maxed, toggling notif OFF");
+                        characterPickerManager.characterSelectors[i].upgradeableImage.gameObject.SetActive(false);
+                    }
                 }
+                else
+                {
+                    Debug.Log("-Upgrade- Not enough currency");
 
+                    characterPickerManager.characterSelectors[i].upgradeableImage.gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -794,7 +843,9 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     private bool CheckPrice(int coins, int money)
     {
-        if (PlayerPrefs.GetInt("coins", 0) >= coins && PlayerPrefs.GetInt("money", 0) >= money) return true;
+        Debug.Log("Player coins  = " + PlayerPrefs.GetInt("coins", 0) + "Cost coins = " + coins + " |||| " + "Player Money = " + PlayerPrefs.GetInt("money", 0) + " Cost money = " + money);
+        if ((PlayerPrefs.GetInt("coins", 0) >= coins) && (PlayerPrefs.GetInt("money", 0) >= money))
+            return true;
         else return false;
     }
 

@@ -43,6 +43,8 @@ public class CharacterSelector : MonoBehaviour
             characterPickerManager.SetCharacter(this, false);
             CharacterManager.Instance.PlayClick();
             SetCharacterSelector();
+            playerMenu.hasBlinked = false;
+            playerMenu.canBlink = true;
 
         });
 

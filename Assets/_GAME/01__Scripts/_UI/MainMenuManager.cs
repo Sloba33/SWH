@@ -63,6 +63,7 @@ public class MainMenuManager : MonoBehaviour
     public TextMeshProUGUI strengthStatText, speedStatText, specialStatText;
 
     public ImageGallery imageGallery;
+    public GameObject xpFillBar;
     public void UpdateCurrency()
     {
         CharacterManager.Instance.CheckIfUpgradesAreAffordable();
@@ -248,6 +249,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void OpenMainMenu()
     {
+        customizationPanelManager.currentTab = null;
         CharacterManager.Instance.RevertSelectionStates();
         mainMenu.SetActive(true);
         CloseCustomizationPanel();
@@ -425,6 +427,17 @@ public class MainMenuManager : MonoBehaviour
         _isSettingsAnimating = false;
     }
     [SerializeField] private SceneLoader sceneLoader;
+    public void StartNextLevel()
+    {
+        if (sceneLoader != null)
+        {
+            sceneLoader.LoadNextJob();
+        }
+        else
+        {
+            Debug.LogError("SceneLoader is not assigned or found. Cannot load next job for intro levels.");
+        }
+    }
     public void HandleMainMenuWorkButton()
     {
 

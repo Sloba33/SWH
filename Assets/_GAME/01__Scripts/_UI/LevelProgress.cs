@@ -25,6 +25,7 @@ public class LevelProgress : MonoBehaviour
     private bool wiggleTriggered;
     public WinScreen winScreen;
     public bool ImageComplete;
+    public bool isFilled;
 
     public void Initialize()
     {

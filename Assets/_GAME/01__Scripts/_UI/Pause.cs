@@ -29,6 +29,11 @@ public class Pause : MonoBehaviour
             if (tutorialHandler.joystickType == TutorialHandler.JoystickType.Floating) SelectJoystick(joystickIndex);
             if (tutorialHandler.joystickType == TutorialHandler.JoystickType.Dynamic) SelectJoystick(joystickIndex);
         }
+        Time.timeScale = 0f;
+    }
+    private void OnDisable()
+    {
+        Continue();
     }
     private void Start()
     {
@@ -95,7 +100,7 @@ public class Pause : MonoBehaviour
        });
         Scene scene = SceneManager.GetActiveScene();
         levelName.text = scene.name;
-        Time.timeScale = 0f;
+
     }
     public void SelectJoystick(int index)
     {
@@ -140,6 +145,6 @@ public class Pause : MonoBehaviour
 
         Time.timeScale = 1f;
         settings.pausePanel.SetActive(false);
-        
+
     }
 }

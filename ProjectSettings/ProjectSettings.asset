@@ -40,7 +40,7 @@ PlayerSettings:
     width: 1
     height: 1
   m_SplashScreenLogos:
-  - logo: {fileID: 10404, guid: 0000000000000000f000000000000000, type: 0}
+  - logo: {fileID: 0}
     duration: 2
   - logo: {fileID: 21300000, guid: 163cb63ea1c2cbd4d878ae52aa2dae71, type: 3}
     duration: 2
@@ -181,14 +181,14 @@ PlayerSettings:
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 2
-  AndroidMinSdkVersion: 23
-  AndroidTargetSdkVersion: 0
+  AndroidMinSdkVersion: 24
+  AndroidTargetSdkVersion: 35
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
-  ForceInternetPermission: 0
+  ForceInternetPermission: 1
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   androidSplitApplicationBinary: 0
@@ -972,7 +972,10 @@ PlayerSettings:
   windowsGamepadBackendHint: 0
   cloudProjectId: 0f1b2521-187f-4527-af3e-89758d4a57c8
   framebufferDepthMemorylessMode: 0
-  qualitySettingsNames: []
+  qualitySettingsNames:
+  - Performant
+  - Balanced
+  - High Fidelity
   projectName: SWH
   organizationId: sloba989
   cloudEnabled: 0

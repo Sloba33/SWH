@@ -8,6 +8,7 @@ using System.Linq;
 public class LevelGoal : MonoBehaviour
 {
 
+    public int xp, trophies, BONUS_TROPHIES;
     private Settings settings;
     public LevelProgress levelProgress;
     public float currentTime = 0;
@@ -82,7 +83,6 @@ public class LevelGoal : MonoBehaviour
     private List<Tile> tileList = new();
     public LevelType levelType;
 
-    public int xp, trophies, BONUS_TROPHIES;
     public List<Obstacle> playerSideFallingObstacles = new List<Obstacle>();
     public List<Obstacle> AISideFallingObstacles = new List<Obstacle>();
     public float dualBoxSpawnDelay = 7f;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Coffee.UIEffects;
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,10 +23,24 @@ public class WeaponItemManager : MonoBehaviour
     public Button purchaseButton, upgradeButton;
     public Image currencyImage;
     public TextMeshProUGUI priceText;
+    public GameObject statsPanel;
 
     private void Start()
     {
         SetWeaponStats();
+        ToggleWeaponInteractability();
+    }
+    private void ToggleWeaponInteractability()
+    {
+        if (PlayerPrefs.GetInt("AnyWeaponsUnlocked", 0) == 0)
+        {
+            for (int i = 0; i < weaponItems.Count; i++)
+            {
+                weaponItems[i].GetComponent<Button>().interactable = false;
+                statsPanel.SetActive(false);
+            }
+        }
+
     }
     public void SetWeaponStats()
     {
@@ -37,6 +52,11 @@ public class WeaponItemManager : MonoBehaviour
             hitsFillBar.fillAmount = 10 / weaponItem.weaponToSpawn.energyConsumption;
             energyRechargeBar.fillAmount = weaponItem.weaponToSpawn.energyRecharge * 0.2f;
             priceText.text = weaponItem.weaponPrice + "";
+            if (PlayerPrefs.GetInt("gems") < weaponItem.weaponPrice)
+            {
+                priceText.color = Color.red;
+            }
+            else priceText.color = Color.white;
         }
         else Debug.LogError("Weaponitem null");
     }
@@ -89,6 +109,7 @@ public class WeaponItemManager : MonoBehaviour
             weaponItems[i].weaponItemManager = this;
 
         }
+
         int id = PlayerPrefs.GetInt("SelectedWeaponID", 0);
         weaponItem = weaponItems[id];
         // SelectWeapon(weaponItem);
@@ -105,6 +126,7 @@ public class WeaponItemManager : MonoBehaviour
     private UIShadow uiShadow;
     public void SelectWeapon(WeaponItem weaponItem)
     {
+
         if (uiShadow != null) uiShadow.enabled = false;
         purchaseButton.onClick.RemoveAllListeners();
 
@@ -180,9 +202,11 @@ public class WeaponItemManager : MonoBehaviour
             weaponItem.LockWeapon(false);
             PlayerPrefs.SetInt("gems", PlayerPrefs.GetInt("gems") - weaponItem.weaponPrice);
             SelectWeapon(weaponItem);
+            PlayerPrefs.SetInt("AnyWeaponUnlocked", 1);
         }
         else
             Debug.Log(" NO MONEY ");
+
 
     }
     public void ToggleWeaponVisibility(int index, bool flag)
@@ -194,6 +218,7 @@ public class WeaponItemManager : MonoBehaviour
     public GameObject checkmarkPrefab;
     public void SetStartingCheckmarks()
     {
+        if (PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 0) return;
         weaponCheckmarkIndex = PlayerPrefs.GetInt("SelectedWeaponID", 0);
         if (content.GetChild(weaponCheckmarkIndex).GetComponent<WeaponItem>().unlocked)
         {

@@ -42409,6 +42409,7 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.21
   defaultZoomValue: 2
+  isFinalChapterLevel: 0
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -56385,6 +56386,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xp: 50
+  trophies: 5
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: d73cbee2f3f598c419fbc6ba2a30f4eb,
     type: 3}
   currentTime: 0
@@ -56485,9 +56489,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 70
-  trophies: 7
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7

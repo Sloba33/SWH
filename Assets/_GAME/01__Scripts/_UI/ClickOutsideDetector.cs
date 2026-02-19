@@ -23,7 +23,7 @@ public class ClickOutsideDetector : MonoBehaviour, IPointerDownHandler
         {
             if (tooltip.isTooltipOpen)
             {
-                tooltip.HideTooltip();
+                tooltip.HideTooltipsInstantly();
             }
         }
     }

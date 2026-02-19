@@ -5,13 +5,13 @@ using System.Collections;
 public class CurrencyTooltip : MonoBehaviour, IPointerClickHandler
 {
     public GameObject tooltipWindow;
-    private PopoutButton popoutButton;
+    private CurrencyPanelButtonPopout popoutButton;
     public bool isTooltipOpen;
     public ClickOutsideDetector clickOutsideDetector;
     [SerializeField] float duration = 0.1f, delay = 0f;
     void Start()
     {
-        popoutButton = tooltipWindow.GetComponent<PopoutButton>();
+        popoutButton = tooltipWindow.GetComponent<CurrencyPanelButtonPopout>();
     }
     public void ShowTooltip()
     {
@@ -28,6 +28,15 @@ public class CurrencyTooltip : MonoBehaviour, IPointerClickHandler
         {
             popoutButton.DisableWindow();
             StartCoroutine(TurnOffWindow());
+            isTooltipOpen = false;
+        }
+    }
+    public void HideTooltipsInstantly()
+    {
+        if (tooltipWindow != null)
+        {
+            popoutButton.DisableWindow();
+            tooltipWindow.SetActive(false);
             isTooltipOpen = false;
         }
     }
