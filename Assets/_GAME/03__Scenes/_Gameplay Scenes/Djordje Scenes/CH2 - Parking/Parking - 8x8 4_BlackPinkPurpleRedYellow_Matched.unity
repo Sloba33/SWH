@@ -13370,7 +13370,67 @@ PrefabInstance:
     - target: {fileID: 1721968983342162757, guid: 8152c46864366fc4092b61d028ecf3f3,
         type: 3}
       propertyPath: m_Intensity
-      value: 0.93
+      value: 0.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 1721968983342162757, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1721968983342162757, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 0.443
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.037
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.046
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.93783265
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.15498428
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.31037617
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0107922945
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 17.301
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -37.319
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015756924750239098, guid: 8152c46864366fc4092b61d028ecf3f3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -4.564
       objectReference: {fileID: 0}
     - target: {fileID: 3008537909322677662, guid: 8152c46864366fc4092b61d028ecf3f3,
         type: 3}
@@ -24847,6 +24907,8 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.53
   defaultZoomValue: 2
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -28091,6 +28153,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xp: 25
+  trophies: 3
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: c6327f9a7d140214a9b0ccb7134d5716,
     type: 3}
   currentTime: 0
@@ -28203,9 +28268,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 25
-  trophies: 3
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
