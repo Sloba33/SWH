@@ -12,15 +12,20 @@ public class MatchThreeObstacle : MonoBehaviour
     public bool hasGameStarted;
     public bool isDestructible;
 
+    private static HashSet<int> processedMatchSignatures = new HashSet<int>();
     private List<Obstacle> obstaclesToProcessForSpawns = new();
 
     private IEnumerator Start()
     {
+ClearMatchSignatures();
         Obstacle = GetComponent<Obstacle>();
         yield return new WaitForSeconds(1.5f);
         hasGameStarted = true;
     }
-
+    public static void ClearMatchSignatures()
+    {
+        processedMatchSignatures.Clear();
+    }
     public GameObject groundObject, previousGroundObject;
 
     void FixedUpdate()
@@ -55,6 +60,7 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private void CheckForMatches()
     {
+
         obstaclesToProcessForSpawns.Clear();
         CheckListForMatches(verticalList);
         CheckListForMatches(horizontalList);
@@ -72,12 +78,55 @@ public class MatchThreeObstacle : MonoBehaviour
             ClearObstacleLists();
         }
     }
+    private void SpawnRewardForMatch(int matchCount, List<Obstacle> groupObstacles)
+    {
 
+        var db = GameManager.Instance.collectibleDatabase;
+        if (db == null) return;
+
+        List<GameObject> rewardPool = null;
+
+        if (matchCount == 4)
+            rewardPool = db.Match4;
+        else if (matchCount == 5)
+            rewardPool = db.Match5;
+        else if (matchCount == 7 || matchCount == 8)
+            rewardPool = db.Match7;
+        else if (matchCount >= 9)
+            rewardPool = db.Match9;
+
+        if (rewardPool == null || rewardPool.Count == 0)
+            return;
+
+        GameObject prefab = rewardPool[Random.Range(0, rewardPool.Count)];
+
+        // Choose one obstacle from the group
+        Obstacle randomObstacle = groupObstacles[Random.Range(0, groupObstacles.Count)];
+
+        if (randomObstacle != null)
+        {
+            Vector3 pos = randomObstacle.transform.localPosition;
+            Vector3 roundedPos = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
+
+            Instantiate(prefab, roundedPos, Quaternion.identity);
+            Debug.Log("Spawning :" + prefab.name + " Collectible");
+        }
+
+
+    }
+    private IEnumerator ResetCollectibleSpawnValidity()
+    {
+        yield return new WaitForSeconds(0.06f);
+        GameManager.Instance.CollectibleSpawned = false;
+    }
     // 🔥 NEW universal-aware matching system
     private void CheckListForMatches(List<Obstacle> obstacleList)
     {
         if (obstacleList == null || obstacleList.Count < 3)
             return;
+        if (obstacleList.Any(o => o != null && o.queuedForDestruction))
+            return;
+
 
         var concreteColors = GetConcreteColorsInList(obstacleList);
         if (concreteColors.Count == 0)
@@ -129,17 +178,50 @@ public class MatchThreeObstacle : MonoBehaviour
 
         // Group consecutive indices into batches
         var consecutiveGroups = GroupConsecutiveIndices(indicesToDestroy.OrderBy(x => x).ToList());
+        string matchSignature = string.Join(",", indicesToDestroy.OrderBy(x => x));
+        int matchId = matchSignature.GetHashCode(); // Use hash instead of incrementing counter
+
+        int largestMatchCount = 0;
+        List<Obstacle> largestMatchGroup = null;
 
         foreach (var grp in consecutiveGroups)
         {
             int startIndex = grp.Item1;
             int count = grp.Item2;
+
             if (startIndex >= 0 && startIndex + count <= obstacleList.Count)
             {
+                List<Obstacle> groupObstacles = new();
+
+                for (int i = startIndex; i < startIndex + count; i++)
+                {
+                    var o = obstacleList[i];
+                    if (o != null)
+                        groupObstacles.Add(o);
+                }
+
+                // Track largest group only
+                if (count > largestMatchCount)
+                {
+                    largestMatchCount = count;
+                    largestMatchGroup = groupObstacles;
+                }
+
                 DestroyConsecutiveObstacles(obstacleList, startIndex, count);
             }
         }
+
+        // 🚀 Spawn exactly ONE reward
+        if (largestMatchCount >= 4 && largestMatchGroup != null && !processedMatchSignatures.Contains(matchId))
+        {
+            Debug.Log("Spawning reward with largest match count : " + largestMatchCount + " and Largest match group :" + largestMatchGroup);
+            SpawnRewardForMatch(largestMatchCount, largestMatchGroup);
+            processedMatchSignatures.Add(matchId);
+        }
+        else Debug.Log("Not spawning");
     }
+
+
 
     private bool IsColorCompatibleForGrouping(Obstacle obstacle, ObstacleColor targetColor)
     {

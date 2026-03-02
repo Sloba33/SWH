@@ -12,6 +12,7 @@ public class LevelButtonDisplay : MonoBehaviour
     public void Initialize()
     {
         int stars = PlayerPrefs.GetInt(levelSceneName + "_Stars", 0);
+        Debug.Log("Stars : " + stars + " for level :"+ levelSceneName);
         for (int i = 0; i < starImages.Length; i++)
         {
             if (i < stars)

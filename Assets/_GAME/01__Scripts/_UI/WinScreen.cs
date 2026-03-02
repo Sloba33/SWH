@@ -10,6 +10,7 @@ using Coffee.UIExtensions;
 
 public class WinScreen : MonoBehaviour
 {
+    public WinStarAnimator winStarAnimator;
     public bool sceneOverride;
     public string sceneOverrideName = "01_MainMenu";
     public TextMeshProUGUI levelCompleteText;
@@ -119,21 +120,15 @@ public class WinScreen : MonoBehaviour
         Debug.Log("FirstTime : " + PlayerPrefs.GetInt("FirstTime"));
         if (!MP && levelGoal != null && PlayerPrefs.GetInt("FirstTime") != 0)
         {
-            Debug.Log("levelGoal.xp : " + levelGoal.xp);
-            Debug.Log("levelGoal.trophies  : " + levelGoal.trophies);
-            if (!CheckIfLevelIsBeaten())
-            {
+            string levelName = SceneManager.GetActiveScene().name;
 
-                StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
-                Debug.Log("Level : " + PlayerPrefs.GetInt("Level") + " hasnt been beaten yet, generating gains");
-            }
-            else
-            {
-                TrophyText.text = levelGoal.trophies + "/" + levelGoal.trophies;
-                XPText.text = levelGoal.xp + "/" + levelGoal.xp;
-            }
+            bool firstTimeBeat = PlayerPrefs.GetInt(levelName + "_beaten", 0) == 0;
+
+            int xpReward = firstTimeBeat ? levelGoal.xp : 0;
+            int trophyReward = PlayerPrefs.GetInt("LastRunTrophyReward", 0);
+            if (levelGoal.trophies != 0)
+                StartCoroutine(GenerateGains(xpReward, trophyReward));
         }
-
         if (QuestRotator.Instance != null && PlayerPrefs.GetInt("FirstTime") != 0 && PlayerPrefs.GetInt("Level") > 30)
             StartCoroutine(SpawnQuestProgressPrefabs(QuestRotator.Instance.updatedQuests));
         string currentLevelName = SceneManager.GetActiveScene().name;
@@ -187,6 +182,7 @@ public class WinScreen : MonoBehaviour
         {
             levelCompleteText.text = "Level " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3).ToString() + " Complete!";
         }
+
         PlayerPrefs.SetInt(currentLevelName + "_beaten", 1);
         PlayerPrefs.Save();
     }
@@ -284,6 +280,12 @@ public class WinScreen : MonoBehaviour
             trophyGains += levelGoal.BONUS_TROPHIES;
         }
 
+        if (xpGains <= 0 && trophyGains <= 0)
+        {
+            XPText.text = "0";
+            TrophyText.text = "0";
+            yield break;
+        }
         float blingsCount = 5; // Number of times the bling sound will play
         float xpIncrement = (float)xpGains / blingsCount; // Increment for each bling sound
         float trophyIncrement = (float)trophyGains / blingsCount; // Increment for each bling sound
@@ -307,7 +309,7 @@ public class WinScreen : MonoBehaviour
         Debug.Log("Length: " + blingInterval);
         int xpAmount = 0;
         float remainderGains = (float)xpGains % blingsCount;
-        if (levelGoal.xp > 0)
+        if (xpGains > 0)
         {
 
             for (int i = 0; i < blingsCount; i++)
@@ -342,7 +344,7 @@ public class WinScreen : MonoBehaviour
         Debug.Log("Trophy increment :" + trophyIncrement);
         float remainderTrophyGains = (float)trophyGains % blingsCount; // Add this line
 
-        if (levelGoal.trophies > 0)
+        if (trophyGains > 0)
         {
             for (int i = 0; i < blingsCount; i++)
             {
@@ -365,10 +367,24 @@ public class WinScreen : MonoBehaviour
                 TrophyText.transform.DOPunchScale(new Vector3(TrophyText.transform.localScale.x + 0.01f, TrophyText.transform.localScale.y + 0.01f, TrophyText.transform.localScale.y + 0.01f), blingInterval).Play();
             }
         }
+        int starsEarned = 0;
+        float runTime = levelGoal.currentTime; // or however you measure it
+        if (runTime <= levelGoal.threeStarTime) starsEarned = 3;
+        else if (runTime <= levelGoal.twoStarTime) starsEarned = 2;
+        else if (runTime <= levelGoal.oneStarTime) starsEarned = 1;
 
+        // Save stars only if better than previous
+        string levelKey = SceneManager.GetActiveScene().name + "_Stars";
+        int previousStars = PlayerPrefs.GetInt(levelKey, 0);
+        if (starsEarned > previousStars)
+        {
+            PlayerPrefs.SetInt(levelKey, starsEarned);
+        }
+        starsEarnedTotal = starsEarned;
 
-
+        PlayerPrefs.Save();
     }
+    public int starsEarnedTotal;
     public void Proceed()
     {
         StartCoroutine(ProceedCoroutine());
@@ -383,7 +399,7 @@ public class WinScreen : MonoBehaviour
             rewardsPanel.transform.DOPunchScale(new Vector3(rewardsPanel.transform.localScale.x + 0.03f, rewardsPanel.transform.localScale.y + 0.03f, rewardsPanel.transform.localScale.z + 0.03f), 0.3f, 1, 0).Play();
         }
         yield return new WaitForSeconds(1f);
-        if (PlayerPrefs.GetInt("FirstTime") != 0 && !CheckIfLevelIsBeaten()) StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
+        // if (PlayerPrefs.GetInt("FirstTime") != 0 && !CheckIfLevelIsBeaten()) StartCoroutine(GenerateGains(levelGoal.xp, levelGoal.trophies));
         yield return new WaitForSeconds(5f);
         // mainMenuButton.gameObject.SetActive(true);
         // mainMenuButton.transform.DOPunchScale(new Vector3(mainMenuButton.transform.localScale.x + 0.05f, mainMenuButton.transform.localScale.y + 0.05f, mainMenuButton.transform.localScale.z + 0.05f), 0.3f, 1, 0).Play();

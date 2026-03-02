@@ -109,7 +109,7 @@ public class LevelProgress : MonoBehaviour
                 case "universal": if (Universal == null) Universal = img; break;
                 case "default": if (Default == null) Default = img; break;
             }
-          
+
         }
     }
     private void FillImages()
@@ -273,11 +273,13 @@ public class LevelProgress : MonoBehaviour
             newTweener.Play();
         }
         // Check if all *assigned* images are filled
+            winScreen.winStarAnimator.Initialize(levelGoal.starsEarned);
         if (AreAllImagesFilled() && !wiggleTriggered)
         {
             wiggleTriggered = true; // Set the flag
             StartCoroutine(WiggleImage());
         }
+        
         winScreen.ActivateButtons();
 
 

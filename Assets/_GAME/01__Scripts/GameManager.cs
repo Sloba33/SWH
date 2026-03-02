@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     public int defaultZoomValue = 2;
     public bool isFinalChapterLevel;
     public Obstacle[] obstaclesToFreeze;
+    public CollectibleItemDatabase collectibleDatabase;
+    public bool CollectibleSpawned;
     public static GameManager Instance
     {
         get
@@ -43,14 +45,14 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-
+   
 
     public void FreezeObstacles()
     {
         obstaclesToFreeze = FindObjectsByType<Obstacle>(FindObjectsSortMode.None);
         for (int i = 0; i < obstaclesToFreeze.Length; i++)
         {
-            obstaclesToFreeze[i].isFrozen=true;
+            obstaclesToFreeze[i].isFrozen = true;
         }
     }
     private void SetTestBuildPrefs()
@@ -67,9 +69,9 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         // SetTestBuildPrefs();
-
         Debug.Log("Framerate set");
         Application.targetFrameRate = 60;
+        collectibleDatabase = Resources.Load<CollectibleItemDatabase>("CollectibleItemsDatabase");
         _instance = this;
 
     }

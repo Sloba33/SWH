@@ -13,9 +13,9 @@ public class LevelGoal : MonoBehaviour
     public LevelProgress levelProgress;
     public float currentTime = 0;
     [Header("Star Time Thresholds (in seconds)")]
-    public float threeStarTime;
-    public float twoStarTime;
-    public float oneStarTime;
+    public float threeStarTime = 10;
+    public float twoStarTime = 15;
+    public float oneStarTime = 2000;
     public float bonusTime;
     public TutorialDialogue tutorialDialogue;
     [Header("Spawn System Mode")]
@@ -99,7 +99,7 @@ public class LevelGoal : MonoBehaviour
     public bool bonusUnlocked;
     public Dictionary<ObstacleColor, int> destroyedObstacleCounts = new Dictionary<ObstacleColor, int>();
     private int dualLevelCounter = 0;
-
+    public bool isTimeFrozen;
     private const string PREF_GAMEPLAY_TUTORIAL_COMPLETED = "GameplayTutorialCompleted";
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
@@ -108,7 +108,9 @@ public class LevelGoal : MonoBehaviour
 
     private IEnumerator Start()
     {
-
+        oneStarTime = 2000;
+        twoStarTime = 15;
+        threeStarTime = 10;
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
         if (Tutorial)
         {
@@ -331,10 +333,34 @@ public class LevelGoal : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (Tutorial && settings != null && !settings.gameWon && !settings.gameLost) return;
+        if (Tutorial && settings != null && !settings.gameWon && !settings.gameLost)
+            return;
+
+        if (isTimeFrozen) return;
         currentTime += Time.deltaTime;
+
         if (settings != null && settings.timerText != null)
+        {
             settings.timerText.text = currentTime.ToString("F1");
+            UpdateTimerColor();
+        }
+    }
+    private void UpdateTimerColor()
+    {
+        if (settings == null || settings.timerText == null) return;
+
+        if (currentTime <= threeStarTime)
+        {
+            settings.timerText.color = Color.green;
+        }
+        else if (currentTime <= twoStarTime)
+        {
+            settings.timerText.color = Color.yellow;
+        }
+        else
+        {
+            settings.timerText.color = Color.red;
+        }
     }
 
     private T GetRandomItemByWeight<T>(List<SpawnableItem<T>> items)
@@ -454,6 +480,7 @@ public class LevelGoal : MonoBehaviour
     public IEnumerator FreezeTime(float freezeDuration)
     {
 
+        isTimeFrozen = true;
         foreach (Obstacle obstacle in spawnedObstacles)
         {
             if (obstacle != null)
@@ -483,6 +510,7 @@ public class LevelGoal : MonoBehaviour
 
             }
         }
+        isTimeFrozen = false;
     }
     void AddObstaclesToList()
     {
@@ -728,8 +756,7 @@ public class LevelGoal : MonoBehaviour
 
     private void FindAndAddTilesToList()
     {
-        // Example: Find all obstacles in the scene. You might need to filter these.
-        // ObstaclesToDestroy_Player = new List<Obstacle>(FindObjectsOfType<Obstacle>());
+
 
         // Example: Populate tileList
         tileList = new List<Tile>(FindObjectsOfType<Tile>());
@@ -797,7 +824,7 @@ public class LevelGoal : MonoBehaviour
             RemoveObstacle(obs);
         }
     }
-
+    public int starsEarned;
     public IEnumerator WinLevel(float delay)
     {
         Debug.Log("Winning Level");
@@ -811,7 +838,7 @@ public class LevelGoal : MonoBehaviour
         }
         if (pc != null) pc.enabled = false;
         settings.ActivateWinPanel();
-        int starsEarned = 0;
+        starsEarned = 0;
         if (currentTime <= threeStarTime) starsEarned = 3;
         else if (currentTime <= twoStarTime) starsEarned = 2;
         else if (currentTime <= oneStarTime) starsEarned = 1;
@@ -825,9 +852,15 @@ public class LevelGoal : MonoBehaviour
 
         string bonusKey = SceneManager.GetActiveScene().name + "_Bonus";
         if (bonusEarned) PlayerPrefs.SetInt(bonusKey, 1);
+        int newTrophies = GetTrophiesForStars(starsEarned);
+        int previousTrophies = GetTrophiesForStars(previousStars);
+        int trophyDifference = 0;
 
-        PlayerPrefs.Save();
-
+        if (starsEarned > previousStars)
+        {
+            trophyDifference = newTrophies - previousTrophies;
+        }
+        PlayerPrefs.SetInt("LastRunTrophyReward", trophyDifference);
         PlayerPrefs.Save();
 
     }
@@ -871,7 +904,24 @@ public class LevelGoal : MonoBehaviour
     {
         StartCoroutine(WinLevel(0.3f));
     }
+    public int GetStarsFromTime()
+    {
+        if (currentTime <= threeStarTime) return 3;
+        if (currentTime <= twoStarTime) return 2;
+        if (currentTime <= oneStarTime) return 1;
+        return 0;
+    }
 
+    public int GetTrophiesForStars(int stars)
+    {
+        switch (stars)
+        {
+            case 3: return 10;
+            case 2: return 7;
+            case 1: return 5;
+            default: return 0;
+        }
+    }
     #region NEW SYSTEM COROUTINES
     private IEnumerator SpawnObstaclesNewSystem(float delay)
     {
@@ -1133,6 +1183,7 @@ public class LevelGoal : MonoBehaviour
         Move, Pull, Jump, Hit, Bomb
     }
     public GoalList ListOfGoalLists = new GoalList();
+
 }
 
 [System.Serializable]
