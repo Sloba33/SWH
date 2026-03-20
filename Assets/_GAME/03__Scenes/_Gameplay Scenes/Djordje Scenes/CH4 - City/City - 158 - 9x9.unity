@@ -6570,6 +6570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14417ea3cdbcb7640bd97dcc6af4c2e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipButton: {fileID: 0}
   IsMultiplayer: 0
   characterCollection: {fileID: 11400000, guid: 6d8e44334f4723e45a8a604684cadfd5,
     type: 2}
@@ -6597,6 +6598,11 @@ MonoBehaviour:
   SendsBackToMainMenu: 0
   ObstaclesToModify: []
   ObstacleWeightModifier: 4.5299997
+  defaultZoomValue: 2
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -9286,7 +9292,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelProgress: {fileID: 4741343503558475765, guid: 586e5bf3910d64344976fd52d0ee2971,
+  xp: 0
+  trophies: 0
+  BONUS_TROPHIES: 0
+  levelProgress: {fileID: 4741343503558475765, guid: 45989ea0271eb7d408940c1dda603bac,
     type: 3}
   currentTime: 0
   threeStarTime: 0
@@ -9447,9 +9456,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -9458,6 +9464,8 @@ MonoBehaviour:
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  starsEarned: 0
   currentStep: 0
   tutorialBridges: []
   tutorialBarriers: []
