@@ -7,7 +7,8 @@ using System.Linq;
 
 public class LevelGoal : MonoBehaviour
 {
-
+    public int baseBonusXP = 20;
+    public int bonusXpMultiplier = 0;
     public int xp, trophies, BONUS_TROPHIES;
     private Settings settings;
     public LevelProgress levelProgress;
@@ -128,6 +129,7 @@ public class LevelGoal : MonoBehaviour
         if (levelCompletedPreviously)
         {
             xp = 0;
+            baseBonusXP = 0;
             trophies = 0;
         }
 
@@ -479,7 +481,7 @@ public class LevelGoal : MonoBehaviour
     }
     public IEnumerator FreezeTime(float freezeDuration)
     {
-
+        Debug.Log("Obstacle count to freeze" + spawnedObstacles.Count);
         isTimeFrozen = true;
         foreach (Obstacle obstacle in spawnedObstacles)
         {

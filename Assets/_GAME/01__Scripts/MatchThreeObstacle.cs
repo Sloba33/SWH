@@ -17,7 +17,7 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private IEnumerator Start()
     {
-ClearMatchSignatures();
+        ClearMatchSignatures();
         Obstacle = GetComponent<Obstacle>();
         yield return new WaitForSeconds(1.5f);
         hasGameStarted = true;
@@ -85,7 +85,7 @@ ClearMatchSignatures();
         if (db == null) return;
 
         List<GameObject> rewardPool = null;
-
+        Debug.Log("MatchCount for reward spawning: " + matchCount);
         if (matchCount == 4)
             rewardPool = db.Match4;
         else if (matchCount == 5)
@@ -102,8 +102,14 @@ ClearMatchSignatures();
 
         // Choose one obstacle from the group
         Obstacle randomObstacle = groupObstacles[Random.Range(0, groupObstacles.Count)];
-
-        if (randomObstacle != null)
+        if (matchCount == 4)
+        {
+            Player player = FindObjectOfType<Player>();
+            Vector3 pos = player.transform.position;
+            Vector3 spawnPos = pos + new Vector3(0, 0.5f, 0);
+            Instantiate(prefab, spawnPos, Quaternion.identity);
+        }
+        else if (randomObstacle != null)
         {
             Vector3 pos = randomObstacle.transform.localPosition;
             Vector3 roundedPos = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));

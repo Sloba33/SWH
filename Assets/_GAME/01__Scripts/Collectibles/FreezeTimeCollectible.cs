@@ -5,6 +5,7 @@ using UnityEngine;
 public class FreezeTimeCollectible : CollectibleItem
 {
     public MeshRenderer mesh;
+    public List<MeshRenderer> MeshList = new();
     public SphereCollider sphereCollider;
     public GameObject objectToDestroy;
     private LevelGoal levelGoal;
@@ -23,11 +24,18 @@ public class FreezeTimeCollectible : CollectibleItem
                 StartCoroutine(levelGoal.FreezeTime(freezeDuration));
             }
             isCollected = true;
+            if (MeshList.Count > 0)
+            {
+                for(int i = 0; i < MeshList.Count; i++)
+                {
+                    MeshList[i].enabled = false;
+                }
+            }
             mesh.enabled = false;
             sphereCollider.enabled = false;
-            PlayCollectSound(objectToDestroy, freezeDuration+0.1f);
+            PlayCollectSound(objectToDestroy, freezeDuration + 0.1f);
             // player.GetComponent<Player>().pc.AddConsumable(this);
         }
     }
-    
+
 }

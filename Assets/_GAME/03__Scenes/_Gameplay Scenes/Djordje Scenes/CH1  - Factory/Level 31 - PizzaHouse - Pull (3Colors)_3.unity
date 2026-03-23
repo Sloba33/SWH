@@ -13017,7 +13017,7 @@ PrefabInstance:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.0000116
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -13027,7 +13027,7 @@ PrefabInstance:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.9999886
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -15656,6 +15656,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 576273643}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &576882193 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6889721395128037314, guid: 38a48ca577edf0d4d806476876d62ad1,
+    type: 3}
+  m_PrefabInstance: {fileID: 384970939}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &577496131
 GameObject:
   m_ObjectHideFlags: 0
@@ -33859,6 +33871,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341047415}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1343543148 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6889721395128037314, guid: 38a48ca577edf0d4d806476876d62ad1,
+    type: 3}
+  m_PrefabInstance: {fileID: 683852975}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1344221093
 GameObject:
   m_ObjectHideFlags: 0
@@ -34478,6 +34502,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1356614722}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1362900599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6889721395128037314, guid: 38a48ca577edf0d4d806476876d62ad1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1296552255}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1363570835
 GameObject:
   m_ObjectHideFlags: 0
@@ -48819,7 +48855,7 @@ PrefabInstance:
     - target: {fileID: 568553051142101918, guid: 0153bd70a4b921a4b891feb326c8d986,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 568553051142101918, guid: 0153bd70a4b921a4b891feb326c8d986,
         type: 3}
@@ -48934,6 +48970,9 @@ MonoBehaviour:
   ObstacleWeightModifier: 1.27
   defaultZoomValue: 3
   isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -50574,74 +50613,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2011795490}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &2013472418
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.9999886
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -8.000282
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.00000037252897
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3841701215378408408, guid: b18305c258c73a54db12614bd290d981,
-        type: 3}
-      propertyPath: m_Name
-      value: Metal_Obstacle_NoCross_1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b18305c258c73a54db12614bd290d981, type: 3}
 --- !u!1 &2021631786
 GameObject:
   m_ObjectHideFlags: 0
@@ -63769,6 +63740,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
+  xp: 0
+  trophies: 0
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: 1591ecea3c7b46c4db3e8e7e8c40622f,
     type: 3}
   currentTime: 0
@@ -63842,13 +63818,13 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 1104296845}
+  - {fileID: 1343543148}
+  - {fileID: 1362900599}
+  - {fileID: 576882193}
   - {fileID: 2136366449}
   - {fileID: 212283266}
   - {fileID: 1094127860}
+  - {fileID: 1104296845}
   - {fileID: 426048454}
   - {fileID: 554320133}
   ObstaclesToDestroy_AI: []
@@ -63875,9 +63851,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -63886,6 +63859,8 @@ MonoBehaviour:
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  starsEarned: 0
   currentStep: 0
   tutorialBridges: []
   tutorialBarriers: []
@@ -123153,6 +123128,5 @@ SceneRoots:
   - {fileID: 1951232467}
   - {fileID: 2138601776}
   - {fileID: 923104221}
-  - {fileID: 2013472418}
   - {fileID: 502096744}
   - {fileID: 321949430}
