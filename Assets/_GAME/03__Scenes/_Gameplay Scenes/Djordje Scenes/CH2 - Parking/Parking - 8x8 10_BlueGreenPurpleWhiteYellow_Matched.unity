@@ -319,6 +319,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 9903675}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9903677 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7768126713293784213, guid: 2b34fa337ee73f34584bc59845278a84,
+    type: 3}
+  m_PrefabInstance: {fileID: 9903675}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &12164399
 GameObject:
   m_ObjectHideFlags: 0
@@ -21567,6 +21579,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1623460209}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1623460211 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7768126713293784213, guid: 2b34fa337ee73f34584bc59845278a84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1623460209}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1637172811
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23171,6 +23195,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1728884357}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1728884359 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7768126713293784213, guid: 2b34fa337ee73f34584bc59845278a84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1728884357}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1740233606
 GameObject:
   m_ObjectHideFlags: 0
@@ -25444,7 +25480,7 @@ MonoBehaviour:
   SendsBackToMainMenu: 0
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.59
-  defaultZoomValue: 2
+  defaultZoomValue: 3
   isFinalChapterLevel: 0
   obstaclesToFreeze: []
   collectibleDatabase: {fileID: 0}
@@ -28841,6 +28877,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
   xp: 25
   trophies: 3
   BONUS_TROPHIES: 0
@@ -28907,21 +28945,24 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 2081870543}
-  - {fileID: 652925962}
-  - {fileID: 1773842795}
-  - {fileID: 1843889989}
+  - {fileID: 1835943613}
+  - {fileID: 1623460211}
   - {fileID: 2116274895}
+  - {fileID: 1843889989}
+  - {fileID: 1455276950}
+  - {fileID: 9903677}
+  - {fileID: 2081870543}
   - {fileID: 977049369}
-  - {fileID: 1373868936}
   - {fileID: 637027983}
   - {fileID: 2079926054}
+  - {fileID: 1773842795}
   - {fileID: 629733874}
-  - {fileID: 1835943613}
-  - {fileID: 1455276950}
-  - {fileID: 665086010}
-  - {fileID: 563679024}
+  - {fileID: 1728884359}
+  - {fileID: 1373868936}
+  - {fileID: 652925962}
   - {fileID: 1744035801}
+  - {fileID: 563679024}
+  - {fileID: 665086010}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

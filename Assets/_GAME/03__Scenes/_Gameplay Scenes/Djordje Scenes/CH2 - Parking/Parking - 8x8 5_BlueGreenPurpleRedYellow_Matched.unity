@@ -23267,7 +23267,7 @@ MonoBehaviour:
   SendsBackToMainMenu: 0
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.53
-  defaultZoomValue: 2
+  defaultZoomValue: 3
   isFinalChapterLevel: 0
   obstaclesToFreeze: []
   collectibleDatabase: {fileID: 0}
@@ -26368,6 +26368,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
   xp: 25
   trophies: 3
   BONUS_TROPHIES: 0
@@ -26434,21 +26436,21 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 669185597}
-  - {fileID: 742599035}
-  - {fileID: 700247341}
-  - {fileID: 2106167102}
   - {fileID: 1841181993}
-  - {fileID: 967591368}
-  - {fileID: 1080678181}
-  - {fileID: 35662965}
-  - {fileID: 331963333}
-  - {fileID: 2000106095}
   - {fileID: 239642594}
-  - {fileID: 1976837816}
-  - {fileID: 164571628}
   - {fileID: 1735729362}
+  - {fileID: 2000106095}
+  - {fileID: 967591368}
+  - {fileID: 700247341}
+  - {fileID: 35662965}
+  - {fileID: 2106167102}
+  - {fileID: 331963333}
+  - {fileID: 669185597}
   - {fileID: 996801406}
+  - {fileID: 1080678181}
+  - {fileID: 164571628}
+  - {fileID: 742599035}
+  - {fileID: 1976837816}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0

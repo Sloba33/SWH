@@ -1343,6 +1343,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 105781352}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &105781354 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8735116336080251345, guid: 0e4dae6e34df67548a76d347ff3fab70,
+    type: 3}
+  m_PrefabInstance: {fileID: 105781352}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &106417937
 GameObject:
   m_ObjectHideFlags: 0
@@ -5707,6 +5719,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 439260420}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &439260422 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7768126713293784213, guid: 2b34fa337ee73f34584bc59845278a84,
+    type: 3}
+  m_PrefabInstance: {fileID: 439260420}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &458553881
 GameObject:
   m_ObjectHideFlags: 0
@@ -10280,6 +10304,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 763563876}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &763563878 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4607376809830200430, guid: 48aaadac1a09383449438aec39e7bbc0,
+    type: 3}
+  m_PrefabInstance: {fileID: 763563876}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &768018413
 GameObject:
   m_ObjectHideFlags: 0
@@ -10581,6 +10617,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 780849279}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &780849281 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8348739996926226988, guid: e012ba24f09ae7f459320cb5962ebddd,
+    type: 3}
+  m_PrefabInstance: {fileID: 780849279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &789025668
 GameObject:
   m_ObjectHideFlags: 0
@@ -11890,6 +11938,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 917075937}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &917075939 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4607376809830200430, guid: 48aaadac1a09383449438aec39e7bbc0,
+    type: 3}
+  m_PrefabInstance: {fileID: 917075937}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &937394840
 GameObject:
   m_ObjectHideFlags: 0
@@ -22745,6 +22805,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1869165189}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1869165191 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7768126713293784213, guid: 2b34fa337ee73f34584bc59845278a84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1869165189}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1876871871
 GameObject:
   m_ObjectHideFlags: 0
@@ -23289,7 +23361,7 @@ MonoBehaviour:
   SendsBackToMainMenu: 0
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.65
-  defaultZoomValue: 2
+  defaultZoomValue: 3
   isFinalChapterLevel: 0
   obstaclesToFreeze: []
   collectibleDatabase: {fileID: 0}
@@ -26256,6 +26328,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
   xp: 25
   trophies: 3
   BONUS_TROPHIES: 0
@@ -26332,18 +26406,24 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 776807815}
-  - {fileID: 1678474905}
+  - {fileID: 34149591}
+  - {fileID: 1673460429}
   - {fileID: 272917008}
   - {fileID: 984742076}
-  - {fileID: 803400788}
-  - {fileID: 1682304234}
-  - {fileID: 1028205103}
-  - {fileID: 1673460429}
-  - {fileID: 361444200}
-  - {fileID: 1512143397}
-  - {fileID: 34149591}
+  - {fileID: 776807815}
+  - {fileID: 780849281}
+  - {fileID: 439260422}
   - {fileID: 1812354534}
+  - {fileID: 1512143397}
+  - {fileID: 763563878}
+  - {fileID: 105781354}
+  - {fileID: 361444200}
+  - {fileID: 917075939}
+  - {fileID: 1682304234}
+  - {fileID: 803400788}
+  - {fileID: 1028205103}
+  - {fileID: 1869165191}
+  - {fileID: 1678474905}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
