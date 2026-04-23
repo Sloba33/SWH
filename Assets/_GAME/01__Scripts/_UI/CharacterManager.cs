@@ -128,9 +128,9 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         previousWeapon = currentWeapon;
         characterPickerManager.UpdateCharacterStats();
         CheckIfUpgradesAreAffordable();
-        // if (PlayerPrefs.GetInt("gems") < 2000) PlayerPrefs.SetInt("gems", 5000);
-        // if (PlayerPrefs.GetInt("coins") < 2000) PlayerPrefs.SetInt("coins", 5000);
-        // if (PlayerPrefs.GetInt("money") < 2000) PlayerPrefs.SetInt("money", 5000);
+        if (PlayerPrefs.GetInt("gems") < 2000) PlayerPrefs.SetInt("gems", 5000);
+        if (PlayerPrefs.GetInt("coins") < 2000) PlayerPrefs.SetInt("coins", 5000);
+        if (PlayerPrefs.GetInt("money") < 2000) PlayerPrefs.SetInt("money", 5000);
         // PlayerPrefs.SetInt("coins", 300);
         // PlayerPrefs.SetInt("money", 300);
 

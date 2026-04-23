@@ -31,16 +31,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         SpawnHelmet();
-        // //comment part below once recording is done  // HELMET  RECORDING
-        // if (!GetComponent<PlayerController>().AI)
-        // {
-        //     // helmet.startDurability = 3;
-        //     helmet.DamageHelmet(1);
-        //     helmet.DamageHelmet(1);
-        //     helmet.DamageHelmet(1);
-        //     // helmet.helmetDurability = 0;
-        //     // helmet.gameObject.SetActive(false);
-        // }
+   
     }
     private void Start()
     {

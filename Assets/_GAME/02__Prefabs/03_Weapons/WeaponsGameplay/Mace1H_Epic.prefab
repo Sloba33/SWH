@@ -49,8 +49,8 @@ MonoBehaviour:
   weaponName: 
   WeaponStandard: {fileID: 5698323461917015613}
   WeaponDown: {fileID: 2009784696519454654}
-  energyConsumption: 0
-  energyRecharge: 0
+  energyConsumption: 33
+  energyRecharge: 1
   weaponHitParticle: {fileID: 8145864729047757541}
   weaponSwingParticle: {fileID: 0}
   trailRenderer: {fileID: 3503168251675516352}
@@ -116,6 +116,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -202,6 +205,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -318,7 +324,8 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3915803272865755536, guid: 373306456a57e924bbcf6c370b471abf, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -21,9 +21,23 @@ public class Helmet : MonoBehaviour
 
         // material.SetTexture("_BaseMap", null);
     }
+    public bool IsHelmetRepairable()
+    {
+        if (helmetDurability < startDurability)
+        {
+            Debug.Log("Repairable");
+            return true;
+        }
+        else
+        {
+            Debug.Log("Not repairable");
+
+            return false;
+        }
+    }
     public void FullRepairHelmet()
     {
-
+        if (helmetDurability == startDurability) return;
         helmetDurability = startDurability;
         if (playerAttack != null) playerAttack.headSmashCollider.gameObject.SetActive(true);
         mesh.material.SetTexture("_BaseMap", null);
@@ -67,7 +81,7 @@ public class Helmet : MonoBehaviour
             }
         }
     }
-    
+
     public void SetTex(Material material)
     {
         if (defaultTexture != null)

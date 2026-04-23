@@ -58,6 +58,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -132,8 +135,8 @@ MonoBehaviour:
   weaponName: 
   WeaponStandard: {fileID: 6754590277439402785}
   WeaponDown: {fileID: 4421706078588198}
-  energyConsumption: 0
-  energyRecharge: 0
+  energyConsumption: 33
+  energyRecharge: 1
   weaponHitParticle: {fileID: 0}
   weaponSwingParticle: {fileID: 0}
   trailRenderer: {fileID: 0}
@@ -200,6 +203,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

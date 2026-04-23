@@ -58,6 +58,7 @@ MonoBehaviour:
   helmetDurability: 3
   startDurability: 0
   defaultTexture: {fileID: 0}
+  isPaintable: 0
 --- !u!65 &7055038561958567943
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -81,7 +82,7 @@ BoxCollider:
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &8378747646189323094
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -95,6 +96,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -158,6 +160,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -255,11 +260,14 @@ MonoBehaviour:
   collectibleSprite: {fileID: 0}
   collectSound: {fileID: 8300000, guid: 3c3b83f027abc3d4bb2542a40095d1fe, type: 3}
   isConsumable: 0
+  isWeapon: 0
+  isHelmet: 1
   objectToDestroy: {fileID: 5282656863312337320}
   sprinkles: {fileID: 0}
   mesh: {fileID: 6376748947048793011}
   icing: {fileID: 5709410570237096505}
   powerupType: 4
+  currencyParticleSystem: {fileID: 0}
   collectibleTrigger: {fileID: 7055038561958567943}
   Grounded: 0
   parent: {fileID: 7162968851575994340}
@@ -342,6 +350,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

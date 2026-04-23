@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 public class PowerupCollectible : CollectibleItem
 {
-
+    public bool isWeapon, isHelmet;
     public GameObject objectToDestroy, sprinkles;
     [SerializeField] private MeshRenderer mesh, icing;
     public PowerupType powerupType;
@@ -11,15 +11,19 @@ public class PowerupCollectible : CollectibleItem
     public ParticleSystem currencyParticleSystem;
 
     public Collider collectibleTrigger;
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return new WaitForSeconds(0.1f);
         _beingPickedUp = false;
+        if(isWeapon) FindPlayerWeapon();
+        if(isHelmet) FindPlayerHelmet();
     }
     public override void Collect(PlayerController player)
     {
         other = player.GetComponent<Player>();
 
-        collectibleTrigger.enabled = false;
+        bool wasCollected = true; // Assume collected unless told otherwise
+
         switch (powerupType)
         {
             case PowerupType.Speed:
@@ -27,7 +31,6 @@ public class PowerupCollectible : CollectibleItem
                 break;
             case PowerupType.Strength:
                 other.BuffStrength(5f, 3f);
-
                 sprinkles.SetActive(false);
                 break;
             case PowerupType.Both:
@@ -37,7 +40,16 @@ public class PowerupCollectible : CollectibleItem
                 other.BuffEnergy(50f);
                 break;
             case PowerupType.Helmet:
-                StartCoroutine(FloatAndLand(other.helmet.transform, 1f, 10f, 10f));
+                // Check if helmet can be collected first
+                if (other.helmet.IsHelmetRepairable()) // Add this method to your helmet class
+                {
+                    StartCoroutine(FloatAndLand(other.helmet.transform, 1f, 10f, 10f));
+                }
+                else
+                {
+                    wasCollected = false; // Don't collect
+                    return; // Exit early
+                }
                 break;
             case PowerupType.Loot_Coins:
                 AddCurrency("coins", 100);
@@ -49,16 +61,39 @@ public class PowerupCollectible : CollectibleItem
                 AddCurrency("gems", 100);
                 break;
         }
-        if (icing != null)
+
+        // Only disable and play effects if actually collected
+        if (wasCollected)
         {
-            icing.enabled = false;
+            DisableCollectible();
         }
+    }
+
+    private void DisableCollectible()
+    {
+        collectibleTrigger.enabled = false;
+        if (icing != null)
+            icing.enabled = false;
+
         if (powerupType != PowerupType.Helmet)
         {
             if (mesh != null)
                 mesh.enabled = false;
             PlayCollectSound(objectToDestroy);
         }
+    }
+    private Weapon FindPlayerWeapon()
+    {
+        Player player = FindFirstObjectByType<Player>();
+        Debug.Log("Finding player weapon, player found: " + (player != null) + ", weapon found: " + (player != null ? player.weapon : "N/A"));
+        return player != null ? player.GetComponent<Weapon>() : null;
+    }
+    private Helmet FindPlayerHelmet()
+    {
+        Player player = FindObjectsByType<Player>(FindObjectsSortMode.None)[0];
+        Debug.Log("Finding player helmet, player found: " + (player != null) + ", helmet found: " + (player != null ? player.helmet != null : "N/A"));
+        return player != null ? player.GetComponent<Helmet>() : null;
+
     }
     private void AddCurrency(string currency, int amount)
     {
@@ -73,6 +108,7 @@ public class PowerupCollectible : CollectibleItem
     {
         if (other != null)
             transform.rotation = other.GetComponent<PlayerController>().transform.rotation;
+        if (!other.helmet.IsHelmetRepairable()) yield break;
 
         Animator anim = collectibleTrigger.transform.GetComponent<Animator>();
         if (anim != null)
