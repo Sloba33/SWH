@@ -155,7 +155,8 @@ public class PlayerMovement : MonoBehaviour
         moveDirection = CurrentMoveDirection;
         if (!CanMove && !_playerController.isPushing)
         {
-            _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
+
+            // _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);   // player rb is kinematic during pull, should've been a safeguard but its not suppported, so just set velocity to 0 in case
             CurrentMoveDirection = Vector3.zero;
             CurrentCalculatedMoveSpeed = 0f;
             // HandleMovement(_inputHandler.MoveInput);

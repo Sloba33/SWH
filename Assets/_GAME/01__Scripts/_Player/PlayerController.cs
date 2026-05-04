@@ -66,7 +66,11 @@ public class PlayerController : MonoBehaviour
         {
             StartPull();
         }
-        // _movement.IsPushing = isPushing;
+
+        if (_input.GetPullReleasedThisFrame())
+        {
+            StopPull();
+        }
     }
 
     private void HandleFlashlightDirection()

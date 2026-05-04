@@ -62,7 +62,10 @@ public class PlayerInputHandler : MonoBehaviour
     {
         return inputActions.Player.Pull.WasPressedThisFrame();
     }
-
+    public bool GetPullReleasedThisFrame()
+    {
+        return inputActions.Player.Pull.WasReleasedThisFrame();
+    }
 
 
 }

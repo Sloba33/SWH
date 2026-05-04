@@ -48,7 +48,13 @@ public class PlayerControls : MonoBehaviour
     //         playerController.StopPull();
     //     }
     // }
-
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.F))
+        {
+            playerController.StopPull();
+        }
+    }
     public void AssignControls() //
     {
         playerController = FindObjectOfType<PlayerController>(); //
@@ -87,7 +93,7 @@ public class PlayerControls : MonoBehaviour
         // {
         //     Debug.LogWarning("Jump Button not assigned in PlayerControls. Ensure it's hooked up in the Inspector."); //
         // }
-SetReferences();
+        SetReferences();
         // Invoke(nameof(SetReferences), 0f); //
 
         // --- All tutorial-related UI active/inactive logic is fine as is ---
