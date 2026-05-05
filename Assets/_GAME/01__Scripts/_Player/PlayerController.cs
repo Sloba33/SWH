@@ -1,5 +1,7 @@
 using UnityEngine;
 using Cinemachine;
+using Coherence.Toolkit;
+
 public class PlayerController : MonoBehaviour
 {
     public bool AI;
@@ -20,7 +22,7 @@ public class PlayerController : MonoBehaviour
     public CinemachineFreeLook followCamera;
     public Camera playerCamera;
     public Transform cameraFollowTarget;
-
+    private CoherenceSync coherenceSync;
 
     [Header("Pull/Push")]
     public bool isPulling = false;
@@ -40,6 +42,8 @@ public class PlayerController : MonoBehaviour
         {
             _movement.Initialize(_player, _rb, _playerCollider, this, _playerControls);
         }
+
+        coherenceSync = GetComponent<CoherenceSync>();
     }
 
     private void Start()
@@ -53,6 +57,20 @@ public class PlayerController : MonoBehaviour
             flashlight.gameObject.SetActive(false);
             spotlight.gameObject.SetActive(false);
         }
+        
+        if (coherenceSync != null && !coherenceSync.HasStateAuthority)
+        {
+            Destroy(playerCamera.gameObject);
+            Destroy(followCamera.gameObject);
+            GetComponent<PlayerAnimation>().enabled = false;
+
+            // Disable all local physics/movement simulation
+            GetComponent<PlayerMovement>().enabled = false;
+            GetComponent<PlayerObstacleController>().enabled = false;
+            GetComponent<PlayerInputHandler>().enabled = false;
+            _rb.isKinematic = true;  // Let coherence drive position, not physics
+        }
+
     }
 
     private void FixedUpdate()

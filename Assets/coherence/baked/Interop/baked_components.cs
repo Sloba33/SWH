@@ -2845,5 +2845,552 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
             }
         }
+        public struct _9d2e9d257e8387b45979b55403f8a357_2197336975981693810 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.DeadMask;
+                DeadSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.RunningMask;
+                RunningSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.LookLeftMask;
+                LookLeftSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.LookRightMask;
+                LookRightSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.GroundedMask;
+                GroundedSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.IdleMask;
+                IdleSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.FallingMask;
+                FallingSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.HitSpecialMask;
+                HitSpecialSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.HitDownMask;
+                HitDownSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.HitMask;
+                HitSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.PullMask;
+                PullSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.JumpingMask;
+                JumpingSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.PushMask;
+                PushSimulationFrame = frame;
+                FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.WalkingMask;
+                WalkingSimulationFrame = frame;
+            }
+    
+            public static uint DeadMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame DeadSimulationFrame;
+            public System.Boolean Dead;
+            public static uint RunningMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame RunningSimulationFrame;
+            public System.Boolean Running;
+            public static uint LookLeftMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame LookLeftSimulationFrame;
+            public System.Boolean LookLeft;
+            public static uint LookRightMask => 0b00000000000000000000000000001000;
+            public AbsoluteSimulationFrame LookRightSimulationFrame;
+            public System.Boolean LookRight;
+            public static uint GroundedMask => 0b00000000000000000000000000010000;
+            public AbsoluteSimulationFrame GroundedSimulationFrame;
+            public System.Boolean Grounded;
+            public static uint IdleMask => 0b00000000000000000000000000100000;
+            public AbsoluteSimulationFrame IdleSimulationFrame;
+            public System.Boolean Idle;
+            public static uint FallingMask => 0b00000000000000000000000001000000;
+            public AbsoluteSimulationFrame FallingSimulationFrame;
+            public System.Boolean Falling;
+            public static uint HitSpecialMask => 0b00000000000000000000000010000000;
+            public AbsoluteSimulationFrame HitSpecialSimulationFrame;
+            public System.Boolean HitSpecial;
+            public static uint HitDownMask => 0b00000000000000000000000100000000;
+            public AbsoluteSimulationFrame HitDownSimulationFrame;
+            public System.Boolean HitDown;
+            public static uint HitMask => 0b00000000000000000000001000000000;
+            public AbsoluteSimulationFrame HitSimulationFrame;
+            public System.Boolean Hit;
+            public static uint PullMask => 0b00000000000000000000010000000000;
+            public AbsoluteSimulationFrame PullSimulationFrame;
+            public System.Boolean Pull;
+            public static uint JumpingMask => 0b00000000000000000000100000000000;
+            public AbsoluteSimulationFrame JumpingSimulationFrame;
+            public System.Boolean Jumping;
+            public static uint PushMask => 0b00000000000000000001000000000000;
+            public AbsoluteSimulationFrame PushSimulationFrame;
+            public System.Boolean Push;
+            public static uint WalkingMask => 0b00000000000000000010000000000000;
+            public AbsoluteSimulationFrame WalkingSimulationFrame;
+            public System.Boolean Walking;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 18;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000011111111111111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 14;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_9d2e9d257e8387b45979b55403f8a357_2197336975981693810)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.DeadSimulationFrame = other.DeadSimulationFrame;
+                    this.Dead = other.Dead;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.RunningSimulationFrame = other.RunningSimulationFrame;
+                    this.Running = other.Running;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.LookLeftSimulationFrame = other.LookLeftSimulationFrame;
+                    this.LookLeft = other.LookLeft;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.LookRightSimulationFrame = other.LookRightSimulationFrame;
+                    this.LookRight = other.LookRight;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.GroundedSimulationFrame = other.GroundedSimulationFrame;
+                    this.Grounded = other.Grounded;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.IdleSimulationFrame = other.IdleSimulationFrame;
+                    this.Idle = other.Idle;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.FallingSimulationFrame = other.FallingSimulationFrame;
+                    this.Falling = other.Falling;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.HitSpecialSimulationFrame = other.HitSpecialSimulationFrame;
+                    this.HitSpecial = other.HitSpecial;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.HitDownSimulationFrame = other.HitDownSimulationFrame;
+                    this.HitDown = other.HitDown;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.HitSimulationFrame = other.HitSimulationFrame;
+                    this.Hit = other.Hit;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.PullSimulationFrame = other.PullSimulationFrame;
+                    this.Pull = other.Pull;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.JumpingSimulationFrame = other.JumpingSimulationFrame;
+                    this.Jumping = other.Jumping;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.PushSimulationFrame = other.PushSimulationFrame;
+                    this.Push = other.Push;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.WalkingSimulationFrame = other.WalkingSimulationFrame;
+                    this.Walking = other.Walking;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_9d2e9d257e8387b45979b55403f8a357_2197336975981693810 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 14);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Dead;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Running;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.LookLeft;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.LookRight;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Grounded;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Idle;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Falling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.HitSpecial;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.HitDown;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Hit;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Pull;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Jumping;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Push;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Walking;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _9d2e9d257e8387b45979b55403f8a357_2197336975981693810 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(14);
+                }
+    
+                var val = new _9d2e9d257e8387b45979b55403f8a357_2197336975981693810();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Dead = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.DeadMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Running = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.RunningMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.LookLeft = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.LookLeftMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.LookRight = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.LookRightMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Grounded = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.GroundedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Idle = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.IdleMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Falling = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.FallingMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.HitSpecial = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.HitSpecialMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.HitDown = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.HitDownMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Hit = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.HitMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Pull = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.PullMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Jumping = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.JumpingMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Push = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.PushMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Walking = bitStream.ReadBool();
+                    val.FieldsMask |= _9d2e9d257e8387b45979b55403f8a357_2197336975981693810.WalkingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_9d2e9d257e8387b45979b55403f8a357_2197336975981693810(" +
+                    $" Dead: { this.Dead }" +
+                    $" Running: { this.Running }" +
+                    $" LookLeft: { this.LookLeft }" +
+                    $" LookRight: { this.LookRight }" +
+                    $" Grounded: { this.Grounded }" +
+                    $" Idle: { this.Idle }" +
+                    $" Falling: { this.Falling }" +
+                    $" HitSpecial: { this.HitSpecial }" +
+                    $" HitDown: { this.HitDown }" +
+                    $" Hit: { this.Hit }" +
+                    $" Pull: { this.Pull }" +
+                    $" Jumping: { this.Jumping }" +
+                    $" Push: { this.Push }" +
+                    $" Walking: { this.Walking }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(14, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(14, '0') })";
+            }
+        }
 
 }

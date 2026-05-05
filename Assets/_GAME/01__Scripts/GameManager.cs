@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using Coherence.Connection;
+using Coherence.Toolkit;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,7 +19,11 @@ public class GameManager : MonoBehaviour
     public CharacterCollection multiplayerCharacterCollection;
     public bool Recording, DarkLevel;
     public GameObject playerDefaultPrefab;
+    public CoherenceSync playerNetworkedPrefab;
+    public CoherenceBridge networkBridge;
+    public GameObject connectNetworkUI;
     public Transform playerSpawnPoint;
+    public Transform opponentSpawnPoint;
     public LevelGoal levelGoal;
     public bool jitbSpawned;
     public List<Obstacle> blackHoleObstacles = new();
@@ -36,6 +44,12 @@ public class GameManager : MonoBehaviour
     public Obstacle[] obstaclesToFreeze;
     public CollectibleItemDatabase collectibleDatabase;
     public bool CollectibleSpawned;
+    
+    /// <summary>
+    /// Invoked when local player's character is spawned, true is passed if local player is the first player. 
+    /// </summary>
+    public event Action<bool> OnLocalPlayerSpawned;
+    
     public static GameManager Instance
     {
         get
@@ -149,12 +163,24 @@ public class GameManager : MonoBehaviour
         start = true;
 
         levelGoal = FindFirstObjectByType<LevelGoal>();
-        // if (IsMultiplayer && multiplayerCharacterCollection != null)
-        // {
-        //     Instantiate(multiplayerCharacterCollection.Characters[0], playerSpawnPoint.position, multiplayerCharacterCollection.Characters[0].transform.rotation);
-        // }
-        if (!IsMultiplayer)
+        if(IsMultiplayer)
         {
+            connectNetworkUI.gameObject.SetActive(true);
+            if (CoherenceBridgeStore.TryGetBridge(gameObject.scene, out var bridge))
+            {
+                Debug.Log("[MP] Bridge found");
+                bridge.onConnected.AddListener(OnMultiplayerConnected);
+                bridge.onConnectionError.AddListener(OnMultiplayerConnectionError);
+                bridge.onDisconnected.AddListener(OnMultiplayerDisconnected);
+                
+                bridge.ClientConnections.OnCreated += OnClientConnectionCreated;
+                bridge.ClientConnections.OnDestroyed += OnClientConnectionDestroyed;
+                bridge.ClientConnections.OnSynced += OnClientConnectionsSynced;
+            }
+        }
+        else
+        {
+            connectNetworkUI.gameObject.SetActive(false);
             if (characterCollection != null)
             {
                 Instantiate(characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)], playerSpawnPoint.position, characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)].transform.rotation);
@@ -185,6 +211,68 @@ public class GameManager : MonoBehaviour
         }
         GenerateSkipButton();
     }
+
+    private void OnClientConnectionsSynced(CoherenceClientConnectionManager manager)
+    {
+        var others = manager.GetOtherClients();
+        ClientID otherClientId = default;
+        bool opponentAlreadyConnected = false;
+
+        foreach(var client in others)
+        {
+            if(opponentAlreadyConnected)
+            {
+                Debug.LogError("[MP] More than 2 players in the server!");
+            }
+
+            otherClientId = client.ClientId;
+            opponentAlreadyConnected = true;
+        }
+
+        Transform spawnPoint = opponentAlreadyConnected ? opponentSpawnPoint : playerSpawnPoint;
+        Instantiate(playerNetworkedPrefab, spawnPoint.position, spawnPoint.rotation);
+        OnLocalPlayerSpawned?.Invoke(!opponentAlreadyConnected);        
+    }
+
+    private void OnClientConnectionDestroyed(CoherenceClientConnection connection)
+    {
+        if(networkBridge.ClientConnections.GetMine() != connection)
+        {
+            Debug.LogWarning("[MP] Opponent connection destroyed");
+        }
+        else
+        {
+            Debug.LogWarning("[MP] My own connection destroyed");
+        }
+    }
+
+    private void OnClientConnectionCreated(CoherenceClientConnection newConnection)
+    {
+        if(networkBridge.ClientConnections.GetMine() != newConnection)
+        {
+            Debug.LogWarning("[MP] Opponent connection created");
+        }
+        else
+        {
+            Debug.LogWarning("[MP] My own connection created, ignoring");
+        }
+    }
+
+    private void OnMultiplayerDisconnected(CoherenceBridge arg0, ConnectionCloseReason arg1)
+    {
+        Debug.Log("[MP] Disconnected");
+    }
+
+    private void OnMultiplayerConnectionError(CoherenceBridge arg0, ConnectionException arg1)
+    {
+        Debug.Log("[MP] ConnectionError");
+    }
+
+    private void OnMultiplayerConnected(CoherenceBridge arg0)
+    {
+        Debug.Log("[MP] Connected");
+    }
+
     public float fragScaleFactor = 1;
 
 

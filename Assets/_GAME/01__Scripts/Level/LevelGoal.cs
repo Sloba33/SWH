@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 public class LevelGoal : MonoBehaviour
 {
@@ -107,7 +109,21 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_FIRST_TIME = "FirstTime";
 
 
-    private IEnumerator Start()
+    private bool Initialized;
+    
+    private void Start()
+    {
+        if(GameManager.Instance.IsMultiplayer)
+        {
+            GameManager.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
+        }
+        else
+        {
+            StartCoroutine(Initialize());
+        }
+    }
+
+    private IEnumerator Initialize()
     {
         oneStarTime = 2000;
         twoStarTime = 15;
@@ -160,7 +176,18 @@ public class LevelGoal : MonoBehaviour
         if (Tutorial)
             InvokeRepeating(nameof(RespawnBomb), 45, 10);
 
+        Initialized = true;
     }
+
+    private void OnLocalPlayerSpawned(bool isFirst)
+    {
+        if(!isFirst)
+        {
+            (ObstaclesToDestroy_Player, ObstaclesToDestroy_AI) = (ObstaclesToDestroy_AI, ObstaclesToDestroy_Player);
+            StartCoroutine(Initialize());
+        }
+    }
+
     public void QueueObstacleForSpawnProcessing(Obstacle obstacle)
     {
         if (obstacle != null && !_obstaclesDestroyedThisFrame.Contains(obstacle))
@@ -335,6 +362,8 @@ public class LevelGoal : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if(!Initialized) return;
+        
         if (Tutorial && settings != null && !settings.gameWon && !settings.gameLost)
             return;
 
@@ -514,20 +543,6 @@ public class LevelGoal : MonoBehaviour
         }
         isTimeFrozen = false;
     }
-    void AddObstaclesToList()
-    {
-        UnityEngine.Object[] objectsOfType = FindObjectsOfType(typeof(Obstacle));
-        foreach (var obj in objectsOfType)
-        {
-            Obstacle currentObstacle = (Obstacle)obj;
-            if (obstacleTypes.Contains(currentObstacle.obstacleType))
-            {
-                ObstaclesToDestroy_Player.Add(currentObstacle);
-            }
-        }
-        ObstacleTotal = ObstaclesToDestroy_Player.Count;
-    }
-
     public void RemoveObstacle(Obstacle obs)
     {
         if (ObstaclesToDestroy_Player.Contains(obs))
@@ -565,6 +580,7 @@ public class LevelGoal : MonoBehaviour
             if (ObstaclesToDestroy_Player.Count == 0)
             {
                 bonusUnlocked = currentTime < bonusTime;
+                Debug.Log("Level Goal all obstacles destroyed");
                 StartCoroutine(WinLevel(0.9f));
             }
 
@@ -796,6 +812,7 @@ public class LevelGoal : MonoBehaviour
         fallingObstacle.name = $"Spawned_{obstaclePrefab.name}_{System.Guid.NewGuid().ToString().Substring(0, 4)}";
         // Important: Re-add this newly spawned obstacle to the ObstaclesToDestroy_Player list
         // so it counts towards the level goal.
+        Debug.Log("Adding spawned obstacle to ObstaclesToDestroy_Player: " + fallingObstacle.name);
         ObstaclesToDestroy_Player.Add(fallingObstacle);
         spawnedObstacles.Add(fallingObstacle);
 
@@ -1138,10 +1155,16 @@ public class LevelGoal : MonoBehaviour
             tempStep++;
             if (tempStep > tutorialBarriers.Count)
             {
-                if (!Tutorial)
+                if(!Tutorial)
+                {
+                    Debug.Log("!Tutorial completed, win level");;
                     StartCoroutine(WinLevel(1f));
+                }
                 else
+                {
+                    Debug.Log("Tutorial completed, win level");;
                     StartCoroutine(WinTutorial(0.5f));
+                }
             }
             else
             {

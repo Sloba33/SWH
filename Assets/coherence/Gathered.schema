@@ -1,0 +1,25 @@
+component _9d2e9d257e8387b45979b55403f8a357_2197336975981693810 [id "18"]
+  Dead Bool [bits "1"]
+  Running Bool [bits "1"]
+  LookLeft Bool [bits "1"]
+  LookRight Bool [bits "1"]
+  Grounded Bool [bits "1"]
+  Idle Bool [bits "1"]
+  Falling Bool [bits "1"]
+  HitSpecial Bool [bits "1"]
+  HitDown Bool [bits "1"]
+  Hit Bool [bits "1"]
+  Pull Bool [bits "1"]
+  Jumping Bool [bits "1"]
+  Push Bool [bits "1"]
+  Walking Bool [bits "1"]
+
+command _9d2e9d257e8387b45979b55403f8a357_7ba9f3d1b98f4f79a94456ff96d28ce7 [id "6", routing "All"]
+
+command _9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a [id "7", routing "All"]
+  didHitObstacle Bool 
+  impactPoint Vector3 [compression "None"]
+
+command _9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029 [id "8", routing "All"]
+  aoePosition Vector3 [compression "None"]
+
