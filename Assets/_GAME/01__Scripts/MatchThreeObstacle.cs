@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Coherence.Toolkit;
 
 public class MatchThreeObstacle : MonoBehaviour
 {
@@ -14,11 +15,13 @@ public class MatchThreeObstacle : MonoBehaviour
 
     private static HashSet<int> processedMatchSignatures = new HashSet<int>();
     private List<Obstacle> obstaclesToProcessForSpawns = new();
+    private CoherenceSync _coherenceSync;
 
     private IEnumerator Start()
     {
         ClearMatchSignatures();
         Obstacle = GetComponent<Obstacle>();
+        _coherenceSync = GetComponent<CoherenceSync>();
         yield return new WaitForSeconds(1.5f);
         hasGameStarted = true;
     }
@@ -30,6 +33,7 @@ public class MatchThreeObstacle : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (_coherenceSync != null && !_coherenceSync.HasStateAuthority) return;
         if (!isDestructible) return;
         if (Obstacle != null && Obstacle.isFalling) ClearObstacleLists();
         if (hasGameStarted && Obstacle.Moving && IsCenteredOnTile())

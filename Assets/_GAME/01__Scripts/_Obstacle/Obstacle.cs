@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using Coherence;
+using Coherence.Toolkit;
 
 public class Obstacle : MonoBehaviour
 {
@@ -32,6 +34,7 @@ public class Obstacle : MonoBehaviour
     public bool grounded;
     public bool isHammerable;
     [SerializeField] public Rigidbody _rb;
+    private CoherenceSync _coherenceSync;
 
     public float obstacleCheckerRadius, upOffset, upSphereDistance;
     public float FallTimer;
@@ -50,6 +53,11 @@ public class Obstacle : MonoBehaviour
     [SerializeField] private LayerMask _obstacleMask;
     public bool isMoving;
     public bool Moving;
+
+    public void TakeAuthority()
+    {
+        _coherenceSync.RequestAuthority(AuthorityType.Full);
+    }
 
     public bool CheckObstaclesAround(Vector3 dir)
     {
@@ -85,8 +93,6 @@ public class Obstacle : MonoBehaviour
         {
             _obstacleUp[0] = null;
         }
-
-
     }
 
     public float fallRayDistance;
@@ -113,12 +119,9 @@ public class Obstacle : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position + rightOffset_2, obstacleCheckerRadius);
         Gizmos.DrawWireSphere(transform.position + rightOffset_3, obstacleCheckerRadius);
         Gizmos.DrawWireSphere(transform.position + rightOffset_4, obstacleCheckerRadius);
-
-        // Debug.DrawRay(transform.position + fallOffset, -transform.up * fallRayDistance, Color.red);
     }
 
     public bool beingSucked;
-
 
     private void Start()
     {
@@ -134,8 +137,12 @@ public class Obstacle : MonoBehaviour
             rend = GetComponent<Renderer>();
         }
         obs = GetComponent<Obstacle>();
+        _coherenceSync = GetComponent<CoherenceSync>();
+        if (_coherenceSync != null && !_coherenceSync.HasStateAuthority)
+        {
+            if (_rb != null) _rb.isKinematic = true;
+        }
         SphereFlags();
-        // Weight = (int)_rb.mass;
         isPullable = true;
         if (obstacleMesh != null)
             obstacleMaterial = obstacleMesh.sharedMaterial;
@@ -149,11 +156,19 @@ public class Obstacle : MonoBehaviour
             StartCoroutine(BlinkCoroutine());
         }
     }
+
     private bool controllerCleared;
+
     private void FixedUpdate()
     {
-
         Moving = isFalling || isBeingPulled || isBeingPushed || !isPositioned;
+
+        if (_coherenceSync != null && !_coherenceSync.HasStateAuthority)
+        {
+            UpdateProxyFallIndicator();
+            return;
+        }
+
         Reposition();
         CheckUp();
         CheckGround();
@@ -166,17 +181,38 @@ public class Obstacle : MonoBehaviour
         }
     }
 
+    private void UpdateProxyFallIndicator()
+    {
+        if (isFalling && fallSprite == null && fallIndicator != null)
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 45f, _groundMask))
+                fallSprite = Instantiate(fallIndicator, hit.point + new Vector3(0, 0.05f, 0), fallIndicator.transform.rotation);
+        }
+        else if (!isFalling && fallSprite != null)
+        {
+            Destroy(fallSprite);
+            fallSprite = null;
+        }
+        else if (isFalling && fallSprite != null)
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 45f, _groundMask))
+            {
+                fallSprite.transform.position = hit.point + new Vector3(0, 0.05f, 0);
+                if (fallSprite.transform.localScale.x > 0.11f)
+                    fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
+            }
+        }
+    }
+
     private void Reposition()
     {
-
-
         if (!isPositioned && tile != null && tile.obstacleDict != null)
         {
             Debug.Log("Repositioning");
             tile.RepositionObstacle(obs);
         }
-
     }
+
     private void HandleFall()
     {
         if (!grounded && shouldFall)
@@ -184,6 +220,7 @@ public class Obstacle : MonoBehaviour
             StartCoroutine(Fall());
         }
     }
+
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] float _grounderOffset;
     [SerializeField] float _grounderRadius;
@@ -194,13 +231,13 @@ public class Obstacle : MonoBehaviour
         {
             if (_boxCollider[0].gameObject == gameObject)
                 return false;
-            // Debug.Log("Hit ground :" + _boxCollider[0].gameObject.name);
             return true;
         }
         if (_boxCollider.Length > 0)
             return true;
         return false;
     }
+
     #region Grounding
     public Vector3 BoxOffset, BoxSize;
     public Vector3 HalfExtents = new(0.25f, 0.25f, 0.25f);
@@ -226,7 +263,6 @@ public class Obstacle : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position + new Vector3(0, _grounderOffset), _grounderRadius);
-
     }
     #endregion
 
@@ -236,9 +272,9 @@ public class Obstacle : MonoBehaviour
         {
             isPushable = false;
         }
-
         else if (!MoveOverride) isPushable = true;
     }
+
     public bool Movable(Vector3 playerDir)
     {
         if (playerDir.z == 1 && obstacleForward) return false;
@@ -247,17 +283,18 @@ public class Obstacle : MonoBehaviour
         else if (playerDir.x == -1 && obstacleLeft) return false;
         else return true;
     }
+
     private void OnDrawGizmos()
     {
         DrawGrounderGizmos();
         DrawObstacleGizmos();
         DrawBoxGizmo();
     }
+
     public float priority;
     public bool hasPriority;
     public Obstacle GetObstacleInDirection(Vector3 direction)
     {
-
         if (direction == Vector3.forward)
         {
             if (_obstacleForward[0] != null)
@@ -284,9 +321,12 @@ public class Obstacle : MonoBehaviour
         }
         else return null;
     }
+
     public PlayerController currentlyUsedPlayerConrtoller;
     public void PushObstacle(Vector3 dir, float speed)
     {
+        if (_coherenceSync != null && !_coherenceSync.HasStateAuthority) return;
+
         Debug.Log("Pushing Obstacle");
         if (!obstacleUp || recentlyPulled)
         {
@@ -298,14 +338,12 @@ public class Obstacle : MonoBehaviour
             if (currentlyUsedPlayerConrtoller != null && currentlyUsedPlayerConrtoller.playerObstacleController != null && currentlyUsedPlayerConrtoller.playerObstacleController.pushDirectionChanged)
             {
                 _rb.linearVelocity = Vector3.zero;
-                currentlyUsedPlayerConrtoller.playerObstacleController.pushDirectionChanged = false; // Reset the flag
+                currentlyUsedPlayerConrtoller.playerObstacleController.pushDirectionChanged = false;
                 AudioManager.Instance.StopObstacleSound_Move();
-
                 return;
             }
             else
             {
-                // dir = 
                 dir.y = 0;
                 dir.Normalize();
                 if (Vector3.Distance(transform.position, tile.transform.position) > 0.001f)
@@ -314,19 +352,15 @@ public class Obstacle : MonoBehaviour
                     if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI)
                     {
                         Debug.Log("Playing obstacle sound move");
-
                         AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
                     }
-
-                    _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
-
+                    _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir);
                 }
                 else
                 {
                     if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.StopObstacleSound_Move();
                     return;
                 }
-
             }
             controllerCleared = false;
         }
@@ -334,16 +368,15 @@ public class Obstacle : MonoBehaviour
 
     public void PullObstacle(Vector3 dir, float speed, bool obstacleBehind)
     {
+        if (_coherenceSync != null && !_coherenceSync.HasStateAuthority) return;
+
         isPullable = Movable(dir);
         dir.y = 0;
         dir.Normalize();
         if (!obstacleBehind && isPullable && !MoveOverride)
         {
-
-            _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
-            // _playerRigidbody.MovePosition(_playerRigidbody.transform.position + dir * speed * Time.fixedDeltaTime); /*this one doesn't get stuck in cyllinders*/
+            _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir);
             if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
-            // CheckThreeOfAKind();
             controllerCleared = false;
         }
         else
@@ -353,6 +386,7 @@ public class Obstacle : MonoBehaviour
             return;
         }
     }
+
     public bool recentlyPulled;
 
     public bool pushabilityDelayed;
@@ -361,17 +395,14 @@ public class Obstacle : MonoBehaviour
         if (!isFalling)
         {
             isFalling = true;
-
             isPushable = false;
             pushabilityDelayed = true;
-            // Debug.Log("Disablign Pushability");
             yield return new WaitForSeconds(duration);
-            // Debug.Log("enabling pushability");
             pushabilityDelayed = false;
             isPushable = true;
         }
-
     }
+
     public float fallSpeed = 1f;
     public Vector3 startFallPosition;
     public bool recentlyFallen;
@@ -385,17 +416,13 @@ public class Obstacle : MonoBehaviour
 
         if (!hasFallStarted)
         {
-
             hasFallStarted = true;
             startFallPosition = transform.position;
-            // if (GetComponent<AStarTestMove>() != null) GetComponent<AStarTestMove>().wasPushed = true;
             if (!recentlyFallen) StartCoroutine(FallDelayTimer());
-            // Mathf.RoundToInt(targetHeight);
             RaycastHit hit;
-            float raycastDistance = 45f;  // Adjust this distance based on your scene
-            float groundHeight = 0.554f;  // Default ground height if raycast doesn't hit anything
+            float raycastDistance = 45f;
+            float groundHeight = 0.554f;
             float targetHeight;
-            // Cast a ray downward to find the ground
             if (Physics.Raycast(transform.position, Vector3.down, out hit, raycastDistance, _groundMask))
             {
                 Vector3 pos = hit.point;
@@ -403,9 +430,6 @@ public class Obstacle : MonoBehaviour
                 if (fallSprite == null)
                 {
                     fallSprite = Instantiate(fallIndicator, pos + new Vector3(0, 0.05f, 0), fallIndicator.transform.rotation);
-                    // Debug.Log("fallsprite scale at start   :   " + fallSprite.transform.localScale);
-                    // if (obstacleMaterial != null)
-                    //     fallSprite.GetComponent<SpriteRenderer>().color = obstacleMaterial.color;
                 }
                 if (hit.transform.CompareTag("Tile"))
                     groundHeight = hit.transform.position.y + tileOffset;
@@ -431,34 +455,26 @@ public class Obstacle : MonoBehaviour
                         groundHeight = hit.transform.position.y + obstacleOffset;
                     targetHeight = groundHeight;
                 }
-                // fallSprite.transform.localScale = startFallIndicatorScale / (targetHeight - transform.position.y);
                 if (fallSprite != null && fallSprite.transform.localScale.x > 0.11f)
                     fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
 
                 float distanceToGround = Mathf.Abs(Vector3.Distance(new Vector3(transform.position.x, targetHeight, transform.position.z), transform.position));
 
-
                 float scaleFactor = startFallIndicatorScale.x + (20f - distanceToGround) / 25f;
-                float scalingMultiplier = 11.5f; // Adjust this value to control the overall scaling effect
+                float scalingMultiplier = 11.5f;
                 if (fallSprite != null)
                 {
                     fallSprite.transform.localScale = new Vector3(0.025f, 0.025f, 0.025f);
-                    // Debug.Log("fallsprite MID at start   :   " + fallSprite.transform.localScale);
                     fallSprite.transform.localScale = startFallIndicatorScale * scaleFactor * scalingMultiplier;
-                    // Debug.Log("fallsprite LATE at start   :   " + fallSprite.transform.localScale);
                     if (fallSprite.transform.localScale.x > 0.11f)
                         fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
                 }
 
                 transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, targetHeight, transform.position.z), fallSpeed * 17.5f);
-                // if (playerController == null) Debug.Log("Player controller is null");
-                // if (playerController.IsGrounded) Debug.Log("Player is grounded");
-                // Debug.Log("IsGrounded " + playerController.IsGrounded);
                 if (playerController != null && !playerController._movement.IsGrounded)
                 {
                     Debug.Log("Falling with box");
                     playerController.transform.position = Vector3.MoveTowards(playerController.transform.position, new Vector3(playerController.transform.position.x, transform.position.y, playerController.transform.position.z), fallSpeed * 16);
-
                 }
                 yield return new WaitForSeconds(0.01f);
                 if (transform.position.y <= targetHeight && !grounded)
@@ -468,54 +484,59 @@ public class Obstacle : MonoBehaviour
             }
             if (isFrozen)
             {
-                // This will stop the coroutine from proceeding to the landing logic.
-                isFalling = false; // Reset the isFalling flag.
-                yield break;       // Exit the coroutine immediately.
+                isFalling = false;
+                yield break;
             }
             if (transform.position.y <= targetHeight)
             {
-
                 isFalling = false;
                 hasFallStarted = false;
                 transform.position = new Vector3(transform.position.x, targetHeight, transform.position.z);
-                ParticleSystem ps;
                 if (obstacleFallPS != null && transform.position.y < 1)
                 {
-
-                    ps = Instantiate(obstacleFallPS, transform.position - new Vector3(0, 0.5f, 0), obstacleFallPS.transform.rotation);
-                    ps.gameObject.name = "fall particle object";
+                    if (_coherenceSync != null)
+                        _coherenceSync.SendCommand<Obstacle>(nameof(CmdPlayFallLanding), MessageTarget.All, transform.position);
+                    else
+                    {
+                        ParticleSystem ps = Instantiate(obstacleFallPS, transform.position - new Vector3(0, 0.5f, 0), obstacleFallPS.transform.rotation);
+                        ps.gameObject.name = "fall particle object";
+                    }
                 }
             }
-            // Debug.Log("fallsprite LATE at start   :   " + fallSprite.transform.localScale);
             hasFallStarted = false;
             isFalling = false;
             tile.PositionHeight(this);
-            // Debug.Log("We hit ground " + groundHeight);
             if (GetComponent<MatchThreeObstacle>() != null && GetComponent<MatchThreeObstacle>().isDestructible)
             {
-
                 GetComponent<MatchThreeObstacle>().RunMatchOnce();
             }
-            // Debug.Log("Run match once ");
             Destroy(fallSprite, 0.1f);
-
-
         }
-
-        // isPositioned = false;
     }
+
+    [Command(defaultRouting = MessageTarget.All)]
+    public void CmdPlayFallLanding(Vector3 landPosition)
+    {
+        if (obstacleFallPS != null && landPosition.y < 1)
+        {
+            ParticleSystem ps = Instantiate(obstacleFallPS, landPosition - new Vector3(0, 0.5f, 0), obstacleFallPS.transform.rotation);
+            ps.gameObject.name = "fall particle object";
+        }
+    }
+
     public IEnumerator FallDelayTimer()
     {
         recentlyFallen = true;
         yield return new WaitForSeconds(1f);
         recentlyFallen = false;
     }
+
     public void CheckRaycastIntersection(Transform playerEyeTransform, LayerMask obstacleMask)
     {
         RaycastHit hit;
         if (Physics.Raycast(playerEyeTransform.position, playerEyeTransform.forward, out hit, 0.5f, obstacleMask))
         {
-            if (hit.transform != transform) // Checks if the hit obstacle is the same as this obstacle.
+            if (hit.transform != transform)
             {
                 ClearPlayerController();
             }
@@ -525,6 +546,7 @@ public class Obstacle : MonoBehaviour
             ClearPlayerController();
         }
     }
+
     public void ClearPlayerController()
     {
         Debug.Log("Clearing palyer controller in func");
@@ -538,14 +560,90 @@ public class Obstacle : MonoBehaviour
     public AudioClip audioClip;
     public GoalSetter[] goalSetters;
     public AudioSource audioSource;
+
     public void ParticleDestroy(ObstacleDestructionSource source = ObstacleDestructionSource.None)
     {
-        StartCoroutine(DelayedParticleDestroy(source));
+        if (_coherenceSync != null)
+            _coherenceSync.SendCommand<Obstacle>(nameof(CmdDestroyObstacle), MessageTarget.All, (int)source);
+        else
+            StartCoroutine(DelayedParticleDestroy(source));
     }
+
+    [Command(defaultRouting = MessageTarget.All)]
+    public void CmdDestroyObstacle(int source)
+    {
+        StartCoroutine(NetworkedDestroy((ObstacleDestructionSource)source));
+    }
+
+    private IEnumerator NetworkedDestroy(ObstacleDestructionSource source)
+    {
+        yield return new WaitForSeconds(0.05f);
+        if (queuedForDestruction) yield break;
+        queuedForDestruction = true;
+
+        // All clients: visuals + audio
+        ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
+        ps.gameObject.name = "PARTICLE OBJECT";
+        gameObject.SetActive(false);
+        if (source != ObstacleDestructionSource.None)
+        {
+            ps.Play();
+            AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
+        }
+        if (fallSprite != null) Destroy(fallSprite);
+
+        // Authority only: game logic, goal progress, cleanup, destroy
+        if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
+        {
+            if (GameManager.Instance.levelGoal != null)
+            {
+                GameManager.Instance.levelGoal.RemoveObstacleFromSection(this);
+                if (source != ObstacleDestructionSource.MatchThree)
+                    GameManager.Instance.levelGoal.QueueObstacleForSpawnProcessing(this);
+            }
+            if (GameManager.Instance.levelGoal.DualLevel)
+            {
+                if (!AIObstacle)
+                {
+                    if (obstacleType == ObstacleType.Universal) yield return null;
+                    GoalSetter gs = GameManager.Instance.playerGoalSetter;
+                    if (gs.obstacleTypes[0].obstacleType == obstacleType)
+                    {
+                        gs.FillBar();
+                        Debug.Log("Filling AI");
+                    }
+                }
+                else
+                {
+                    GoalSetter gs = GameManager.Instance.AIGoalSetter;
+                    if (gs.obstacleTypes[0].obstacleType == obstacleType)
+                    {
+                        gs.FillBar();
+                        Debug.Log("Filling player");
+                    }
+                }
+            }
+            else
+            {
+                GoalSetter gs = FindObjectOfType<GoalSetter>();
+                if (gs != null)
+                {
+                    for (int i = 0; i < gs.playerGoals.Count; i++)
+                    {
+                        if (gs.playerGoals[i].obstacleType == obstacleType)
+                            gs.playerGoals[i].IncreaseCount();
+                    }
+                }
+            }
+
+            if (playerController != null) playerController.playerObstacleController.pushObstacle = null;
+            Destroy(gameObject);
+        }
+    }
+
     IEnumerator DelayedParticleDestroy(ObstacleDestructionSource source)
     {
-        // DELAY ON DESTRUCTION/SOUND change as needed (was 0.1f)
-        yield return new WaitForSeconds(0.05f);  // Adjust the delay as needed
+        yield return new WaitForSeconds(0.05f);
 
         if (!queuedForDestruction)
         {
@@ -555,7 +653,6 @@ public class Obstacle : MonoBehaviour
             gameObject.SetActive(false);
             if (source != ObstacleDestructionSource.None)
             {
-
                 ps.Play();
                 AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
             }
@@ -564,7 +661,6 @@ public class Obstacle : MonoBehaviour
             {
                 GameManager.Instance.levelGoal.RemoveObstacleFromSection(this);
 
-                // Only queue for respawn if NOT destroyed by match-3
                 if (source != ObstacleDestructionSource.MatchThree)
                 {
                     GameManager.Instance.levelGoal.QueueObstacleForSpawnProcessing(this);
@@ -592,13 +688,11 @@ public class Obstacle : MonoBehaviour
                     }
                 }
             }
-
             else
             {
                 GoalSetter gs = FindObjectOfType<GoalSetter>();
                 if (gs != null)
                 {
-
                     for (int i = 0; i < gs.playerGoals.Count; i++)
 
                     {
@@ -606,14 +700,10 @@ public class Obstacle : MonoBehaviour
 
                         {
                             gs.playerGoals[i].IncreaseCount();
-
-
-
                         }
                     }
                 }
             }
-
 
             if (playerController != null) playerController.playerObstacleController.pushObstacle = null;
             Destroy(gameObject);
@@ -639,12 +729,12 @@ public class Obstacle : MonoBehaviour
 
     public void OnDestroy()
     {
-        if (gameObject.scene.isLoaded && QuestRotator.Instance != null) //Was Deleted
+        if (gameObject.scene.isLoaded && QuestRotator.Instance != null)
         {
-            QuestRotator.Instance.UpdateQuestProgress(QuestType.Destroy);
-
+            if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
+                QuestRotator.Instance.UpdateQuestProgress(QuestType.Destroy);
         }
-        else //Was Cleaned Up on Scene Closure
+        else
         {
             Debug.Log("Cleaning scene so not updating");
         }
@@ -654,8 +744,6 @@ public class Obstacle : MonoBehaviour
             objectToTurnOff.SetActive(false);
         }
     }
-
-
 
     public Color startColor, endColor;
     public float blinkDuration = 1f;
@@ -677,9 +765,9 @@ public class Obstacle : MonoBehaviour
             }
         }
 
-        // Revert to color1 after blinking period is over
         obstacleMaterial.color = startColor;
     }
+
     public void FreezeFall(bool freeze)
     {
         isFrozen = freeze;
@@ -690,6 +778,7 @@ public class Obstacle : MonoBehaviour
         if (freeze) Debug.Log("Freezing");
         else Debug.Log("Unfreezing");
     }
+
     IEnumerator BlinkToColor(Color fromColor, Color toColor, float duration)
     {
         float elapsedTime = 0f;
@@ -712,6 +801,4 @@ public class Obstacle : MonoBehaviour
         Bomb,
         Other
     }
-
 }
-

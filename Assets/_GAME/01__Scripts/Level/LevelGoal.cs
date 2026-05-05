@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using Coherence;
+using Coherence.Toolkit;
 using Random = UnityEngine.Random;
 
 public class LevelGoal : MonoBehaviour
@@ -108,11 +110,15 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
     private const string PREF_FIRST_TIME = "FirstTime";
 
+    [SerializeField]
+    private CoherenceSync coherenceSync;
 
     private bool Initialized;
     
     private void Start()
     {
+        coherenceSync = GetComponent<CoherenceSync>();
+        
         if(GameManager.Instance.IsMultiplayer)
         {
             GameManager.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
@@ -184,8 +190,14 @@ public class LevelGoal : MonoBehaviour
         if(!isFirst)
         {
             (ObstaclesToDestroy_Player, ObstaclesToDestroy_AI) = (ObstaclesToDestroy_AI, ObstaclesToDestroy_Player);
-            StartCoroutine(Initialize());
+
         }
+        
+        foreach(Obstacle obstacle in ObstaclesToDestroy_Player)
+        {
+            obstacle.TakeAuthority();
+        }
+        StartCoroutine(Initialize());
     }
 
     public void QueueObstacleForSpawnProcessing(Obstacle obstacle)
@@ -581,6 +593,11 @@ public class LevelGoal : MonoBehaviour
             {
                 bonusUnlocked = currentTime < bonusTime;
                 Debug.Log("Level Goal all obstacles destroyed");
+                if (coherenceSync != null)
+                {
+                    GameManager.Instance.FreezeObstacles();
+                    coherenceSync.SendCommand<LevelGoal>(nameof(CmdLoseLevel), MessageTarget.Other);
+                }
                 StartCoroutine(WinLevel(0.9f));
             }
 
@@ -908,6 +925,13 @@ public class LevelGoal : MonoBehaviour
         // }
     }
 
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdLoseLevel()
+    {
+        GameManager.Instance.FreezeObstacles();
+        StartCoroutine(LoseLevel());
+    }
+    
     public IEnumerator LoseLevel()
     {
         yield return new WaitForSeconds(1.2f);
