@@ -271,7 +271,7 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
         // Debug.Log("playing : " + identifier);
         PlaySound3D(clip, position);
     }
-    public void PlayJumpSound(bool female, Vector3 position)
+    public void PlayJumpSound(bool female, Vector3 position, bool spatial = true)
     {
         string baseIdentifier = female ? "jump_f" : "jump_m";
         int variation = Random.Range(1, 3); // Randomly picks 1 or 2
@@ -282,8 +282,11 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
             Debug.LogWarning($"No audio clip found for jump sound {identifier}");
             return;
         }
-        // Debug.Log("playing : " + identifier);
-        PlaySound3D(clip, position);
+
+        if (spatial)
+            PlaySound3D(clip, position);
+        else
+            PlaySound2D(clip);
     }
     public void PlayUISound(string identifier)
     {

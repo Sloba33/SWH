@@ -180,7 +180,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            connectNetworkUI.gameObject.SetActive(false);
+            if(connectNetworkUI != null)
+            {
+                connectNetworkUI.gameObject.SetActive(false);
+            }
             if (characterCollection != null)
             {
                 Instantiate(characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)], playerSpawnPoint.position, characterCollection.Characters[PlayerPrefs.GetInt("SelectedCharacterID", 0)].transform.rotation);

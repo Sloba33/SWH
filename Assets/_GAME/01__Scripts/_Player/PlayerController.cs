@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cinemachine;
+using Coherence;
 using Coherence.Toolkit;
 
 public class PlayerController : MonoBehaviour
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public bool isPulling = false;
     public bool isPushing = false;
 
+    public bool HasAuthority => coherenceSync != null && coherenceSync.HasStateAuthority;
+    
     private void Awake()
     {
         _movement = GetComponent<PlayerMovement>();
@@ -193,6 +196,25 @@ public class PlayerController : MonoBehaviour
             // Ignore collision only for player
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
         }
+    }
+
+    public void BroadcastJumpSound(bool female)
+    {
+        if (coherenceSync == null)
+        {
+            AudioManager.Instance?.PlayJumpSound(female, transform.position);
+            return;
+        }
+        coherenceSync.SendCommand<PlayerController>(nameof(CmdPlayJumpSound), MessageTarget.All, female);
+    }
+
+    [Command(defaultRouting = MessageTarget.All)]
+    public void CmdPlayJumpSound(bool female)
+    {
+        if (coherenceSync != null && coherenceSync.HasStateAuthority)
+            AudioManager.Instance?.PlayJumpSound(female, transform.position, spatial: false);
+        else
+            AudioManager.Instance?.PlayJumpSound(female, transform.position, spatial: true);
     }
 
 }

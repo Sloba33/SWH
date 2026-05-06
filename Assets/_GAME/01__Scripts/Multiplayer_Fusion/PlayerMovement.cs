@@ -305,10 +305,7 @@ public class PlayerMovement : MonoBehaviour
         Friction(false);
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, _jumpForce, _rb.linearVelocity.z);
 
-        if (_player != null && AudioManager.Instance != null)
-        {
-            AudioManager.Instance.PlayJumpSound(_player.characterStats.female, transform.position);
-        }
+        _playerController?.BroadcastJumpSound(_player != null && _player.characterStats.female);
     }
     void Update()
     {

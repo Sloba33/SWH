@@ -55,11 +55,11 @@ public class PlayerControls : MonoBehaviour
             playerController.StopPull();
         }
     }
-    public void AssignControls() //
+    public void AssignControls(PlayerController playerController) //
     {
-        playerController = FindObjectOfType<PlayerController>(); //
         if (playerController != null) // Safety check
         {
+            this.playerController = playerController;
             playerAttack = playerController.GetComponent<PlayerAttack>(); //
             Player playerComponent = playerController.GetComponent<Player>(); //
             if (playerComponent != null) // Safety check
@@ -93,7 +93,11 @@ public class PlayerControls : MonoBehaviour
         // {
         //     Debug.LogWarning("Jump Button not assigned in PlayerControls. Ensure it's hooked up in the Inspector."); //
         // }
-        SetReferences();
+        if(GameManager.Instance.IsMultiplayer)
+        {
+            yield return new WaitUntil(() => playerController != null);
+            SetReferences();
+        }
         // Invoke(nameof(SetReferences), 0f); //
 
         // --- All tutorial-related UI active/inactive logic is fine as is ---

@@ -35,14 +35,29 @@ public class Player : MonoBehaviour
     }
     private void Start()
     {
-        if (!GetComponent<PlayerController>().AI)
-        {
-
-            StartingStrenght = PlayerPrefs.GetFloat(characterStats.characterName + "_strength", characterStats.strength);
-            StartingMoveSpeed = PlayerPrefs.GetFloat(characterStats.characterName + "_speed", characterStats.speed);
-        }
+        PlayerController playerController = GetComponent<PlayerController>();
         pc = FindObjectOfType<PlayerControls>();
-        pc.AssignControls();
+        
+        if(GameManager.Instance.IsMultiplayer)
+        {
+            if(playerController.HasAuthority)
+            {
+                pc.AssignControls(playerController);
+            }
+        }
+        else
+        {
+            if(!playerController.AI)
+            {
+                StartingStrenght =
+                    PlayerPrefs.GetFloat(characterStats.characterName + "_strength", characterStats.strength);
+
+                StartingMoveSpeed = PlayerPrefs.GetFloat(characterStats.characterName + "_speed", characterStats.speed);
+            }
+            
+            pc.AssignControls(playerController);
+        }
+        
         Strength = StartingStrenght;
         // GetComponent<PlayerController>().playerControls = pc;
         MaxEnergy = 100f;
@@ -50,7 +65,7 @@ public class Player : MonoBehaviour
         HitDownEnergy = MaxEnergy;
         MoveSpeed = StartingMoveSpeed;
         // fillRate = weapon.energyRecharge;
-        if (!GetComponent<PlayerController>().AI)
+        if (!playerController.AI)
         {
 
             hitFillImage.fillAmount = Energy;
