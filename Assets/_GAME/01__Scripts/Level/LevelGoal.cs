@@ -69,7 +69,7 @@ public class LevelGoal : MonoBehaviour
     [SerializeField] int minCollectibleSpawnHeight = 10, maxCollectibleSpawnHeight = 15;
 
     public List<Obstacle> ObstaclesToDestroy_Player = new List<Obstacle>();
-    public List<Obstacle> ObstaclesToDestroy_AI = new List<Obstacle>();
+    public List<Obstacle> ObstaclesToDestroy_Opponent = new List<Obstacle>();
     public List<ObstacleType> obstacleTypes;
     public bool DualLevel;
     public bool Tutorial;
@@ -189,8 +189,7 @@ public class LevelGoal : MonoBehaviour
     {
         if(!isFirst)
         {
-            (ObstaclesToDestroy_Player, ObstaclesToDestroy_AI) = (ObstaclesToDestroy_AI, ObstaclesToDestroy_Player);
-
+            (ObstaclesToDestroy_Player, ObstaclesToDestroy_Opponent) = (ObstaclesToDestroy_Opponent, ObstaclesToDestroy_Player);
         }
         
         foreach(Obstacle obstacle in ObstaclesToDestroy_Player)

@@ -56,7 +56,7 @@ public class GoalSetter : MonoBehaviour
             else
             {
                 Debug.Log(" Obstacle type count ???? : " + obstacleTypeCounts.Count);
-                foreach (var obstacle in levelGoal.ObstaclesToDestroy_AI)
+                foreach (var obstacle in levelGoal.ObstaclesToDestroy_Opponent)
                 {
                     // Check if the obstacle type is already in the dictionary
                     if (obstacleTypeCounts.ContainsKey(obstacle.obstacleType))
@@ -103,7 +103,7 @@ public class GoalSetter : MonoBehaviour
             }
             else if (AIGoal)
             {
-                playerFragment = 1f / levelGoal.ObstaclesToDestroy_AI.Count;
+                playerFragment = 1f / levelGoal.ObstaclesToDestroy_Opponent.Count;
 
                 Debug.Log("AI fragment : " + playerFragment);
             }

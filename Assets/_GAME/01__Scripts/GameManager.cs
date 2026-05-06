@@ -8,6 +8,7 @@ using Coherence.Connection;
 using Coherence.Toolkit;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+using TMPro;
 using Object = UnityEngine.Object;
 
 public class GameManager : MonoBehaviour
@@ -45,9 +46,17 @@ public class GameManager : MonoBehaviour
     public Obstacle[] obstaclesToFreeze;
     public CollectibleItemDatabase collectibleDatabase;
     public bool CollectibleSpawned;
-    
+
+    [Header("Multiplayer Pre-game")]
+    [SerializeField] private TextMeshProUGUI countdownText;
+    [SerializeField] private GameObject controlsGameObject;
+
+    private int _countdownSeconds;
+    private bool _isFirstPlayer;
+    private bool _countdownStarted;
+
     /// <summary>
-    /// Invoked when local player's character is spawned, true is passed if local player is the first player. 
+    /// Invoked when local player's character is spawned, true is passed if local player is the first player.
     /// </summary>
     public event Action<bool> OnLocalPlayerSpawned;
     public Player LocalPlayer;
@@ -89,7 +98,6 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         collectibleDatabase = Resources.Load<CollectibleItemDatabase>("CollectibleItemsDatabase");
         _instance = this;
-
     }
     private void GenerateSkipButton()
     {
@@ -234,10 +242,26 @@ public class GameManager : MonoBehaviour
             opponentAlreadyConnected = true;
         }
 
+        _isFirstPlayer = !opponentAlreadyConnected;
+
         Transform spawnPoint = opponentAlreadyConnected ? opponentSpawnPoint : playerSpawnPoint;
         CoherenceSync sync = Instantiate(playerNetworkedPrefab, spawnPoint.position, spawnPoint.rotation);
         LocalPlayer = sync.GetComponent<Player>();
-        OnLocalPlayerSpawned?.Invoke(!opponentAlreadyConnected);        
+        OnLocalPlayerSpawned?.Invoke(!opponentAlreadyConnected);
+
+        if (_isFirstPlayer)
+        {
+            if (countdownText != null)
+            {
+                countdownText.gameObject.SetActive(true);
+                countdownText.text = "Waiting for opponent...";
+            }
+        }
+        else
+        {
+            // Player 2: opponent already present, start countdown immediately
+            StartCoroutine(RunCountdown());
+        }
     }
 
     private void OnClientConnectionDestroyed(CoherenceClientConnection connection)
@@ -257,6 +281,8 @@ public class GameManager : MonoBehaviour
         if(networkBridge.ClientConnections.GetMine() != newConnection)
         {
             Debug.LogWarning("[MP] Opponent connection created");
+            if (_isFirstPlayer && !_countdownStarted)
+                StartCoroutine(RunCountdown());
         }
         else
         {
@@ -281,7 +307,31 @@ public class GameManager : MonoBehaviour
 
     public float fragScaleFactor = 1;
 
+    private IEnumerator RunCountdown()
+    {
+        _countdownStarted = true;
+        _countdownSeconds = 3;
 
+        if (countdownText != null)
+            countdownText.gameObject.SetActive(true);
 
+        while (_countdownSeconds > 0)
+        {
+            if (countdownText != null)
+                countdownText.text = _countdownSeconds.ToString();
+            yield return new WaitForSeconds(1f);
+            _countdownSeconds--;
+        }
+
+        if (countdownText != null)
+        {
+            countdownText.text = "GO!";
+            yield return new WaitForSeconds(0.8f);
+            countdownText.gameObject.SetActive(false);
+        }
+
+        if (controlsGameObject != null)
+            controlsGameObject.SetActive(true);
+    }
 
 }
