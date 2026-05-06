@@ -65,7 +65,8 @@ public class Player : MonoBehaviour
         HitDownEnergy = MaxEnergy;
         MoveSpeed = StartingMoveSpeed;
         // fillRate = weapon.energyRecharge;
-        if (!playerController.AI)
+        if (GameManager.Instance.IsMultiplayer && playerController.HasAuthority || 
+            !GameManager.Instance.IsMultiplayer && !playerController.AI)
         {
 
             hitFillImage.fillAmount = Energy;
