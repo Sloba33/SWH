@@ -14,10 +14,20 @@ public class Settings : MonoBehaviour
     public CameraController cameraController;
     public bool gameWon, gameLost;
     public Sprite temporarySprite;
+
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(0.5f);
-        cameraController = FindAnyObjectByType<CameraController>();
+
+        if(GameManager.Instance.IsMultiplayer)
+        {
+            yield return new WaitUntil(() => GameManager.Instance.LocalPlayer != null);
+            cameraController = GameManager.Instance.LocalPlayer.GetComponentInChildren<CameraController>();
+        }
+        else
+        {
+            cameraController = FindAnyObjectByType<CameraController>();
+        }
         rotateLeft.onClick.AddListener(() =>
                {
                    cameraController.RotateRight();

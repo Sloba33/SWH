@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Cinemachine;
 using Coherence.Connection;
 using Coherence.Toolkit;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour
     /// Invoked when local player's character is spawned, true is passed if local player is the first player. 
     /// </summary>
     public event Action<bool> OnLocalPlayerSpawned;
+    public Player LocalPlayer;
     
     public static GameManager Instance
     {
@@ -233,7 +235,8 @@ public class GameManager : MonoBehaviour
         }
 
         Transform spawnPoint = opponentAlreadyConnected ? opponentSpawnPoint : playerSpawnPoint;
-        Instantiate(playerNetworkedPrefab, spawnPoint.position, spawnPoint.rotation);
+        CoherenceSync sync = Instantiate(playerNetworkedPrefab, spawnPoint.position, spawnPoint.rotation);
+        LocalPlayer = sync.GetComponent<Player>();
         OnLocalPlayerSpawned?.Invoke(!opponentAlreadyConnected);        
     }
 
