@@ -108681,28 +108681,28 @@ MonoBehaviour:
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
-  SpawnFallingObstacles: 0
+  SpawnFallingObstacles: 1
   FallingObstacles:
-  - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
+  - item: {fileID: 7361993089120677482, guid: 8157b9c9a12eeb745ac10b61bf8329c7, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: 798c02443606707419c46dffb5589fed, type: 3}
+  - item: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: 3b5621e9c14841d4a85a5ac47cad88bf, type: 3}
+  - item: {fileID: 7113296458963732128, guid: 534aaed9148749b4c90a99d7301bdfc6, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: ef6d583b7c22f27479f932db0e8854f2, type: 3}
+  - item: {fileID: 3625314975301671785, guid: d4000b4ff8d3c0f40911f73b001e178a, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: e3507a700acbb85408de54d971d9f19f, type: 3}
+  - item: {fileID: 5746184876712931327, guid: 9bfa265486f4c914197298b2cee4c94b, type: 3}
     weight: 10
   - item: {fileID: 1964128455452615959, guid: f2b9311cc643a2b459010a0eaa480325, type: 3}
     weight: 1
-  obstaclesToSpawn: 1000
+  obstaclesToSpawn: 200
   ObstacleSpawnFrequency: 5
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 1
   spawnedObstacles: []
   minObstacleSpawnHeight: 20
   maxObstacleSpawnHeight: 25
-  SpawnFallingBombs: 0
+  SpawnFallingBombs: 1
   FallingBombs:
   - item: {fileID: 5402700130043928671, guid: 305260d1cfbde5144b78e2c67b82b57c, type: 3}
     weight: 3
@@ -108716,12 +108716,12 @@ MonoBehaviour:
     weight: 3
   - item: {fileID: 6989674221227821592, guid: a79fe9a367d3f1447b8a4a0b3bd2ede2, type: 3}
     weight: 1
-  bombsToSpawn: 1000
+  bombsToSpawn: 2
   delayBombSpawn: 30
   bombSpawnFrequency: 60
   minBombSpawnHeight: 26
   maxBombSpawnHeight: 27
-  SpawnFallingCollectibles: 0
+  SpawnFallingCollectibles: 1
   FallingCollectibles:
   - item: {fileID: 5983857211178744598, guid: 33f7872caa842374a8afb62d3d920d84, type: 3}
     weight: 3
@@ -108733,24 +108733,12 @@ MonoBehaviour:
     weight: 3
   - item: {fileID: 5282656863312337320, guid: e0cc3e844296e2947afc298f66a734d5, type: 3}
     weight: 3
-  collectiblesToSpawn: 1000
+  collectiblesToSpawn: 10
   delayCollectibleSpawn: 25
   collectibleSpawnFreqency: 25
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
-  ObstaclesToDestroy_Player:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  ObstaclesToDestroy_Player: []
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
