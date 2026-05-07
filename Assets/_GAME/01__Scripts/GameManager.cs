@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public bool Recording, DarkLevel;
     public GameObject playerDefaultPrefab;
     public CoherenceSync playerNetworkedPrefab;
-    public CoherenceBridge networkBridge;
+    private CoherenceBridge coherenceBridge;
     public GameObject connectNetworkUI;
     public Transform playerSpawnPoint;
     public Transform opponentSpawnPoint;
@@ -175,17 +175,19 @@ public class GameManager : MonoBehaviour
         levelGoal = FindFirstObjectByType<LevelGoal>();
         if(IsMultiplayer)
         {
-            connectNetworkUI.gameObject.SetActive(true);
-            if (CoherenceBridgeStore.TryGetBridge(gameObject.scene, out var bridge))
+            // connectNetworkUI.gameObject.SetActive(true);
+            if (CoherenceBridgeStore.TryGetBridge(gameObject.scene, out coherenceBridge))
             {
                 Debug.Log("[MP] Bridge found");
-                bridge.onConnected.AddListener(OnMultiplayerConnected);
-                bridge.onConnectionError.AddListener(OnMultiplayerConnectionError);
-                bridge.onDisconnected.AddListener(OnMultiplayerDisconnected);
+                coherenceBridge.onConnected.AddListener(OnMultiplayerConnected);
+                coherenceBridge.onConnectionError.AddListener(OnMultiplayerConnectionError);
+                coherenceBridge.onDisconnected.AddListener(OnMultiplayerDisconnected);
                 
-                bridge.ClientConnections.OnCreated += OnClientConnectionCreated;
-                bridge.ClientConnections.OnDestroyed += OnClientConnectionDestroyed;
-                bridge.ClientConnections.OnSynced += OnClientConnectionsSynced;
+                coherenceBridge.ClientConnections.OnCreated += OnClientConnectionCreated;
+                coherenceBridge.ClientConnections.OnDestroyed += OnClientConnectionDestroyed;
+                coherenceBridge.ClientConnections.OnSynced += OnClientConnectionsSynced;
+                
+                coherenceBridge.JoinRoom(MatchmakingTestUI.MatchResult.Room);
             }
         }
         else
@@ -266,7 +268,7 @@ public class GameManager : MonoBehaviour
 
     private void OnClientConnectionDestroyed(CoherenceClientConnection connection)
     {
-        if(networkBridge.ClientConnections.GetMine() != connection)
+        if(coherenceBridge.ClientConnections.GetMine() != connection)
         {
             Debug.LogWarning("[MP] Opponent connection destroyed");
         }
@@ -278,7 +280,7 @@ public class GameManager : MonoBehaviour
 
     private void OnClientConnectionCreated(CoherenceClientConnection newConnection)
     {
-        if(networkBridge.ClientConnections.GetMine() != newConnection)
+        if(coherenceBridge.ClientConnections.GetMine() != newConnection)
         {
             Debug.LogWarning("[MP] Opponent connection created");
             if (_isFirstPlayer && !_countdownStarted)
