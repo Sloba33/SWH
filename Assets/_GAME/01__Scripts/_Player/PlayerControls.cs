@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.InputSystem; // Keep this for Input System usage if any remains
+using DG.Tweening;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -411,6 +411,7 @@ public class PlayerControls : MonoBehaviour
                 {
                     ConsumableSlot slot = consumableSlots[i]; //
                     slot.gameObject.SetActive(true); //
+                    slot.transform.DOShakeScale(0.2f, 0.5f, 2, 10f, false).Play(); 
                     slot.SetConsumable(collectibleItem); //
 
                     EventTrigger.Entry bomb = new EventTrigger.Entry(); //

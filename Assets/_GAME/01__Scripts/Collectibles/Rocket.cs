@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
@@ -22,6 +23,8 @@ public class Rocket : MonoBehaviour
     [SerializeField] Color spriteStartColor = Color.white;
     [SerializeField] GameObject _fireParticleObject;
     [SerializeField] GameObject _smokeParticleObject;
+    private String rocketDisablerTag = "RocketDisabler";
+    private bool isDisabledForMultiplayer;
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -50,7 +53,14 @@ public class Rocket : MonoBehaviour
             Debug.Log("Rocket Launch DETECTED");
 
         }
-        if (other.CompareTag(ObstacleTag) && _isLaunched)
+        if (other.CompareTag(rocketDisablerTag))
+        {
+            // Assuming there's a method to handle rocket collection
+            isDisabledForMultiplayer = true;
+            Debug.Log("Rocket Disabled");
+
+        }
+        if (other.CompareTag(ObstacleTag) && _isLaunched && !isDisabledForMultiplayer)
         {
             if (other.GetComponent<Obstacle>() != null)
             {

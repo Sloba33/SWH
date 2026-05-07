@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     public Obstacle[] obstaclesToFreeze;
     public CollectibleItemDatabase collectibleDatabase;
     public bool CollectibleSpawned;
+    public bool ShouldHaveSkipButton;
     public static GameManager Instance
     {
         get
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-   
+
 
     public void FreezeObstacles()
     {
@@ -183,7 +184,8 @@ public class GameManager : MonoBehaviour
             ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
 
         }
-        GenerateSkipButton();
+        if (ShouldHaveSkipButton)
+            GenerateSkipButton();
     }
     public float fragScaleFactor = 1;
 
