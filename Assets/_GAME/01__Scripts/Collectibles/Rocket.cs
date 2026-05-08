@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
@@ -22,6 +23,8 @@ public class Rocket : MonoBehaviour
     [SerializeField] Color spriteStartColor = Color.white;
     [SerializeField] GameObject _fireParticleObject;
     [SerializeField] GameObject _smokeParticleObject;
+    private String rocketDisablerTag = "RocketDisabler";
+    private bool isDisabledForMultiplayer;
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -45,12 +48,19 @@ public class Rocket : MonoBehaviour
     {
         if (other.CompareTag(PlayerTag))
         {
-            // Assuming there's a method to handle rocket collection
+
             LaunchRocket();
             Debug.Log("Rocket Launch DETECTED");
 
         }
-        if (other.CompareTag(ObstacleTag) && _isLaunched)
+        if (other.CompareTag(rocketDisablerTag))
+        {
+
+            isDisabledForMultiplayer = true;
+            Debug.Log("Rocket Disabled");
+
+        }
+        if (other.CompareTag(ObstacleTag) && _isLaunched && !isDisabledForMultiplayer)
         {
             if (other.GetComponent<Obstacle>() != null)
             {
@@ -71,7 +81,7 @@ public class Rocket : MonoBehaviour
                 spriteFill.color = spriteTargetColor;
             }
             yield return new WaitForSeconds(colorFillTimer / 2);
-            // yield return new WaitForSeconds(colorFillTimer);
+
             foreach (Image spriteFill in spriteFillList)
             {
                 spriteFill.color = spriteStartColor;
@@ -102,7 +112,7 @@ public class Rocket : MonoBehaviour
             yield return null;
         }
 
-        // Maintain full speed after reaching it
+
         while (true)
         {
             transform.Translate(Vector3.forward * maxSpeed * Time.deltaTime);
@@ -119,17 +129,12 @@ public class Rocket : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, Vector3.down);
 
-        // Check if the ray hits something within the specified distance
         if (Physics.Raycast(ray, 0.5f))
         {
-            // The object is grounded
-            // Debug.Log("Grounded");
             return true;
         }
         else
         {
-            // The object is not grounded
-            // Debug.Log("Not Grounded");
             return false;
         }
     }

@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
     public Obstacle[] obstaclesToFreeze;
     public CollectibleItemDatabase collectibleDatabase;
     public bool CollectibleSpawned;
+    public bool ShouldHaveSkipButton;
 
     [Header("Multiplayer Pre-game")]
     [SerializeField] private TextMeshProUGUI countdownText;
@@ -70,7 +71,7 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-   
+
 
     public void FreezeObstacles()
     {
@@ -224,7 +225,8 @@ public class GameManager : MonoBehaviour
             ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
 
         }
-        GenerateSkipButton();
+        if (ShouldHaveSkipButton)
+            GenerateSkipButton();
     }
 
     private void OnClientConnectionsSynced(CoherenceClientConnectionManager manager)

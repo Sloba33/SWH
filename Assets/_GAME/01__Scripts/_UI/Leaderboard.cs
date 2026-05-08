@@ -4,6 +4,7 @@ using Firebase.Database;
 using UnityEngine.UI;
 using NaughtyAttributes;
 using Firebase.Extensions;
+
 public class Leaderboard : MonoBehaviour
 {
     public GameObject leaderboardPanel;
@@ -14,14 +15,14 @@ public class Leaderboard : MonoBehaviour
     public Transform contentPanel;
     private DatabaseReference db;
     [SerializeField] private LeaderboardRank personalRank;
+    private GameObject extraRankObject; // Track the extra rank separately
+    
     void Start()
     {
         if (FirebaseInit.IsReady)
             Init();
         else
             FirebaseInit.OnFirebaseReady += Init;
-
-
     }
 
     private void Init()
@@ -31,11 +32,39 @@ public class Leaderboard : MonoBehaviour
         LoadTopPlayers(maxEntries);
         LoadPersonalRank();
     }
+    
+    // Call this BEFORE loading new data to clear the UI
+    private void ClearLeaderboardUI()
+    {
+        // Destroy all tracked rank entries
+        foreach (var go in spawnedRanks)
+        {
+            if (go != null)
+                Destroy(go);
+        }
+        spawnedRanks.Clear();
+        
+        // Destroy the extra rank if it exists
+        if (extraRankObject != null)
+        {
+            Destroy(extraRankObject);
+            extraRankObject = null;
+        }
+        
+        // OPTIONAL: Also destroy any children that might have been missed
+        // This is a safety net
+        foreach (Transform child in contentPanel)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+    
     [NaughtyAttributes.Button("Hello")]
     public void LoadTopPlayersBtnRef()
     {
         LoadTopPlayers(maxEntries);
     }
+    
     private void LoadTopPlayers(int count)
     {
         if (db == null)
@@ -45,8 +74,8 @@ public class Leaderboard : MonoBehaviour
         }
 
         db.Child("leaderboard")
-          .OrderByChild("level")
-          .LimitToLast(maxEntries) // important optimization
+          .OrderByChild("trophies")
+          .LimitToLast(maxEntries) 
           .GetValueAsync()
           .ContinueWithOnMainThread(task =>
           {
@@ -56,26 +85,23 @@ public class Leaderboard : MonoBehaviour
                   return;
               }
 
-              // Clear previous entries
-              foreach (var go in spawnedRanks)
-                  Destroy(go);
-
-              spawnedRanks.Clear();
+              // Clear UI before adding new entries
+              ClearLeaderboardUI();
 
               var entries = new List<DataSnapshot>();
 
               foreach (var child in task.Result.Children)
               {
-                  if (!child.HasChild("level") || !child.HasChild("name"))
+                  if (!child.HasChild("trophies") || !child.HasChild("name"))
                       continue;
 
                   entries.Add(child);
               }
 
-              // Sort descending (highest level first)
+              // Sort descending (highest trophies first)
               entries.Sort((a, b) =>
-                  int.Parse(b.Child("level").Value.ToString())
-                  .CompareTo(int.Parse(a.Child("level").Value.ToString()))
+                  int.Parse(b.Child("trophies").Value.ToString())
+                  .CompareTo(int.Parse(a.Child("trophies").Value.ToString()))
               );
 
               int finalCount = Mathf.Min(entries.Count, maxEntries);
@@ -83,19 +109,18 @@ public class Leaderboard : MonoBehaviour
               for (int i = 0; i < finalCount; i++)
               {
                   string playerName = entries[i].Child("name").Value.ToString();
-                  int level = int.Parse(entries[i].Child("level").Value.ToString());
+                  int trophies = int.Parse(entries[i].Child("trophies").Value.ToString());
                   int rank = i + 1;
 
                   GameObject go = Instantiate(leaderboardRankPrefab, contentPanel);
                   LeaderboardRank rankUI = go.GetComponent<LeaderboardRank>();
-
-                  rankUI.Set(playerName, level, rank);
-
+                  rankUI.Set(playerName, trophies, rank);
                   spawnedRanks.Add(go);
               }
-              //instantiate extra object
-              GameObject extraRank = Instantiate(leaderboardRankPrefab, contentPanel);
-              extraRank.GetComponent<LeaderboardRank>().SetAsExtra();
+              
+              // Instantiate and track the extra object
+              extraRankObject = Instantiate(leaderboardRankPrefab, contentPanel);
+              extraRankObject.GetComponent<LeaderboardRank>().SetAsExtra();
 
               Debug.Log($"[Leaderboard] Loaded {finalCount} entries");
           });
@@ -109,7 +134,7 @@ public class Leaderboard : MonoBehaviour
         string myPlayerId = PlayerPrefs.GetString("playerId");
 
         db.Child("leaderboard")
-          .OrderByChild("level")
+          .OrderByChild("trophies")
           .GetValueAsync()
           .ContinueWithOnMainThread(task =>
           {
@@ -123,7 +148,7 @@ public class Leaderboard : MonoBehaviour
 
               foreach (var child in task.Result.Children)
               {
-                  if (!child.HasChild("level") || !child.HasChild("name"))
+                  if (!child.HasChild("trophies") || !child.HasChild("name"))
                       continue;
 
                   entries.Add(child);
@@ -131,8 +156,8 @@ public class Leaderboard : MonoBehaviour
 
               // Sort descending
               entries.Sort((a, b) =>
-                  int.Parse(b.Child("level").Value.ToString())
-                  .CompareTo(int.Parse(a.Child("level").Value.ToString()))
+                  int.Parse(b.Child("trophies").Value.ToString())
+                  .CompareTo(int.Parse(a.Child("trophies").Value.ToString()))
               );
 
               for (int i = 0; i < entries.Count; i++)
@@ -140,11 +165,10 @@ public class Leaderboard : MonoBehaviour
                   if (entries[i].Key == myPlayerId)
                   {
                       string myName = entries[i].Child("name").Value.ToString();
-                      int myLevel = int.Parse(entries[i].Child("level").Value.ToString());
+                      int myTrophies = int.Parse(entries[i].Child("trophies").Value.ToString());
                       int myRank = i + 1;
 
-                      personalRank.Set(myName, myLevel, myRank);
-
+                      personalRank.Set(myName, myTrophies, myRank);
                       Debug.Log($"[Leaderboard] Personal rank: {myRank}");
                       return;
                   }
@@ -154,5 +178,11 @@ public class Leaderboard : MonoBehaviour
               personalRank.Set("Unranked", 0, 0);
           });
     }
-
+    
+    // Optional: Call this when closing the leaderboard panel
+    public void CloseLeaderboard()
+    {
+        ClearLeaderboardUI();
+        leaderboardPanel.SetActive(false);
+    }
 }

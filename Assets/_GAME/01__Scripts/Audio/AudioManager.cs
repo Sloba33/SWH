@@ -363,15 +363,7 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
     private AudioSource loopedAudioSource, loopedObstacleAudioSource;
     public void PlaySound(int index)
     {
-        // int count;
-        // if (!int.TryParse(SoundCountTextBox.text, out count))
-        // {
-        //     count = 1;
-        // }
-        // while (count-- > 0)
-        // {
-        //     
-        // }
+        
         if (!SoundAudioSources[index].isPlaying)
         {
             SoundAudioSources[index].PlayOneShotSoundManaged(SoundAudioSources[index].clip);
@@ -386,11 +378,9 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
     {
         if (obstacleAudioType == ObstacleAudioType.Wood)
         {
-            // if (!SoundAudioSources[0].isPlaying)
-            // {
+         
             SoundAudioSources[0].PlayOneShotSoundManaged(SoundAudioSources[0].clip);
-            // }
-            // else return;
+           
         }
         else if (obstacleAudioType == ObstacleAudioType.Concrete)
         {
