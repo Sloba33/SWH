@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     public Obstacle[] obstaclesToFreeze;
     public CollectibleItemDatabase collectibleDatabase;
     public bool CollectibleSpawned;
-    public bool ShouldHaveSkipButton;
+    public bool ShouldHaveSkipButton = true;
     public static GameManager Instance
     {
         get

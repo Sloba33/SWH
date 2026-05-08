@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Coffee.UIEffects;
 using DG.Tweening;
+
 public class GallerySlotPrefab : MonoBehaviour
 {
     public Image backgroundImage;
@@ -12,7 +13,7 @@ public class GallerySlotPrefab : MonoBehaviour
     public TextMeshProUGUI claimText;
     public UIEffect uIEffect;
     public TrophyRoadManager trophyRoadManager;
-    public int levelProgressIndex;  
+    public int levelProgressIndex;
     public ImageGallery imageGallery;
     public ClaimPanel claimPanel;
     public Sprite claimableSprite, claimedSprite, unavailableSprite;
@@ -21,75 +22,125 @@ public class GallerySlotPrefab : MonoBehaviour
     public bool isFilled;
     public bool isClaimed;
     public GameObject xpPile;
+
+    // NEW: Track which slot index this prefab currently represents (for recycling)
+    public int currentIndex = -1;
+
+    // NEW: Track tween more safely
+    private Tween shakeTween;
+
     public void Initialize(int index, TrophyRoadManager manager, ImageGallery gallery)
     {
-        levelProgressIndex = index;
+        currentIndex = index;
+        levelProgressIndex = index; // CRITICAL: This must match the current slot
         trophyRoadManager = manager;
         imageGallery = gallery;
+
+        claimButton.onClick.RemoveAllListeners();
         claimButton.onClick.AddListener(ClaimReward);
-        claimButton.onClick.AddListener(CharacterManager.Instance.CheckIfUpgradesAreAffordable);
-        
-        backgroundImage.sprite = claimableSprite;
-     
-        StartTweening();
+
+        // Refresh visual state
+        if (isClaimed)
+        {
+            SetClaimed();
+        }
+        else if (isFilled)
+        {
+            backgroundImage.sprite = claimableSprite;
+            claimButton.interactable = true;
+            StartTweening();
+        }
+        else
+        {
+            SetUnavailable();
+        }
     }
-    Tween tween;
+
     public void StartTweening()
     {
         KillTween();
-        // tween = transform.DOShakeRotation(1.5f, 5f).SetLoops(-1);
-        tween.Play();
+        // Only start tween if this is claimable (not claimed, not unavailable)
+        if (!isClaimed && isFilled)
+        {
+            // Your tween logic here - uncomment and adjust as needed
+            // shakeTween = transform.DOShakeRotation(1.5f, 5f).SetLoops(-1);
+        }
     }
+
     public void KillTween()
     {
-        if (tween != null)
+        if (shakeTween != null)
         {
-            tween.Kill();  // Stop the tween
-            tween = null;  // Clear the tween reference to avoid further usage
+            shakeTween.Kill();
+            shakeTween = null;
         }
-        transform.rotation = Quaternion.identity;  // Reset the rotation after stopping
+        transform.rotation = Quaternion.identity;
     }
+
     public void SetClaimed()
     {
+        isClaimed = true;
         backgroundImage.sprite = claimedSprite;
         claimButton.interactable = false;
         claimText.text = "";
-        uIEffect.enabled = false;
+        if (uIEffect != null) uIEffect.enabled = false;
         KillTween();
         backgroundImage.color = claimedColor;
     }
+
     public void SetUnavailable()
     {
+        isClaimed = false;
+        isFilled = false;
         KillTween();
         backgroundImage.sprite = unavailableSprite;
         claimButton.interactable = false;
         claimText.text = "";
-        uIEffect.enabled = false;
+        if (uIEffect != null) uIEffect.enabled = false;
         backgroundImage.color = unclaimedColor;
     }
+
+    // Call this when recycling a slot to reset its state before re-initializing
+    public void ResetSlot()
+    {
+        KillTween();
+        claimButton.onClick.RemoveAllListeners();
+        currentIndex = -1;
+        levelProgressIndex = -1;
+        isFilled = false;
+        isClaimed = false;
+    }
+
     private void SpawnCurrencyPanel()
     {
-        // rewardImage.transform.DOShakeRotation(0.65f).Play();
         StartCoroutine(SpawnPanel());
     }
+
     public IEnumerator SpawnPanel()
     {
         yield return new WaitForSeconds(0.5f);
-        ClaimPanel cPanel = Instantiate(claimPanel, imageGallery.transform); ;
-
-
+        if (claimPanel != null && imageGallery != null)
+        {
+            ClaimPanel cPanel = Instantiate(claimPanel, imageGallery.transform);
+        }
         yield return new WaitForSeconds(0.35f);
-
     }
+
     public void ClaimReward()
     {
+        if (isClaimed) return; // Prevent double claiming
+
         Debug.Log("Spawning panel in GallerySlotPrefab");
         SetClaimed();
         StartCoroutine(DelayScroll());
     }
+
     private IEnumerator DelayScroll()
     {
         yield return new WaitForSeconds(0.2f);
-        imageGallery.ClaimGalleryReward(levelProgressIndex, this, 5, 50);
+        if (imageGallery != null)
+        {
+            imageGallery.ClaimGalleryReward(levelProgressIndex, this, 5, 50);
+        }
     }
 }
