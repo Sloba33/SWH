@@ -24,7 +24,7 @@ public class HeadSmashCollider : MonoBehaviour
                 Obstacle obs = other.transform.GetComponent<Obstacle>();
                 if (obs != null && obs.isFalling)
                 {
-                    if (player.helmet != null || player.helmet.gameObject.activeSelf)
+                    if (player.helmet != null && player.helmet.gameObject.activeSelf)
                     {
                         player.helmet.DamageHelmet(1);
                         GameObject originalObject = obs.transform.gameObject;
