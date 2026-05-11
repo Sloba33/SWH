@@ -516,6 +516,72 @@ namespace Coherence.Generated
                 };   
             }
         }
+        public struct _07f8990a71ddaa44498855fb30600d3d_85796f16585a47c3aa928d65e26eb253 : IEntityCommand
+        {
+            
+            public Entity Entity { get; set; }
+            public Coherence.ChannelID ChannelID { get; set; }
+            public MessageTarget Target { get; set; }
+            public MessageTarget Routing { get; set; }
+            public uint SenderParticipant { get; set; }
+            public ClientID SenderClientID { get; set; }
+            public long Frame { get; set; }
+            public uint GetComponentType() => 6;
+            
+            public bool UsesMeta { get; set; }
+            
+            public IEntityMessage Clone()
+            {
+                // This is a struct, so we can safely return
+                // a struct copy.
+                return this;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper, Coherence.Log.Logger logger)
+            {
+                var err = mapper.MapToAbsoluteEntity(Entity, false, out var absoluteEntity);
+                if (err != IEntityMapper.Error.None)
+                {
+                    return err;
+                }
+                Entity = absoluteEntity;
+                return IEntityMapper.Error.None;
+            }
+            
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper, Coherence.Log.Logger logger)
+            {
+                var err = mapper.MapToRelativeEntity(Entity, false, out var relativeEntity);
+                if (err != IEntityMapper.Error.None)
+                {
+                    return err;
+                }
+                Entity = relativeEntity;
+                return IEntityMapper.Error.None;
+            }
+    
+            public HashSet<Entity> GetEntityRefs() {
+                return default;
+            }
+    
+            public void NullEntityRefs(Entity entity) {
+            }
+            
+            
+            public static void Serialize(_07f8990a71ddaa44498855fb30600d3d_85796f16585a47c3aa928d65e26eb253 commandData, IOutProtocolBitStream bitStream)
+            {
+            }
+            
+            public static _07f8990a71ddaa44498855fb30600d3d_85796f16585a47c3aa928d65e26eb253 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            {
+        
+                return new _07f8990a71ddaa44498855fb30600d3d_85796f16585a47c3aa928d65e26eb253()
+                {
+                    Entity = entity,
+                    Routing = target,
+                    Target = target,
+                };   
+            }
+        }
         public struct _0c583654429fe8541b706485a9d9e726_73518623a8a14628a1a93d387bb4306d : IEntityCommand
         {
                 public Vector3 landPosition;
@@ -527,7 +593,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 6;
+            public uint GetComponentType() => 7;
             
             public bool UsesMeta { get; set; }
             
@@ -615,7 +681,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 7;
+            public uint GetComponentType() => 8;
             
             public bool UsesMeta { get; set; }
             
@@ -701,7 +767,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 8;
+            public uint GetComponentType() => 9;
             
             public bool UsesMeta { get; set; }
             
@@ -789,7 +855,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 9;
+            public uint GetComponentType() => 10;
             
             public bool UsesMeta { get; set; }
             
@@ -874,7 +940,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 10;
+            public uint GetComponentType() => 11;
             
             public bool UsesMeta { get; set; }
             
@@ -940,7 +1006,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 11;
+            public uint GetComponentType() => 12;
             
             public bool UsesMeta { get; set; }
             
@@ -989,72 +1055,6 @@ namespace Coherence.Generated
             {
         
                 return new _7a152dc1710a46b44863568b810c28d5_bbafcc10e9f34214999c1095680de4ff()
-                {
-                    Entity = entity,
-                    Routing = target,
-                    Target = target,
-                };   
-            }
-        }
-        public struct _7ad02c873b170db439e210ad7dcb4450_85bd350d218f4218b37f4460ad68e168 : IEntityCommand
-        {
-            
-            public Entity Entity { get; set; }
-            public Coherence.ChannelID ChannelID { get; set; }
-            public MessageTarget Target { get; set; }
-            public MessageTarget Routing { get; set; }
-            public uint SenderParticipant { get; set; }
-            public ClientID SenderClientID { get; set; }
-            public long Frame { get; set; }
-            public uint GetComponentType() => 12;
-            
-            public bool UsesMeta { get; set; }
-            
-            public IEntityMessage Clone()
-            {
-                // This is a struct, so we can safely return
-                // a struct copy.
-                return this;
-            }
-            
-            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper, Coherence.Log.Logger logger)
-            {
-                var err = mapper.MapToAbsoluteEntity(Entity, false, out var absoluteEntity);
-                if (err != IEntityMapper.Error.None)
-                {
-                    return err;
-                }
-                Entity = absoluteEntity;
-                return IEntityMapper.Error.None;
-            }
-            
-            public IEntityMapper.Error MapToRelative(IEntityMapper mapper, Coherence.Log.Logger logger)
-            {
-                var err = mapper.MapToRelativeEntity(Entity, false, out var relativeEntity);
-                if (err != IEntityMapper.Error.None)
-                {
-                    return err;
-                }
-                Entity = relativeEntity;
-                return IEntityMapper.Error.None;
-            }
-    
-            public HashSet<Entity> GetEntityRefs() {
-                return default;
-            }
-    
-            public void NullEntityRefs(Entity entity) {
-            }
-            
-            
-            public static void Serialize(_7ad02c873b170db439e210ad7dcb4450_85bd350d218f4218b37f4460ad68e168 commandData, IOutProtocolBitStream bitStream)
-            {
-            }
-            
-            public static _7ad02c873b170db439e210ad7dcb4450_85bd350d218f4218b37f4460ad68e168 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
-            {
-        
-                return new _7ad02c873b170db439e210ad7dcb4450_85bd350d218f4218b37f4460ad68e168()
                 {
                     Entity = entity,
                     Routing = target,
