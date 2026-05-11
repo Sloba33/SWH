@@ -24,7 +24,7 @@ namespace Coherence.Generated
     using Logger = Coherence.Log.Logger;
     using UnityEngine.Scripting;
     [UnityEngine.Scripting.Preserve, System.Serializable]
-    public class Binding_7a152dc1710a46b44863568b810c28d5_e3a87ad80a9b4145bffa3550112869dd : PositionBinding
+    public class Binding_7ecd556eb03280143980fdc3e87bc912_8c48ae6ce9c54b5d951ca3047416f652 : PositionBinding
     {   
         private global::UnityEngine.Transform CastedUnityComponent;
 
@@ -77,12 +77,12 @@ namespace Coherence.Generated
     }
 
     [UnityEngine.Scripting.Preserve]
-    public class CoherenceSync_7a152dc1710a46b44863568b810c28d5 : CoherenceSyncBaked
+    public class CoherenceSync_7ecd556eb03280143980fdc3e87bc912 : CoherenceSyncBaked
     {
         private Entity entityId;
-        private Logger logger = Coherence.Log.Log.GetLogger<CoherenceSync_7a152dc1710a46b44863568b810c28d5>();
+        private Logger logger = Coherence.Log.Log.GetLogger<CoherenceSync_7ecd556eb03280143980fdc3e87bc912>();
         
-        private global::BombCollectible _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe_CommandTarget;
+        private global::BombCollectible _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047_CommandTarget;
         
         
         private IClient client;
@@ -90,14 +90,14 @@ namespace Coherence.Generated
         
         private readonly Dictionary<string, Binding> bakedValueBindings = new Dictionary<string, Binding>()
         {
-			["e3a87ad80a9b4145bffa3550112869dd"] = new Binding_7a152dc1710a46b44863568b810c28d5_e3a87ad80a9b4145bffa3550112869dd(),
+			["8c48ae6ce9c54b5d951ca3047416f652"] = new Binding_7ecd556eb03280143980fdc3e87bc912_8c48ae6ce9c54b5d951ca3047416f652(),
         };
         
         private Dictionary<string, Action<CommandBinding, CommandsHandler>> bakedCommandBindings = new Dictionary<string, Action<CommandBinding, CommandsHandler>>();
         
-        public CoherenceSync_7a152dc1710a46b44863568b810c28d5()
+        public CoherenceSync_7ecd556eb03280143980fdc3e87bc912()
         {
-            bakedCommandBindings.Add("6728eb09325a4aa495bf38f99131dfbe", BakeCommandBinding__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe);
+            bakedCommandBindings.Add("d75de708eed041dcb1a743dc5a40e047", BakeCommandBinding__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047);
         }
         
         public override Binding BakeValueBinding(Binding valueBinding)
@@ -118,22 +118,22 @@ namespace Coherence.Generated
                 commandBindingBaker.Invoke(commandBinding, commandsHandler);
             }
         }
-        private void BakeCommandBinding__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe(CommandBinding commandBinding, CommandsHandler commandsHandler)
+        private void BakeCommandBinding__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047(CommandBinding commandBinding, CommandsHandler commandsHandler)
         {
-            _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe_CommandTarget = (global::BombCollectible)commandBinding.UnityComponent;
+            _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047_CommandTarget = (global::BombCollectible)commandBinding.UnityComponent;
             commandsHandler.AddBakedCommand(
 				"BombCollectible.CmdDisableCollectible",
             	"()",
-            	SendCommand__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe,
-            	ReceiveLocalCommand__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe,
+            	SendCommand__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047,
+            	ReceiveLocalCommand__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047,
             	MessageTarget.All,
-            	_7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe_CommandTarget,
+            	_7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047_CommandTarget,
             	commandBinding.UsesMeta());
         }
         
-        private void SendCommand__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe(GenericCommandRequestArgs requestArgs)
+        private void SendCommand__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047(GenericCommandRequestArgs requestArgs)
         {
-            var command = new _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe();
+            var command = new _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047();
             command.Frame = requestArgs.Frame;
             command.SenderClientID = requestArgs.Sender;
             command.UsesMeta = requestArgs.UsesMeta;
@@ -144,19 +144,19 @@ namespace Coherence.Generated
             client.SendCommand(command, requestArgs.ChannelID);
         }
         
-        private void ReceiveLocalCommand__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe(GenericCommandRequestArgs requestArgs)
+        private void ReceiveLocalCommand__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047(GenericCommandRequestArgs requestArgs)
         {
-            var command = new _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe();
+            var command = new _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047();
             command.Frame = requestArgs.Frame;
             command.SenderClientID = requestArgs.Sender;
 
 
-            ReceiveCommand__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe(command);
+            ReceiveCommand__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047(command);
         }
 
-        private void ReceiveCommand__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe(_7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe command)
+        private void ReceiveCommand__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047(_7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047 command)
         {
-			var target = _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe_CommandTarget;
+			var target = _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047_CommandTarget;
 			target.CmdDisableCollectible();
         }
         
@@ -164,12 +164,12 @@ namespace Coherence.Generated
         {
             switch (command)
             {
-                case _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe castedCommand:
-                    ReceiveCommand__7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe(castedCommand);
+                case _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047 castedCommand:
+                    ReceiveCommand__7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047(castedCommand);
                     break;
                 default:
                     logger.Warning(Coherence.Log.Warning.ToolkitBakedSyncReceiveCommandUnhandled,
-                        $"CoherenceSync_7a152dc1710a46b44863568b810c28d5 Unhandled command: {command.GetType()}.");
+                        $"CoherenceSync_7ecd556eb03280143980fdc3e87bc912 Unhandled command: {command.GetType()}.");
                     break;
             }
         }
@@ -205,7 +205,7 @@ namespace Coherence.Generated
         
         public override void Initialize(Entity entityId, CoherenceBridge bridge, IClient client, CoherenceInput input, Logger logger)
         {
-            this.logger = logger.With<CoherenceSync_7a152dc1710a46b44863568b810c28d5>();
+            this.logger = logger.With<CoherenceSync_7ecd556eb03280143980fdc3e87bc912>();
             this.bridge = bridge;
             this.entityId = entityId;
             this.client = client;        

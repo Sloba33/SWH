@@ -3051,15 +3051,15 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
-        public struct _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363 : ICoherenceComponentData
+        public struct _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
             {
-                FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363.isColoredMask;
+                FieldsMask |= _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852.isColoredMask;
                 isColoredSimulationFrame = frame;
-                FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363.bombColorMask;
+                FieldsMask |= _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852.bombColorMask;
                 bombColorSimulationFrame = frame;
-                FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363.timeMask;
+                FieldsMask |= _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852.timeMask;
                 timeSimulationFrame = frame;
             }
     
@@ -3129,7 +3129,7 @@ namespace Coherence.Generated
     
             public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
             {
-                var other = (_2ed436b59b3d0334b947f7a8672cc595_8956715859465457363)data;
+                var other = (_1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852)data;
                 var otherMask = other.FieldsMask;
     
                 FieldsMask |= otherMask;
@@ -3166,7 +3166,7 @@ namespace Coherence.Generated
                 throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
             }
     
-            public static uint Serialize(_2ed436b59b3d0334b947f7a8672cc595_8956715859465457363 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            public static uint Serialize(_1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
             {
                 if (bitStream.WriteMask(data.StoppedMask != 0))
                 {
@@ -3190,7 +3190,7 @@ namespace Coherence.Generated
                 if (bitStream.WriteMask((mask & 0x01) != 0))
                 {
     
-                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_2ed436b59b3d0334b947f7a8672cc595_8956715859465457363.bombColor", logger);
+                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852.bombColor", logger);
     
                     data.bombColor = Coherence.Utils.Bounds.Clamp(data.bombColor, _bombColor_Min, _bombColor_Max);
     
@@ -3218,7 +3218,7 @@ namespace Coherence.Generated
                 return mask;
             }
     
-            public static _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            public static _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
             {
                 var stoppedMask = (uint)0;
                 if (bitStream.ReadMask())
@@ -3226,24 +3226,24 @@ namespace Coherence.Generated
                     stoppedMask = bitStream.ReadMaskBits(3);
                 }
     
-                var val = new _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363();
+                var val = new _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852();
                 if (bitStream.ReadMask())
                 {
     
                     val.isColored = bitStream.ReadBool();
-                    val.FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363.isColoredMask;
+                    val.FieldsMask |= _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852.isColoredMask;
                 }
                 if (bitStream.ReadMask())
                 {
     
                     val.bombColor = bitStream.ReadIntegerRange(4, 0);
-                    val.FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363.bombColorMask;
+                    val.FieldsMask |= _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852.bombColorMask;
                 }
                 if (bitStream.ReadMask())
                 {
     
                     val.time = bitStream.ReadFloat(FloatMeta.NoCompression());
-                    val.FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363.timeMask;
+                    val.FieldsMask |= _1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852.timeMask;
                 }
     
                 val.StoppedMask = stoppedMask;
@@ -3254,7 +3254,218 @@ namespace Coherence.Generated
     
             public override string ToString()
             {
-                return $"_2ed436b59b3d0334b947f7a8672cc595_8956715859465457363(" +
+                return $"_1816e7ca261d1ce43809a9f39d698b1f_7134025983289370852(" +
+                    $" isColored: { this.isColored }" +
+                    $" bombColor: { this.bombColor }" +
+                    $" time: { this.time }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862.isColoredMask;
+                isColoredSimulationFrame = frame;
+                FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862.bombColorMask;
+                bombColorSimulationFrame = frame;
+                FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862.timeMask;
+                timeSimulationFrame = frame;
+            }
+    
+            public static uint isColoredMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isColoredSimulationFrame;
+            public System.Boolean isColored;
+            public static uint bombColorMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame bombColorSimulationFrame;
+            public System.Int32 bombColor;
+            public static uint timeMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame timeSimulationFrame;
+            public System.Single time;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 20;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _bombColor_Min = 0;
+            private static readonly System.Int32 _bombColor_Max = 13;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_2ed436b59b3d0334b947f7a8672cc595_8251346036114720862)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isColoredSimulationFrame = other.isColoredSimulationFrame;
+                    this.isColored = other.isColored;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.bombColorSimulationFrame = other.bombColorSimulationFrame;
+                    this.bombColor = other.bombColor;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.timeSimulationFrame = other.timeSimulationFrame;
+                    this.time = other.time;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_2ed436b59b3d0334b947f7a8672cc595_8251346036114720862 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isColored;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_2ed436b59b3d0334b947f7a8672cc595_8251346036114720862.bombColor", logger);
+    
+                    data.bombColor = Coherence.Utils.Bounds.Clamp(data.bombColor, _bombColor_Min, _bombColor_Max);
+    
+                    var fieldValue = data.bombColor;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.time;
+    
+
+    
+                    bitStream.WriteFloat(fieldValue, FloatMeta.NoCompression());
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isColored = bitStream.ReadBool();
+                    val.FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862.isColoredMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.bombColor = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862.bombColorMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.time = bitStream.ReadFloat(FloatMeta.NoCompression());
+                    val.FieldsMask |= _2ed436b59b3d0334b947f7a8672cc595_8251346036114720862.timeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_2ed436b59b3d0334b947f7a8672cc595_8251346036114720862(" +
                     $" isColored: { this.isColored }" +
                     $" bombColor: { this.bombColor }" +
                     $" time: { this.time }" +
@@ -3286,7 +3497,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 20;
+            public uint GetComponentType() => 21;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3492,7 +3703,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 21;
+            public uint GetComponentType() => 22;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3698,7 +3909,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 22;
+            public uint GetComponentType() => 23;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3880,15 +4091,15 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
-        public struct _563d68167a00dea4c859cf637d7ba86e_208150968269150967 : ICoherenceComponentData
+        public struct _563d68167a00dea4c859cf637d7ba86e_7721045304309058534 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
             {
-                FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_208150968269150967.isColoredMask;
+                FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_7721045304309058534.isColoredMask;
                 isColoredSimulationFrame = frame;
-                FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_208150968269150967.bombColorMask;
+                FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_7721045304309058534.bombColorMask;
                 bombColorSimulationFrame = frame;
-                FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_208150968269150967.timeMask;
+                FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_7721045304309058534.timeMask;
                 timeSimulationFrame = frame;
             }
     
@@ -3904,7 +4115,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 23;
+            public uint GetComponentType() => 24;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3958,7 +4169,7 @@ namespace Coherence.Generated
     
             public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
             {
-                var other = (_563d68167a00dea4c859cf637d7ba86e_208150968269150967)data;
+                var other = (_563d68167a00dea4c859cf637d7ba86e_7721045304309058534)data;
                 var otherMask = other.FieldsMask;
     
                 FieldsMask |= otherMask;
@@ -3995,7 +4206,7 @@ namespace Coherence.Generated
                 throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
             }
     
-            public static uint Serialize(_563d68167a00dea4c859cf637d7ba86e_208150968269150967 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            public static uint Serialize(_563d68167a00dea4c859cf637d7ba86e_7721045304309058534 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
             {
                 if (bitStream.WriteMask(data.StoppedMask != 0))
                 {
@@ -4019,7 +4230,7 @@ namespace Coherence.Generated
                 if (bitStream.WriteMask((mask & 0x01) != 0))
                 {
     
-                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_563d68167a00dea4c859cf637d7ba86e_208150968269150967.bombColor", logger);
+                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_563d68167a00dea4c859cf637d7ba86e_7721045304309058534.bombColor", logger);
     
                     data.bombColor = Coherence.Utils.Bounds.Clamp(data.bombColor, _bombColor_Min, _bombColor_Max);
     
@@ -4047,7 +4258,7 @@ namespace Coherence.Generated
                 return mask;
             }
     
-            public static _563d68167a00dea4c859cf637d7ba86e_208150968269150967 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            public static _563d68167a00dea4c859cf637d7ba86e_7721045304309058534 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
             {
                 var stoppedMask = (uint)0;
                 if (bitStream.ReadMask())
@@ -4055,24 +4266,24 @@ namespace Coherence.Generated
                     stoppedMask = bitStream.ReadMaskBits(3);
                 }
     
-                var val = new _563d68167a00dea4c859cf637d7ba86e_208150968269150967();
+                var val = new _563d68167a00dea4c859cf637d7ba86e_7721045304309058534();
                 if (bitStream.ReadMask())
                 {
     
                     val.isColored = bitStream.ReadBool();
-                    val.FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_208150968269150967.isColoredMask;
+                    val.FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_7721045304309058534.isColoredMask;
                 }
                 if (bitStream.ReadMask())
                 {
     
                     val.bombColor = bitStream.ReadIntegerRange(4, 0);
-                    val.FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_208150968269150967.bombColorMask;
+                    val.FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_7721045304309058534.bombColorMask;
                 }
                 if (bitStream.ReadMask())
                 {
     
                     val.time = bitStream.ReadFloat(FloatMeta.NoCompression());
-                    val.FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_208150968269150967.timeMask;
+                    val.FieldsMask |= _563d68167a00dea4c859cf637d7ba86e_7721045304309058534.timeMask;
                 }
     
                 val.StoppedMask = stoppedMask;
@@ -4083,7 +4294,7 @@ namespace Coherence.Generated
     
             public override string ToString()
             {
-                return $"_563d68167a00dea4c859cf637d7ba86e_208150968269150967(" +
+                return $"_563d68167a00dea4c859cf637d7ba86e_7721045304309058534(" +
                     $" isColored: { this.isColored }" +
                     $" bombColor: { this.bombColor }" +
                     $" time: { this.time }" +
@@ -4115,7 +4326,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 24;
+            public uint GetComponentType() => 25;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4297,6 +4508,217 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220.isColoredMask;
+                isColoredSimulationFrame = frame;
+                FieldsMask |= _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220.bombColorMask;
+                bombColorSimulationFrame = frame;
+                FieldsMask |= _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220.timeMask;
+                timeSimulationFrame = frame;
+            }
+    
+            public static uint isColoredMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isColoredSimulationFrame;
+            public System.Boolean isColored;
+            public static uint bombColorMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame bombColorSimulationFrame;
+            public System.Int32 bombColor;
+            public static uint timeMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame timeSimulationFrame;
+            public System.Single time;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 26;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _bombColor_Min = 0;
+            private static readonly System.Int32 _bombColor_Max = 13;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_77532e495c8fe1a4f853681a2dad91a2_6664632135701739220)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isColoredSimulationFrame = other.isColoredSimulationFrame;
+                    this.isColored = other.isColored;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.bombColorSimulationFrame = other.bombColorSimulationFrame;
+                    this.bombColor = other.bombColor;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.timeSimulationFrame = other.timeSimulationFrame;
+                    this.time = other.time;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_77532e495c8fe1a4f853681a2dad91a2_6664632135701739220 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isColored;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_77532e495c8fe1a4f853681a2dad91a2_6664632135701739220.bombColor", logger);
+    
+                    data.bombColor = Coherence.Utils.Bounds.Clamp(data.bombColor, _bombColor_Min, _bombColor_Max);
+    
+                    var fieldValue = data.bombColor;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.time;
+    
+
+    
+                    bitStream.WriteFloat(fieldValue, FloatMeta.NoCompression());
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isColored = bitStream.ReadBool();
+                    val.FieldsMask |= _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220.isColoredMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.bombColor = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220.bombColorMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.time = bitStream.ReadFloat(FloatMeta.NoCompression());
+                    val.FieldsMask |= _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220.timeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_77532e495c8fe1a4f853681a2dad91a2_6664632135701739220(" +
+                    $" isColored: { this.isColored }" +
+                    $" bombColor: { this.bombColor }" +
+                    $" time: { this.time }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _9d2e9d257e8387b45979b55403f8a357_2197336975981693810 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -4376,7 +4798,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 25;
+            public uint GetComponentType() => 27;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000011111111111111;
@@ -4868,7 +5290,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 26;
+            public uint GetComponentType() => 28;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5050,6 +5472,217 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513.isColoredMask;
+                isColoredSimulationFrame = frame;
+                FieldsMask |= _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513.bombColorMask;
+                bombColorSimulationFrame = frame;
+                FieldsMask |= _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513.timeMask;
+                timeSimulationFrame = frame;
+            }
+    
+            public static uint isColoredMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isColoredSimulationFrame;
+            public System.Boolean isColored;
+            public static uint bombColorMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame bombColorSimulationFrame;
+            public System.Int32 bombColor;
+            public static uint timeMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame timeSimulationFrame;
+            public System.Single time;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 29;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _bombColor_Min = 0;
+            private static readonly System.Int32 _bombColor_Max = 13;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isColoredSimulationFrame = other.isColoredSimulationFrame;
+                    this.isColored = other.isColored;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.bombColorSimulationFrame = other.bombColorSimulationFrame;
+                    this.bombColor = other.bombColor;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.timeSimulationFrame = other.timeSimulationFrame;
+                    this.time = other.time;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isColored;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513.bombColor", logger);
+    
+                    data.bombColor = Coherence.Utils.Bounds.Clamp(data.bombColor, _bombColor_Min, _bombColor_Max);
+    
+                    var fieldValue = data.bombColor;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.time;
+    
+
+    
+                    bitStream.WriteFloat(fieldValue, FloatMeta.NoCompression());
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isColored = bitStream.ReadBool();
+                    val.FieldsMask |= _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513.isColoredMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.bombColor = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513.bombColorMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.time = bitStream.ReadFloat(FloatMeta.NoCompression());
+                    val.FieldsMask |= _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513.timeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513(" +
+                    $" isColored: { this.isColored }" +
+                    $" bombColor: { this.bombColor }" +
+                    $" time: { this.time }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _b3fcda143a6033045a71b410cca65634_8162038572874200958 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -5074,7 +5707,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 27;
+            public uint GetComponentType() => 30;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5256,6 +5889,217 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345.isColoredMask;
+                isColoredSimulationFrame = frame;
+                FieldsMask |= _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345.bombColorMask;
+                bombColorSimulationFrame = frame;
+                FieldsMask |= _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345.timeMask;
+                timeSimulationFrame = frame;
+            }
+    
+            public static uint isColoredMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isColoredSimulationFrame;
+            public System.Boolean isColored;
+            public static uint bombColorMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame bombColorSimulationFrame;
+            public System.Int32 bombColor;
+            public static uint timeMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame timeSimulationFrame;
+            public System.Single time;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 31;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _bombColor_Min = 0;
+            private static readonly System.Int32 _bombColor_Max = 13;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_bba41c5a1f9f57a40932118e77aabf65_3446889254629437345)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isColoredSimulationFrame = other.isColoredSimulationFrame;
+                    this.isColored = other.isColored;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.bombColorSimulationFrame = other.bombColorSimulationFrame;
+                    this.bombColor = other.bombColor;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.timeSimulationFrame = other.timeSimulationFrame;
+                    this.time = other.time;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_bba41c5a1f9f57a40932118e77aabf65_3446889254629437345 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isColored;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_bba41c5a1f9f57a40932118e77aabf65_3446889254629437345.bombColor", logger);
+    
+                    data.bombColor = Coherence.Utils.Bounds.Clamp(data.bombColor, _bombColor_Min, _bombColor_Max);
+    
+                    var fieldValue = data.bombColor;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.time;
+    
+
+    
+                    bitStream.WriteFloat(fieldValue, FloatMeta.NoCompression());
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isColored = bitStream.ReadBool();
+                    val.FieldsMask |= _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345.isColoredMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.bombColor = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345.bombColorMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.time = bitStream.ReadFloat(FloatMeta.NoCompression());
+                    val.FieldsMask |= _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345.timeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_bba41c5a1f9f57a40932118e77aabf65_3446889254629437345(" +
+                    $" isColored: { this.isColored }" +
+                    $" bombColor: { this.bombColor }" +
+                    $" time: { this.time }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _c75dfd76074e6c340838162b5bb276cb_3846435238845800702 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -5280,7 +6124,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 28;
+            public uint GetComponentType() => 32;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5462,6 +6306,217 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788.isColoredMask;
+                isColoredSimulationFrame = frame;
+                FieldsMask |= _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788.bombColorMask;
+                bombColorSimulationFrame = frame;
+                FieldsMask |= _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788.timeMask;
+                timeSimulationFrame = frame;
+            }
+    
+            public static uint isColoredMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isColoredSimulationFrame;
+            public System.Boolean isColored;
+            public static uint bombColorMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame bombColorSimulationFrame;
+            public System.Int32 bombColor;
+            public static uint timeMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame timeSimulationFrame;
+            public System.Single time;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 33;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _bombColor_Min = 0;
+            private static readonly System.Int32 _bombColor_Max = 13;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isColoredSimulationFrame = other.isColoredSimulationFrame;
+                    this.isColored = other.isColored;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.bombColorSimulationFrame = other.bombColorSimulationFrame;
+                    this.bombColor = other.bombColor;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.timeSimulationFrame = other.timeSimulationFrame;
+                    this.time = other.time;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isColored;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.bombColor, _bombColor_Min, _bombColor_Max, "_d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788.bombColor", logger);
+    
+                    data.bombColor = Coherence.Utils.Bounds.Clamp(data.bombColor, _bombColor_Min, _bombColor_Max);
+    
+                    var fieldValue = data.bombColor;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.time;
+    
+
+    
+                    bitStream.WriteFloat(fieldValue, FloatMeta.NoCompression());
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isColored = bitStream.ReadBool();
+                    val.FieldsMask |= _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788.isColoredMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.bombColor = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788.bombColorMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.time = bitStream.ReadFloat(FloatMeta.NoCompression());
+                    val.FieldsMask |= _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788.timeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788(" +
+                    $" isColored: { this.isColored }" +
+                    $" bombColor: { this.bombColor }" +
+                    $" time: { this.time }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _df2f29af56c91bd4f9755f5056262669_5616364818191066812 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -5486,7 +6541,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 29;
+            public uint GetComponentType() => 34;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5692,7 +6747,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 30;
+            public uint GetComponentType() => 35;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5898,7 +6953,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 31;
+            public uint GetComponentType() => 36;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
