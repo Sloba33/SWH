@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(awk '/^--- !u!1001/{section=NR; header=$0} /eae5bbeda865a434ab909946a70b0a09/{if\\(section\\)print \"Section at line\", section; section=0}' \"C:/Unity Projects SSD/SWH/Assets/_GAME/03__Scenes/Zarko_Multiplayer_Test_Collectibles.unity\")",
-      "Bash(awk *)"
+      "Bash(awk *)",
+      "Bash(xargs grep -l \"BindingsDiscovery\\\\|AddBinding\\\\|RemoveBinding\\\\|InstantiateBinding\")",
+      "Bash(xargs grep -l \"class.*Binding\")",
+      "Bash(xargs grep -l \"AddBinding\\\\|InstantiateBinding\\\\|RegisterBinding\\\\|CreateBinding\")"
     ]
   }
 }

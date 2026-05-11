@@ -31,7 +31,7 @@ public static class ReplaceWithNetworkedPrefabs
         var sourceToNetworked = new Dictionary<string, GameObject>();
         foreach (var c in colors)
         {
-            string[] sourceNames = { $"Plastic_Cross_{c}", $"Plastic_Cross_{c} 1" };
+            string[] sourceNames = { $"Plastic_Cross_{c}", $"Plastic_Cross_{c} 1", $"Plastic_Cross_{c}_Networked_Old" };
             foreach (var sn in sourceNames)
             {
                 string path = $"{folder}/{sn}.prefab";

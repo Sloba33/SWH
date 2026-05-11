@@ -14,57 +14,42 @@ enum ObstacleColor [bits "4", range-min "0", range-max "13"]
   Metal 12
   Universal 13
 
-component _0c583654429fe8541b706485a9d9e726_7768126713293784213 [id "18"]
+component _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955 [id "18"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955 [id "19"]
-  isBeingPushed Bool [bits "1"]
-  isBeingPulled Bool [bits "1"]
-  isFalling Bool [bits "1"]
-
-component _21d4cb6b7c9058e408bd83c1de5c665d_922907733723194534 [id "20"]
-  isBeingPushed Bool [bits "1"]
-  isBeingPulled Bool [bits "1"]
-  isFalling Bool [bits "1"]
-
-component _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363 [id "21"]
+component _2ed436b59b3d0334b947f7a8672cc595_8956715859465457363 [id "19"]
   isColored Bool [bits "1"]
   bombColor ObstacleColor 
   time Float [compression "None"]
 
-component _3322181c6ab544543a570ea088ccb5c8_8932688128754549860 [id "22"]
+component _3322181c6ab544543a570ea088ccb5c8_8932688128754549860 [id "20"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632 [id "23"]
+component _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632 [id "21"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _563b33fa13d57944489ba641d43b5915_6897569844761605978 [id "24"]
+component _563b33fa13d57944489ba641d43b5915_6897569844761605978 [id "22"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _563d68167a00dea4c859cf637d7ba86e_208150968269150967 [id "25"]
+component _563d68167a00dea4c859cf637d7ba86e_208150968269150967 [id "23"]
   isColored Bool [bits "1"]
   bombColor ObstacleColor 
   time Float [compression "None"]
 
-component _718e1373f11cd9143bb823ab01bd209a_7633055719913054959 [id "26"]
+component _718e1373f11cd9143bb823ab01bd209a_7633055719913054959 [id "24"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _8fd8488f3981633449e96b0d7ef5d241_8735116336080251345 [id "27"]
-  isBeingPushed Bool [bits "1"]
-  isBeingPulled Bool [bits "1"]
-  isFalling Bool [bits "1"]
-
-component _9d2e9d257e8387b45979b55403f8a357_2197336975981693810 [id "28"]
+component _9d2e9d257e8387b45979b55403f8a357_2197336975981693810 [id "25"]
   Dead Bool [bits "1"]
   Running Bool [bits "1"]
   LookLeft Bool [bits "1"]
@@ -80,163 +65,123 @@ component _9d2e9d257e8387b45979b55403f8a357_2197336975981693810 [id "28"]
   Push Bool [bits "1"]
   Walking Bool [bits "1"]
 
-component _a197b2259d30b6d41990f03c2374db24_3167791067738335576 [id "29"]
+component _a197b2259d30b6d41990f03c2374db24_3167791067738335576 [id "26"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a5d9da17a1ed97b4fa7c98cdaa006362_8348739996926226988 [id "30"]
+component _b3fcda143a6033045a71b410cca65634_8162038572874200958 [id "27"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _b0243204ed9377a43aa1829a8c0a31a5_4607376809830200430 [id "31"]
+component _c75dfd76074e6c340838162b5bb276cb_3846435238845800702 [id "28"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _b3fcda143a6033045a71b410cca65634_8162038572874200958 [id "32"]
+component _df2f29af56c91bd4f9755f5056262669_5616364818191066812 [id "29"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _c75dfd76074e6c340838162b5bb276cb_3846435238845800702 [id "33"]
+component _e24ad073b46134647ad5c02476238e40_7618071522980441646 [id "30"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _df2f29af56c91bd4f9755f5056262669_5616364818191066812 [id "34"]
-  isBeingPushed Bool [bits "1"]
-  isBeingPulled Bool [bits "1"]
-  isFalling Bool [bits "1"]
-
-component _e24ad073b46134647ad5c02476238e40_7618071522980441646 [id "35"]
-  isBeingPushed Bool [bits "1"]
-  isBeingPulled Bool [bits "1"]
-  isFalling Bool [bits "1"]
-
-component _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351 [id "36"]
+component _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351 [id "31"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
 command _07f8990a71ddaa44498855fb30600d3d_85796f16585a47c3aa928d65e26eb253 [id "6", routing "All"]
 
-command _0c583654429fe8541b706485a9d9e726_73518623a8a14628a1a93d387bb4306d [id "7", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _0c583654429fe8541b706485a9d9e726_a83b0fb7cf0f47c1aeed078b42eca0e3 [id "8", routing "All"]
+command _1773dc540c6ae314e94cf5dc57ab2c93_3c63aac08b394cb49d1ebe1b22297a95 [id "7", routing "All"]
   source Int 
 
-command _1773dc540c6ae314e94cf5dc57ab2c93_3c63aac08b394cb49d1ebe1b22297a95 [id "9", routing "All"]
-  source Int 
-
-command _1773dc540c6ae314e94cf5dc57ab2c93_fea02029b0bd457f807ee946901f54ec [id "10", routing "All"]
+command _1773dc540c6ae314e94cf5dc57ab2c93_fea02029b0bd457f807ee946901f54ec [id "8", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _21d4cb6b7c9058e408bd83c1de5c665d_715264e40e424631b12d8b8d91b22a2c [id "11", routing "All"]
+command _3322181c6ab544543a570ea088ccb5c8_1935f7fcbf414c68bd53802475305242 [id "9", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _21d4cb6b7c9058e408bd83c1de5c665d_dd5abb8a8ec6466886ce36af5ae7e8f5 [id "12", routing "All"]
+command _3322181c6ab544543a570ea088ccb5c8_bc00d30b92ed4b4bbc3c0fefca49d32d [id "10", routing "All"]
   source Int 
 
-command _3322181c6ab544543a570ea088ccb5c8_1935f7fcbf414c68bd53802475305242 [id "13", routing "All"]
+command _36277b2db15074b4b973a36e96eb7272_8e3cf9e0383b4a5397f446e9dbe0fd27 [id "11", routing "All"]
+
+command _4b1697400ca00cf4bba3ca6635b235cf_36c414ca0da34801894e0e99323fd0ed [id "12", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _3322181c6ab544543a570ea088ccb5c8_bc00d30b92ed4b4bbc3c0fefca49d32d [id "14", routing "All"]
+command _4b1697400ca00cf4bba3ca6635b235cf_ec11d5298ee4402781657b2bd9d26462 [id "13", routing "All"]
   source Int 
 
-command _36277b2db15074b4b973a36e96eb7272_8e3cf9e0383b4a5397f446e9dbe0fd27 [id "15", routing "All"]
-
-command _4b1697400ca00cf4bba3ca6635b235cf_36c414ca0da34801894e0e99323fd0ed [id "16", routing "All"]
+command _563b33fa13d57944489ba641d43b5915_89687f9788884613b4506f58aaac6e1f [id "14", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _4b1697400ca00cf4bba3ca6635b235cf_ec11d5298ee4402781657b2bd9d26462 [id "17", routing "All"]
+command _563b33fa13d57944489ba641d43b5915_fe5d9933540a4bd58a4605497ea45b1e [id "15", routing "All"]
   source Int 
 
-command _563b33fa13d57944489ba641d43b5915_89687f9788884613b4506f58aaac6e1f [id "18", routing "All"]
+command _718e1373f11cd9143bb823ab01bd209a_0df5a39b1f4e46a8a35c8404452dd62c [id "16", routing "All"]
+  source Int 
+
+command _718e1373f11cd9143bb823ab01bd209a_9eed837e83704da1b1e5bd213f139c1b [id "17", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _563b33fa13d57944489ba641d43b5915_fe5d9933540a4bd58a4605497ea45b1e [id "19", routing "All"]
-  source Int 
+command _7a152dc1710a46b44863568b810c28d5_bbafcc10e9f34214999c1095680de4ff [id "18", routing "All"]
 
-command _718e1373f11cd9143bb823ab01bd209a_0df5a39b1f4e46a8a35c8404452dd62c [id "20", routing "All"]
-  source Int 
+command _8c6847a0a09b1d3458e2f6aa31fc0752_2f446ea01f4445a093ff6da59eda1c42 [id "19", routing "All"]
 
-command _718e1373f11cd9143bb823ab01bd209a_9eed837e83704da1b1e5bd213f139c1b [id "21", routing "All"]
-  landPosition Vector3 [compression "None"]
+command _91d3ade4c8936ac49bfe68cf37d66b91_e346e7b3265940c88eb61e56749ef252 [id "20", routing "All"]
 
-command _7a152dc1710a46b44863568b810c28d5_bbafcc10e9f34214999c1095680de4ff [id "22", routing "All"]
-
-command _8c6847a0a09b1d3458e2f6aa31fc0752_2f446ea01f4445a093ff6da59eda1c42 [id "23", routing "All"]
-
-command _8fd8488f3981633449e96b0d7ef5d241_a674b6c2f0324a38880b9dc91d0ceb66 [id "24", routing "All"]
-  source Int 
-
-command _8fd8488f3981633449e96b0d7ef5d241_f6cb7bf9dbdb4aab996e954cb04f629a [id "25", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _91d3ade4c8936ac49bfe68cf37d66b91_e346e7b3265940c88eb61e56749ef252 [id "26", routing "All"]
-
-command _9d2e9d257e8387b45979b55403f8a357_52ff7f68ff08497698e497f264cb1101 [id "27", routing "All"]
+command _9d2e9d257e8387b45979b55403f8a357_52ff7f68ff08497698e497f264cb1101 [id "21", routing "All"]
   female Bool 
 
-command _9d2e9d257e8387b45979b55403f8a357_7ba9f3d1b98f4f79a94456ff96d28ce7 [id "28", routing "All"]
+command _9d2e9d257e8387b45979b55403f8a357_7ba9f3d1b98f4f79a94456ff96d28ce7 [id "22", routing "All"]
 
-command _9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a [id "29", routing "All"]
+command _9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a [id "23", routing "All"]
   didHitObstacle Bool 
   impactPoint Vector3 [compression "None"]
 
-command _9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029 [id "30", routing "All"]
+command _9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029 [id "24", routing "All"]
   aoePosition Vector3 [compression "None"]
 
-command _a197b2259d30b6d41990f03c2374db24_141911c55be84dbdaaeaac81cb629c73 [id "31", routing "All"]
+command _a197b2259d30b6d41990f03c2374db24_141911c55be84dbdaaeaac81cb629c73 [id "25", routing "All"]
   source Int 
 
-command _a197b2259d30b6d41990f03c2374db24_619bef46f4a24243b8230ab5fb76fa39 [id "32", routing "All"]
+command _a197b2259d30b6d41990f03c2374db24_619bef46f4a24243b8230ab5fb76fa39 [id "26", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a5d9da17a1ed97b4fa7c98cdaa006362_ebfe87c43d2c4172b7c880ec9197685d [id "33", routing "All"]
+command _b3fcda143a6033045a71b410cca65634_4e06adfcbd2f4971bbcd245c38108714 [id "27", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a5d9da17a1ed97b4fa7c98cdaa006362_fd8514ee76e24668a0c7e6bc4efc9f40 [id "34", routing "All"]
+command _b3fcda143a6033045a71b410cca65634_d41e1df52d5b43a0b816fdb0448a7a35 [id "28", routing "All"]
   source Int 
 
-command _b0243204ed9377a43aa1829a8c0a31a5_0c5b59ee7c2546eda9ee2bad6363b7f6 [id "35", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _b0243204ed9377a43aa1829a8c0a31a5_aa2b1d0867df45c587fd63e628c9d46e [id "36", routing "All"]
+command _c75dfd76074e6c340838162b5bb276cb_34c2359f16e8491f8177f5d37f89484b [id "29", routing "All"]
   source Int 
 
-command _b3fcda143a6033045a71b410cca65634_4e06adfcbd2f4971bbcd245c38108714 [id "37", routing "All"]
+command _c75dfd76074e6c340838162b5bb276cb_591cc693463841918c74ab344e0b8568 [id "30", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _b3fcda143a6033045a71b410cca65634_d41e1df52d5b43a0b816fdb0448a7a35 [id "38", routing "All"]
+command _df2f29af56c91bd4f9755f5056262669_18c40f0fdc5746bd8cdbb10126a20074 [id "31", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _df2f29af56c91bd4f9755f5056262669_c0aaff7f54c849608bf2f1417c0a9761 [id "32", routing "All"]
   source Int 
 
-command _c75dfd76074e6c340838162b5bb276cb_34c2359f16e8491f8177f5d37f89484b [id "39", routing "All"]
+command _e24ad073b46134647ad5c02476238e40_947fdc80f412467da4543c5cf30f865c [id "33", routing "All"]
   source Int 
 
-command _c75dfd76074e6c340838162b5bb276cb_591cc693463841918c74ab344e0b8568 [id "40", routing "All"]
+command _e24ad073b46134647ad5c02476238e40_c2563528befc4a77b5d7bf7229bb52fc [id "34", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _df2f29af56c91bd4f9755f5056262669_18c40f0fdc5746bd8cdbb10126a20074 [id "41", routing "All"]
+command _eae5bbeda865a434ab909946a70b0a09_7be96ea70f5942c580289a9fe72be301 [id "35", routing "All"]
+
+command _ff5b72dec484b6e42a3d138e3cbc3ab4_369ef613fbc74949ba5dce6373872af7 [id "36", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _df2f29af56c91bd4f9755f5056262669_c0aaff7f54c849608bf2f1417c0a9761 [id "42", routing "All"]
-  source Int 
-
-command _e24ad073b46134647ad5c02476238e40_947fdc80f412467da4543c5cf30f865c [id "43", routing "All"]
-  source Int 
-
-command _e24ad073b46134647ad5c02476238e40_c2563528befc4a77b5d7bf7229bb52fc [id "44", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _eae5bbeda865a434ab909946a70b0a09_7be96ea70f5942c580289a9fe72be301 [id "45", routing "All"]
-
-command _ff5b72dec484b6e42a3d138e3cbc3ab4_369ef613fbc74949ba5dce6373872af7 [id "46", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _ff5b72dec484b6e42a3d138e3cbc3ab4_d8fd8aed10134d4bbfb44f16c38305ea [id "47", routing "All"]
+command _ff5b72dec484b6e42a3d138e3cbc3ab4_d8fd8aed10134d4bbfb44f16c38305ea [id "37", routing "All"]
   source Int 
 
