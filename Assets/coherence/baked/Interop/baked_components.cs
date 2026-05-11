@@ -3051,6 +3051,212 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 19;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _21d4cb6b7c9058e408bd83c1de5c665d_922907733723194534 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -3075,7 +3281,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 19;
+            public uint GetComponentType() => 20;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3281,7 +3487,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 20;
+            public uint GetComponentType() => 21;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3468,6 +3674,624 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _3322181c6ab544543a570ea088ccb5c8_8932688128754549860 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _3322181c6ab544543a570ea088ccb5c8_8932688128754549860.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _3322181c6ab544543a570ea088ccb5c8_8932688128754549860.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _3322181c6ab544543a570ea088ccb5c8_8932688128754549860.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 22;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_3322181c6ab544543a570ea088ccb5c8_8932688128754549860)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_3322181c6ab544543a570ea088ccb5c8_8932688128754549860 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _3322181c6ab544543a570ea088ccb5c8_8932688128754549860 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _3322181c6ab544543a570ea088ccb5c8_8932688128754549860();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _3322181c6ab544543a570ea088ccb5c8_8932688128754549860.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _3322181c6ab544543a570ea088ccb5c8_8932688128754549860.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _3322181c6ab544543a570ea088ccb5c8_8932688128754549860.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_3322181c6ab544543a570ea088ccb5c8_8932688128754549860(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 23;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_4b1697400ca00cf4bba3ca6635b235cf_4437045449171754632(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _563b33fa13d57944489ba641d43b5915_6897569844761605978 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _563b33fa13d57944489ba641d43b5915_6897569844761605978.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _563b33fa13d57944489ba641d43b5915_6897569844761605978.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _563b33fa13d57944489ba641d43b5915_6897569844761605978.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 24;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_563b33fa13d57944489ba641d43b5915_6897569844761605978)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_563b33fa13d57944489ba641d43b5915_6897569844761605978 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _563b33fa13d57944489ba641d43b5915_6897569844761605978 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _563b33fa13d57944489ba641d43b5915_6897569844761605978();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _563b33fa13d57944489ba641d43b5915_6897569844761605978.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _563b33fa13d57944489ba641d43b5915_6897569844761605978.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _563b33fa13d57944489ba641d43b5915_6897569844761605978.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_563b33fa13d57944489ba641d43b5915_6897569844761605978(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _563d68167a00dea4c859cf637d7ba86e_208150968269150967 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -3492,7 +4316,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 21;
+            public uint GetComponentType() => 25;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3679,6 +4503,212 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _718e1373f11cd9143bb823ab01bd209a_7633055719913054959 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _718e1373f11cd9143bb823ab01bd209a_7633055719913054959.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _718e1373f11cd9143bb823ab01bd209a_7633055719913054959.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _718e1373f11cd9143bb823ab01bd209a_7633055719913054959.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 26;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_718e1373f11cd9143bb823ab01bd209a_7633055719913054959)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_718e1373f11cd9143bb823ab01bd209a_7633055719913054959 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _718e1373f11cd9143bb823ab01bd209a_7633055719913054959 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _718e1373f11cd9143bb823ab01bd209a_7633055719913054959();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _718e1373f11cd9143bb823ab01bd209a_7633055719913054959.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _718e1373f11cd9143bb823ab01bd209a_7633055719913054959.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _718e1373f11cd9143bb823ab01bd209a_7633055719913054959.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_718e1373f11cd9143bb823ab01bd209a_7633055719913054959(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _8fd8488f3981633449e96b0d7ef5d241_8735116336080251345 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -3703,7 +4733,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 22;
+            public uint GetComponentType() => 27;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3964,7 +4994,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 23;
+            public uint GetComponentType() => 28;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000011111111111111;
@@ -4432,6 +5462,212 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(14, '0') })";
             }
         }
+        public struct _a197b2259d30b6d41990f03c2374db24_3167791067738335576 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _a197b2259d30b6d41990f03c2374db24_3167791067738335576.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _a197b2259d30b6d41990f03c2374db24_3167791067738335576.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _a197b2259d30b6d41990f03c2374db24_3167791067738335576.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 29;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_a197b2259d30b6d41990f03c2374db24_3167791067738335576)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_a197b2259d30b6d41990f03c2374db24_3167791067738335576 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _a197b2259d30b6d41990f03c2374db24_3167791067738335576 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _a197b2259d30b6d41990f03c2374db24_3167791067738335576();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _a197b2259d30b6d41990f03c2374db24_3167791067738335576.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _a197b2259d30b6d41990f03c2374db24_3167791067738335576.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _a197b2259d30b6d41990f03c2374db24_3167791067738335576.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_a197b2259d30b6d41990f03c2374db24_3167791067738335576(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
         public struct _a5d9da17a1ed97b4fa7c98cdaa006362_8348739996926226988 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -4456,7 +5692,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 24;
+            public uint GetComponentType() => 30;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4662,7 +5898,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 25;
+            public uint GetComponentType() => 31;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4837,6 +6073,1036 @@ namespace Coherence.Generated
             public override string ToString()
             {
                 return $"_b0243204ed9377a43aa1829a8c0a31a5_4607376809830200430(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _b3fcda143a6033045a71b410cca65634_8162038572874200958 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _b3fcda143a6033045a71b410cca65634_8162038572874200958.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _b3fcda143a6033045a71b410cca65634_8162038572874200958.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _b3fcda143a6033045a71b410cca65634_8162038572874200958.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 32;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_b3fcda143a6033045a71b410cca65634_8162038572874200958)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_b3fcda143a6033045a71b410cca65634_8162038572874200958 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _b3fcda143a6033045a71b410cca65634_8162038572874200958 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _b3fcda143a6033045a71b410cca65634_8162038572874200958();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _b3fcda143a6033045a71b410cca65634_8162038572874200958.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _b3fcda143a6033045a71b410cca65634_8162038572874200958.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _b3fcda143a6033045a71b410cca65634_8162038572874200958.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_b3fcda143a6033045a71b410cca65634_8162038572874200958(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _c75dfd76074e6c340838162b5bb276cb_3846435238845800702 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _c75dfd76074e6c340838162b5bb276cb_3846435238845800702.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _c75dfd76074e6c340838162b5bb276cb_3846435238845800702.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _c75dfd76074e6c340838162b5bb276cb_3846435238845800702.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 33;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_c75dfd76074e6c340838162b5bb276cb_3846435238845800702)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_c75dfd76074e6c340838162b5bb276cb_3846435238845800702 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _c75dfd76074e6c340838162b5bb276cb_3846435238845800702 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _c75dfd76074e6c340838162b5bb276cb_3846435238845800702();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _c75dfd76074e6c340838162b5bb276cb_3846435238845800702.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _c75dfd76074e6c340838162b5bb276cb_3846435238845800702.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _c75dfd76074e6c340838162b5bb276cb_3846435238845800702.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_c75dfd76074e6c340838162b5bb276cb_3846435238845800702(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _df2f29af56c91bd4f9755f5056262669_5616364818191066812 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _df2f29af56c91bd4f9755f5056262669_5616364818191066812.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _df2f29af56c91bd4f9755f5056262669_5616364818191066812.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _df2f29af56c91bd4f9755f5056262669_5616364818191066812.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 34;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_df2f29af56c91bd4f9755f5056262669_5616364818191066812)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_df2f29af56c91bd4f9755f5056262669_5616364818191066812 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _df2f29af56c91bd4f9755f5056262669_5616364818191066812 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _df2f29af56c91bd4f9755f5056262669_5616364818191066812();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _df2f29af56c91bd4f9755f5056262669_5616364818191066812.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _df2f29af56c91bd4f9755f5056262669_5616364818191066812.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _df2f29af56c91bd4f9755f5056262669_5616364818191066812.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_df2f29af56c91bd4f9755f5056262669_5616364818191066812(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _e24ad073b46134647ad5c02476238e40_7618071522980441646 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _e24ad073b46134647ad5c02476238e40_7618071522980441646.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _e24ad073b46134647ad5c02476238e40_7618071522980441646.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _e24ad073b46134647ad5c02476238e40_7618071522980441646.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 35;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_e24ad073b46134647ad5c02476238e40_7618071522980441646)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_e24ad073b46134647ad5c02476238e40_7618071522980441646 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _e24ad073b46134647ad5c02476238e40_7618071522980441646 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _e24ad073b46134647ad5c02476238e40_7618071522980441646();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _e24ad073b46134647ad5c02476238e40_7618071522980441646.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _e24ad073b46134647ad5c02476238e40_7618071522980441646.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _e24ad073b46134647ad5c02476238e40_7618071522980441646.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_e24ad073b46134647ad5c02476238e40_7618071522980441646(" +
+                    $" isBeingPushed: { this.isBeingPushed }" +
+                    $" isBeingPulled: { this.isBeingPulled }" +
+                    $" isFalling: { this.isFalling }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(3, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
+            }
+        }
+        public struct _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351.isBeingPushedMask;
+                isBeingPushedSimulationFrame = frame;
+                FieldsMask |= _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351.isBeingPulledMask;
+                isBeingPulledSimulationFrame = frame;
+                FieldsMask |= _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351.isFallingMask;
+                isFallingSimulationFrame = frame;
+            }
+    
+            public static uint isBeingPushedMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame isBeingPushedSimulationFrame;
+            public System.Boolean isBeingPushed;
+            public static uint isBeingPulledMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame isBeingPulledSimulationFrame;
+            public System.Boolean isBeingPulled;
+            public static uint isFallingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame isFallingSimulationFrame;
+            public System.Boolean isFalling;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 36;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 3;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPushedSimulationFrame = other.isBeingPushedSimulationFrame;
+                    this.isBeingPushed = other.isBeingPushed;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isBeingPulledSimulationFrame = other.isBeingPulledSimulationFrame;
+                    this.isBeingPulled = other.isBeingPulled;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.isFallingSimulationFrame = other.isFallingSimulationFrame;
+                    this.isFalling = other.isFalling;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 3);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPushed;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isBeingPulled;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.isFalling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(3);
+                }
+    
+                var val = new _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPushed = bitStream.ReadBool();
+                    val.FieldsMask |= _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351.isBeingPushedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isBeingPulled = bitStream.ReadBool();
+                    val.FieldsMask |= _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351.isBeingPulledMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.isFalling = bitStream.ReadBool();
+                    val.FieldsMask |= _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351.isFallingMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351(" +
                     $" isBeingPushed: { this.isBeingPushed }" +
                     $" isBeingPulled: { this.isBeingPulled }" +
                     $" isFalling: { this.isFalling }" +

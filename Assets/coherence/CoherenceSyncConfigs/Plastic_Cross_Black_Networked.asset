@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: Plastic_Cross_Black_Networked
+  m_EditorClassIdentifier: 
+  id: c75dfd76074e6c340838162b5bb276cb
+  selfId: b627d18b7a2bd5742817f83e9bd102f9
+  editorTarget: {fileID: 7865588565470113798, guid: c75dfd76074e6c340838162b5bb276cb,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 3132022906446151955
+  objectInstantiator:
+    rid: 3132022906446151956
+  references:
+    version: 2
+    RefIds:
+    - rid: 3132022906446151955
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 7865588565470113798, guid: c75dfd76074e6c340838162b5bb276cb,
+          type: 3}
+    - rid: 3132022906446151956
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 
