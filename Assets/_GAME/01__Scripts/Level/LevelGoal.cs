@@ -193,14 +193,14 @@ public class LevelGoal : MonoBehaviour
         Initialized = true;
     }
 
-    private async void OnLocalPlayerSpawned(bool isFirst)
+    private async void OnLocalPlayerSpawned(bool isHost)
     {
         while (!started)
         {
             await System.Threading.Tasks.Task.Yield();
         }
-        
-        if(!isFirst)
+
+        if(!isHost)
         {
             (ObstaclesToDestroy_Player, ObstaclesToDestroy_Opponent) = (ObstaclesToDestroy_Opponent, ObstaclesToDestroy_Player);
             (playerLevel, opponentLevel) = (opponentLevel, playerLevel);

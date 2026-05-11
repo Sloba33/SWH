@@ -247,11 +247,12 @@ public class GameManager : MonoBehaviour
         }
 
         _isFirstPlayer = !opponentAlreadyConnected;
+        bool isHost = MatchmakingTestUI.MatchResult.IsHost;
 
-        Transform spawnPoint = opponentAlreadyConnected ? opponentSpawnPoint : playerSpawnPoint;
+        Transform spawnPoint = isHost ? playerSpawnPoint : opponentSpawnPoint;
         CoherenceSync sync = Instantiate(playerNetworkedPrefab, spawnPoint.position, spawnPoint.rotation);
         LocalPlayer = sync.GetComponent<Player>();
-        OnLocalPlayerSpawned?.Invoke(!opponentAlreadyConnected);
+        OnLocalPlayerSpawned?.Invoke(isHost);
 
         if (_isFirstPlayer)
         {
