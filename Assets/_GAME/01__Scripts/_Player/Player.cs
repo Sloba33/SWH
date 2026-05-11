@@ -212,7 +212,7 @@ public class Player : MonoBehaviour
     public void BuffStrength(float duration, float amount)
     {
         hasStrengthBuff = true;
-        characterStats.strength += (int)amount;
+        Strength += amount;
         buffedStrength = Strength;
         StartCoroutine(ResetStrength(duration));
     }
