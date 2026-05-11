@@ -2329,6 +2329,84 @@ Transform:
   - {fileID: 1256537778}
   m_Father: {fileID: 1985507202}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &60371874
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 60371876}
+  - component: {fileID: 60371875}
+  m_Layer: 0
+  m_Name: CoherenceBridge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &60371875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60371874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 445055bd8316f4833b9155d4af800aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkPrefix: '[network] '
+  adjustSimulationFrameByPing: 0
+  enableClientConnections: 1
+  createGlobalQuery: 1
+  ClientConnectionEntry: {fileID: 0}
+  SimulatorConnectionEntry: {fileID: 0}
+  mainBridge: 0
+  useBuildIndexAsId: 0
+  sceneIdentifier: 0
+  onNetworkEntityCreated:
+    m_PersistentCalls:
+      m_Calls: []
+  onNetworkEntityDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  controlTimeScale: 1
+  onConnected:
+    m_PersistentCalls:
+      m_Calls: []
+  onDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+  onConnectionError:
+    m_PersistentCalls:
+      m_Calls: []
+  onLiveQuerySynced:
+    m_PersistentCalls:
+      m_Calls: []
+  onValidateConnectionRequest:
+    m_PersistentCalls:
+      m_Calls: []
+  uniqueId: 
+  autoLoginAsGuest: 0
+  playerAccount: 1
+--- !u!4 &60371876
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60371874}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &63367108
 GameObject:
   m_ObjectHideFlags: 0
@@ -25147,6 +25225,54 @@ Transform:
   - {fileID: 1341047416}
   m_Father: {fileID: 47141331}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &551458752
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 551458754}
+  - component: {fileID: 551458753}
+  m_Layer: 0
+  m_Name: CoherenceLiveQuery
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &551458753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551458752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 784c870e57f1c4b499b118f4e7cdfa81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extent: 0
+  buffer: 0
+  extentUpdateThreshold: 0.01
+  distanceUpdateThreshold: 0.01
+--- !u!4 &551458754
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551458752}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &553771475
 GameObject:
   m_ObjectHideFlags: 0
@@ -43293,6 +43419,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Plastic_Cross_Purple
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161983993111147567, guid: 0e4dae6e34df67548a76d347ff3fab70,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -90376,7 +90507,10 @@ MonoBehaviour:
   DarkLevel: 0
   playerDefaultPrefab: {fileID: 1051776569072472735, guid: b6fbc467c14a340499ee5aae55a3519c,
     type: 3}
+  playerNetworkedPrefab: {fileID: 0}
+  connectNetworkUI: {fileID: 0}
   playerSpawnPoint: {fileID: 1318119976}
+  opponentSpawnPoint: {fileID: 0}
   levelGoal: {fileID: 2828326823930322740}
   jitbSpawned: 0
   blackHoleObstacles: []
@@ -90401,6 +90535,9 @@ MonoBehaviour:
   collectibleDatabase: {fileID: 0}
   CollectibleSpawned: 0
   ShouldHaveSkipButton: 0
+  countdownText: {fileID: 0}
+  controlsGameObject: {fileID: 0}
+  LocalPlayer: {fileID: 0}
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -108739,7 +108876,7 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player: []
-  ObstaclesToDestroy_AI: []
+  ObstaclesToDestroy_Opponent: []
   obstacleTypes: 
   DualLevel: 0
   Tutorial: 0
@@ -108772,6 +108909,7 @@ MonoBehaviour:
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
   isTimeFrozen: 0
+  coherenceSync: {fileID: 0}
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []
@@ -168032,3 +168170,5 @@ SceneRoots:
   - {fileID: 470041075}
   - {fileID: 1516347992}
   - {fileID: 1311797769}
+  - {fileID: 60371876}
+  - {fileID: 551458754}

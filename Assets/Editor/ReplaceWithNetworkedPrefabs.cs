@@ -7,12 +7,13 @@ using UnityEngine.SceneManagement;
 
 public static class ReplaceWithNetworkedPrefabs
 {
+    [MenuItem("Tools/Replace Obstacles with Networked Prefabs")]
     public static void Execute()
     {
         string folder = "Assets/_GAME/02__Prefabs/02_Obstacles/___FOR USE___/SP/Plastic_Cross";
 
         // Map color -> networked prefab
-        var colors = new[] { "Blue", "Green", "Red", "Yellow" };
+        var colors = new[] { "Blue", "Green", "Red", "Yellow", "Purple" };
         var networkedByColor = new Dictionary<string, GameObject>();
         foreach (var c in colors)
         {

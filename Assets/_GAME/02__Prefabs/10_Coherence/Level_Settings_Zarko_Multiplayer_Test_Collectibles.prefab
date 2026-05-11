@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2007171929864407495
+--- !u!1 &3253362637688212945
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,30 +8,30 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6660327099303983922}
-  - component: {fileID: 3836054489190410858}
-  - component: {fileID: 7070273373091855670}
-  - component: {fileID: 1358203846188124408}
-  - component: {fileID: 3410430048105456542}
-  - component: {fileID: 7231817753048992917}
-  - component: {fileID: 3981305154373931668}
-  - component: {fileID: 3215824146309954528}
-  - component: {fileID: 7522832632193970305}
-  - component: {fileID: 8147077830838299494}
+  - component: {fileID: 109809856047451604}
+  - component: {fileID: 7571221630220990595}
+  - component: {fileID: 6404064922666278143}
+  - component: {fileID: 610192126123339884}
+  - component: {fileID: 6688970368076933021}
+  - component: {fileID: 1775543091992411488}
+  - component: {fileID: 3635274959460267148}
+  - component: {fileID: 3232605191937514893}
+  - component: {fileID: 3379832612132202142}
+  - component: {fileID: 5680619976245860647}
   m_Layer: 0
-  m_Name: LevelSettingsNetworked
+  m_Name: Level_Settings_Zarko_Multiplayer_Test_Collectibles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6660327099303983922
+--- !u!4 &109809856047451604
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -40,13 +40,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3836054489190410858
+--- !u!114 &7571221630220990595
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
@@ -133,10 +133,16 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  ObstaclesToDestroy_AI:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  ObstaclesToDestroy_Opponent: []
   obstacleTypes: 
   DualLevel: 0
   Tutorial: 0
@@ -169,7 +175,8 @@ MonoBehaviour:
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
   isTimeFrozen: 0
-  coherenceSync: {fileID: 0}
+  playerLevel: {fileID: 0}
+  opponentLevel: {fileID: 0}
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []
@@ -216,13 +223,13 @@ MonoBehaviour:
       - {fileID: 0}
       - {fileID: 0}
       - {fileID: 0}
---- !u!114 &7070273373091855670
+--- !u!114 &6404064922666278143
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
@@ -232,7 +239,7 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3836054489190410858}
+      - m_Target: {fileID: 7571221630220990595}
         m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
         m_MethodName: TurnOnPullEvent
         m_Mode: 0
@@ -244,13 +251,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1358203846188124408
+--- !u!114 &610192126123339884
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
@@ -260,7 +267,7 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3836054489190410858}
+      - m_Target: {fileID: 7571221630220990595}
         m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
         m_MethodName: TurnOnJumpEvent
         m_Mode: 0
@@ -272,13 +279,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3410430048105456542
+--- !u!114 &6688970368076933021
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
@@ -288,7 +295,7 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3836054489190410858}
+      - m_Target: {fileID: 7571221630220990595}
         m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
         m_MethodName: TurnOnHitEvent
         m_Mode: 0
@@ -300,13 +307,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7231817753048992917
+--- !u!114 &1775543091992411488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
@@ -316,7 +323,7 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3836054489190410858}
+      - m_Target: {fileID: 7571221630220990595}
         m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
         m_MethodName: ToggleHitOn
         m_Mode: 0
@@ -328,13 +335,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3981305154373931668
+--- !u!114 &3635274959460267148
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
@@ -344,7 +351,7 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3836054489190410858}
+      - m_Target: {fileID: 7571221630220990595}
         m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
         m_MethodName: ToggleHitOff
         m_Mode: 0
@@ -356,13 +363,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3215824146309954528
+--- !u!114 &3232605191937514893
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
@@ -372,7 +379,7 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3836054489190410858}
+      - m_Target: {fileID: 7571221630220990595}
         m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
         m_MethodName: ToggleHitDownOn
         m_Mode: 0
@@ -384,13 +391,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7522832632193970305
+--- !u!114 &3379832612132202142
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
@@ -400,7 +407,7 @@ MonoBehaviour:
   response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3836054489190410858}
+      - m_Target: {fileID: 7571221630220990595}
         m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
         m_MethodName: ToggleHitDownOff
         m_Mode: 0
@@ -412,13 +419,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8147077830838299494
+--- !u!114 &5680619976245860647
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007171929864407495}
+  m_GameObject: {fileID: 3253362637688212945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff62c046a053f416a8dc48ad6483a25e, type: 3}
@@ -472,34 +479,34 @@ MonoBehaviour:
   OnRigidbody3DRotationUpdate:
     m_PersistentCalls:
       m_Calls: []
-  coherenceSyncConfig: {fileID: 11400000, guid: 7f8bb47e648e143449d088a97a89b929,
+  coherenceSyncConfig: {fileID: 11400000, guid: 819e4fa0ffb63fb4e891ae8afcb22b3e,
     type: 2}
   archetype:
     lodLevels:
     - distance: 0
     boundComponents:
-    - component: {fileID: 6660327099303983922}
+    - component: {fileID: 109809856047451604}
       lodStepsActive: 1
-    - component: {fileID: 3836054489190410858}
+    - component: {fileID: 7571221630220990595}
       lodStepsActive: 1
-    - component: {fileID: 7070273373091855670}
+    - component: {fileID: 6404064922666278143}
       lodStepsActive: 1
-    - component: {fileID: 1358203846188124408}
+    - component: {fileID: 610192126123339884}
       lodStepsActive: 1
-    - component: {fileID: 3410430048105456542}
+    - component: {fileID: 6688970368076933021}
       lodStepsActive: 1
-    - component: {fileID: 7231817753048992917}
+    - component: {fileID: 1775543091992411488}
       lodStepsActive: 1
-    - component: {fileID: 3981305154373931668}
+    - component: {fileID: 3635274959460267148}
       lodStepsActive: 1
-    - component: {fileID: 3215824146309954528}
+    - component: {fileID: 3232605191937514893}
       lodStepsActive: 1
-    - component: {fileID: 7522832632193970305}
+    - component: {fileID: 3379832612132202142}
       lodStepsActive: 1
     GeneratesArchetypeDefinition: 0
   interpolationLocation: 1
   RigidbodyUpdateMode: 0
-  bakedScriptType: Coherence.Generated.CoherenceSync_36277b2db15074b4b973a36e96eb7272,
+  bakedScriptType: Coherence.Generated.CoherenceSync_eae5bbeda865a434ab909946a70b0a09,
     Assembly-CSharp
   isGlobal: 0
   synchronizeParent: 1
@@ -513,8 +520,8 @@ MonoBehaviour:
   unsyncedNetworkEntityPriority: 0
   preserveChildren: 0
   bindings:
-  - rid: 3132022771429670991
-  - rid: 3132022771429670992
+  - rid: 3132022838509699180
+  - rid: 3132022838509699181
   scenePrefabInstanceUUID: 
   coherenceUUID: 
   assetVersion: 
@@ -528,17 +535,17 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 3132022771429670991
+    - rid: 3132022838509699180
       type: {class: PositionBinding, ns: Coherence.Toolkit.Bindings.TransformBindings,
         asm: Coherence.Toolkit}
       data:
         descriptor:
-          rid: 3132022771429670993
+          rid: 3132022838509699182
         routing: 0
         syncMode: 0
         isPredicted: 0
         predictionMode: 0
-        guid: d51541151b934732a7119ccd496269c3
+        guid: 2de484e397304eb79f904c215199d51d
         archetypeData:
           type: 7
           minRange: 0
@@ -550,20 +557,20 @@ MonoBehaviour:
             bits: 32
             precision: 0.001
             floatCompression: 0
-        unityComponent: {fileID: 6660327099303983922}
-        coherenceSync: {fileID: 8147077830838299494}
+        unityComponent: {fileID: 109809856047451604}
+        coherenceSync: {fileID: 5680619976245860647}
         _interpolationSettings: {fileID: 11400000, guid: ae4419d1d9a8643709bf5f6b90c584a5,
           type: 2}
-    - rid: 3132022771429670992
+    - rid: 3132022838509699181
       type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         descriptor:
-          rid: 3132022771429670994
+          rid: 3132022838509699183
         routing: 1
         syncMode: 0
         isPredicted: 0
         predictionMode: 0
-        guid: 8e3cf9e0383b4a5397f446e9dbe0fd27
+        guid: 7be96ea70f5942c580289a9fe72be301
         archetypeData:
           type: 0
           minRange: 0
@@ -571,10 +578,10 @@ MonoBehaviour:
           sampleRate: 20
           floatCompression: 0
           fields: []
-        unityComponent: {fileID: 3836054489190410858}
-        coherenceSync: {fileID: 8147077830838299494}
+        unityComponent: {fileID: 7571221630220990595}
+        coherenceSync: {fileID: 5680619976245860647}
         _interpolationSettings: {fileID: 0}
-    - rid: 3132022771429670993
+    - rid: 3132022838509699182
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: position
@@ -595,7 +602,7 @@ MonoBehaviour:
             Coherence.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         oldName: 
         oldParameterAssemblyTypes: []
-    - rid: 3132022771429670994
+    - rid: 3132022838509699183
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: CmdLoseLevel

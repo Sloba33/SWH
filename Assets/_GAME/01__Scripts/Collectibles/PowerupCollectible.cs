@@ -1,4 +1,7 @@
+using System;
 using System.Collections;
+using Coherence;
+using Coherence.Toolkit;
 using UnityEngine;
 public class PowerupCollectible : CollectibleItem
 {
@@ -11,6 +14,13 @@ public class PowerupCollectible : CollectibleItem
     public ParticleSystem currencyParticleSystem;
 
     public Collider collectibleTrigger;
+    public CoherenceSync coherenceSync;
+
+    private void Awake()
+    {
+        coherenceSync = GetComponent<CoherenceSync>();
+    }
+
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(0.1f);
@@ -22,7 +32,10 @@ public class PowerupCollectible : CollectibleItem
     {
         other = player.GetComponent<Player>();
 
-        bool wasCollected = true; // Assume collected unless told otherwise
+        if(GameManager.Instance.IsMultiplayer)
+        {
+            if(GameManager.Instance.LocalPlayer != other) return;
+        }
 
         switch (powerupType)
         {
@@ -47,7 +60,6 @@ public class PowerupCollectible : CollectibleItem
                 }
                 else
                 {
-                    wasCollected = false; // Don't collect
                     return; // Exit early
                 }
                 break;
@@ -62,11 +74,18 @@ public class PowerupCollectible : CollectibleItem
                 break;
         }
 
-        // Only disable and play effects if actually collected
-        if (wasCollected)
+        DisableCollectible();
+
+        if(GameManager.Instance.IsMultiplayer)
         {
-            DisableCollectible();
+            coherenceSync.SendCommand<PowerupCollectible>(nameof(CmdDisableCollectible), MessageTarget.Other);
         }
+    }
+
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdDisableCollectible()
+    {
+        DisableCollectible();
     }
 
     private void DisableCollectible()

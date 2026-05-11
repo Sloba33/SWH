@@ -110,10 +110,16 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
     private const string PREF_FIRST_TIME = "FirstTime";
 
-    [SerializeField]
     private CoherenceSync coherenceSync;
 
     private bool Initialized;
+
+    [SerializeField]
+    private Transform playerLevel;
+    [SerializeField]
+    private Transform opponentLevel;
+
+    private bool started;
     
     private void Start()
     {
@@ -127,6 +133,8 @@ public class LevelGoal : MonoBehaviour
         {
             StartCoroutine(Initialize());
         }
+
+        started = true;
     }
 
     private IEnumerator Initialize()
@@ -185,17 +193,28 @@ public class LevelGoal : MonoBehaviour
         Initialized = true;
     }
 
-    private void OnLocalPlayerSpawned(bool isFirst)
+    private async void OnLocalPlayerSpawned(bool isFirst)
     {
+        while (!started)
+        {
+            await System.Threading.Tasks.Task.Yield();
+        }
+        
         if(!isFirst)
         {
             (ObstaclesToDestroy_Player, ObstaclesToDestroy_Opponent) = (ObstaclesToDestroy_Opponent, ObstaclesToDestroy_Player);
+            (playerLevel, opponentLevel) = (opponentLevel, playerLevel);
+            
+            foreach(Obstacle obstacle in ObstaclesToDestroy_Player)
+            {
+                obstacle.TakeAuthority();
+            }
+            foreach(var sync in playerLevel.GetComponentsInChildren<CoherenceSync>())
+            {
+                sync.RequestAuthority(AuthorityType.Full);
+            }            
         }
         
-        foreach(Obstacle obstacle in ObstaclesToDestroy_Player)
-        {
-            obstacle.TakeAuthority();
-        }
         StartCoroutine(Initialize());
     }
 
