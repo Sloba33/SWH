@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Coherence;
+using Coherence.Toolkit;
 using NaughtyAttributes.Test;
 using UnityEngine;
 
@@ -10,21 +12,43 @@ public class BombCollectible : CollectibleItem
     public GameObject objectToDestroy;
     public ObstacleColor bombColor; // Changed from ObstacleColor to BombType
     public Bomb bombPrefab;
+    public CoherenceSync coherenceSync;
     bool isCollected;
     // private AudioSource audioSource;
 
+    private void Awake()
+    {
+        coherenceSync = GetComponent<CoherenceSync>();
+    }
+
     public override void Collect(PlayerController player)
     {
-        if (!isCollected)
+        if (isCollected) return;
+
+        Player other = player.GetComponent<Player>();
+        if (GameManager.Instance.IsMultiplayer && GameManager.Instance.LocalPlayer != other) return;
+
+        DisableCollectible();
+        other.pc.AddConsumable(this);
+
+        if (GameManager.Instance.IsMultiplayer)
         {
-            isCollected = true;
-            mesh.enabled = false;
-            sphereCollider.enabled = false;
-            PlayCollectSound(objectToDestroy);
-            player.GetComponent<Player>().pc.AddConsumable(this);
+            coherenceSync.SendCommand<BombCollectible>(nameof(CmdDisableCollectible), MessageTarget.Other);
         }
+    }
 
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdDisableCollectible()
+    {
+        DisableCollectible();
+    }
 
+    private void DisableCollectible()
+    {
+        isCollected = true;
+        mesh.enabled = false;
+        sphereCollider.enabled = false;
+        PlayCollectSound(objectToDestroy);
     }
 
     public bool Grounded;

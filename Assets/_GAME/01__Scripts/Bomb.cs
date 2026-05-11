@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Coherence.Toolkit;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -7,6 +8,7 @@ using Cinemachine;
 using DG.Tweening;
 public class Bomb : MonoBehaviour
 {
+    private CoherenceSync _coherenceSync;
     public AudioClip spawnSound;
     public bool isColored;
     public List<ObstacleColor> bombColors = new List<ObstacleColor>();
@@ -24,18 +26,40 @@ public class Bomb : MonoBehaviour
     [SerializeField] private MeshRenderer mesh;
 
     bool Grounded;
-    private void Start()
+
+    private void Awake()
     {
-        IgnorePlayerCollision(FindObjectOfType<PlayerController>().GetComponent<Collider>());
-        if (!isColored)
+        _coherenceSync = GetComponent<CoherenceSync>();
+    }
+
+    private IEnumerator Start()
+    {
+        PlayerController pc;
+        if (_coherenceSync != null)
         {
-            Invoke("Explode", time);
-            StartCoroutine(Countdown());
+            while (GameManager.Instance.LocalPlayer == null)
+                yield return null;
+            pc = GameManager.Instance.LocalPlayer.GetComponent<PlayerController>();
         }
         else
         {
-            boxCollider.enabled = false;
-            StartCoroutine(ExplodeColored());
+            pc = FindObjectOfType<PlayerController>();
+        }
+
+        IgnorePlayerCollision(pc.GetComponent<Collider>());
+
+        if(_coherenceSync == null || _coherenceSync.HasStateAuthority)
+        {
+            if(!isColored)
+            {
+                Invoke("Explode", time);
+                StartCoroutine(Countdown());
+            }
+            else
+            {
+                boxCollider.enabled = false;
+                StartCoroutine(ExplodeColored());
+            }
         }
     }
     public Collider[] _boxCollider = new Collider[1];
@@ -195,65 +219,67 @@ public class Bomb : MonoBehaviour
         {
             for (int i = 0; i < obstaclesToHit.Count; i++)
             {
-                if (obstaclesToHit[i] != null)
-                {
-                    Debug.Log("Obstacle found in levelgoal");
-                    levelGoal.RemoveObstacle(obstaclesToHit[i]);
-                    obstaclesToHit[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
-                }
+                Obstacle obs = obstaclesToHit[i];
+                if (obs == null) continue;
+                if (!levelGoal.ObstaclesToDestroy_Player.Contains(obs)) continue;
+
+                Debug.Log("Obstacle found in levelgoal");
+                levelGoal.RemoveObstacle(obs);
+                obs.ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
             }
         }
         else
         {
-            // countdownText.text = time + "...";
-            for (int i = 0; i < obstaclesToHit.Count; i++)
+            // countdownText.text = time + "...";                                                                                                                                                                        
+            for(int i = 0; i < obstaclesToHit.Count; i++)
             {
-                if (obstaclesToHit[i] != null)
+                if(obstaclesToHit[i] != null)
                     obstaclesToHit[i].ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
             }
         }
-        if (player != null && !isColored) player.Die();
+
+        if(player != null && !isColored) player.Die();
         explosionParticle.Play();
         textGameObject.SetActive(false);
         mesh.enabled = false;
         audioSource.Play();
         CameraShake();
-        Destroy(gameObject, 0.75f);
+        if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
+            Destroy(gameObject, 0.75f);
     }
     public IEnumerator ExplodeColored()
     {
         Debug.Log("Exploding colored bomb");
 
-        Obstacle[] obstacles = FindObjectsOfType<Obstacle>();
+        LevelGoal levelGoal = FindObjectOfType<LevelGoal>();
         List<Obstacle> obstaclesToNuke = new List<Obstacle>();
-        foreach (Obstacle obstacle in obstacles)
+        if (levelGoal != null)
         {
-            Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
-            if (obstacle.obstacleColor == bombColor || bombColor == ObstacleColor.Universal)
+            foreach (Obstacle obstacle in levelGoal.ObstaclesToDestroy_Player)
             {
-                Debug.Log("Matching obstacle found: " + obstacle.name);
-                obstaclesToNuke.Add(obstacle);
+                if (obstacle == null) continue;
+                Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
+                if (obstacle.obstacleColor == bombColor || bombColor == ObstacleColor.Universal)
+                {
+                    Debug.Log("Matching obstacle found: " + obstacle.name);
+                    obstaclesToNuke.Add(obstacle);
+                }
             }
         }
 
-        LevelGoal levelGoal = FindObjectOfType<LevelGoal>();
         yield return new WaitForSeconds(0.1f);
 
         foreach (Obstacle obs in obstaclesToNuke)
         {
-            if (obs != null)
-            {
-                Debug.Log("Destroying obstacle: " + obs.name);
-                if (levelGoal != null)
-                    levelGoal.RemoveObstacle(obs);
-
-                obs.ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
-            }
+            if (obs == null) continue;
+            Debug.Log("Destroying obstacle: " + obs.name);
+            obs.ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
         }
 
         textGameObject.SetActive(false);
         mesh.enabled = false;
         audioSource.Play();
-        Destroy(gameObject, 0.15f);
+        if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
+            Destroy(gameObject, 0.15f);
     }
 }
