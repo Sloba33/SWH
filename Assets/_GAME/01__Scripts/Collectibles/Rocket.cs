@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Coherence;
+using Coherence.Toolkit;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +12,7 @@ public class Rocket : MonoBehaviour
     public CapsuleCollider _obstacleDestructionTrigger;
     private Rigidbody _rb;
     private Animator _animator;
+    private CoherenceSync _coherenceSync;
     private const string PlayerTag = "Player";
     private const string ObstacleTag = "Obstacle";
     [SerializeField] private float maxSpeed = 20f;
@@ -29,6 +32,7 @@ public class Rocket : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
+        _coherenceSync = GetComponent<CoherenceSync>();
 
         if (_playerTrigger == null || _obstacleDestructionTrigger == null || _rb == null || _animator == null)
         {
@@ -46,12 +50,15 @@ public class Rocket : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(PlayerTag))
+        if (other.CompareTag(PlayerTag) && !_isLaunched)
         {
-
-            LaunchRocket();
-            Debug.Log("Rocket Launch DETECTED");
-
+            if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
+            {
+                LaunchRocket();
+                Debug.Log("Rocket Launch DETECTED");
+                if (_coherenceSync != null)
+                    _coherenceSync.SendCommand<Rocket>(nameof(CmdLaunchRocket), MessageTarget.Other);
+            }
         }
         if (other.CompareTag(rocketDisablerTag))
         {
@@ -62,10 +69,16 @@ public class Rocket : MonoBehaviour
         }
         if (other.CompareTag(ObstacleTag) && _isLaunched && !isDisabledForMultiplayer)
         {
-            if (other.GetComponent<Obstacle>() != null)
+            Obstacle obstacle = other.GetComponent<Obstacle>();
+            if (obstacle == null) return;
+
+            if (_coherenceSync != null)
             {
-                other.GetComponent<Obstacle>().ParticleDestroy(Obstacle.ObstacleDestructionSource.Weapon);
+                CoherenceSync obstacleSync = obstacle.GetComponent<CoherenceSync>();
+                if (obstacleSync == null || !obstacleSync.HasStateAuthority) return;
             }
+
+            obstacle.ParticleDestroy(Obstacle.ObstacleDestructionSource.Weapon);
         }
     }
     [SerializeField] float colorFillTimer = 1.33f;
@@ -91,6 +104,13 @@ public class Rocket : MonoBehaviour
         }
 
     }
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdLaunchRocket()
+    {
+        if (_isLaunched) return;
+        LaunchRocket();
+    }
+
     [Button("Launch Rocket")]
     private void LaunchRocket()
     {
