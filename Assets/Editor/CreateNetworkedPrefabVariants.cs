@@ -52,6 +52,16 @@ public class CreateNetworkedPrefabVariants : EditorWindow
         },
         new ConversionDescriptor
         {
+            Label = "PowerupCollectible",
+            RootComponent = typeof(PowerupCollectible),
+            Bindings = new (Type, string)[]
+            {
+                (typeof(Transform), "position"),
+                (typeof(Transform), "rotation"),
+            },
+        },
+        new ConversionDescriptor
+        {
             Label = "BombCollectible",
             RootComponent = typeof(BombCollectible),
             Bindings = new (Type, string)[]
