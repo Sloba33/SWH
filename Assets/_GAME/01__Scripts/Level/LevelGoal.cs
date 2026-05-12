@@ -527,6 +527,7 @@ public class LevelGoal : MonoBehaviour
         if (!firstCollectibleSpawn) { yield return new WaitForSeconds(initialDelay); firstCollectibleSpawn = true; }
         for (int i = 0; i < collectiblesToSpawn; i++)
         {
+            if (IsGameOver) yield break;
             int randomHeight = Random.Range(minCollectibleSpawnHeight, maxCollectibleSpawnHeight);
             int randomTile = Random.Range(0, tileList.Count);
             GameObject objectToSpawn = GetRandomItemByWeight(FallingCollectibles);
@@ -969,6 +970,7 @@ public class LevelGoal : MonoBehaviour
     {
         if (coherenceSync != null)
         {
+            Debug.Log("Notifying opponent of death");
             GameManager.Instance.FreezeObstacles();
             coherenceSync.SendCommand<LevelGoal>(nameof(CmdWinLevel), MessageTarget.Other);
         }
@@ -976,6 +978,7 @@ public class LevelGoal : MonoBehaviour
     
     public IEnumerator LoseLevel()
     {
+        Debug.Log("Losing Level");
         yield return new WaitForSeconds(1.2f);
         if (settings == null) settings = FindObjectOfType<Settings>();
         settings.gameLost = true;
@@ -1033,6 +1036,7 @@ public class LevelGoal : MonoBehaviour
         // Continue spawning until all counts are exhausted
         while (totalRemainingSpawns > 0)
         {
+            if (IsGameOver) yield break;
             int obstaclesToSpawnThisIteration = 1;
 
             // Check if we should spawn a batch
@@ -1136,6 +1140,7 @@ public class LevelGoal : MonoBehaviour
         {
             for (int i = 0; i < entry.count; i++)
             {
+                if (IsGameOver) yield break;
                 int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
                 int randomTile = Random.Range(0, tileList.Count);
 
@@ -1156,6 +1161,7 @@ public class LevelGoal : MonoBehaviour
         {
             for (int i = 0; i < entry.count; i++)
             {
+                if (IsGameOver) yield break;
                 int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
                 int randomTile = Random.Range(0, tileList.Count);
 
