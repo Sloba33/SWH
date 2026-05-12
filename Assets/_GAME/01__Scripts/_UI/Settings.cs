@@ -90,7 +90,18 @@ public class Settings : MonoBehaviour
         rotateRight.gameObject.SetActive(false);
         FindObjectOfType<PlayerControls>().gameObject.SetActive(false);
         timerText.gameObject.SetActive(false);
+
+        if(GameManager.Instance.IsMultiplayer)
+        {
+            Invoke(nameof(GoBackToMainMenu), 10f);
+        }
     }
+    
+    private void GoBackToMainMenu()
+    {
+        GameManager.Instance.DisconnectAndReturnToMatchmaking();
+    }
+    
     public void ActivateLosePanel()
     {
         if (losePanel != null)
@@ -99,6 +110,11 @@ public class Settings : MonoBehaviour
         {
             losePanel = Instantiate(losePanelPrefab, transform.parent);
             losePanel.gameObject.SetActive(true);
+        }
+        
+        if(GameManager.Instance.IsMultiplayer)
+        {
+            Invoke(nameof(GoBackToMainMenu), 10f);
         }
     }
 }
