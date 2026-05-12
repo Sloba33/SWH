@@ -812,10 +812,10 @@ public class LevelGoal : MonoBehaviour
 
     private void FindAndAddTilesToList()
     {
-
-
-        // Example: Populate tileList
-        tileList = new List<Tile>(FindObjectsOfType<Tile>());
+        if (GameManager.Instance.IsMultiplayer && coherenceSync != null && playerLevel != null)
+            tileList = new List<Tile>(playerLevel.GetComponentsInChildren<Tile>());
+        else
+            tileList = new List<Tile>(FindObjectsOfType<Tile>());
     }
     // private Obstacle GetSpecificSpawnableObstacle(ObstacleType type, ObstacleColor color)
     // {

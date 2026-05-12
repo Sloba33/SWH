@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: Plastic_Plain_Red_Networked
+  m_EditorClassIdentifier: 
+  id: a5b0ff66e7f4ef34b93ac0cf8fe5bf69
+  selfId: 07c841bff772afc43a4d57443556726a
+  editorTarget: {fileID: 6266826471987237407, guid: a5b0ff66e7f4ef34b93ac0cf8fe5bf69,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 3132022921274065169
+  objectInstantiator:
+    rid: 3132022921274065170
+  references:
+    version: 2
+    RefIds:
+    - rid: 3132022921274065169
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 6266826471987237407, guid: a5b0ff66e7f4ef34b93ac0cf8fe5bf69,
+          type: 3}
+    - rid: 3132022921274065170
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 

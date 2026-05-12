@@ -95,7 +95,7 @@ public class MatchmakingTestUI : MonoBehaviour
 
         string mapName = mapDropdown != null && mapDropdown.options.Count > 0
             ? mapDropdown.options[mapDropdown.value].text
-            : "Zarko_Multiplayer_Test";
+            : "Zarko_Multiplayer_Test_Collectibles+Falling";
 
         string region = regionDropdown != null && regionDropdown.options.Count > 0
             ? regionDropdown.options[regionDropdown.value].text

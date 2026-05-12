@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: Wood_MarbleFlat_Purple_Networked
+  m_EditorClassIdentifier: 
+  id: 3b78fc18984b2c24187cb88e0af2d2e1
+  selfId: 41a39fa95b34c474db6c02cd749edf72
+  editorTarget: {fileID: 3553172606883042639, guid: 3b78fc18984b2c24187cb88e0af2d2e1,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 3132022921274065337
+  objectInstantiator:
+    rid: 3132022921274065338
+  references:
+    version: 2
+    RefIds:
+    - rid: 3132022921274065337
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 3553172606883042639, guid: 3b78fc18984b2c24187cb88e0af2d2e1,
+          type: 3}
+    - rid: 3132022921274065338
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 
