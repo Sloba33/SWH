@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
     [Header("Multiplayer Pre-game")]
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private GameObject controlsGameObject;
+    [SerializeField] private string matchmakingSceneName = "MatchmakingTest";
 
     private int _countdownSeconds;
     private bool _isFirstPlayer;
@@ -80,6 +81,13 @@ public class GameManager : MonoBehaviour
         {
             obstaclesToFreeze[i].isFrozen = true;
         }
+    }
+
+    public void DisconnectAndReturnToMatchmaking()
+    {
+        if (coherenceBridge != null && coherenceBridge.IsConnected)
+            coherenceBridge.Disconnect();
+        SceneManager.LoadScene(matchmakingSceneName);
     }
     private void SetTestBuildPrefs()
     {
