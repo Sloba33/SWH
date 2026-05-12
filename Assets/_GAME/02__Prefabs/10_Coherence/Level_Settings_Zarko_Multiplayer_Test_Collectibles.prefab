@@ -522,6 +522,7 @@ MonoBehaviour:
   bindings:
   - rid: 3132022838509699180
   - rid: 3132022838509699181
+  - rid: 3132022924105482374
   scenePrefabInstanceUUID: 
   coherenceUUID: 
   assetVersion: 
@@ -606,6 +607,47 @@ MonoBehaviour:
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: CmdLoseLevel
+        monoAssemblyType: 
+        required: 1
+        enforcesLODingWhenFieldsOverriden: 0
+        valueSyncCallbackName: 
+        memberType: 8
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: LevelGoal, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.CommandBinding, Coherence.Toolkit,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
+    - rid: 3132022924105482374
+      type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 3132022924105482375
+        routing: 1
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: 6d8d0fbfae22451b8ab2aaeeb1e90ebc
+        archetypeData:
+          type: 0
+          minRange: 0
+          maxRange: 0
+          sampleRate: 20
+          floatCompression: 0
+          fields: []
+        unityComponent: {fileID: 7571221630220990595}
+        coherenceSync: {fileID: 5680619976245860647}
+        _interpolationSettings: {fileID: 0}
+    - rid: 3132022924105482375
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: CmdWinLevel
         monoAssemblyType: 
         required: 1
         enforcesLODingWhenFieldsOverriden: 0

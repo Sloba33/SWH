@@ -165,13 +165,24 @@ public class Player : MonoBehaviour
         GetComponent<Animator>().Play("Death_Animation");
         obstacle.transform.GetComponent<Obstacle>().ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
         GetComponent<PlayerController>().enabled = false;
+        NotifyOpponentOfWinIfMultiplayer();
         StartCoroutine(LoseLevel());
     }
     public void Die()
     {
         GetComponent<Animator>().Play("Death_Animation");
+        NotifyOpponentOfWinIfMultiplayer();
         StartCoroutine(LoseLevel());
 
+    }
+
+    private void NotifyOpponentOfWinIfMultiplayer()
+    {
+        if (!GameManager.Instance.IsMultiplayer) return;
+        var controller = GetComponent<PlayerController>();
+        if (controller != null && !controller.HasAuthority) return;
+        if (GameManager.Instance.levelGoal != null)
+            GameManager.Instance.levelGoal.NotifyOpponentOfDeath();
     }
     public IEnumerator LoseLevel()
     {

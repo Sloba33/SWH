@@ -952,6 +952,22 @@ public class LevelGoal : MonoBehaviour
         GameManager.Instance.FreezeObstacles();
         StartCoroutine(LoseLevel());
     }
+
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdWinLevel()
+    {
+        GameManager.Instance.FreezeObstacles();
+        StartCoroutine(WinLevel(0.9f));
+    }
+
+    public void NotifyOpponentOfDeath()
+    {
+        if (coherenceSync != null)
+        {
+            GameManager.Instance.FreezeObstacles();
+            coherenceSync.SendCommand<LevelGoal>(nameof(CmdWinLevel), MessageTarget.Other);
+        }
+    }
     
     public IEnumerator LoseLevel()
     {
