@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Coherence.Toolkit;
 using UnityEngine;
 using UnityEngine.UI;
@@ -255,9 +256,13 @@ public class Bomb : MonoBehaviour
         List<Obstacle> obstaclesToNuke = new List<Obstacle>();
         if (levelGoal != null)
         {
-            foreach (Obstacle obstacle in levelGoal.ObstaclesToDestroy_Player)
+            IEnumerable<Obstacle> candidates = levelGoal.ObstaclesToDestroy_Player
+                .Concat(levelGoal.spawnedObstacles)
+                .Where(o => o != null)
+                .Distinct();
+
+            foreach (Obstacle obstacle in candidates)
             {
-                if (obstacle == null) continue;
                 Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
                 if (obstacle.obstacleColor == bombColor || bombColor == ObstacleColor.Universal)
                 {

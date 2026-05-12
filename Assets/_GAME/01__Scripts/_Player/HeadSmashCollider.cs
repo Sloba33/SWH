@@ -26,7 +26,7 @@ public class HeadSmashCollider : MonoBehaviour
                 {
                     if (player.helmet != null && player.helmet.gameObject.activeSelf)
                     {
-                        player.helmet.DamageHelmet(1);
+                        player.DamageHelmetNetworked(1);
                         GameObject originalObject = obs.transform.gameObject;
                         // QuestRotator.Instance.UpdateQuestProgress(QuestType.Headbutt);
 

@@ -1,4 +1,6 @@
 using System.Collections;
+using Coherence;
+using Coherence.Toolkit;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,11 +29,13 @@ public class Player : MonoBehaviour
     public Image hitDownFillImage;
     public Weapon weapon;
     public int specialCharges, specialChargesMax;
+    private CoherenceSync _coherenceSync;
 
     private void Awake()
     {
+        _coherenceSync = GetComponent<CoherenceSync>();
         SpawnHelmet();
-   
+
     }
     private void Start()
     {
@@ -248,11 +252,40 @@ public class Player : MonoBehaviour
     }
     public void RepairHelmet()
     {
-        if (helmet != null)
-        {
-            if (!helmet.gameObject.activeSelf) helmet.gameObject.SetActive(true);
-            helmet.FullRepairHelmet();
-        }
+        ApplyHelmetRepair();
+        if (_coherenceSync != null)
+            _coherenceSync.SendCommand<Player>(nameof(CmdRepairHelmet), MessageTarget.Other);
+    }
+
+    public void DamageHelmetNetworked(int amount)
+    {
+        ApplyHelmetDamage(amount);
+        if (_coherenceSync != null)
+            _coherenceSync.SendCommand<Player>(nameof(CmdDamageHelmet), MessageTarget.Other, amount);
+    }
+
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdDamageHelmet(int amount)
+    {
+        ApplyHelmetDamage(amount);
+    }
+
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdRepairHelmet()
+    {
+        ApplyHelmetRepair();
+    }
+
+    private void ApplyHelmetDamage(int amount)
+    {
+        if (helmet != null) helmet.DamageHelmet(amount);
+    }
+
+    private void ApplyHelmetRepair()
+    {
+        if (helmet == null) return;
+        if (!helmet.gameObject.activeSelf) helmet.gameObject.SetActive(true);
+        helmet.FullRepairHelmet();
     }
 
 
