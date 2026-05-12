@@ -228,8 +228,7 @@ public class Player : MonoBehaviour
         hasSpeedBuff = true;
         MoveSpeed += amount;
         buffedSpeed = MoveSpeed;
-        sprintParticleBlueJuice1.gameObject.SetActive(true);
-        sprintParticleBlueJuice2.gameObject.SetActive(true);
+        SetSprintParticlesNetworked(SprintParticleKind.Blue, true);
         StartCoroutine(ResetSpeed(duration));
     }
     public void BuffStrength(float duration, float amount)
@@ -252,11 +251,39 @@ public class Player : MonoBehaviour
         MoveSpeed += speedAmount;
         buffedSpeed = MoveSpeed;
 
-        sprintParticleRedJuice1.gameObject.SetActive(true);
-        sprintParticleRedJuice2.gameObject.SetActive(true);
+        SetSprintParticlesNetworked(SprintParticleKind.Red, true);
 
         StartCoroutine(ResetSpeed(duration));
         StartCoroutine(ResetStrength(duration));
+    }
+
+    public enum SprintParticleKind { Blue = 0, Red = 1 }
+
+    public void SetSprintParticlesNetworked(SprintParticleKind kind, bool active)
+    {
+        ApplySprintParticles((int)kind, active);
+        if (_coherenceSync != null)
+            _coherenceSync.SendCommand<Player>(nameof(CmdSetSprintParticles), MessageTarget.Other, (int)kind, active);
+    }
+
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdSetSprintParticles(int kind, bool active)
+    {
+        ApplySprintParticles(kind, active);
+    }
+
+    private void ApplySprintParticles(int kind, bool active)
+    {
+        if (kind == (int)SprintParticleKind.Blue)
+        {
+            if (sprintParticleBlueJuice1 != null) sprintParticleBlueJuice1.gameObject.SetActive(active);
+            if (sprintParticleBlueJuice2 != null) sprintParticleBlueJuice2.gameObject.SetActive(active);
+        }
+        else if (kind == (int)SprintParticleKind.Red)
+        {
+            if (sprintParticleRedJuice1 != null) sprintParticleRedJuice1.gameObject.SetActive(active);
+            if (sprintParticleRedJuice2 != null) sprintParticleRedJuice2.gameObject.SetActive(active);
+        }
     }
     public void RepairHelmet()
     {
@@ -302,10 +329,8 @@ public class Player : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
-        sprintParticleBlueJuice1.gameObject.SetActive(false);
-        sprintParticleBlueJuice2.gameObject.SetActive(false);
-        sprintParticleRedJuice1.gameObject.SetActive(false);
-        sprintParticleRedJuice2.gameObject.SetActive(false);
+        SetSprintParticlesNetworked(SprintParticleKind.Blue, false);
+        SetSprintParticlesNetworked(SprintParticleKind.Red, false);
 
         MoveSpeed = StartingMoveSpeed;
         buffedSpeed = MoveSpeed;
