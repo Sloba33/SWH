@@ -181,12 +181,16 @@ public class Obstacle : MonoBehaviour
         }
     }
 
+    private Vector3 proxyFallSpriteStartScale;
     private void UpdateProxyFallIndicator()
     {
         if (isFalling && fallSprite == null && fallIndicator != null)
         {
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 45f, _groundMask))
+            {
                 fallSprite = Instantiate(fallIndicator, hit.point + new Vector3(0, 0.05f, 0), fallIndicator.transform.rotation);
+                proxyFallSpriteStartScale = fallSprite.transform.localScale;
+            }
         }
         else if (!isFalling && fallSprite != null)
         {
@@ -198,6 +202,17 @@ public class Obstacle : MonoBehaviour
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 45f, _groundMask))
             {
                 fallSprite.transform.position = hit.point + new Vector3(0, 0.05f, 0);
+
+                float targetHeight = hit.point.y;
+                if (hit.transform.CompareTag("Tile"))
+                    targetHeight = hit.transform.position.y + tileOffset;
+                else if (hit.transform.CompareTag("Obstacle") || hit.transform.CompareTag("OtherObstacle"))
+                    targetHeight = hit.transform.position.y + obstacleOffset;
+
+                float distanceToGround = Mathf.Abs(Vector3.Distance(new Vector3(transform.position.x, targetHeight, transform.position.z), transform.position));
+                float scaleFactor = proxyFallSpriteStartScale.x + (20f - distanceToGround) / 25f;
+                float scalingMultiplier = 11.5f;
+                fallSprite.transform.localScale = proxyFallSpriteStartScale * scaleFactor * scalingMultiplier;
                 if (fallSprite.transform.localScale.x > 0.11f)
                     fallSprite.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
             }
