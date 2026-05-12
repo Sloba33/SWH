@@ -204,15 +204,18 @@ public class LevelGoal : MonoBehaviour
         {
             (ObstaclesToDestroy_Player, ObstaclesToDestroy_Opponent) = (ObstaclesToDestroy_Opponent, ObstaclesToDestroy_Player);
             (playerLevel, opponentLevel) = (opponentLevel, playerLevel);
-            
-            foreach(Obstacle obstacle in ObstaclesToDestroy_Player)
-            {
+        }
+
+        foreach(Obstacle obstacle in ObstaclesToDestroy_Player)
+        {
+            var obstacleSync = obstacle.GetComponent<CoherenceSync>();
+            if (obstacleSync != null && !obstacleSync.HasStateAuthority)
                 obstacle.TakeAuthority();
-            }
-            foreach(var sync in playerLevel.GetComponentsInChildren<CoherenceSync>())
-            {
+        }
+        foreach(var sync in playerLevel.GetComponentsInChildren<CoherenceSync>())
+        {
+            if (!sync.HasStateAuthority)
                 sync.RequestAuthority(AuthorityType.Full);
-            }            
         }
         
         StartCoroutine(Initialize());
