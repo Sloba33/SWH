@@ -574,22 +574,23 @@ public class Obstacle : MonoBehaviour
     {
         StartCoroutine(NetworkedDestroy((ObstacleDestructionSource)source));
     }
-
     private IEnumerator NetworkedDestroy(ObstacleDestructionSource source)
     {
-        yield return new WaitForSeconds(0.05f);
         if (queuedForDestruction) yield break;
         queuedForDestruction = true;
-
-        // All clients: visuals + audio
+        
         ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
         ps.gameObject.name = "PARTICLE OBJECT";
-        gameObject.SetActive(false);
         if (source != ObstacleDestructionSource.None)
         {
             ps.Play();
             AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
         }
+
+        yield return new WaitForSeconds(0.05f);
+
+        // All clients: visuals
+        gameObject.SetActive(false);
         if (fallSprite != null) Destroy(fallSprite);
 
         // Authority only: game logic, goal progress, cleanup, destroy
