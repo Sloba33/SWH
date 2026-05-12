@@ -198,10 +198,10 @@ public class Player : MonoBehaviour
     }
     public IEnumerator LoseLevel()
     {
-        yield return new WaitForSeconds(0.5f);
         Settings settings = FindObjectOfType<Settings>();
-        if (settings != null) Debug.Log("its fine");
-        if (!settings.gameWon)
+        if (settings != null) settings.gameLost = true;
+        yield return new WaitForSeconds(0.5f);
+        if (settings != null && !settings.gameWon)
         {
             Debug.Log("Activating panel");
             settings.ActivateLosePanel();
@@ -210,10 +210,10 @@ public class Player : MonoBehaviour
     }
     public IEnumerator LoseLevel(float delay)
     {
-        yield return new WaitForSeconds(delay);
         Settings settings = FindObjectOfType<Settings>();
-        if (settings != null) Debug.Log("its fine");
-        if (!settings.gameWon)
+        if (settings != null) settings.gameLost = true;
+        yield return new WaitForSeconds(delay);
+        if (settings != null && !settings.gameWon)
         {
             Debug.Log("Activating panel");
             settings.ActivateLosePanel();
