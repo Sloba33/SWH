@@ -1521,6 +1521,7 @@ MonoBehaviour:
   - rid: 3132022785811677398
   - rid: 3132022924921536597
   - rid: 3132022924921536598
+  - rid: 3132022924921536713
   scenePrefabInstanceUUID: 
   coherenceUUID: 
   assetVersion: 
@@ -2520,6 +2521,47 @@ MonoBehaviour:
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: CmdRepairHelmet
+        monoAssemblyType: 
+        required: 1
+        enforcesLODingWhenFieldsOverriden: 0
+        valueSyncCallbackName: 
+        memberType: 8
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: Player, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.CommandBinding, Coherence.Toolkit,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
+    - rid: 3132022924921536713
+      type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 3132022924921536714
+        routing: 1
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: fb3693e8cc6b49e48df65d020110a00f
+        archetypeData:
+          type: 0
+          minRange: 0
+          maxRange: 0
+          sampleRate: 20
+          floatCompression: 0
+          fields: []
+        unityComponent: {fileID: 465992519024109052}
+        coherenceSync: {fileID: 3549012023481724586}
+        _interpolationSettings: {fileID: 0}
+    - rid: 3132022924921536714
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: CmdPlayDeathAnimation
         monoAssemblyType: 
         required: 1
         enforcesLODingWhenFieldsOverriden: 0

@@ -15,6 +15,9 @@ public class HeadSmashCollider : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        if (GameManager.Instance.IsMultiplayer && playerController != null && !playerController.HasAuthority)
+            return;
+
         if (other.transform.CompareTag("Obstacle"))
         {
             Debug.Log("Current helemt durabilaty : " + player.helmet.helmetDurability);

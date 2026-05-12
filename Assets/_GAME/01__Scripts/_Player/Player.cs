@@ -180,11 +180,19 @@ public class Player : MonoBehaviour
 
     }
 
+    [Command(defaultRouting = MessageTarget.Other)]
+    public void CmdPlayDeathAnimation()
+    {
+        GetComponent<Animator>().Play("Death_Animation");
+    }
+
     private void NotifyOpponentOfWinIfMultiplayer()
     {
         if (!GameManager.Instance.IsMultiplayer) return;
         var controller = GetComponent<PlayerController>();
         if (controller != null && !controller.HasAuthority) return;
+        if (_coherenceSync != null)
+            _coherenceSync.SendCommand<Player>(nameof(CmdPlayDeathAnimation), MessageTarget.Other);
         if (GameManager.Instance.levelGoal != null)
             GameManager.Instance.levelGoal.NotifyOpponentOfDeath();
     }
