@@ -33,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2471505488071946121}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -57,8 +57,7 @@ MonoBehaviour:
   xp: 100
   trophies: 5
   BONUS_TROPHIES: 0
-  levelProgress: {fileID: 4741343503558475765, guid: b2f5c0c39238f324dbabb927ce00321c,
-    type: 3}
+  levelProgress: {fileID: 0}
   currentTime: 0
   threeStarTime: 0
   twoStarTime: 0
@@ -74,17 +73,17 @@ MonoBehaviour:
   fixedFallingCollectibles: []
   SpawnFallingObstacles: 1
   FallingObstacles:
-  - item: {fileID: 7361993089120677482, guid: 8157b9c9a12eeb745ac10b61bf8329c7, type: 3}
+  - item: {fileID: 3846435238845800702, guid: c75dfd76074e6c340838162b5bb276cb, type: 3}
     weight: 10
-  - item: {fileID: 1389639997500286074, guid: a1c05b04566b4da488e67baed7ff58a8, type: 3}
+  - item: {fileID: 8162038572874200958, guid: b3fcda143a6033045a71b410cca65634, type: 3}
     weight: 10
-  - item: {fileID: 7113296458963732128, guid: 534aaed9148749b4c90a99d7301bdfc6, type: 3}
+  - item: {fileID: 3167791067738335576, guid: a197b2259d30b6d41990f03c2374db24, type: 3}
     weight: 10
-  - item: {fileID: 3625314975301671785, guid: d4000b4ff8d3c0f40911f73b001e178a, type: 3}
+  - item: {fileID: 8932688128754549860, guid: 3322181c6ab544543a570ea088ccb5c8, type: 3}
     weight: 10
-  - item: {fileID: 5746184876712931327, guid: 9bfa265486f4c914197298b2cee4c94b, type: 3}
+  - item: {fileID: 6897569844761605978, guid: 563b33fa13d57944489ba641d43b5915, type: 3}
     weight: 10
-  - item: {fileID: 1964128455452615959, guid: f2b9311cc643a2b459010a0eaa480325, type: 3}
+  - item: {fileID: 7005171224531000225, guid: c751254a2ec19a444becd674a53bbc4a, type: 3}
     weight: 1
   obstaclesToSpawn: 200
   ObstacleSpawnFrequency: 5
@@ -95,17 +94,17 @@ MonoBehaviour:
   maxObstacleSpawnHeight: 25
   SpawnFallingBombs: 1
   FallingBombs:
-  - item: {fileID: 5402700130043928671, guid: 305260d1cfbde5144b78e2c67b82b57c, type: 3}
+  - item: {fileID: 3557158741924768945, guid: 232e64f5aeedebd4e9c904a4346d0634, type: 3}
     weight: 3
-  - item: {fileID: 3834450451059441342, guid: ddf5cd09bbbe3f4479cf95406fbc9f51, type: 3}
+  - item: {fileID: 6759261704457223531, guid: 7a152dc1710a46b44863568b810c28d5, type: 3}
     weight: 3
-  - item: {fileID: 9125329069983670378, guid: 524ab2126ddbb85438483dbfee7faca7, type: 3}
+  - item: {fileID: 197706769725276539, guid: fa00d9f1cb4295d4b95284302b10760f, type: 3}
     weight: 3
-  - item: {fileID: 944110883950019409, guid: 66dc4dd4b211e8f45bc61569904ce2b8, type: 3}
+  - item: {fileID: 2905314000696301430, guid: 91d3ade4c8936ac49bfe68cf37d66b91, type: 3}
     weight: 3
-  - item: {fileID: 5681249889063501729, guid: 99c7a0694250f224eb4a3dc7433c19bb, type: 3}
+  - item: {fileID: 6451308044227474723, guid: 7ecd556eb03280143980fdc3e87bc912, type: 3}
     weight: 3
-  - item: {fileID: 6989674221227821592, guid: a79fe9a367d3f1447b8a4a0b3bd2ede2, type: 3}
+  - item: {fileID: 7702957272214176987, guid: 1511d351a5bc3324c9f829d9cf6921f2, type: 3}
     weight: 1
   bombsToSpawn: 2
   delayBombSpawn: 30
@@ -114,23 +113,69 @@ MonoBehaviour:
   maxBombSpawnHeight: 27
   SpawnFallingCollectibles: 1
   FallingCollectibles:
-  - item: {fileID: 5983857211178744598, guid: 33f7872caa842374a8afb62d3d920d84, type: 3}
+  - item: {fileID: 242851541413591640, guid: f7791ba7b68c6b9428230132667fb3c5, type: 3}
     weight: 3
-  - item: {fileID: 7444141568096717815, guid: 576e207dc8f004547a1c48daf9cda4fe, type: 3}
+  - item: {fileID: 6685297312740062606, guid: 07f8990a71ddaa44498855fb30600d3d, type: 3}
     weight: 2
-  - item: {fileID: 7335002144845053451, guid: 71c07529ef231c447bb10d275e121ab8, type: 3}
+  - item: {fileID: 6868374771372268199, guid: 85c9c3f2bce8c6344b8122ddc1c603b9, type: 3}
     weight: 4
-  - item: {fileID: 6390644272076231186, guid: 5b76e532431e08f4eb84b05d86cc4700, type: 3}
+  - item: {fileID: 4710359509715059215, guid: 993cf619372904f4392684f227865942, type: 3}
     weight: 3
-  - item: {fileID: 5282656863312337320, guid: e0cc3e844296e2947afc298f66a734d5, type: 3}
+  - item: {fileID: 4968255358225892140, guid: ef2c19b94b0f71340a1d06b5b88350fc, type: 3}
     weight: 3
   collectiblesToSpawn: 10
   delayCollectibleSpawn: 25
   collectibleSpawnFreqency: 25
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
-  ObstaclesToDestroy_Player: []
-  ObstaclesToDestroy_Opponent: []
+  ObstaclesToDestroy_Player:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  ObstaclesToDestroy_Opponent:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   obstacleTypes: 
   DualLevel: 0
   Tutorial: 0
@@ -503,7 +548,7 @@ MonoBehaviour:
   authorityTransferConfig: -1
   orphanedBehavior: 0
   lifetimeType: 0
-  uniquenessType: 0
+  uniquenessType: 1
   replacementStrategy: 0
   unsyncedNetworkEntityPriority: 0
   preserveChildren: 0
@@ -511,7 +556,7 @@ MonoBehaviour:
   - rid: 3132022907600109938
   - rid: 3132022907600109939
   - rid: 3132022924105482376
-  scenePrefabInstanceUUID: 
+  scenePrefabInstanceUUID: 73846
   coherenceUUID: 
   assetVersion: 
   coherenceTag: 
