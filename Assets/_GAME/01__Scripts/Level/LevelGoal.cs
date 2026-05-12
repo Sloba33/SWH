@@ -381,8 +381,11 @@ public class LevelGoal : MonoBehaviour
 
 
 
+    private bool IsGameOver => settings != null && (settings.gameWon || settings.gameLost);
+
     public void RespawnBomb()
     {
+        if (IsGameOver) return;
         if (bombUniversal == null)
         {
             bombUniversal = Instantiate(bombUniversalPrefab, spawnPosition, spawnRotation);
@@ -453,6 +456,7 @@ public class LevelGoal : MonoBehaviour
         if (!firstObstacleSpawn) { yield return new WaitForSeconds(initialDelay); firstObstacleSpawn = true; }
         for (int i = 0; i < obstaclesToSpawn; i++)
         {
+            if (IsGameOver) yield break;
             if (TotalObstaclesSpawned % 20 == 0 && spawnFrequency > 1 && TotalObstaclesSpawned > 1) { spawnFrequency--; ObstacleSpawnFrequency--; }
             TotalObstaclesSpawned++;
             int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
@@ -509,6 +513,7 @@ public class LevelGoal : MonoBehaviour
         if (!firstBombSpawn) { yield return new WaitForSeconds(initialDelay); firstBombSpawn = true; }
         for (int i = 0; i < bombsToSpawn; i++)
         {
+            if (IsGameOver) yield break;
             int randomHeight = Random.Range(minBombSpawnHeight, maxBombSpawnHeight);
             int randomTile = Random.Range(0, tileList.Count);
             GameObject objectToSpawn = GetRandomItemByWeight(FallingBombs);
