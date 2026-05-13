@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using Coherence.Toolkit;
+using Random = UnityEngine.Random;
 
 public class MatchThreeObstacle : MonoBehaviour
 {
