@@ -147,121 +147,159 @@ public static class CoherenceMatchmaker
             throw new MatchmakingException("Failed to find or create lobby.", e);
         }
 
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var isHost = lobbySession.LobbyOwnerActions != null;
-
-        Report(onProgress, isHost
-            ? "Created lobby. Waiting for an opponent..."
-            : "Joined lobby. Waiting for the host to start the game...");
-
-        // Hook the play-started push before doing anything else so we never miss it.
-        var roomTcs = new TaskCompletionSource<RoomData>(TaskCreationOptions.RunContinuationsAsynchronously);
-        void OnPlayStarted(string startedLobbyId, RoomData room)
-        {
-            if (startedLobbyId == lobbySession.LobbyData.Id)
-            {
-                roomTcs.TrySetResult(room);
-            }
-        }
-        void OnLobbyDisposedHandler(LobbySession _)
-        {
-            roomTcs.TrySetException(new MatchmakingException("Lobby was disposed before the game started."));
-        }
-        lobbyService.OnPlaySessionStarted += OnPlayStarted;
-        lobbySession.OnLobbyDisposed += OnLobbyDisposedHandler;
-        await using var roomCancelReg = cancellationToken.Register(() => roomTcs.TrySetCanceled(cancellationToken));
-
+        // If we fail or get cancelled after this point, leave the lobby on the
+        // way out so we don't leak a membership (Coherence caps at 3 concurrent
+        // lobbies per player). Only the success-return paths flip this to true.
+        bool keepLobby = false;
         try
         {
-            // Reconnection short-circuit: if the lobby already has a room, return it immediately.
-            if (lobbySession.LobbyData.RoomData is { } existingRoom)
-            {
-                Report(onProgress, "Reconnecting to existing match...");
-                return new MatchResult(lobbySession, existingRoom, isHost);
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (isHost)
+            var isHost = lobbySession.LobbyOwnerActions != null;
+
+            Report(onProgress, isHost
+                ? "Created lobby. Waiting for an opponent..."
+                : "Joined lobby. Waiting for the host to start the game...");
+
+            // Hook the play-started push before doing anything else so we never miss it.
+            var roomTcs = new TaskCompletionSource<RoomData>(TaskCreationOptions.RunContinuationsAsynchronously);
+            void OnPlayStarted(string startedLobbyId, RoomData room)
             {
-                if (lobbySession.LobbyData.Players.Count < MatchSize)
+                if (startedLobbyId == lobbySession.LobbyData.Id)
                 {
-                    var joinTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-                    void OnPlayerJoined(LobbySession session, LobbyPlayer player)
+                    roomTcs.TrySetResult(room);
+                }
+            }
+            void OnLobbyDisposedHandler(LobbySession _)
+            {
+                roomTcs.TrySetException(new MatchmakingException("Lobby was disposed before the game started."));
+            }
+            lobbyService.OnPlaySessionStarted += OnPlayStarted;
+            lobbySession.OnLobbyDisposed += OnLobbyDisposedHandler;
+            await using var roomCancelReg = cancellationToken.Register(() => roomTcs.TrySetCanceled(cancellationToken));
+
+            try
+            {
+                // Reconnection short-circuit: if the lobby already has a room, return it immediately.
+                if (lobbySession.LobbyData.RoomData is { } existingRoom)
+                {
+                    Report(onProgress, "Reconnecting to existing match...");
+                    keepLobby = true;
+                    return new MatchResult(lobbySession, existingRoom, isHost);
+                }
+
+                if (isHost)
+                {
+                    if (lobbySession.LobbyData.Players.Count < MatchSize)
                     {
-                        if (session.LobbyData.Players.Count >= MatchSize)
+                        var joinTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                        void OnPlayerJoined(LobbySession session, LobbyPlayer player)
                         {
-                            joinTcs.TrySetResult(true);
+                            if (session.LobbyData.Players.Count >= MatchSize)
+                            {
+                                joinTcs.TrySetResult(true);
+                            }
+                        }
+                        void OnDisposedDuringWait(LobbySession _)
+                        {
+                            joinTcs.TrySetException(new MatchmakingException("Lobby was disposed while waiting for an opponent."));
+                        }
+
+                        lobbySession.OnPlayerJoined += OnPlayerJoined;
+                        lobbySession.OnLobbyDisposed += OnDisposedDuringWait;
+                        using var joinCancelReg = cancellationToken.Register(() => joinTcs.TrySetCanceled(cancellationToken));
+                        try
+                        {
+                            await joinTcs.Task;
+                        }
+                        finally
+                        {
+                            lobbySession.OnPlayerJoined -= OnPlayerJoined;
+                            lobbySession.OnLobbyDisposed -= OnDisposedDuringWait;
                         }
                     }
-                    void OnDisposedDuringWait(LobbySession _)
-                    {
-                        joinTcs.TrySetException(new MatchmakingException("Lobby was disposed while waiting for an opponent."));
-                    }
 
-                    lobbySession.OnPlayerJoined += OnPlayerJoined;
-                    lobbySession.OnLobbyDisposed += OnDisposedDuringWait;
-                    using var joinCancelReg = cancellationToken.Register(() => joinTcs.TrySetCanceled(cancellationToken));
+                    Report(onProgress, "Opponent joined. Starting game session...");
+
                     try
                     {
-                        await joinTcs.Task;
+                        await lobbySession.LobbyOwnerActions.StartGameSessionAsync(
+                            maxPlayers: MatchSize,
+                            unlistLobby: true,
+                            closeLobby: true);
                     }
-                    finally
+                    catch (OperationCanceledException)
                     {
-                        lobbySession.OnPlayerJoined -= OnPlayerJoined;
-                        lobbySession.OnLobbyDisposed -= OnDisposedDuringWait;
+                        throw;
+                    }
+                    catch (RequestException re)
+                    {
+                        throw new MatchmakingException($"Failed to start game session: {re.ErrorCode} - {re.Message}", re);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new MatchmakingException("Failed to start game session.", e);
                     }
                 }
 
-                Report(onProgress, "Opponent joined. Starting game session...");
+                Report(onProgress, "Waiting for room data...");
 
+                RoomData roomData;
                 try
                 {
-                    await lobbySession.LobbyOwnerActions.StartGameSessionAsync(
-                        maxPlayers: MatchSize,
-                        unlistLobby: true,
-                        closeLobby: true);
+                    roomData = await roomTcs.Task;
                 }
                 catch (OperationCanceledException)
                 {
                     throw;
                 }
-                catch (RequestException re)
+                catch (MatchmakingException)
                 {
-                    throw new MatchmakingException($"Failed to start game session: {re.ErrorCode} - {re.Message}", re);
+                    throw;
                 }
                 catch (Exception e)
                 {
-                    throw new MatchmakingException("Failed to start game session.", e);
+                    throw new MatchmakingException("Failed while waiting for room data.", e);
                 }
-            }
 
-            Report(onProgress, "Waiting for room data...");
-
-            RoomData roomData;
-            try
-            {
-                roomData = await roomTcs.Task;
+                Report(onProgress, "Match ready.");
+                keepLobby = true;
+                return new MatchResult(lobbySession, roomData, isHost);
             }
-            catch (OperationCanceledException)
+            finally
             {
-                throw;
+                lobbyService.OnPlaySessionStarted -= OnPlayStarted;
+                lobbySession.OnLobbyDisposed -= OnLobbyDisposedHandler;
             }
-            catch (MatchmakingException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new MatchmakingException("Failed while waiting for room data.", e);
-            }
-
-            Report(onProgress, "Match ready.");
-            return new MatchResult(lobbySession, roomData, isHost);
         }
         finally
         {
-            lobbyService.OnPlaySessionStarted -= OnPlayStarted;
-            lobbySession.OnLobbyDisposed -= OnLobbyDisposedHandler;
+            if (!keepLobby)
+            {
+                await LeaveLobbyAsync(lobbySession);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Leaves the given lobby and disposes the session. Safe to call with a null
+    /// or already-disposed lobby. Errors are swallowed and logged so this can be
+    /// used as a fire-and-forget cleanup on disconnect/scene change paths where
+    /// throwing would just be noise.
+    /// </summary>
+    public static async Task LeaveLobbyAsync(LobbySession lobby)
+    {
+        if (lobby is null || lobby.IsDisposed)
+        {
+            return;
+        }
+        try
+        {
+            await lobby.LeaveLobbyAsync();
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogWarning($"[Matchmaker] Failed to leave lobby cleanly: {e.Message}");
         }
     }
 

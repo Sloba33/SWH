@@ -87,6 +87,15 @@ public class GameManager : MonoBehaviour
     {
         if (coherenceBridge != null && coherenceBridge.IsConnected)
             coherenceBridge.Disconnect();
+
+        // Leave the matchmaking lobby so we don't hold a membership in the
+        // background. Coherence caps a player at 3 concurrent lobbies, so
+        // leaking one per game would lock us out after a few matches.
+        // LobbySession lives on the PlayerAccount, not on this scene, so the
+        // request safely outlives the scene change below.
+        _ = CoherenceMatchmaker.LeaveLobbyAsync(MatchmakingTestUI.MatchResult.Lobby);
+        MatchmakingTestUI.MatchResult = default;
+
         SceneManager.LoadScene(matchmakingSceneName);
     }
     private void SetTestBuildPrefs()
