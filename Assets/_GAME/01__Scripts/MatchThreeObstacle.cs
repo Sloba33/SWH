@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using Coherence.Toolkit;
 
@@ -17,14 +19,20 @@ public class MatchThreeObstacle : MonoBehaviour
     private List<Obstacle> obstaclesToProcessForSpawns = new();
     private CoherenceSync _coherenceSync;
 
-    private IEnumerator Start()
+    private void Awake()
     {
         ClearMatchSignatures();
         Obstacle = GetComponent<Obstacle>();
         _coherenceSync = GetComponent<CoherenceSync>();
-        yield return new WaitForSeconds(1.5f);
+    }
+
+    private async void Start()
+    {
+        // using Task, since coroutine stops when object is disabled, and coherence sometimes disables objects during scene transitions
+        await Task.Delay(1500);
         hasGameStarted = true;
     }
+    
     public static void ClearMatchSignatures()
     {
         processedMatchSignatures.Clear();
