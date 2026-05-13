@@ -287,7 +287,6 @@ namespace Coherence.Generated
         private Logger logger = Coherence.Log.Log.GetLogger<CoherenceSync_8f974767147e60e4a8e28f30ecb9c59a>();
         
         private global::Obstacle _8f974767147e60e4a8e28f30ecb9c59a_572d8a97458e4af2afd21851544d70bb_CommandTarget;
-        private global::Obstacle _8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad_CommandTarget;
         
         
         private IClient client;
@@ -307,7 +306,6 @@ namespace Coherence.Generated
         public CoherenceSync_8f974767147e60e4a8e28f30ecb9c59a()
         {
             bakedCommandBindings.Add("572d8a97458e4af2afd21851544d70bb", BakeCommandBinding__8f974767147e60e4a8e28f30ecb9c59a_572d8a97458e4af2afd21851544d70bb);
-            bakedCommandBindings.Add("bd0f31cfcd6e43d88d8ac41b7abc50ad", BakeCommandBinding__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad);
         }
         
         public override Binding BakeValueBinding(Binding valueBinding)
@@ -371,49 +369,6 @@ namespace Coherence.Generated
 			var target = _8f974767147e60e4a8e28f30ecb9c59a_572d8a97458e4af2afd21851544d70bb_CommandTarget;
 			target.CmdPlayFallLanding((UnityEngine.Vector3)(command.landPosition));
         }
-        private void BakeCommandBinding__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad(CommandBinding commandBinding, CommandsHandler commandsHandler)
-        {
-            _8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad_CommandTarget = (global::Obstacle)commandBinding.UnityComponent;
-            commandsHandler.AddBakedCommand(
-				"Obstacle.CmdDestroyObstacle",
-            	"(System.Int32)",
-            	SendCommand__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad,
-            	ReceiveLocalCommand__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad,
-            	MessageTarget.All,
-            	_8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad_CommandTarget,
-            	commandBinding.UsesMeta());
-        }
-        
-        private void SendCommand__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad(GenericCommandRequestArgs requestArgs)
-        {
-            var command = new _8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad();
-            command.Frame = requestArgs.Frame;
-            command.SenderClientID = requestArgs.Sender;
-            command.UsesMeta = requestArgs.UsesMeta;
-            command.Target = requestArgs.Target;
-            command.Entity = entityId;
-
-            command.source = (System.Int32)requestArgs.Args[0];
-
-            client.SendCommand(command, requestArgs.ChannelID);
-        }
-        
-        private void ReceiveLocalCommand__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad(GenericCommandRequestArgs requestArgs)
-        {
-            var command = new _8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad();
-            command.Frame = requestArgs.Frame;
-            command.SenderClientID = requestArgs.Sender;
-
-            command.source = (System.Int32)requestArgs.Args[0];
-
-            ReceiveCommand__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad(command);
-        }
-
-        private void ReceiveCommand__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad(_8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad command)
-        {
-			var target = _8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad_CommandTarget;
-			target.CmdDestroyObstacle((System.Int32)(command.source));
-        }
         
         public override void ReceiveCommand(IEntityCommand command)
         {
@@ -421,9 +376,6 @@ namespace Coherence.Generated
             {
                 case _8f974767147e60e4a8e28f30ecb9c59a_572d8a97458e4af2afd21851544d70bb castedCommand:
                     ReceiveCommand__8f974767147e60e4a8e28f30ecb9c59a_572d8a97458e4af2afd21851544d70bb(castedCommand);
-                    break;
-                case _8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad castedCommand:
-                    ReceiveCommand__8f974767147e60e4a8e28f30ecb9c59a_bd0f31cfcd6e43d88d8ac41b7abc50ad(castedCommand);
                     break;
                 default:
                     logger.Warning(Coherence.Log.Warning.ToolkitBakedSyncReceiveCommandUnhandled,

@@ -2845,6 +2845,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
             }
         }
+        public struct _019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 18;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_019645ef0bd5ed04ab5d0bfe180e9511_2977209817077190039(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _048b3ef08796af941a3279a94677c3ee_8403421026717610394 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -2869,7 +3018,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 18;
+            public uint GetComponentType() => 19;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3075,7 +3224,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 19;
+            public uint GetComponentType() => 20;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3281,7 +3430,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 20;
+            public uint GetComponentType() => 21;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3487,7 +3636,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 21;
+            public uint GetComponentType() => 22;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3693,7 +3842,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 22;
+            public uint GetComponentType() => 23;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -3899,7 +4048,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 23;
+            public uint GetComponentType() => 24;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4105,7 +4254,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 24;
+            public uint GetComponentType() => 25;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4311,7 +4460,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 25;
+            public uint GetComponentType() => 26;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4493,6 +4642,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 27;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_15eaf9ce0fe6e8f4c9bf08270216fdea_4504611650258146979(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _1773dc540c6ae314e94cf5dc57ab2c93_382088147421316955 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -4517,7 +4815,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 26;
+            public uint GetComponentType() => 28;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4723,7 +5021,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 27;
+            public uint GetComponentType() => 29;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -4929,7 +5227,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 28;
+            public uint GetComponentType() => 30;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5140,7 +5438,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 29;
+            public uint GetComponentType() => 31;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5346,7 +5644,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 30;
+            public uint GetComponentType() => 32;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5552,7 +5850,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 31;
+            public uint GetComponentType() => 33;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5734,6 +6032,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _1f5e38a795d7b9246bace02678fe7545_2548235834364103891 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _1f5e38a795d7b9246bace02678fe7545_2548235834364103891.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 34;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_1f5e38a795d7b9246bace02678fe7545_2548235834364103891)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_1f5e38a795d7b9246bace02678fe7545_2548235834364103891 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_1f5e38a795d7b9246bace02678fe7545_2548235834364103891.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _1f5e38a795d7b9246bace02678fe7545_2548235834364103891 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _1f5e38a795d7b9246bace02678fe7545_2548235834364103891();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _1f5e38a795d7b9246bace02678fe7545_2548235834364103891.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_1f5e38a795d7b9246bace02678fe7545_2548235834364103891(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _23daabd1446b22d47b38df0e75b5cf0e_3070779228693472102 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -5758,7 +6205,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 32;
+            public uint GetComponentType() => 35;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -5964,7 +6411,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 33;
+            public uint GetComponentType() => 36;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -6170,7 +6617,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 34;
+            public uint GetComponentType() => 37;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -6376,7 +6823,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 35;
+            public uint GetComponentType() => 38;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -6582,7 +7029,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 36;
+            public uint GetComponentType() => 39;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -6788,7 +7235,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 37;
+            public uint GetComponentType() => 40;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -6999,7 +7446,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 38;
+            public uint GetComponentType() => 41;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -7205,7 +7652,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 39;
+            public uint GetComponentType() => 42;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -7411,7 +7858,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 40;
+            public uint GetComponentType() => 43;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -7617,7 +8064,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 41;
+            public uint GetComponentType() => 44;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -7823,7 +8270,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 42;
+            public uint GetComponentType() => 45;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -8029,7 +8476,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 43;
+            public uint GetComponentType() => 46;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -8235,7 +8682,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 44;
+            public uint GetComponentType() => 47;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -8441,7 +8888,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 45;
+            public uint GetComponentType() => 48;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -8647,7 +9094,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 46;
+            public uint GetComponentType() => 49;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -8853,7 +9300,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 47;
+            public uint GetComponentType() => 50;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -9059,7 +9506,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 48;
+            public uint GetComponentType() => 51;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -9265,7 +9712,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 49;
+            public uint GetComponentType() => 52;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -9471,7 +9918,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 50;
+            public uint GetComponentType() => 53;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -9682,7 +10129,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 51;
+            public uint GetComponentType() => 54;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -9864,6 +10311,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 55;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _611a48816bb040143902938a42458e81_6893774633199848822 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -9888,7 +10484,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 52;
+            public uint GetComponentType() => 56;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -10094,7 +10690,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 53;
+            public uint GetComponentType() => 57;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -10300,7 +10896,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 54;
+            public uint GetComponentType() => 58;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -10506,7 +11102,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 55;
+            public uint GetComponentType() => 59;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -10688,6 +11284,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 60;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _70b0e820a0e22474baeb5f9a6b41698c_8991986786423197095 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -10712,7 +11457,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 56;
+            public uint GetComponentType() => 61;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -10918,7 +11663,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 57;
+            public uint GetComponentType() => 62;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11124,7 +11869,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 58;
+            public uint GetComponentType() => 63;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11330,7 +12075,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 59;
+            public uint GetComponentType() => 64;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11541,7 +12286,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 60;
+            public uint GetComponentType() => 65;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11747,7 +12492,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 61;
+            public uint GetComponentType() => 66;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11929,6 +12674,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 67;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _81aafd1d1229ff547a1866cfd2b56d22_7657352739035270640 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -11953,7 +12847,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 62;
+            public uint GetComponentType() => 68;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12159,7 +13053,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 63;
+            public uint GetComponentType() => 69;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12365,7 +13259,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 64;
+            public uint GetComponentType() => 70;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12571,7 +13465,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 65;
+            public uint GetComponentType() => 71;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12777,7 +13671,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 66;
+            public uint GetComponentType() => 72;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12983,7 +13877,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 67;
+            public uint GetComponentType() => 73;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -13189,7 +14083,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 68;
+            public uint GetComponentType() => 74;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -13395,7 +14289,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 69;
+            public uint GetComponentType() => 75;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -13601,7 +14495,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 70;
+            public uint GetComponentType() => 76;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -13783,6 +14677,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _98613e87778e3a24abb3f8d668153335_4731651063423145697 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _98613e87778e3a24abb3f8d668153335_4731651063423145697.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 77;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_98613e87778e3a24abb3f8d668153335_4731651063423145697)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_98613e87778e3a24abb3f8d668153335_4731651063423145697 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_98613e87778e3a24abb3f8d668153335_4731651063423145697.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _98613e87778e3a24abb3f8d668153335_4731651063423145697 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _98613e87778e3a24abb3f8d668153335_4731651063423145697();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _98613e87778e3a24abb3f8d668153335_4731651063423145697.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_98613e87778e3a24abb3f8d668153335_4731651063423145697(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _9a93e5716c62e0c4ba4e26102c13d2f5_3032056999160085043 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -13807,7 +14850,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 71;
+            public uint GetComponentType() => 78;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -14013,7 +15056,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 72;
+            public uint GetComponentType() => 79;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -14274,7 +15317,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 73;
+            public uint GetComponentType() => 80;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000011111111111111;
@@ -14766,7 +15809,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 74;
+            public uint GetComponentType() => 81;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -14972,7 +16015,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 75;
+            public uint GetComponentType() => 82;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -15178,7 +16221,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 76;
+            public uint GetComponentType() => 83;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -15384,7 +16427,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 77;
+            public uint GetComponentType() => 84;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -15566,6 +16609,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 85;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _a5b0ff66e7f4ef34b93ac0cf8fe5bf69_6027744999591691556 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -15590,7 +16782,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 78;
+            public uint GetComponentType() => 86;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -15796,7 +16988,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 79;
+            public uint GetComponentType() => 87;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -16002,7 +17194,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 80;
+            public uint GetComponentType() => 88;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -16208,7 +17400,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 81;
+            public uint GetComponentType() => 89;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -16414,7 +17606,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 82;
+            public uint GetComponentType() => 90;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -16620,7 +17812,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 83;
+            public uint GetComponentType() => 91;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -16826,7 +18018,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 84;
+            public uint GetComponentType() => 92;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17037,7 +18229,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 85;
+            public uint GetComponentType() => 93;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17243,7 +18435,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 86;
+            public uint GetComponentType() => 94;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17449,7 +18641,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 87;
+            public uint GetComponentType() => 95;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17655,7 +18847,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 88;
+            public uint GetComponentType() => 96;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17861,7 +19053,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 89;
+            public uint GetComponentType() => 97;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -18072,7 +19264,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 90;
+            public uint GetComponentType() => 98;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -18278,7 +19470,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 91;
+            public uint GetComponentType() => 99;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -18460,6 +19652,155 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _c7b95536f1c393646aa679e271fc1d73_3660372803696141497 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _c7b95536f1c393646aa679e271fc1d73_3660372803696141497.ObstacleAudioTypeMask;
+                ObstacleAudioTypeSimulationFrame = frame;
+            }
+    
+            public static uint ObstacleAudioTypeMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame ObstacleAudioTypeSimulationFrame;
+            public System.Int32 ObstacleAudioType;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 100;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 1;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+            private static readonly System.Int32 _ObstacleAudioType_Min = 0;
+            private static readonly System.Int32 _ObstacleAudioType_Max = 8;
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_c7b95536f1c393646aa679e271fc1d73_3660372803696141497)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.ObstacleAudioTypeSimulationFrame = other.ObstacleAudioTypeSimulationFrame;
+                    this.ObstacleAudioType = other.ObstacleAudioType;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_c7b95536f1c393646aa679e271fc1d73_3660372803696141497 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 1);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+                    Coherence.Utils.Bounds.Check(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max, "_c7b95536f1c393646aa679e271fc1d73_3660372803696141497.ObstacleAudioType", logger);
+    
+                    data.ObstacleAudioType = Coherence.Utils.Bounds.Clamp(data.ObstacleAudioType, _ObstacleAudioType_Min, _ObstacleAudioType_Max);
+    
+                    var fieldValue = data.ObstacleAudioType;
+    
+
+    
+                    bitStream.WriteIntegerRange(fieldValue, 4, 0);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _c7b95536f1c393646aa679e271fc1d73_3660372803696141497 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(1);
+                }
+    
+                var val = new _c7b95536f1c393646aa679e271fc1d73_3660372803696141497();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.ObstacleAudioType = bitStream.ReadIntegerRange(4, 0);
+                    val.FieldsMask |= _c7b95536f1c393646aa679e271fc1d73_3660372803696141497.ObstacleAudioTypeMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_c7b95536f1c393646aa679e271fc1d73_3660372803696141497(" +
+                    $" ObstacleAudioType: { this.ObstacleAudioType }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(1, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(1, '0') })";
+            }
+        }
         public struct _ce2a1d165fb129d4e9dced215e08d0bf_1750647075440943757 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -18484,7 +19825,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 92;
+            public uint GetComponentType() => 101;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -18690,7 +20031,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 93;
+            public uint GetComponentType() => 102;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -18896,7 +20237,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 94;
+            public uint GetComponentType() => 103;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19102,7 +20443,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 95;
+            public uint GetComponentType() => 104;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19313,7 +20654,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 96;
+            public uint GetComponentType() => 105;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19519,7 +20860,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 97;
+            public uint GetComponentType() => 106;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19725,7 +21066,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 98;
+            public uint GetComponentType() => 107;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19931,7 +21272,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 99;
+            public uint GetComponentType() => 108;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20137,7 +21478,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 100;
+            public uint GetComponentType() => 109;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20343,7 +21684,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 101;
+            public uint GetComponentType() => 110;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20549,7 +21890,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 102;
+            public uint GetComponentType() => 111;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20755,7 +22096,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 103;
+            public uint GetComponentType() => 112;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20961,7 +22302,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 104;
+            public uint GetComponentType() => 113;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21167,7 +22508,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 105;
+            public uint GetComponentType() => 114;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21373,7 +22714,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 106;
+            public uint GetComponentType() => 115;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21579,7 +22920,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 107;
+            public uint GetComponentType() => 116;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21785,7 +23126,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 108;
+            public uint GetComponentType() => 117;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21991,7 +23332,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 109;
+            public uint GetComponentType() => 118;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -22197,7 +23538,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 110;
+            public uint GetComponentType() => 119;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -22403,7 +23744,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 111;
+            public uint GetComponentType() => 120;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -22609,7 +23950,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 112;
+            public uint GetComponentType() => 121;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -22815,7 +24156,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 113;
+            public uint GetComponentType() => 122;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;

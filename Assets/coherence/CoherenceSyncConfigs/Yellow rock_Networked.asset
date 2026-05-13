@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: Yellow rock_Networked
+  m_EditorClassIdentifier: 
+  id: 98613e87778e3a24abb3f8d668153335
+  selfId: 66f139a62ea6b904c86847a958f5659d
+  editorTarget: {fileID: 4464552923385098715, guid: 98613e87778e3a24abb3f8d668153335,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 3132022949722456790
+  objectInstantiator:
+    rid: 3132022949722456791
+  references:
+    version: 2
+    RefIds:
+    - rid: 3132022949722456790
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 4464552923385098715, guid: 98613e87778e3a24abb3f8d668153335,
+          type: 3}
+    - rid: 3132022949722456791
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 

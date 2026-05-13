@@ -569,6 +569,7 @@ public class Obstacle : MonoBehaviour
     }
 
     public ParticleSystem destructionParticleSystem;
+    public ObstacleDestructionVfx obstacleDestructionVfxPrefab;
     public bool queuedForDestruction;
 
     public bool AIObstacle;
@@ -578,152 +579,68 @@ public class Obstacle : MonoBehaviour
 
     public void ParticleDestroy(ObstacleDestructionSource source = ObstacleDestructionSource.None)
     {
-        if (_coherenceSync != null)
-            _coherenceSync.SendCommand<Obstacle>(nameof(CmdDestroyObstacle), MessageTarget.All, (int)source);
-        else
-            StartCoroutine(DelayedParticleDestroy(source));
+        if (queuedForDestruction) return;
+        if (_coherenceSync != null && !_coherenceSync.HasStateAuthority) return;
+        queuedForDestruction = true;
+        StartCoroutine(DestroyRoutine(source));
     }
 
-    [Command(defaultRouting = MessageTarget.All)]
-    public void CmdDestroyObstacle(int source)
+    private IEnumerator DestroyRoutine(ObstacleDestructionSource source)
     {
-        StartCoroutine(NetworkedDestroy((ObstacleDestructionSource)source));
-    }
-    private IEnumerator NetworkedDestroy(ObstacleDestructionSource source)
-    {
-        if (queuedForDestruction) yield break;
-        queuedForDestruction = true;
-        
-        ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
-        ps.gameObject.name = "PARTICLE OBJECT";
-        if (source != ObstacleDestructionSource.None)
+        if (source != ObstacleDestructionSource.None && obstacleDestructionVfxPrefab != null)
         {
-            ps.Play();
-            AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
+            Vector3 vfxPos = new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z);
+            ObstacleDestructionVfx vfx = Instantiate(obstacleDestructionVfxPrefab, vfxPos, obstacleDestructionVfxPrefab.transform.rotation);
+            vfx.ObstacleAudioType = obstacleAudioType;
         }
 
         yield return new WaitForSeconds(0.05f);
 
-        // All clients: visuals
-        gameObject.SetActive(false);
         if (fallSprite != null) Destroy(fallSprite);
 
-        // Authority only: game logic, goal progress, cleanup, destroy
-        if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
+        if (GameManager.Instance.levelGoal != null)
         {
-            if (GameManager.Instance.levelGoal != null)
+            GameManager.Instance.levelGoal.RemoveObstacleFromSection(this);
+            if (source != ObstacleDestructionSource.MatchThree)
+                GameManager.Instance.levelGoal.QueueObstacleForSpawnProcessing(this);
+        }
+        if (GameManager.Instance.levelGoal.DualLevel)
+        {
+            if (!AIObstacle)
             {
-                GameManager.Instance.levelGoal.RemoveObstacleFromSection(this);
-                if (source != ObstacleDestructionSource.MatchThree)
-                    GameManager.Instance.levelGoal.QueueObstacleForSpawnProcessing(this);
-            }
-            if (GameManager.Instance.levelGoal.DualLevel)
-            {
-                if (!AIObstacle)
+                if (obstacleType == ObstacleType.Universal) yield return null;
+                GoalSetter gs = GameManager.Instance.playerGoalSetter;
+                if (gs.obstacleTypes[0].obstacleType == obstacleType)
                 {
-                    if (obstacleType == ObstacleType.Universal) yield return null;
-                    GoalSetter gs = GameManager.Instance.playerGoalSetter;
-                    if (gs.obstacleTypes[0].obstacleType == obstacleType)
-                    {
-                        gs.FillBar();
-                        Debug.Log("Filling AI");
-                    }
-                }
-                else
-                {
-                    GoalSetter gs = GameManager.Instance.AIGoalSetter;
-                    if (gs.obstacleTypes[0].obstacleType == obstacleType)
-                    {
-                        gs.FillBar();
-                        Debug.Log("Filling player");
-                    }
+                    gs.FillBar();
+                    Debug.Log("Filling AI");
                 }
             }
             else
             {
-                GoalSetter gs = FindObjectOfType<GoalSetter>();
-                if (gs != null)
+                GoalSetter gs = GameManager.Instance.AIGoalSetter;
+                if (gs.obstacleTypes[0].obstacleType == obstacleType)
                 {
-                    for (int i = 0; i < gs.playerGoals.Count; i++)
-                    {
-                        if (gs.playerGoals[i].obstacleType == obstacleType)
-                            gs.playerGoals[i].IncreaseCount();
-                    }
+                    gs.FillBar();
+                    Debug.Log("Filling player");
                 }
             }
-
-            if (playerController != null) playerController.playerObstacleController.pushObstacle = null;
-            Destroy(gameObject);
         }
-    }
-
-    IEnumerator DelayedParticleDestroy(ObstacleDestructionSource source)
-    {
-        yield return new WaitForSeconds(0.05f);
-
-        if (!queuedForDestruction)
+        else
         {
-            queuedForDestruction = true;
-            ParticleSystem ps = Instantiate(destructionParticleSystem, new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z), destructionParticleSystem.transform.rotation, null);
-            ps.gameObject.name = " PARTICLE OBJECT";
-            gameObject.SetActive(false);
-            if (source != ObstacleDestructionSource.None)
+            GoalSetter gs = FindObjectOfType<GoalSetter>();
+            if (gs != null)
             {
-                ps.Play();
-                AudioManager.Instance.PlayObstacleSound_Destruction(obstacleAudioType, transform.position);
-            }
-            if (fallSprite != null) Destroy(fallSprite);
-            if (GameManager.Instance.levelGoal != null)
-            {
-                GameManager.Instance.levelGoal.RemoveObstacleFromSection(this);
-
-                if (source != ObstacleDestructionSource.MatchThree)
+                for (int i = 0; i < gs.playerGoals.Count; i++)
                 {
-                    GameManager.Instance.levelGoal.QueueObstacleForSpawnProcessing(this);
+                    if (gs.playerGoals[i].obstacleType == obstacleType)
+                        gs.playerGoals[i].IncreaseCount();
                 }
             }
-            if (GameManager.Instance.levelGoal.DualLevel)
-            {
-                if (!AIObstacle)
-                {
-                    if (obstacleType == ObstacleType.Universal) yield return null;
-                    GoalSetter gs = GameManager.Instance.playerGoalSetter;
-                    if (gs.obstacleTypes[0].obstacleType == obstacleType)
-                    {
-                        gs.FillBar();
-                        Debug.Log("Filling AI");
-                    }
-                }
-                else
-                {
-                    GoalSetter gs = GameManager.Instance.AIGoalSetter;
-                    if (gs.obstacleTypes[0].obstacleType == obstacleType)
-                    {
-                        gs.FillBar();
-                        Debug.Log("Filling player");
-                    }
-                }
-            }
-            else
-            {
-                GoalSetter gs = FindObjectOfType<GoalSetter>();
-                if (gs != null)
-                {
-                    for (int i = 0; i < gs.playerGoals.Count; i++)
-
-                    {
-                        if (gs.playerGoals[i].obstacleType == obstacleType)
-
-                        {
-                            gs.playerGoals[i].IncreaseCount();
-                        }
-                    }
-                }
-            }
-
-            if (playerController != null) playerController.playerObstacleController.pushObstacle = null;
-            Destroy(gameObject);
         }
+
+        if (playerController != null) playerController.playerObstacleController.pushObstacle = null;
+        Destroy(gameObject);
     }
 
     public void ResetObstacle()

@@ -205,7 +205,6 @@ MonoBehaviour:
   - rid: 3132022921274065690
   - rid: 3132022921274065691
   - rid: 3132022923699945985
-  - rid: 3132022923699945986
   scenePrefabInstanceUUID: 
   coherenceUUID: 
   assetVersion: 
@@ -468,26 +467,6 @@ MonoBehaviour:
         unityComponent: {fileID: 4149201155228813120}
         coherenceSync: {fileID: 5530577970479737144}
         _interpolationSettings: {fileID: 0}
-    - rid: 3132022923699945986
-      type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
-      data:
-        descriptor:
-          rid: 3132022923699945988
-        routing: 1
-        syncMode: 0
-        isPredicted: 0
-        predictionMode: 0
-        guid: 14ddabb34b6b4fd194513bdc5fabd077
-        archetypeData:
-          type: 0
-          minRange: 0
-          maxRange: 0
-          sampleRate: 20
-          floatCompression: 0
-          fields: []
-        unityComponent: {fileID: 4149201155228813120}
-        coherenceSync: {fileID: 5530577970479737144}
-        _interpolationSettings: {fileID: 0}
     - rid: 3132022923699945987
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
@@ -499,28 +478,6 @@ MonoBehaviour:
         memberType: 8
         parameterAssemblyTypes:
         - UnityEngine.Vector3, UnityEngine
-        ownerType:
-          assemblyQualifiedName: Obstacle, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-            PublicKeyToken=null
-        defaultSyncMode: 0
-        CustomData:
-          rid: -2
-        bindingType:
-          assemblyQualifiedName: Coherence.Toolkit.Bindings.CommandBinding, Coherence.Toolkit,
-            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        oldName: 
-        oldParameterAssemblyTypes: []
-    - rid: 3132022923699945988
-      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
-      data:
-        name: CmdDestroyObstacle
-        monoAssemblyType: 
-        required: 1
-        enforcesLODingWhenFieldsOverriden: 0
-        valueSyncCallbackName: 
-        memberType: 8
-        parameterAssemblyTypes:
-        - System.Int32, mscorlib
         ownerType:
           assemblyQualifiedName: Obstacle, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
             PublicKeyToken=null
