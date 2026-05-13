@@ -1,337 +1,666 @@
 using System.Collections;
 using System.Collections.Generic;
 using Coffee.UIEffects;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ImageGallery : MonoBehaviour
 {
-    [SerializeField] public int minBuildIndex = 3;
-    [SerializeField] public int maxBuildIndex = 500;
+    [Header("Configuration")]
+    public int minBuildIndex = 3;
+    public int maxBuildIndex = 500;
     public ImageGalleryDataSO imageGalleryDataSO;
     public GameObject gallerySlotPrefab;
     [SerializeField] public LevelProgress[] levelProgressPrefabs;
-    public List<GallerySlotPrefab> gallerySlots = new();
+
+    [Header("Layout Settings")]
+    public int itemsPerRow = 3;
+    public float paddingTop = 20f;
+    public float paddingLeft = 20f;
+    public float spacingX = 15f;
+    public float spacingY = 15f;
+
+    [Header("References")]
     public Transform Content;
-    public List<int> claimedGalleryRewards = new List<int>();
-    public bool AreAllImagesFilled;
-    public TrophyRoadManager trophyRoadManager;
-    public TrophyRoadData trophyroadData;
-    public GridLayoutGroup gridLayout;
     public RectTransform viewportRect;
-    private bool initialized;
     public ScrollRect scrollRect;
-    public ClaimPanel claimPanelPrefab; // Assign the ClaimPanel prefab in the Inspector
-    public int levelProgressIndex;
+    public TrophyRoadManager trophyRoadManager;
     public GalleryButton galleryButton;
-    private UIEffect uiEffect;
-    public BattlePassManager battlePassManager;
     public Awarder awarder;
-    public void Initialize()
+
+    [Header("Pooling")]
+    public int bufferRows = 2; // Reduced buffer
+    public int minimumPoolSize = 30;
+    public bool enableDebug = true;
+
+    private Vector2 cellSize;
+    private float cachedCellHeight;
+
+    private readonly List<GameObject> activeSlots = new();
+    private readonly Dictionary<int, bool> filledCache = new();
+    private readonly Dictionary<int, Image> outlineCache = new();
+
+    public List<int> claimedGalleryRewards = new();
+
+    private int totalItems;
+    private int currentStartIndex;
+
+    private bool isPopulated;
+    private bool isPopulating;
+    private bool isReloading;
+
+    private float lastScrollY = -999f;
+    private const float SCROLL_THRESHOLD = 15f; // Increased threshold
+
+    private bool cachedHasUnclaimedRewards;
+    private int lastUnclaimedCheckFrame = -1;
+
+    private class SlotData
     {
-        LoadClaimedGalleryRewards();
-        UpdateGalleryVisualState();
+        public GameObject root;
+        public GallerySlotPrefab gallerySlot;
+        public LevelProgress levelProgress;
+        public int currentDataIndex = -1;
     }
-    public void StartGallery()
+    private void Update()
     {
-        // trophyRoadManager = FindObjectOfType<TrophyRoadManager>();
-        LoadClaimedGalleryRewards();
-        PopulateGallery();
-        ResizeGridCells();
-        ScrollToFirstUnclaimedReward();
-        UpdateGalleryVisualState();   // apply claimed visuals
-        UpdateGalleryButtonGlow();
-        initialized = true;
-    }
-    private void UpdateGalleryVisualState()
-    {
-        for (int i = 0; i < Content.childCount; i++)
+        if (enableDebug && Input.GetKeyDown(KeyCode.Y))
         {
-            Transform slot = Content.GetChild(i);
-            LevelProgress lp = slot.GetComponentInChildren<LevelProgress>();
-
-            if (lp == null) continue;
-
-            // If this reward is claimed
-            if (claimedGalleryRewards.Contains(i))
-            {
-                // Set all fills to full
-                foreach (Image img in lp.GetComponentsInChildren<Image>(true))
-                {
-                    if (img.type == Image.Type.Filled)
-                        img.fillAmount = 1f;
-                }
-
-                // Disable outline
-                foreach (Image img in lp.GetComponentsInChildren<Image>(true))
-                {
-                    if (img.name.ToLower().Contains("outline"))
-                    {
-                        img.gameObject.SetActive(false);
-                        break;
-                    }
-                }
-            }
+            DebugCenterRow();
+            DebugVisibleRows();
         }
     }
-    void Start()
-    {
-        if (!initialized)
-        {
+    private readonly List<SlotData> slotPool = new();
 
-            StartGallery();
-        }
+    private void LogDebug(string message)
+    {
+        if (enableDebug)
+            Debug.Log($"[ImageGallery] {message}");
     }
 
-    private bool HasUnclaimedRewards()
+    private void OnEnable()
     {
-        // Check through all level progress prefabs
-        for (int i = 0; i < gallerySlots.Count; i++)
+        if (!isPopulated && !isPopulating)
         {
-            Debug.Log("---GALLERY--- Looking at : " + levelProgressPrefabs[i]);
-            // If reward is not claimed
-
-            if (!gallerySlots[i].isClaimed && gallerySlots[i].isFilled)
-            {
-
-                Debug.Log("---GALLERY---Found unclaimed reward at : " + levelProgressPrefabs[i] + " AT INDEX : " + i);
-                // Found an unclaimed reward that's ready to claim
-                return true;
-            }
+            StartCoroutine(PopulateGalleryCoroutine());
         }
-        Debug.Log("---GALLERY--- No claimable rewards in gallery");
-        return false;
     }
-    private void UpdateGalleryButtonGlow()
+    public void PopulateOnLoad()
     {
-        if (galleryButton == null)
-        {
-            Debug.LogWarning("Gallery button not assigned.");
+        if (isPopulated || isPopulating)
             return;
-        }
-        bool hasUnclaimedRewards = HasUnclaimedRewards();
-        Debug.Log("----GALLERY---- hasUnclaimedRewards = " + hasUnclaimedRewards);
-        galleryButton.SetClaimable(hasUnclaimedRewards);
-    }
 
-    private void ShowClaimPanel(int rewardIndex)
-    {
-        Debug.Log("Reward Index : " + rewardIndex);
-        if (imageGalleryDataSO == null || rewardIndex >= imageGalleryDataSO.rewards.Count || claimPanelPrefab == null)
+        isPopulating = true;
+        LogDebug("Starting population...");
+
+        totalItems = levelProgressPrefabs.Length;
+        LogDebug($"Total items to display: {totalItems}");
+
+        foreach (Transform child in Content)
         {
-            Debug.LogError("Image gallery null" + imageGalleryDataSO);
-            Debug.LogError("rewardIndex >= imageGalleryDataSO.rewards.Count " + (rewardIndex >= imageGalleryDataSO.rewards.Count));
-            Debug.LogError("claimPanelPrefab == null" + claimPanelPrefab == null);
-            return;
+            Destroy(child.gameObject);
         }
 
-        ImageGalleryDataSO.RewardData reward = imageGalleryDataSO.rewards[rewardIndex];
-        ClaimPanel claimPanel = Instantiate(claimPanelPrefab, transform);
-        claimPanel.SetRewardData(reward);
-        Canvas.ForceUpdateCanvases();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(Content.GetComponent<RectTransform>());
-        Canvas.ForceUpdateCanvases();
+        activeSlots.Clear();
+        slotPool.Clear();
+        outlineCache.Clear();
 
-        ScrollToFirstUnclaimedReward();
+        LoadClaimedGalleryRewards();
 
-    }
-    public void PopulateGallery()
-    {
-        int i = 0;
-        foreach (LevelProgress levelProgressPrefab in levelProgressPrefabs)
+        SetCellSizeByViewport();
+        SetContentHeight();
+
+        float viewportHeight = viewportRect.rect.height;
+        int visibleRows = Mathf.CeilToInt(viewportHeight / cachedCellHeight);
+        int totalPoolCount = Mathf.Max(
+            minimumPoolSize,
+            (visibleRows + (bufferRows * 2)) * itemsPerRow);
+
+        LogDebug($"Viewport height: {viewportHeight}, Visible rows: {visibleRows}, Total pool slots: {totalPoolCount}");
+
+        for (int i = 0; i < totalPoolCount; i++)
         {
-            // Instantiate the gallery slot
-            GameObject gallerySlotObject = Instantiate(gallerySlotPrefab, Content);
-            gallerySlots.Add(gallerySlotObject.GetComponent<GallerySlotPrefab>());
-            // Instantiate the LevelProgress prefab within the slot
-            LevelProgress levelProgressInstance = Instantiate(levelProgressPrefab, gallerySlotObject.transform);
+            GameObject slotObject = Instantiate(gallerySlotPrefab, Content);
 
-            levelProgressInstance.transform.localScale = Vector3.one;
-            // Fit the LevelProgress prefab within the slot
-            RectTransform slotRect = gallerySlotObject.GetComponent<RectTransform>();
-            RectTransform progressRect = levelProgressInstance.GetComponent<RectTransform>();
+            RectTransform rt = slotObject.GetComponent<RectTransform>();
 
-            // Ensure the progress instance keeps the same scale.
-            progressRect.localScale = new Vector3(0.45f, 0.45f, 0.45f);
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = new Vector2(0, 1);
+            rt.sizeDelta = cellSize;
 
-            // Set the progress instance to fill the slot.
+            LevelProgress lp = Instantiate(levelProgressPrefabs[0], slotObject.transform);
+            lp.gameObject.SetActive(false);
+
+            RectTransform progressRect = lp.GetComponent<RectTransform>();
+
             progressRect.anchorMin = Vector2.zero;
             progressRect.anchorMax = Vector2.one;
+            progressRect.pivot = new Vector2(0.5f, 0.5f);
             progressRect.offsetMin = Vector2.zero;
             progressRect.offsetMax = Vector2.zero;
+            progressRect.localScale = new Vector3(0.45f, 0.45f, 0.45f);
 
-            // Set the fill amounts from PlayerPrefs
-            levelProgressInstance.GalleryInit(); // Initialize to load data.
-
-            AreAllImagesFilled = levelProgressInstance.AreAllImagesFilled();
-            GallerySlotPrefab gallerySlot = gallerySlotObject.GetComponent<GallerySlotPrefab>();
-            Debug.Log("Are images filled :" + levelProgressInstance.AreAllImagesFilled());
-            gallerySlot.trophyRoadManager = trophyRoadManager;
-            gallerySlot.imageGallery = this;
-
-            if (AreAllImagesFilled) gallerySlot.isFilled = true;
-            if (IsGalleryRewardClaimed(i)) gallerySlot.isClaimed = true;
-            if (AreAllImagesFilled && !IsGalleryRewardClaimed(i))
+            SlotData slotData = new SlotData
             {
-                Debug.Log("Images are filled and reward is unclaimed."); // Corrected log message
-                gallerySlot.Initialize(i, trophyRoadManager, this);
+                root = slotObject,
+                gallerySlot = slotObject.GetComponent<GallerySlotPrefab>(),
+                levelProgress = lp
+            };
 
-                // --- Start of new code to find and color the outline image ---
-                Image outlineImage = null;
+            slotPool.Add(slotData);
+            activeSlots.Add(slotObject);
 
-                // 1. Try finding it as the first child of the LevelProgress instance
-                if (levelProgressInstance.transform.childCount > 0)
-                {
-                    Transform firstChild = levelProgressInstance.transform.GetChild(0);
-                    if (firstChild != null && firstChild.name.ToLower().Contains("outline"))
-                    {
-                        Debug.Log("Found outline image as first child: " + firstChild.name);
-                        outlineImage = firstChild.GetComponent<Image>();
-                    }
-                }
+       
+                
+        }
 
-                // 2. If not found as the first child, or if the name doesn't match, search all children recursively
-                if (outlineImage == null)
-                {
-                    // Search recursively in children (including inactive ones)
-                    foreach (Image img in levelProgressInstance.GetComponentsInChildren<Image>(true))
-                    {
-                        if (img.gameObject.name.ToLower().Contains("outline"))
-                        {
-                            outlineImage = img;
-                            break; // Found it, stop searching
-                        }
-                    }
-                }
+        if (scrollRect != null)
+        {
+            scrollRect.onValueChanged.RemoveListener(OnScrollValueChanged);
+            scrollRect.onValueChanged.AddListener(OnScrollValueChanged);
+        }
 
-                if (outlineImage != null)
-                {
-                    // Change color to #FFB500 (Unity ColorUtility can parse hex strings)
-                    Color outlineColor;
-                    if (ColorUtility.TryParseHtmlString("#FFB500", out outlineColor))
-                    {
-                        outlineImage.color = outlineColor;
-                        Debug.Log($"Set outline color for {outlineImage.name} in slot {i} to #FFB500.");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"Failed to parse color #FFB500 for outline image in slot {i}.");
-                    }
+        currentStartIndex = 0;
 
-                }
-                else
-                {
-                    Debug.LogWarning($"Outline Image not found for slot {i}. Ensure it exists and its name contains 'outline'.");
-                }
-                // --- End of new code ---
+        // Force scroll to top
+        scrollRect.verticalNormalizedPosition = 1f;
+  
+        // Record initial scroll position
+        lastScrollY = Content.GetComponent<RectTransform>().anchoredPosition.y;
+        LogDebug($"Initial scroll Y position: {lastScrollY}");
 
-                // --- Call the new method here to set image fills to 0 ---
-                levelProgressInstance.ResetAllImageFills();
-                Debug.Log($"Reset fills to 0 for LevelProgress instance in slot {i} because it's unclaimed but claimable.");
-                // --- End of new code ---
+        UpdateSlotPositions(currentStartIndex);
 
-                // gallerySlot.claimButton.onClick.AddListener(() => ClaimGalleryReward(i, gallerySlot));
-            }
+        // Load ALL slots initially
+        LoadSlotsOnLoad();
 
-            else if (IsGalleryRewardClaimed(i))
+        UpdateGalleryButtonGlow();
+        isPopulated = true;
+        isPopulating = false;
+        LogDebug("Population complete!");
+
+        // Debug initial visible rows
+        DebugVisibleRows();
+    }
+    public void LoadSlotsOnLoad()
+    {
+        LogDebug("Loading all initial slots...");
+
+        for (int i = 0; i < slotPool.Count; i++)
+        {
+            int dataIndex = currentStartIndex + i;
+            if (dataIndex >= totalItems) continue;
+
+            SlotData slot = slotPool[i];
+
+            if (slot.currentDataIndex != dataIndex)
             {
-                Debug.Log("Images are filled and reward has been claimed.");
-                gallerySlot.Initialize(i, trophyRoadManager, this);
-                gallerySlot.SetClaimed();
+                BindDataToSlot(slot, dataIndex);
 
-                // --- Disable outline for claimed items ---
-                Image outlineImage = null;
-
-                // 1. Try first child
-                if (levelProgressInstance.transform.childCount > 0)
-                {
-                    Transform firstChild = levelProgressInstance.transform.GetChild(0);
-                    Debug.Log("Looking at object: " + firstChild.name);
-                    if (firstChild != null && firstChild.name.ToLower().Contains("outline"))
-                    {
-                        outlineImage = firstChild.GetComponent<Image>();
-                        Debug.Log("Assigned targetted  " + outlineImage.name);
-                    }
-                }
-
-                // 2. Fallback to recursive search
-                if (outlineImage == null)
-                {
-                    Debug.Log("Targeting img : " + levelProgressInstance.GetComponentsInChildren<Image>());
-                    foreach (Image img in levelProgressInstance.GetComponentsInChildren<Image>(true))
-                    {
-                        if (img.gameObject.name.ToLower().Contains("outline"))
-                        {
-                            outlineImage = img;
-                            Debug.Log("Targetted image was null : " + outlineImage.name);
-                            break;
-                        }
-                    }
-                }
-
-                if (outlineImage != null)
-                {
-                    outlineImage.gameObject.SetActive(false);
-                    Debug.Log($"[Init] Disabled outline for claimed reward in slot {i}");
-                }
+              
             }
-            else
+        }
+
+        LogDebug("Initial loading complete");
+    }
+    private IEnumerator PopulateGalleryCoroutine()
+    {
+        if (isPopulated || isPopulating)
+            yield break;
+
+        isPopulating = true;
+        LogDebug("Starting population...");
+
+        totalItems = levelProgressPrefabs.Length;
+        LogDebug($"Total items to display: {totalItems}");
+
+        foreach (Transform child in Content)
+        {
+            Destroy(child.gameObject);
+        }
+
+        activeSlots.Clear();
+        slotPool.Clear();
+        outlineCache.Clear();
+
+        LoadClaimedGalleryRewards();
+
+        SetCellSizeByViewport();
+        SetContentHeight();
+
+        float viewportHeight = viewportRect.rect.height;
+        int visibleRows = Mathf.CeilToInt(viewportHeight / cachedCellHeight);
+        int totalPoolCount = Mathf.Max(
+            minimumPoolSize,
+            (visibleRows + (bufferRows * 2)) * itemsPerRow);
+
+        LogDebug($"Viewport height: {viewportHeight}, Visible rows: {visibleRows}, Total pool slots: {totalPoolCount}");
+
+        for (int i = 0; i < totalPoolCount; i++)
+        {
+            GameObject slotObject = Instantiate(gallerySlotPrefab, Content);
+
+            RectTransform rt = slotObject.GetComponent<RectTransform>();
+
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = new Vector2(0, 1);
+            rt.sizeDelta = cellSize;
+
+            LevelProgress lp = Instantiate(levelProgressPrefabs[0], slotObject.transform);
+            lp.gameObject.SetActive(false);
+
+            RectTransform progressRect = lp.GetComponent<RectTransform>();
+
+            progressRect.anchorMin = Vector2.zero;
+            progressRect.anchorMax = Vector2.one;
+            progressRect.pivot = new Vector2(0.5f, 0.5f);
+            progressRect.offsetMin = Vector2.zero;
+            progressRect.offsetMax = Vector2.zero;
+            progressRect.localScale = new Vector3(0.45f, 0.45f, 0.45f);
+
+            SlotData slotData = new SlotData
             {
-                Debug.Log("Images are not filled.");
-                gallerySlot.Initialize(i, trophyRoadManager, this);
-                gallerySlot.SetUnavailable();
-            }
+                root = slotObject,
+                gallerySlot = slotObject.GetComponent<GallerySlotPrefab>(),
+                levelProgress = lp
+            };
 
-            i++;
+            slotPool.Add(slotData);
+            activeSlots.Add(slotObject);
+
+            if (i % 10 == 0)
+                yield return null;
+        }
+
+        if (scrollRect != null)
+        {
+            scrollRect.onValueChanged.RemoveListener(OnScrollValueChanged);
+            scrollRect.onValueChanged.AddListener(OnScrollValueChanged);
+        }
+
+        currentStartIndex = 0;
+
+        // Force scroll to top
+        scrollRect.verticalNormalizedPosition = 1f;
+        yield return null;
+        yield return null; // Two frames to settle
+
+        // Record initial scroll position
+        lastScrollY = Content.GetComponent<RectTransform>().anchoredPosition.y;
+        LogDebug($"Initial scroll Y position: {lastScrollY}");
+
+        UpdateSlotPositions(currentStartIndex);
+
+        // Load ALL slots initially
+        yield return StartCoroutine(LoadAllSlots());
+
+        UpdateGalleryButtonGlow();
+        isPopulated = true;
+        isPopulating = false;
+        LogDebug("Population complete!");
+
+        // Debug initial visible rows
+        DebugVisibleRows();
+    }
+
+    private IEnumerator LoadAllSlots()
+    {
+        LogDebug("Loading all initial slots...");
+
+        for (int i = 0; i < slotPool.Count; i++)
+        {
+            int dataIndex = currentStartIndex + i;
+            if (dataIndex >= totalItems) continue;
+
+            SlotData slot = slotPool[i];
+
+            if (slot.currentDataIndex != dataIndex)
+            {
+                BindDataToSlot(slot, dataIndex);
+
+                if (i % 3 == 0)
+                    yield return null;
+            }
+        }
+
+        LogDebug("Initial loading complete");
+    }
+
+    private void SetCellSizeByViewport()
+    {
+        float width = viewportRect.rect.width;
+        float totalSpacing = spacingX * (itemsPerRow - 1);
+        float availableWidth = width - (paddingLeft * 2) - totalSpacing;
+        float side = availableWidth / itemsPerRow;
+
+        cellSize = new Vector2(side, side);
+        cachedCellHeight = cellSize.y + spacingY;
+
+        LogDebug($"Cell size: {cellSize}, Cell height with spacing: {cachedCellHeight}");
+    }
+
+    private void SetContentHeight()
+    {
+        int totalRows = Mathf.CeilToInt(totalItems / (float)itemsPerRow);
+        float contentHeight = paddingTop +
+            (totalRows * cellSize.y) +
+            (Mathf.Max(0, totalRows - 1) * spacingY) +
+            spacingY;
+
+        Content.GetComponent<RectTransform>()
+            .SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight);
+
+        LogDebug($"Total rows: {totalRows}, Content height: {contentHeight}");
+    }
+
+    private void DebugVisibleRows()
+    {
+        float currentScrollY = Content.GetComponent<RectTransform>().anchoredPosition.y;
+        float scrollOffset = Mathf.Abs(currentScrollY);
+
+        // Top-based calculation
+        float topWithoutPadding = scrollOffset - paddingTop;
+        int topRow = Mathf.FloorToInt(topWithoutPadding / cachedCellHeight);
+        topRow = Mathf.Max(0, topRow);
+
+        // Center-based calculation
+        float viewportCenter = scrollOffset + (viewportRect.rect.height / 2f);
+        float centerWithoutPadding = viewportCenter - paddingTop;
+        int centerRow = Mathf.FloorToInt(centerWithoutPadding / cachedCellHeight);
+        float rowProgress = (centerWithoutPadding % cachedCellHeight) / cachedCellHeight;
+        int activeRow = centerRow;
+        if (rowProgress > 0.5f) activeRow = centerRow + 1;
+
+        // Bottom-based calculation
+        float bottomEdge = scrollOffset + viewportRect.rect.height;
+        float bottomWithoutPadding = bottomEdge - paddingTop;
+        int bottomRow = Mathf.FloorToInt(bottomWithoutPadding / cachedCellHeight);
+        bottomRow = Mathf.Min(Mathf.CeilToInt(totalItems / (float)itemsPerRow) - 1, bottomRow);
+
+        LogDebug($"=== VISIBLE ROWS DEBUG ===");
+        LogDebug($"Scroll Y: {currentScrollY}, Scroll offset: {scrollOffset}");
+        LogDebug($"TOP visible row: {topRow}");
+        LogDebug($"CENTER visible row: {centerRow} (+{rowProgress:F2}) -> ACTIVE row: {activeRow}");
+        LogDebug($"BOTTOM visible row: {bottomRow}");
+        LogDebug($"Visible rows count: {bottomRow - topRow + 1}");
+    }
+
+    private void OnScrollValueChanged(Vector2 pos)
+    {
+        if (!isPopulated || isReloading) return;
+
+        float currentScrollY = Content.GetComponent<RectTransform>().anchoredPosition.y;
+        float scrollDelta = Mathf.Abs(currentScrollY - lastScrollY);
+
+        // Only update if scrolled past threshold to save performance
+        if (scrollDelta < SCROLL_THRESHOLD) return;
+
+        lastScrollY = currentScrollY;
+
+        float scrollOffset = Mathf.Abs(currentScrollY);
+        float scrollWithoutPadding = scrollOffset - paddingTop;
+
+        // 1. Calculate which row is currently at the top of the screen
+        int topVisibleRow = Mathf.FloorToInt(scrollWithoutPadding / cachedCellHeight);
+        topVisibleRow = Mathf.Max(0, topVisibleRow);
+
+        // 2. Calculate the start index including the buffer rows above
+        int targetStartRow = Mathf.Max(0, topVisibleRow - bufferRows);
+        int newStartIndex = targetStartRow * itemsPerRow;
+
+        // 3. Clamp to valid range
+        int maxStartIndex = Mathf.Max(0, totalItems - slotPool.Count);
+        newStartIndex = Mathf.Min(newStartIndex, maxStartIndex);
+
+        // 4. Only update if the starting row has actually shifted
+        if (newStartIndex != currentStartIndex)
+        {
+            currentStartIndex = newStartIndex;
+            // We use a modular refresh to prevent viewport items from flickering
+            RefreshActiveSlotsModular();
         }
     }
-    public void ClaimGalleryReward(int levelProgressIndex, GallerySlotPrefab gallerySlot, int xpBubblesToSpawn, int xpGain)
+    private void RefreshActiveSlotsModular()
     {
-        claimedGalleryRewards.Add(levelProgressIndex);
-        SaveClaimedGalleryRewards();
-        Debug.Log("Spawning panel in ImageGallery");
-        // ShowClaimPanel(levelProgressIndex);
-        awarder.AwardCurrencyManual(50, gallerySlot.xpPile, gallerySlot.xpPile, gallerySlot.xpPile.GetComponent<RectTransform>());
+        int poolSize = slotPool.Count;
 
-
-        Transform slotTransform = Content.GetChild(levelProgressIndex);
-        LevelProgress levelProgress = slotTransform.GetComponentInChildren<LevelProgress>();
-        gallerySlots[levelProgressIndex].isClaimed = true;
-        if (levelProgress != null)
+        // We iterate through the range of data we want to show
+        for (int i = 0; i < poolSize; i++)
         {
-            // Fill images
-            int i = 0;
-            foreach (Image img in levelProgress.GetComponentsInChildren<Image>(true))
+            int dataIndex = currentStartIndex + i;
+
+            // Modular math: Find the specific slot in the pool responsible for this data index
+            // This ensures the slot doesn't change data if it's still in the visible range
+            int slotObjectIndex = dataIndex % poolSize;
+            SlotData slot = slotPool[slotObjectIndex];
+
+            if (dataIndex >= totalItems)
             {
-                if (img != null && img.type == Image.Type.Filled)
+                slot.root.SetActive(false);
+                slot.currentDataIndex = -1; // Reset so it rebinds if it comes back
+                continue;
+            }
+
+            slot.root.SetActive(true);
+
+            // 1. Position the slot based on its dataIndex
+            int row = dataIndex / itemsPerRow;
+            int col = dataIndex % itemsPerRow;
+            float x = paddingLeft + (col * (cellSize.x + spacingX));
+            float y = -paddingTop - (row * (cellSize.y + spacingY));
+
+            RectTransform rt = slot.root.GetComponent<RectTransform>();
+            rt.anchoredPosition = new Vector2(x, y);
+
+            // 2. Only Bind if the data index for this specific slot has actually changed
+            if (slot.currentDataIndex != dataIndex)
+            {
+                BindDataToSlot(slot, dataIndex);
+            }
+        }
+    }
+    private int lastStableTopRow = -1; // Add this class variable
+
+    private IEnumerator ReloadChangedSlots()
+    {
+        isReloading = true;
+
+        int reloadCount = 0;
+
+        for (int i = 0; i < slotPool.Count; i++)
+        {
+            int dataIndex = currentStartIndex + i;
+            if (dataIndex >= totalItems) continue;
+
+            SlotData slot = slotPool[i];
+
+            // Only reload if data changed
+            if (slot.currentDataIndex != dataIndex)
+            {
+                reloadCount++;
+                if (enableDebug && reloadCount <= 5)
+                {
+                    int row = dataIndex / itemsPerRow;
+                    LogDebug($"Reloading slot: index {slot.currentDataIndex} -> {dataIndex} (Row {row})");
+                }
+                BindDataToSlot(slot, dataIndex);
+
+                // Yield occasionally
+                if (reloadCount % 5 == 0)
+                    yield return null;
+            }
+        }
+
+        if (enableDebug && reloadCount > 0)
+            LogDebug($"Reload complete - {reloadCount} slots updated");
+
+        isReloading = false;
+    }
+    private void UpdateSlotPositions(int startIndex)
+    {
+        for (int i = 0; i < slotPool.Count; i++)
+        {
+            int dataIndex = startIndex + i;
+            SlotData slot = slotPool[i];
+
+            if (dataIndex >= totalItems)
+            {
+                slot.root.SetActive(false);
+                continue;
+            }
+
+            slot.root.SetActive(true);
+
+            int row = dataIndex / itemsPerRow;
+            int col = dataIndex % itemsPerRow;
+
+            float x = paddingLeft + (col * (cellSize.x + spacingX));
+            float y = -paddingTop - (row * (cellSize.y + spacingY));
+
+            RectTransform rt = slot.root.GetComponent<RectTransform>();
+            rt.anchoredPosition = new Vector2(x, y);
+        }
+    }
+
+    private void BindDataToSlot(SlotData slot, int dataIndex)
+    {
+        slot.currentDataIndex = dataIndex;
+
+        LevelProgress targetPrefab = levelProgressPrefabs[dataIndex];
+
+        // Check if we need to swap the LevelProgress instance
+        if (slot.levelProgress.name.Replace("(Clone)", "") != targetPrefab.name)
+        {
+            Destroy(slot.levelProgress.gameObject);
+
+            slot.levelProgress = Instantiate(targetPrefab, slot.root.transform);
+
+            RectTransform progressRect = slot.levelProgress.GetComponent<RectTransform>();
+
+            progressRect.anchorMin = Vector2.zero;
+            progressRect.anchorMax = Vector2.one;
+            progressRect.pivot = new Vector2(0.5f, 0.5f);
+            progressRect.offsetMin = Vector2.zero;
+            progressRect.offsetMax = Vector2.zero;
+            progressRect.localScale = new Vector3(0.45f, 0.45f, 0.45f);
+        }
+
+        LevelProgress lp = slot.levelProgress;
+        lp.gameObject.SetActive(true);
+
+        slot.gallerySlot.currentIndex = dataIndex;
+        slot.gallerySlot.levelProgressIndex = dataIndex;
+        slot.gallerySlot.imageGallery = this;
+        slot.gallerySlot.trophyRoadManager = trophyRoadManager;
+
+        bool claimed = IsGalleryRewardClaimed(dataIndex);
+        slot.gallerySlot.isClaimed = claimed;
+
+        lp.GalleryInit();
+
+        bool filled = lp.AreAllImagesFilled();
+        filledCache[dataIndex] = filled;
+
+        slot.gallerySlot.isFilled = filled;
+
+        SetupSlotVisuals(slot.gallerySlot, lp, dataIndex, filled);
+    }
+
+    private void SetupSlotVisuals(GallerySlotPrefab gallerySlot, LevelProgress lp, int index, bool isFilled)
+    {
+        gallerySlot.Initialize(index, trophyRoadManager, this);
+
+        if (isFilled && !gallerySlot.isClaimed)
+        {
+            Image outline = GetOrFindOutlineImage(lp, index);
+
+            if (outline != null)
+            {
+                outline.gameObject.SetActive(true);
+
+                if (ColorUtility.TryParseHtmlString("#FFB500", out Color gold))
+                {
+                    outline.color = gold;
+                }
+            }
+
+            lp.ResetAllImageFills();
+            gallerySlot.StartTweening();
+        }
+        else if (gallerySlot.isClaimed)
+        {
+            gallerySlot.SetClaimed();
+
+            Image outline = GetOrFindOutlineImage(lp, index);
+
+            if (outline != null)
+            {
+                outline.gameObject.SetActive(false);
+            }
+
+            foreach (Image img in lp.GetComponentsInChildren<Image>(true))
+            {
+                if (img.type == Image.Type.Filled)
                 {
                     img.fillAmount = 1f;
                 }
-
             }
+        }
+        else
+        {
+            gallerySlot.SetUnavailable();
+        }
+    }
 
-            // Hide outline
-            foreach (Image img in levelProgress.GetComponentsInChildren<Image>(true))
+    private Image GetOrFindOutlineImage(LevelProgress instance, int index)
+    {
+        if (outlineCache.TryGetValue(index, out Image cachedImage) && cachedImage != null)
+            return cachedImage;
+
+        foreach (Image img in instance.GetComponentsInChildren<Image>(true))
+        {
+            if (img.gameObject.name.IndexOf("outline", System.StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                if (img.name.ToLower().Contains("outline"))
-                {
-                    img.gameObject.SetActive(false);
-                    break;
-                }
+                outlineCache[index] = img;
+                return img;
             }
         }
 
-        // Refresh the gallery visuals
-        Initialize();
-        UpdateGalleryButtonGlow();
+        return null;
     }
 
-
-
-    private bool IsGalleryRewardClaimed(int levelProgressIndex)
+    public void ClaimGalleryReward(int levelProgressIndex, GallerySlotPrefab gallerySlot, int xpBubblesToSpawn, int xpGain)
     {
-        return claimedGalleryRewards.Contains(levelProgressIndex);
+        if (claimedGalleryRewards.Contains(levelProgressIndex))
+            return;
+
+        claimedGalleryRewards.Add(levelProgressIndex);
+        SaveClaimedGalleryRewards();
+
+        awarder.AwardCurrencyManual(50, gallerySlot.xpPile, gallerySlot.xpPile, gallerySlot.xpPile.GetComponent<RectTransform>());
+
+        gallerySlot.isClaimed = true;
+
+        LevelProgress lp = gallerySlot.GetComponentInChildren<LevelProgress>();
+
+        if (lp != null)
+        {
+            SetupSlotVisuals(gallerySlot, lp, levelProgressIndex, true);
+        }
+
+        lastUnclaimedCheckFrame = -1;
+        UpdateGalleryButtonGlow();
+    }
+    [NaughtyAttributes.Button("Test")]
+    public void Test()
+    {
+        Debug.Log("Test");
+    }
+    private bool IsGalleryRewardClaimed(int index)
+    {
+        return claimedGalleryRewards.Contains(index);
     }
 
     private void SaveClaimedGalleryRewards()
@@ -342,115 +671,118 @@ public class ImageGallery : MonoBehaviour
 
     private void LoadClaimedGalleryRewards()
     {
-        string claimedRewardsString = PlayerPrefs.GetString("ClaimedGalleryRewards", string.Empty);
-        if (!string.IsNullOrEmpty(claimedRewardsString))
+        string data = PlayerPrefs.GetString("ClaimedGalleryRewards", string.Empty);
+
+        if (!string.IsNullOrEmpty(data))
         {
-            claimedGalleryRewards = new List<int>(System.Array.ConvertAll(claimedRewardsString.Split(','), int.Parse));
+            claimedGalleryRewards = new List<int>(System.Array.ConvertAll(data.Split(','), int.Parse));
         }
     }
-    void ResizeGridCells()
+
+    private bool HasUnclaimedRewards()
     {
-        if (gridLayout == null || viewportRect == null)
+        if (Time.frameCount == lastUnclaimedCheckFrame)
+            return cachedHasUnclaimedRewards;
+
+        lastUnclaimedCheckFrame = Time.frameCount;
+
+        for (int i = 0; i < totalItems; i++)
         {
-            Debug.LogError("GridLayoutGroup or Viewport RectTransform not assigned!");
-            return;
+            if (filledCache.TryGetValue(i, out bool filled) && filled && !IsGalleryRewardClaimed(i))
+            {
+                cachedHasUnclaimedRewards = true;
+                return true;
+            }
         }
 
-        float viewportWidth = viewportRect.rect.width;
-        float spacing = gridLayout.spacing.x; // Horizontal spacing
-        float paddingLeft = gridLayout.padding.left;
-        float paddingRight = gridLayout.padding.right;
-
-        // Calculate the available width for each cell
-        float availableWidth = viewportWidth - paddingLeft - paddingRight - (spacing * 2); // 2 spaces for 3 columns
-
-        // Calculate the cell width
-        float cellWidth = availableWidth / 3f;
-
-        // Apply to GridLayoutGroup
-        gridLayout.cellSize = new Vector2(cellWidth, cellWidth); // Assuming square images, adjust height as needed.
+        cachedHasUnclaimedRewards = false;
+        return false;
     }
+
+    private void UpdateGalleryButtonGlow()
+    {
+        if (galleryButton != null)
+        {
+            galleryButton.SetClaimable(HasUnclaimedRewards());
+        }
+    }
+
     public void ScrollToFirstUnclaimedReward()
     {
-        if (scrollRect == null || Content == null || Content.childCount == 0)
+        if (!isPopulated)
         {
-            Debug.LogWarning("ScrollRect, Content, or children are missing.");
+            StartCoroutine(ScrollAfterPopulation());
             return;
         }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(Content.GetComponent<RectTransform>());
-        Canvas.ForceUpdateCanvases();
-        int firstUnclaimedIndex = -1;
-        int lastClaimedIndex = -1;
 
-        // Iterate through instantiated gallery slots
-        for (int i = 0; i < Content.childCount; i++)
+        int targetIndex = -1;
+
+        for (int i = 0; i < totalItems; i++)
         {
-            Transform slot = Content.GetChild(i);
-            LevelProgress levelProgress = slot.GetComponentInChildren<LevelProgress>();
-            if (levelProgress == null) continue;
-
-            bool isClaimed = IsGalleryRewardClaimed(i);
-            bool isFilled = levelProgress.AreAllImagesFilled();
-
-            if (isFilled && !isClaimed)
+            if (filledCache.TryGetValue(i, out bool filled) && filled && !IsGalleryRewardClaimed(i))
             {
-                if (firstUnclaimedIndex == -1)
-                {
-                    firstUnclaimedIndex = i;
-                    Debug.Log($"First unclaimed at index {i}");
-                }
-            }
-            else if (isClaimed)
-            {
-                lastClaimedIndex = i;
-                Debug.Log($"Last claimed at index {i}");
+                targetIndex = i;
+                break;
             }
         }
 
-        int targetIndex = (firstUnclaimedIndex != -1) ? firstUnclaimedIndex : lastClaimedIndex + 1;
         if (targetIndex == -1)
-        {
-            Debug.Log("No target to scroll to.");
             return;
+
+        LogDebug($"Scrolling to first unclaimed reward at index: {targetIndex}");
+
+        int targetRow = targetIndex / itemsPerRow;
+        float targetY = paddingTop + (targetRow * cachedCellHeight);
+        float maxScroll = Content.GetComponent<RectTransform>().rect.height - viewportRect.rect.height;
+
+        scrollRect.verticalNormalizedPosition = maxScroll > 0 ? Mathf.Clamp01(1f - (targetY / maxScroll)) : 1f;
+
+        StartCoroutine(UpdateAfterScroll(targetRow));
+    }
+
+    private IEnumerator UpdateAfterScroll(int targetRow)
+    {
+        yield return new WaitForSeconds(0.15f);
+
+        int newStartRow = Mathf.Max(0, targetRow - bufferRows);
+        int newStartIndex = newStartRow * itemsPerRow;
+        newStartIndex = Mathf.Min(newStartIndex, Mathf.Max(0, totalItems - slotPool.Count));
+
+        if (newStartIndex != currentStartIndex)
+        {
+            LogDebug($"After scroll - Updating to start index: {newStartIndex}");
+            currentStartIndex = newStartIndex;
+            UpdateSlotPositions(currentStartIndex);
+
+            if (!isReloading)
+                StartCoroutine(ReloadChangedSlots());
+        }
+    }
+    private void DebugCenterRow()
+    {
+        float currentScrollY = Content.GetComponent<RectTransform>().anchoredPosition.y;
+        float scrollOffset = Mathf.Abs(currentScrollY);
+        float viewportCenter = scrollOffset + (viewportRect.rect.height / 2f);
+        float centerWithoutPadding = viewportCenter - paddingTop;
+        int centerRow = Mathf.FloorToInt(centerWithoutPadding / cachedCellHeight);
+        float rowProgress = (centerWithoutPadding % cachedCellHeight) / cachedCellHeight;
+        int activeRow = centerRow;
+        if (rowProgress > 0.5f) activeRow = centerRow + 1;
+
+        LogDebug($"=== CENTER ROW DEBUG ===");
+        LogDebug($"Scroll Y: {currentScrollY}");
+        LogDebug($"Viewport center: {viewportCenter}");
+        LogDebug($"Center row: {centerRow}, Progress: {rowProgress:F2}, Active row: {activeRow}");
+        LogDebug($"Current window rows: {currentStartIndex / itemsPerRow} to {(currentStartIndex + slotPool.Count) / itemsPerRow}");
+    }
+    private IEnumerator ScrollAfterPopulation()
+    {
+        while (isPopulating)
+        {
+            yield return null;
         }
 
-        // Calculate scroll position based on GridLayout
-        GridLayoutGroup grid = Content.GetComponent<GridLayoutGroup>();
-        if (grid == null)
-        {
-            Debug.LogError("GridLayoutGroup missing on Content.");
-            return;
-        }
-
-        int columns = grid.constraintCount;
-        int row = targetIndex / columns;
-
-        float cellHeight = grid.cellSize.y;
-        float spacingY = grid.spacing.y;
-        float paddingTop = grid.padding.top;
-
-        // Position of the target row's top edge
-        float rowTop = paddingTop + row * (cellHeight + spacingY);
-
-        RectTransform contentRect = Content.GetComponent<RectTransform>();
-        float contentHeight = contentRect.rect.height;
-        float viewportHeight = viewportRect.rect.height;
-
-        // Position to center the row in the viewport
-        float requiredScroll = rowTop + (cellHeight / 2f) - (viewportHeight / 2f);
-        float maxScroll = contentHeight - viewportHeight;
-
-        if (maxScroll <= 0)
-        {
-            scrollRect.verticalNormalizedPosition = 1f;
-            return;
-        }
-
-        float normalizedY = Mathf.Clamp01(1f - (requiredScroll / maxScroll));
-        Canvas.ForceUpdateCanvases(); // Ensure layout is updated
-        scrollRect.verticalNormalizedPosition = normalizedY;
-
-        Debug.Log($"Scrolling to index {targetIndex} (row {row}), normalized Y: {normalizedY}");
-
+        yield return new WaitForEndOfFrame();
+        ScrollToFirstUnclaimedReward();
     }
 }

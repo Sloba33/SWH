@@ -155,7 +155,7 @@ public class MainMenuManager : MonoBehaviour
         {
             BackgroundContinueButton.gameObject.SetActive(false);
         }
-        imageGallery.StartGallery();
+        imageGallery.PopulateOnLoad();
     }
 
     public ParticleSystem xpPrefab;

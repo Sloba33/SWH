@@ -15,12 +15,23 @@ public class Helmet : MonoBehaviour
     public int helmetDurability, startDurability;
     public Texture defaultTexture;
     public bool isPaintable;
+    
+    // Cache the property ID for better performance
+    private int baseMapPropertyID;
+    
     private void Start()
     {
         startDurability = helmetDurability;
-
+        baseMapPropertyID = Shader.PropertyToID("_BaseMap");
         // material.SetTexture("_BaseMap", null);
     }
+    
+    // Helper method to check if material has _BaseMap property
+    private bool HasBaseMapProperty(Material mat)
+    {
+        return mat != null && mat.HasProperty(baseMapPropertyID);
+    }
+    
     public bool IsHelmetRepairable()
     {
         if (helmetDurability < startDurability)
@@ -40,7 +51,33 @@ public class Helmet : MonoBehaviour
         if (helmetDurability == startDurability) return;
         helmetDurability = startDurability;
         if (playerAttack != null) playerAttack.headSmashCollider.gameObject.SetActive(true);
-        mesh.material.SetTexture("_BaseMap", null);
+
+        Material[] materials = mesh.materials;
+        for (int i = 0; i < materials.Length; i++)
+        {
+            // Skip materials without _BaseMap property (like outline materials)
+            if (!HasBaseMapProperty(materials[i])) continue;
+            
+            Texture currentTexture = materials[i].GetTexture("_BaseMap");
+
+            // Only clear damage textures, preserve custom textures
+            if (currentTexture == cracked1 || currentTexture == cracked2)
+            {
+                // This was a damage texture, remove it
+                materials[i].SetTexture("_BaseMap", null);
+                Debug.Log($"Material {i} damage texture cleared");
+            }
+            else if (currentTexture != null)
+            {
+                // This is a custom texture, keep it
+                Debug.Log($"Material {i} custom texture preserved: {currentTexture.name}");
+            }
+            else
+            {
+                // No texture, leave as is
+                materials[i].SetTexture("_BaseMap", null);
+            }
+        }
     }
     public void DamageHelmet(int amount)
     {
@@ -52,38 +89,74 @@ public class Helmet : MonoBehaviour
         // Calculate the percentage of durability remaining
         float durabilityPercentage = (float)helmetDurability / startDurability;
         Debug.Log("Durability percentage " + durabilityPercentage);
-        // Determine which texture to apply based on the percentage
+
+        // Determine target damage texture based on durability
+        Texture targetDamageTexture = null;
+
         if (durabilityPercentage > 0.67f)
         {
-            // Apply the default texture
-            // mesh.material.SetTexture("_BaseMap", null);
-            mesh.material.SetTexture("_BaseMap", null);
+            targetDamageTexture = null; // No damage texture
         }
         else if (durabilityPercentage <= 0.67f && durabilityPercentage > 0.34f)
         {
-            // Apply cracked1 texture
             Debug.Log("Setting dmg texture 1");
-            mesh.material.SetTexture("_BaseMap", cracked1);
+            targetDamageTexture = cracked1;
         }
         else
         {
             Debug.Log("Setting dmg texture 2");
-            // Apply cracked2 texture
-            mesh.material.SetTexture("_BaseMap", cracked2);
+            targetDamageTexture = cracked2;
 
             // Check if durability is now 0 and destroy the helmet
             if (helmetDurability == 0)
             {
-                mesh.material.SetTexture("_BaseMap", null);
                 this.gameObject.SetActive(false);
-                // if (playerAttack != null) playerAttack.headSmashCollider.gameObject.SetActive(false);
+            }
+        }
 
+        // Iterate through all materials on the helmet
+        Material[] materials = mesh.materials;
+        for (int i = 0; i < materials.Length; i++)
+        {
+            // Skip materials without _BaseMap property (like outline materials)
+            if (!HasBaseMapProperty(materials[i])) continue;
+            
+            Texture currentTexture = materials[i].GetTexture("_BaseMap");
+
+            // Check if the material already has a custom texture
+            bool hasCustomTexture = currentTexture != null &&
+                                    currentTexture != cracked1 &&
+                                    currentTexture != cracked2;
+
+            if (hasCustomTexture)
+            {
+                // Material has a custom texture (like paint, decal, etc.)
+                // Keep it and don't apply damage textures
+                Debug.Log($"Material {i} has custom texture, preserving it");
+                continue; // Skip applying damage texture
+            }
+            else if (currentTexture == cracked1 || currentTexture == cracked2)
+            {
+                // Material currently has a damage texture
+                // Update it to the new appropriate damage texture
+                materials[i].SetTexture("_BaseMap", targetDamageTexture);
+                Debug.Log($"Material {i} updated damage texture");
+            }
+            else
+            {
+                // Material has no texture or has default texture
+                // Apply the appropriate damage texture
+                materials[i].SetTexture("_BaseMap", targetDamageTexture);
+                Debug.Log($"Material {i} applied new damage texture");
             }
         }
     }
 
     public void SetTex(Material material)
     {
+        // Skip if material doesn't have _BaseMap property
+        if (!HasBaseMapProperty(material)) return;
+        
         if (defaultTexture != null)
         {
             material.SetTexture("_BaseMap", defaultTexture);

@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
     public Obstacle[] obstaclesToFreeze;
     public CollectibleItemDatabase collectibleDatabase;
     public bool CollectibleSpawned;
-    public bool ShouldHaveSkipButton;
+    public bool ShouldHaveSkipButton = true;
 
     [Header("Multiplayer Pre-game")]
     [SerializeField] private TextMeshProUGUI countdownText;
