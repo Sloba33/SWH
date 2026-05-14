@@ -425,7 +425,7 @@ public class PlayerObstacleController : MonoBehaviour
 
         // StartCoroutine(CoordinatedPushMovement());
         Vector3 dir = new Vector3(movementDirection.x, pushObstacle.transform.position.y, movementDirection.z);
-        pushObstacle.PushObstacle(dir, player.PushAndPullSpeed(pushObstacle.Weight));
+        pushObstacle.PushObstacle(dir, player.PushAndPullSpeed(pushObstacle.EffectiveWeight));
 
         _anim.SetBool("Push", true);
         _anim.SetBool("Idle", false);
@@ -444,7 +444,7 @@ public class PlayerObstacleController : MonoBehaviour
             }
 
             Vector3 moveDirection = movementDirection.normalized;
-            float speed = player.PushAndPullSpeed(pushObstacle.Weight);
+            float speed = player.PushAndPullSpeed(pushObstacle.EffectiveWeight);
 
             if (moveDirection != Vector3.zero)
             {
@@ -665,7 +665,7 @@ public class PlayerObstacleController : MonoBehaviour
         obs.isBeingPulled = true;
         obs.wasRecentlyPushed = true;
         if (obs != null && !playerController.AI) obs.currentlyUsedPlayerConrtoller = playerController;
-        float speed = player.PushAndPullSpeed(obs.Weight);
+        float speed = player.PushAndPullSpeed(obs.EffectiveWeight);
         obs.PullObstacle(pullDirection, speed, playerController._movement.obstacleBehind);
 
         // --- REMOVED THIS LINE ---

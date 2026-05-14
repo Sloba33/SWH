@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
     public GoalSetter playerGoalSetter, AIGoalSetter;
     public bool ShouldHaveMainMenuButton;
     public bool SendsBackToMainMenu;
-    public List<Obstacle> ObstaclesToModify = new List<Obstacle>();
     public float ObstacleWeightModifier = 1f;
     public int defaultZoomValue = 2;
     public bool isFinalChapterLevel;
@@ -236,12 +235,8 @@ public class GameManager : MonoBehaviour
                 AIGoalSetter = goalSetters[1];
                 playerGoalSetter = goalSetters[0];
             }
-        ObstaclesToModify = new List<Obstacle>(FindObjectsOfType<Obstacle>());
-        for (int i = 0; i < ObstaclesToModify.Count; i++)
-        {
-            ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
-
-        }
+        // ObstacleWeightModifier is applied per-obstacle in Obstacle.Start() (see Obstacle.EffectiveWeight),
+        // so it covers both scene-placed and later-spawned falling obstacles.
         if (ShouldHaveSkipButton)
             GenerateSkipButton();
     }

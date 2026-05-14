@@ -21,7 +21,14 @@ public class Obstacle : MonoBehaviour
     public ObstacleColor obstacleColor;
     public ObstacleAudioType obstacleAudioType;
     [Header("Stats & References")]
-    public float Weight;
+    public float Weight;                 // base value, authored on the prefab — never mutated at runtime
+    private float _weightModifier = 1f;  // captured once from the level
+
+    /// <summary>
+    /// Prefab Weight scaled by the level-wide modifier. Gameplay (push/pull speed)
+    /// should always read this, never the raw Weight.
+    /// </summary>
+    public float EffectiveWeight => Weight * _weightModifier;
     public Tile tile;
     public GameObject fracturedObject;
     public PlayerController playerController;
@@ -126,6 +133,8 @@ public class Obstacle : MonoBehaviour
     private void Start()
     {
         controllerCleared = true;
+        if (GameManager.Instance != null)
+            _weightModifier = GameManager.Instance.ObstacleWeightModifier;
 
         FallTimer = 0f;
         if (GetComponent<Rigidbody>() != null)
