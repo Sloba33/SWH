@@ -148,7 +148,15 @@ public class PlayerAttack : MonoBehaviour
         _anim.SetBool("Hit", true);
 
         bool didHitObstacle = ObstacleToHit != null && ObstacleToHit.isHammerable;
-        _coherenceSync.SendCommand<PlayerAttack>(nameof(CmdPlayHitVisuals), MessageTarget.All, didHitObstacle, hitPoint);
+
+        if(_coherenceSync != null)
+        {
+            _coherenceSync.SendCommand<PlayerAttack>(nameof(CmdPlayHitVisuals), MessageTarget.All, didHitObstacle, hitPoint);
+        }
+        else
+        {
+            CmdPlayHitVisuals(didHitObstacle, hitPoint);
+        }
     }
 
     [Command(defaultRouting = MessageTarget.All)]
@@ -263,7 +271,15 @@ public class PlayerAttack : MonoBehaviour
             : null;
 
         _anim.SetBool("HitDown", true);
-        _coherenceSync.SendCommand<PlayerAttack>(nameof(CmdPlayHitDownVisuals), MessageTarget.All);
+
+        if(_coherenceSync != null)
+        {
+            _coherenceSync.SendCommand<PlayerAttack>(nameof(CmdPlayHitDownVisuals), MessageTarget.All);
+        }
+        else
+        {
+            CmdPlayHitDownVisuals();
+        }
     }
 
     [Command(defaultRouting = MessageTarget.All)]
