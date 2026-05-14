@@ -1,0 +1,384 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &404430645472369526
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2746625883935075875, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_Name
+      value: WoodParticles_Yellow_Networked
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.36410344
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.8737426
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2746625883935075875, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8776421846079780505}
+    - targetCorrespondingSourceObject: {fileID: 2746625883935075875, guid: 0c6428932de12084fa0163404e7d9e75,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1488829550873897596}
+  m_SourcePrefab: {fileID: 100100000, guid: 0c6428932de12084fa0163404e7d9e75, type: 3}
+--- !u!199 &1856300379067677365 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 2044129397910921667, guid: 0c6428932de12084fa0163404e7d9e75,
+    type: 3}
+  m_PrefabInstance: {fileID: 404430645472369526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2558372479328220501 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2746625883935075875, guid: 0c6428932de12084fa0163404e7d9e75,
+    type: 3}
+  m_PrefabInstance: {fileID: 404430645472369526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8776421846079780505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2558372479328220501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f13b824f8b775469b6173479d76ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1488829550873897596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2558372479328220501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff62c046a053f416a8dc48ad6483a25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnAuthorityRequest:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNetworkedInstantiation:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBeforeNetworkedInstantiation:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNetworkedDestruction:
+    m_PersistentCalls:
+      m_Calls: []
+  OnStateRemote:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputRemote:
+    m_PersistentCalls:
+      m_Calls: []
+  OnStateAuthority:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputAuthority:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAuthorityRequestRejected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAuthTransferComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNetworkedParentChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputSimulatorConnected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody2DPositionUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody3DPositionUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody2DRotationUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody3DRotationUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  coherenceSyncConfig: {fileID: 11400000, guid: dab15c83d8deff34aac31a38e2a3c76d,
+    type: 2}
+  archetype:
+    lodLevels:
+    - distance: 0
+    boundComponents:
+    - component: {fileID: 4053288882734834467}
+      lodStepsActive: 1
+    - component: {fileID: 5215100750192821020}
+      lodStepsActive: 1
+    - component: {fileID: 4887656704237906333}
+      lodStepsActive: 1
+    - component: {fileID: 8776421846079780505}
+      lodStepsActive: 1
+    - component: {fileID: 8832307587747349477}
+      lodStepsActive: 1
+    - component: {fileID: 6641863850770471741}
+      lodStepsActive: 1
+    - component: {fileID: 1856300379067677365}
+      lodStepsActive: 1
+    GeneratesArchetypeDefinition: 0
+  interpolationLocation: 1
+  RigidbodyUpdateMode: 0
+  bakedScriptType: Coherence.Generated.CoherenceSync_ca98cb6ca1d36cb489960add5feaf99b,
+    Assembly-CSharp
+  isGlobal: 0
+  synchronizeParent: 1
+  approveAuthorityTransferRequests: 1
+  simulationType: 0
+  authorityTransferConfig: -1
+  orphanedBehavior: 0
+  lifetimeType: 0
+  uniquenessType: 0
+  replacementStrategy: 0
+  unsyncedNetworkEntityPriority: 0
+  preserveChildren: 0
+  bindings:
+  - rid: 3132022976253264175
+  - rid: 3132022976253264176
+  - rid: 3132022976567050307
+  scenePrefabInstanceUUID: 
+  coherenceUUID: 
+  assetVersion: 
+  coherenceTag: 
+  componentActions: []
+  floatingOriginMode: 0
+  floatingOriginParentedMode: 1
+  synchronizationChannel: Default
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 3132022976253264175
+      type: {class: PositionBinding, ns: Coherence.Toolkit.Bindings.TransformBindings,
+        asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 3132022976253264177
+        routing: 0
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: 13bc97a7594d44a4ab21fd75419a7963
+        archetypeData:
+          type: 7
+          minRange: 0
+          maxRange: 0
+          sampleRate: 20
+          floatCompression: 0
+          fields:
+          - type: 7
+            bits: 32
+            precision: 0.001
+            floatCompression: 0
+        unityComponent: {fileID: 4053288882734834467}
+        coherenceSync: {fileID: 1488829550873897596}
+        _interpolationSettings: {fileID: 11400000, guid: ae4419d1d9a8643709bf5f6b90c584a5,
+          type: 2}
+    - rid: 3132022976253264176
+      type: {class: RotationBinding, ns: Coherence.Toolkit.Bindings.TransformBindings,
+        asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 3132022976253264178
+        routing: 0
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: e217d59eeded48c2a519e62901377410
+        archetypeData:
+          type: 8
+          minRange: 0
+          maxRange: 0
+          sampleRate: 20
+          floatCompression: 0
+          fields:
+          - type: 8
+            bits: 32
+            precision: 0.00000008381903171539307
+            floatCompression: 0
+        unityComponent: {fileID: 4053288882734834467}
+        coherenceSync: {fileID: 1488829550873897596}
+        _interpolationSettings: {fileID: 11400000, guid: ae4419d1d9a8643709bf5f6b90c584a5,
+          type: 2}
+    - rid: 3132022976253264177
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: position
+        monoAssemblyType: UnityEngine.Vector3, UnityEngine
+        required: 1
+        enforcesLODingWhenFieldsOverriden: 1
+        valueSyncCallbackName: 
+        memberType: 64
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.TransformBindings.PositionBinding,
+            Coherence.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
+    - rid: 3132022976253264178
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: rotation
+        monoAssemblyType: UnityEngine.Quaternion, UnityEngine
+        required: 0
+        enforcesLODingWhenFieldsOverriden: 1
+        valueSyncCallbackName: 
+        memberType: 64
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.TransformBindings.RotationBinding,
+            Coherence.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
+    - rid: 3132022976567050307
+      type: {class: EnumBinding, ns: Coherence.Toolkit.Bindings.ValueBindings, asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 3132022976567050308
+        routing: 0
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: 05b31e72442a4b2d9f61aa6d3c6cfa4c
+        archetypeData:
+          type: 20
+          minRange: 0
+          maxRange: 8
+          sampleRate: 20
+          floatCompression: 0
+          fields:
+          - type: 20
+            bits: 4
+            precision: 0
+            floatCompression: 0
+        unityComponent: {fileID: 8776421846079780505}
+        coherenceSync: {fileID: 1488829550873897596}
+        _interpolationSettings: {fileID: 0}
+    - rid: 3132022976567050308
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: ObstacleAudioType
+        monoAssemblyType: ObstacleAudioType, Assembly-CSharp
+        required: 1
+        enforcesLODingWhenFieldsOverriden: 1
+        valueSyncCallbackName: 
+        memberType: 4
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: ObstacleDestructionVfx, Assembly-CSharp, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.ValueBindings.EnumBinding,
+            Coherence.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
+--- !u!4 &4053288882734834467 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4457718398794250325, guid: 0c6428932de12084fa0163404e7d9e75,
+    type: 3}
+  m_PrefabInstance: {fileID: 404430645472369526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &4887656704237906333 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 5064476344637829867, guid: 0c6428932de12084fa0163404e7d9e75,
+    type: 3}
+  m_PrefabInstance: {fileID: 404430645472369526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &5215100750192821020 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5603341083623053418, guid: 0c6428932de12084fa0163404e7d9e75,
+    type: 3}
+  m_PrefabInstance: {fileID: 404430645472369526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &6641863850770471741 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6462789143423811659, guid: 0c6428932de12084fa0163404e7d9e75,
+    type: 3}
+  m_PrefabInstance: {fileID: 404430645472369526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8832307587747349477 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9155390830184405139, guid: 0c6428932de12084fa0163404e7d9e75,
+    type: 3}
+  m_PrefabInstance: {fileID: 404430645472369526}
+  m_PrefabAsset: {fileID: 0}

@@ -310,6 +310,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 0}
   obstacleSprite: {fileID: 21300000, guid: a35dd80315b91794e9721179475a1003, type: 3}
   obstacleFallPS: {fileID: 7602442951908165281, guid: 92ce7f324cf4a2146a11a0d3c8082354,
@@ -318,7 +320,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 8
   obstacleModifier: 0
   obstacleColor: 5
@@ -406,6 +409,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 4442482152668682896, guid: 55d5e76718d0e444c820ead107971698,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1589348263480677302, guid: b2c90110cb5c4054188322520e9f7f43,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0

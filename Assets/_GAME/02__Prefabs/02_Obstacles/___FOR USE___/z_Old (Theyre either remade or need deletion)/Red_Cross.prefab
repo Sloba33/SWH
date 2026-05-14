@@ -60,6 +60,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -128,6 +131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 8303168187155977056, guid: 53a78dbe660da154ca3bf72a19cd05b9,
     type: 3}
   obstacleSprite: {fileID: 0}
@@ -136,10 +141,11 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
-  aiLerp: {fileID: 0}
-  aSTarAI: {fileID: 0}
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 32
+  obstacleModifier: 0
+  obstacleColor: 0
   obstacleAudioType: 0
   Weight: 10
   tile: {fileID: 0}
@@ -217,6 +223,7 @@ MonoBehaviour:
   HalfExtents: {x: 0.489, y: 0.02, z: 0.489}
   priority: 0
   hasPriority: 0
+  currentlyUsedPlayerConrtoller: {fileID: 0}
   recentlyPulled: 0
   pushabilityDelayed: 0
   fallSpeed: 0.003
@@ -224,10 +231,13 @@ MonoBehaviour:
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
     type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
+    type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
   audioClip: {fileID: 0}
   goalSetters: []
+  audioSource: {fileID: 0}
   galaxyForward: 0
   galaxyBack: 0
   galaxyLeft: 0
@@ -236,6 +246,7 @@ MonoBehaviour:
   spawningBlackHole: 0
   onDestroy: 0
   objectToTurnOff: {fileID: 0}
+  objectToTurnOn: {fileID: 0}
   startColor: {r: 0, g: 0, b: 0, a: 0}
   endColor: {r: 0, g: 0, b: 0, a: 0}
   blinkDuration: 1

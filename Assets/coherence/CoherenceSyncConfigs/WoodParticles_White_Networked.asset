@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: WoodParticles_White_Networked
+  m_EditorClassIdentifier: 
+  id: 7d4dc57e028924b4d9101830bd0321a9
+  selfId: 65636209fdb347c4a9f71e6ad9f4f2f4
+  editorTarget: {fileID: 5754486409639919242, guid: 7d4dc57e028924b4d9101830bd0321a9,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 3132022976253264173
+  objectInstantiator:
+    rid: 3132022976253264174
+  references:
+    version: 2
+    RefIds:
+    - rid: 3132022976253264173
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 5754486409639919242, guid: 7d4dc57e028924b4d9101830bd0321a9,
+          type: 3}
+    - rid: 3132022976253264174
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 

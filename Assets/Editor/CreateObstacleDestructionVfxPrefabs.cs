@@ -3,12 +3,15 @@ using System.IO;
 using Coherence.Editor;
 using Coherence.Toolkit;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 public class CreateObstacleDestructionVfxPrefabs : EditorWindow
 {
     private DefaultAsset folder;
+    private SceneAsset sceneAsset;
 
     [MenuItem("Tools/Create Obstacle Destruction VFX Prefabs")]
     public static void ShowWindow()
@@ -36,6 +39,36 @@ public class CreateObstacleDestructionVfxPrefabs : EditorWindow
         {
             EditorGUILayout.HelpBox("Selected asset is not a folder.", MessageType.Warning);
         }
+
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField("Scene (wire in-scene obstacles)", EditorStyles.boldLabel);
+        sceneAsset = (SceneAsset)EditorGUILayout.ObjectField("Scene", sceneAsset, typeof(SceneAsset), false);
+
+        string scenePath = sceneAsset ? AssetDatabase.GetAssetPath(sceneAsset) : null;
+        bool sceneValid = !string.IsNullOrEmpty(scenePath);
+
+        using (new EditorGUI.DisabledScope(!sceneValid))
+        {
+            if (GUILayout.Button("Create VFX Prefabs and Wire Scene Obstacles"))
+            {
+                RunScene(scenePath);
+            }
+        }
+
+        EditorGUILayout.HelpBox(
+            "Scene mode only touches obstacles that are plain scene objects. Obstacles that are " +
+            "prefab instances are left alone — wire those via their prefab in the folder above.",
+            MessageType.Info);
+    }
+
+    private class RunStats
+    {
+        public int vfxCreated;
+        public int vfxReused;
+        public int wired;
+        public int prefabInstancesSkipped;
+        public int skipped;
     }
 
     private static void Run(string folderPath)
@@ -44,9 +77,7 @@ public class CreateObstacleDestructionVfxPrefabs : EditorWindow
 
         var obstacleToVfx = new Dictionary<string, string>();
         var createdVfxPaths = new List<string>();
-        int vfxCreatedCount = 0;
-        int vfxReusedCount = 0;
-        int skippedCount = 0;
+        var stats = new RunStats();
 
         foreach (var guid in guids)
         {
@@ -57,78 +88,158 @@ public class CreateObstacleDestructionVfxPrefabs : EditorWindow
             var obstacleComp = obstacleAsset.GetComponent<Obstacle>();
             if (obstacleComp == null) continue;
 
-            ParticleSystem originalPs = obstacleComp.destructionParticleSystem;
-            if (originalPs == null)
-            {
-                Debug.LogWarning($"[ObstacleVfx] {obstacleAsset.name}: destructionParticleSystem is not assigned. Skipping.");
-                skippedCount++;
-                continue;
-            }
-
-            string originalPsPath = AssetDatabase.GetAssetPath(originalPs);
-            if (string.IsNullOrEmpty(originalPsPath))
-            {
-                Debug.LogWarning($"[ObstacleVfx] {obstacleAsset.name}: destructionParticleSystem is not a prefab asset. Skipping.");
-                skippedCount++;
-                continue;
-            }
-
-            string vfxPath = ComputeVfxPath(originalPsPath);
-
-            if (createdVfxPaths.Contains(vfxPath))
-            {
+            string vfxPath = ResolveVfxPrefab(obstacleComp.destructionParticleSystem, obstacleAsset.name,
+                createdVfxPaths, stats);
+            if (vfxPath != null)
                 obstacleToVfx[obstaclePath] = vfxPath;
-            }
-            else if (AssetDatabase.LoadAssetAtPath<GameObject>(vfxPath) != null)
-            {
-                Debug.Log($"[ObstacleVfx] VFX prefab already exists at {vfxPath} — reusing.");
-                vfxReusedCount++;
-                obstacleToVfx[obstaclePath] = vfxPath;
-            }
-            else if (CreateVfxPrefab(originalPsPath, vfxPath))
-            {
-                createdVfxPaths.Add(vfxPath);
-                vfxCreatedCount++;
-                obstacleToVfx[obstaclePath] = vfxPath;
-            }
-            else
-            {
-                skippedCount++;
-            }
         }
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
+        CreateConfigsForVfxPrefabs(createdVfxPaths);
+
+        foreach (var kvp in obstacleToVfx)
+        {
+            if (WireObstaclePrefab(kvp.Key, kvp.Value))
+                stats.wired++;
+            else
+                stats.skipped++;
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        BakeIfNeeded(createdVfxPaths);
+
+        Debug.Log($"[ObstacleVfx] Done. VFX created: {stats.vfxCreated}, reused: {stats.vfxReused}, " +
+                  $"obstacles wired: {stats.wired}, skipped: {stats.skipped}.");
+    }
+
+    private static void RunScene(string scenePath)
+    {
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+        if (!scene.IsValid() || !scene.isLoaded)
+        {
+            Debug.LogError($"[ObstacleVfx] Could not open scene at {scenePath}.");
+            return;
+        }
+
+        var obstacles = new List<Obstacle>();
+        foreach (var root in scene.GetRootGameObjects())
+            obstacles.AddRange(root.GetComponentsInChildren<Obstacle>(true));
+
+        var sceneObstacleToVfx = new List<(Obstacle obstacle, string vfxPath)>();
+        var createdVfxPaths = new List<string>();
+        var stats = new RunStats();
+
+        foreach (var obstacle in obstacles)
+        {
+            // Prefab instances are wired through their prefab asset by the folder pass —
+            // editing them here would just create per-instance overrides.
+            if (PrefabUtility.IsPartOfPrefabInstance(obstacle.gameObject))
+            {
+                stats.prefabInstancesSkipped++;
+                continue;
+            }
+
+            string vfxPath = ResolveVfxPrefab(obstacle.destructionParticleSystem, obstacle.name,
+                createdVfxPaths, stats);
+            if (vfxPath != null)
+                sceneObstacleToVfx.Add((obstacle, vfxPath));
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        CreateConfigsForVfxPrefabs(createdVfxPaths);
+
+        foreach (var (obstacle, vfxPath) in sceneObstacleToVfx)
+        {
+            if (WireSceneObstacle(obstacle, vfxPath))
+                stats.wired++;
+            else
+                stats.skipped++;
+        }
+
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        BakeIfNeeded(createdVfxPaths);
+
+        Debug.Log($"[ObstacleVfx] Scene done ({Path.GetFileNameWithoutExtension(scenePath)}). " +
+                  $"VFX created: {stats.vfxCreated}, reused: {stats.vfxReused}, obstacles wired: {stats.wired}, " +
+                  $"prefab instances skipped: {stats.prefabInstancesSkipped}, skipped: {stats.skipped}.");
+    }
+
+    // Resolves (creating if needed) the networked VFX prefab for one obstacle's
+    // destructionParticleSystem. Returns the prefab path, or null if it couldn't be resolved.
+    private static string ResolveVfxPrefab(ParticleSystem originalPs, string contextName,
+        List<string> createdVfxPaths, RunStats stats)
+    {
+        if (originalPs == null)
+        {
+            Debug.LogWarning($"[ObstacleVfx] {contextName}: destructionParticleSystem is not assigned. Skipping.");
+            stats.skipped++;
+            return null;
+        }
+
+        string originalPsPath = AssetDatabase.GetAssetPath(originalPs);
+        if (string.IsNullOrEmpty(originalPsPath))
+        {
+            Debug.LogWarning($"[ObstacleVfx] {contextName}: destructionParticleSystem is not a prefab asset. Skipping.");
+            stats.skipped++;
+            return null;
+        }
+
+        string vfxPath = ComputeVfxPath(originalPsPath);
+
+        if (createdVfxPaths.Contains(vfxPath))
+            return vfxPath;
+
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(vfxPath) != null)
+        {
+            Debug.Log($"[ObstacleVfx] VFX prefab already exists at {vfxPath} — reusing.");
+            stats.vfxReused++;
+            return vfxPath;
+        }
+
+        if (CreateVfxPrefab(originalPsPath, vfxPath))
+        {
+            createdVfxPaths.Add(vfxPath);
+            stats.vfxCreated++;
+            return vfxPath;
+        }
+
+        stats.skipped++;
+        return null;
+    }
+
+    private static void CreateConfigsForVfxPrefabs(List<string> createdVfxPaths)
+    {
         foreach (var vfxPath in createdVfxPaths)
         {
             var assetOnDisk = AssetDatabase.LoadAssetAtPath<GameObject>(vfxPath);
             if (assetOnDisk != null)
                 CoherenceSyncConfigUtils.Create(assetOnDisk);
         }
+    }
 
-        int wiredCount = 0;
-        foreach (var kvp in obstacleToVfx)
-        {
-            if (WireObstaclePrefab(kvp.Key, kvp.Value))
-                wiredCount++;
-            else
-                skippedCount++;
-        }
+    private static void BakeIfNeeded(List<string> createdVfxPaths)
+    {
+        if (createdVfxPaths.Count == 0) return;
 
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-
-        if (createdVfxPaths.Count > 0)
-        {
-            Debug.Log("[ObstacleVfx] Running Coherence bake...");
-            bool baked = BakeUtil.Bake();
-            Debug.Log(baked
-                ? "[ObstacleVfx] Bake succeeded."
-                : "[ObstacleVfx] Bake failed — check Console and bake manually via Coherence menu.");
-        }
-
-        Debug.Log($"[ObstacleVfx] Done. VFX created: {vfxCreatedCount}, reused: {vfxReusedCount}, obstacles wired: {wiredCount}, skipped: {skippedCount}.");
+        Debug.Log("[ObstacleVfx] Running Coherence bake...");
+        bool baked = BakeUtil.Bake();
+        Debug.Log(baked
+            ? "[ObstacleVfx] Bake succeeded."
+            : "[ObstacleVfx] Bake failed — check Console and bake manually via Coherence menu.");
     }
 
     private static string ComputeVfxPath(string originalPsPath)
@@ -178,19 +289,9 @@ public class CreateObstacleDestructionVfxPrefabs : EditorWindow
 
     private static bool WireObstaclePrefab(string obstaclePath, string vfxPath)
     {
-        var vfxAsset = AssetDatabase.LoadAssetAtPath<GameObject>(vfxPath);
-        if (vfxAsset == null)
-        {
-            Debug.LogError($"[ObstacleVfx] Could not load VFX prefab at {vfxPath}.");
-            return false;
-        }
-
-        var vfxComponent = vfxAsset.GetComponent<ObstacleDestructionVfx>();
+        var vfxComponent = LoadVfxComponent(vfxPath);
         if (vfxComponent == null)
-        {
-            Debug.LogError($"[ObstacleVfx] VFX prefab {vfxPath} has no ObstacleDestructionVfx component.");
             return false;
-        }
 
         GameObject root = PrefabUtility.LoadPrefabContents(obstaclePath);
         try
@@ -219,5 +320,33 @@ public class CreateObstacleDestructionVfxPrefabs : EditorWindow
         {
             PrefabUtility.UnloadPrefabContents(root);
         }
+    }
+
+    private static bool WireSceneObstacle(Obstacle obstacle, string vfxPath)
+    {
+        var vfxComponent = LoadVfxComponent(vfxPath);
+        if (vfxComponent == null)
+            return false;
+
+        obstacle.obstacleDestructionVfxPrefab = vfxComponent;
+        EditorUtility.SetDirty(obstacle);
+        Debug.Log($"[ObstacleVfx] Wired VFX into scene obstacle {obstacle.name}.");
+        return true;
+    }
+
+    private static ObstacleDestructionVfx LoadVfxComponent(string vfxPath)
+    {
+        var vfxAsset = AssetDatabase.LoadAssetAtPath<GameObject>(vfxPath);
+        if (vfxAsset == null)
+        {
+            Debug.LogError($"[ObstacleVfx] Could not load VFX prefab at {vfxPath}.");
+            return null;
+        }
+
+        var vfxComponent = vfxAsset.GetComponent<ObstacleDestructionVfx>();
+        if (vfxComponent == null)
+            Debug.LogError($"[ObstacleVfx] VFX prefab {vfxPath} has no ObstacleDestructionVfx component.");
+
+        return vfxComponent;
     }
 }

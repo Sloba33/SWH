@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: Particle_Brick_Pink_Networked
+  m_EditorClassIdentifier: 
+  id: ebdb8812b29825e4d98d2fccd1747539
+  selfId: 85537013b7cdff04d98ec08cffb6c4ae
+  editorTarget: {fileID: 6473027827964940374, guid: ebdb8812b29825e4d98d2fccd1747539,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 3132022976253263993
+  objectInstantiator:
+    rid: 3132022976253263994
+  references:
+    version: 2
+    RefIds:
+    - rid: 3132022976253263993
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 6473027827964940374, guid: ebdb8812b29825e4d98d2fccd1747539,
+          type: 3}
+    - rid: 3132022976253263994
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 

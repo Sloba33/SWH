@@ -577,6 +577,8 @@ public class Obstacle : MonoBehaviour
         playerController = null;
     }
 
+    // not used anymore, obstacleDestructionVfxPrefab is used instead, but keeping it for easy wiring of obstacleDestructionVfxPrefab
+    // using CreateObstacleDestructionVfxPrefabs editor tool
     public ParticleSystem destructionParticleSystem;
     public ObstacleDestructionVfx obstacleDestructionVfxPrefab;
     public bool queuedForDestruction;

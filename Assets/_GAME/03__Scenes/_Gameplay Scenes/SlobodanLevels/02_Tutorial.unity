@@ -9960,6 +9960,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 91921792}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -9967,7 +9969,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 1
@@ -10055,6 +10058,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -19769,6 +19774,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 774890801}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -19776,7 +19783,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 26
   obstacleModifier: 0
   obstacleColor: 0
@@ -19864,6 +19872,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -29912,6 +29922,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 327622481}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -29919,7 +29931,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 6
   obstacleModifier: 0
   obstacleColor: 0
@@ -30007,6 +30020,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -81874,6 +81889,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 664179787}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -81881,7 +81898,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 6
   obstacleModifier: 0
   obstacleColor: 0
@@ -81969,6 +81987,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -99095,6 +99115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 774890801}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -99102,7 +99124,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 26
   obstacleModifier: 0
   obstacleColor: 0
@@ -99190,6 +99213,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -101788,6 +101813,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 774890801}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -101795,7 +101822,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 1
@@ -101883,6 +101911,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -118639,6 +118669,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 774890801}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -118646,7 +118678,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 26
   obstacleModifier: 0
   obstacleColor: 0
@@ -118734,6 +118767,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -146851,6 +146886,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 1201205621}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -146858,7 +146895,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 6
   obstacleModifier: 0
   obstacleColor: 0
@@ -146946,6 +146984,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -153455,6 +153495,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 774890801}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -153462,7 +153504,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 26
   obstacleModifier: 0
   obstacleColor: 0
@@ -153550,6 +153593,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -157432,6 +157477,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 774890801}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -157439,7 +157486,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 26
   obstacleModifier: 0
   obstacleColor: 0
@@ -157527,6 +157575,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -177738,6 +177788,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 1524781967}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -177745,7 +177797,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 1
@@ -177833,6 +177886,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -195879,6 +195934,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 1781370529}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -195886,7 +195943,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 6
   obstacleModifier: 0
   obstacleColor: 0
@@ -195974,6 +196032,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -204951,6 +205011,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 1866563469}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -204958,7 +205020,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 6
   obstacleModifier: 0
   obstacleColor: 0
@@ -205046,6 +205109,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -212496,6 +212561,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 774890801}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -212503,7 +212570,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 26
   obstacleModifier: 0
   obstacleColor: 0
@@ -212591,6 +212659,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -214460,6 +214530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14417ea3cdbcb7640bd97dcc6af4c2e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skipButton: {fileID: 0}
   IsMultiplayer: 0
   characterCollection: {fileID: 11400000, guid: 6d8e44334f4723e45a8a604684cadfd5,
     type: 2}
@@ -214468,7 +214539,10 @@ MonoBehaviour:
   DarkLevel: 0
   playerDefaultPrefab: {fileID: 1051776569072472735, guid: b6fbc467c14a340499ee5aae55a3519c,
     type: 3}
+  playerNetworkedPrefab: {fileID: 0}
+  connectNetworkUI: {fileID: 0}
   playerSpawnPoint: {fileID: 1318119976}
+  opponentSpawnPoint: {fileID: 0}
   levelGoal: {fileID: 2828326823930322740}
   jitbSpawned: 0
   blackHoleObstacles: []
@@ -214485,6 +214559,17 @@ MonoBehaviour:
   AIGoalSetter: {fileID: 0}
   ShouldHaveMainMenuButton: 0
   SendsBackToMainMenu: 0
+  ObstacleWeightModifier: 1
+  defaultZoomValue: 2
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
+  countdownText: {fileID: 0}
+  controlsGameObject: {fileID: 0}
+  matchmakingSceneName: MatchmakingTest
+  LocalPlayer: {fileID: 0}
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -214598,6 +214683,7 @@ MonoBehaviour:
   rotationDifference: 0
   zoomDuration: 1
   zoomAnimation: 0
+  fallThresholdY: -3
 --- !u!114 &1959335803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216418,6 +216504,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 2001564668}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -216425,7 +216513,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 6
   obstacleModifier: 0
   obstacleColor: 0
@@ -216513,6 +216602,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -216714,6 +216805,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 2002712577}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -216721,7 +216814,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 6
   obstacleModifier: 0
   obstacleColor: 0
@@ -216809,6 +216903,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -237471,6 +237567,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 4019172491991594418}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -237478,7 +237576,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 15
   obstacleModifier: 0
   obstacleColor: 0
@@ -237566,6 +237665,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 6224894285630952891, guid: e0b0df17aff86884595e700409207eef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 8536707605344281309, guid: ec3377534111b404c866b8a8294bd6a5,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -239003,6 +239104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 3714171399748575508}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -239010,7 +239113,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 1
@@ -239098,6 +239202,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -239403,7 +239509,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 1832895024437887511}
   counterText: {fileID: 9178417561100054338}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 217550209125502130}
 --- !u!1 &1157492354793847009
 GameObject:
@@ -244345,6 +244451,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 3291793958804365903}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -244352,7 +244460,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 1
@@ -244440,6 +244549,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -245165,6 +245276,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 6495572815148392395}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -245172,7 +245285,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 3
@@ -245261,6 +245375,8 @@ MonoBehaviour:
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 7273198906942701609, guid: 7fb925589d04bab4ba95c722e0a405b6,
     type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1067049581948412627, guid: a677253ca13b10349a1863c45889bf32,
+    type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
   audioClip: {fileID: 8300000, guid: 765b60e2e1ac002428974ad5ef905f68, type: 3}
@@ -245292,6 +245408,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 6495572815282644635}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -245299,7 +245417,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 3
@@ -245387,6 +245506,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 7273198906942701609, guid: 7fb925589d04bab4ba95c722e0a405b6,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1067049581948412627, guid: a677253ca13b10349a1863c45889bf32,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -246159,7 +246280,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 7261385990146110525}
   counterText: {fileID: 2285941304894309526}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 5875298485132704265}
 --- !u!33 &1647993237119366667
 MeshFilter:
@@ -249400,7 +249521,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 6229341893095450819}
   counterText: {fileID: 8422070031905133486}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 5318990341801325485}
 --- !u!65 &2480779113435414049
 BoxCollider:
@@ -249725,7 +249846,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 51894884530115086}
   counterText: {fileID: 3140571042607264036}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 4493846745276524904}
 --- !u!114 &2586206763004382030
 MonoBehaviour:
@@ -250410,6 +250531,8 @@ MonoBehaviour:
   isPulling: 0
   tutorialHandler: {fileID: 5178282784387158849}
   specialButton: {fileID: 0}
+  settings: {fileID: 0}
+  specialChargeImage: {fileID: 0}
   _isInteractable: 0
 --- !u!4 &2794707361251395549
 Transform:
@@ -250520,16 +250643,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
+  xp: 0
+  trophies: 0
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 0}
   currentTime: 0
+  threeStarTime: 10
+  twoStarTime: 15
+  oneStarTime: 2000
   bonusTime: 0
   tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
   SpawnFallingObstacles: 0
   FallingObstacles: []
   obstaclesToSpawn: 0
   ObstacleSpawnFrequency: 0
   TotalObstaclesSpawned: 0
   delayBoxSpawn: 6
+  spawnedObstacles: []
   minObstacleSpawnHeight: 16
   maxObstacleSpawnHeight: 20
   SpawnFallingBombs: 0
@@ -250547,7 +250686,7 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 10
   maxCollectibleSpawnHeight: 15
   ObstaclesToDestroy_Player: []
-  ObstaclesToDestroy_AI: []
+  ObstaclesToDestroy_Opponent: []
   obstacleTypes: 06000000
   DualLevel: 0
   Tutorial: 1
@@ -250571,9 +250710,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 0
-  trophies: 0
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -250583,6 +250719,10 @@ MonoBehaviour:
   bombUniversal: {fileID: 6989674219970898593}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  playerLevel: {fileID: 0}
+  opponentLevel: {fileID: 0}
+  starsEarned: 0
   currentStep: 0
   tutorialBridges:
   - {fileID: 5583788997549236406}
@@ -257624,6 +257764,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 8963017696781291948}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
@@ -257631,7 +257773,8 @@ MonoBehaviour:
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 1
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 1
@@ -257719,6 +257862,8 @@ MonoBehaviour:
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
   destructionParticleSystem: {fileID: 8259014392222745416, guid: 11495b31044635b4e8f2148a4bc65fef,
+    type: 3}
+  obstacleDestructionVfxPrefab: {fileID: 1265859320120598296, guid: 6be9b7bb5e5cd8c48b80d33bf4b2f388,
     type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
@@ -266605,7 +266750,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 2973899957892552741}
   counterText: {fileID: 3300723814437378380}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 973318751524698}
 --- !u!4 &5711250383568058237
 Transform:
@@ -286343,8 +286488,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd2237b63112b843ae5838c58bf52a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winStarAnimator: {fileID: 0}
   sceneOverride: 0
   sceneOverrideName: 01_MainMenu
+  levelCompleteText: {fileID: 0}
+  currentTime: {fileID: 0}
+  totalTime: {fileID: 0}
   MP: 0
   rewardsPanel: {fileID: 0}
   panelXP: {fileID: 0}
@@ -286366,8 +286515,10 @@ MonoBehaviour:
   levelProgress: {fileID: 0}
   playerGameObject: {fileID: 0}
   uIParticle: {fileID: 0}
+  endChapterScreen: {fileID: 0}
   uniqueQuestType: 
   uniqueQuestData: []
+  starsEarnedTotal: 0
 --- !u!4 &7075186271603245748
 Transform:
   m_ObjectHideFlags: 0
@@ -292503,7 +292654,7 @@ MonoBehaviour:
   counter: 0
   btn: {fileID: 6214889480706148616}
   counterText: {fileID: 924475937661075795}
-  slotType: 5
+  obstacleColor: 0
   bombBackgroundImage: {fileID: 7814237797830475298}
 --- !u!222 &8684220213107280218
 CanvasRenderer:
