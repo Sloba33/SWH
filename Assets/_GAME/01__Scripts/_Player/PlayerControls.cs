@@ -96,8 +96,8 @@ public class PlayerControls : MonoBehaviour
         if(GameManager.Instance.IsMultiplayer)
         {
             yield return new WaitUntil(() => playerController != null);
-            SetReferences();
         }
+            SetReferences();
         // Invoke(nameof(SetReferences), 0f); //
 
         // --- All tutorial-related UI active/inactive logic is fine as is ---
