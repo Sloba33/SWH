@@ -671,6 +671,15 @@ public class Obstacle : MonoBehaviour
 
     public void OnDestroy()
     {
+        // fallSprite is a standalone instance, not a child of this obstacle, so it
+        // isn't cleaned up automatically. Destroying mid-fall (player attack,
+        // match-three, network despawn on proxies) otherwise orphans the indicator.
+        if (fallSprite != null)
+        {
+            Destroy(fallSprite);
+            fallSprite = null;
+        }
+
         if (gameObject.scene.isLoaded && QuestRotator.Instance != null)
         {
             if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
