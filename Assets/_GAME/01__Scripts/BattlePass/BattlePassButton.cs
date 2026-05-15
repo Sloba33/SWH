@@ -83,7 +83,7 @@ public class BattlePassButton : MonoBehaviour
             claimText.gameObject.SetActive(isClaimable); // Disable claimText when the item is not claimable
             if (uiShiny != null) uiShiny.enabled = false;
         }
-        else Debug.Log("How the f");
+        // else Debug.Log("How the f");
         // claimButton.interactable = isClaimable;
         // itemImage.color = isClaimable ? Color.white : new Color(1f, 1f, 1f, 0.5f); // Change the alpha channel when claimed
 
@@ -101,7 +101,7 @@ public class BattlePassButton : MonoBehaviour
         claimButton.GetComponent<Image>().color = fadedColor;
         itemImage.color = new Color(1, 1, 1, 0.5f);
         claimText.gameObject.SetActive(false);
-        Debug.Log("Battle Pass : Setting as claimed" + gameObject.name + " at index " + transform.GetSiblingIndex());
+        // Debug.Log("Battle Pass : Setting as claimed" + gameObject.name + " at index " + transform.GetSiblingIndex());
         KillTween();
         claimButton.interactable = false;
     }
@@ -110,7 +110,7 @@ public class BattlePassButton : MonoBehaviour
     {
 
         claimButton.interactable = true;
-        Debug.Log("BATTLE PASS : Setting as unclaimed but available" + gameObject.name + " at index " + transform.GetSiblingIndex());
+        // Debug.Log("BATTLE PASS : Setting as unclaimed but available" + gameObject.name + " at index " + transform.GetSiblingIndex());
         KillTween();
         tween = transform.DOShakeRotation(1.5f, 5f).SetLoops(-1);
         tween.Play();
@@ -119,7 +119,7 @@ public class BattlePassButton : MonoBehaviour
     {
 
         claimButton.interactable = false;
-        Debug.Log("BATTLE PASS :  Setting as unclaimed but unavailable" + gameObject.name + " at index " + transform.GetSiblingIndex());
+        // Debug.Log("BATTLE PASS :  Setting as unclaimed but unavailable" + gameObject.name + " at index " + transform.GetSiblingIndex());
         KillTween();
 
     }

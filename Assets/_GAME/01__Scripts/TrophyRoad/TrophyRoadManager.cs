@@ -747,18 +747,18 @@ public class TrophyRoadManager : MonoBehaviour
         exclamationMark.SetActive(hasUnclaimedRewards);
 
         // Debug logging
-        if (hasUnclaimedRewards)
-        {
-            Debug.Log($"First unclaimed reward set to index: {itemIndex}");
-        }
-        else if (nextUnavailableMilestone != null)
-        {
-            Debug.Log($"No claimable rewards. Next reward to be claimed is: {nextUnavailableMilestone.reward.description} at index: {itemIndex}");
-        }
-        else
-        {
-            Debug.Log("No claimable or future rewards found.");
-        }
+        // if (hasUnclaimedRewards)
+        // {
+        //     Debug.Log($"First unclaimed reward set to index: {itemIndex}");
+        // }
+        // else if (nextUnavailableMilestone != null)
+        // {
+        //     Debug.Log($"No claimable rewards. Next reward to be claimed is: {nextUnavailableMilestone.reward.description} at index: {itemIndex}");
+        // }
+        // else
+        // {
+        //     Debug.Log("No claimable or future rewards found.");
+        // }
     }
 
     private Sprite GetBackgroundForRewardType(TrophyRewardType rewardType)
