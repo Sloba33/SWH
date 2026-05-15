@@ -51,7 +51,7 @@ public class WinScreen : MonoBehaviour
 
         }
         if (levelGoal == null)
-            levelGoal = FindFirstObjectByType<LevelGoal>();
+            levelGoal = FindFirstObjectByType<LevelGoal>(FindObjectsInactive.Include);
         if (levelGoal.DualLevel)
         {
             gs = FindObjectOfType<GoalSetter>();

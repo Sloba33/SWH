@@ -112,6 +112,16 @@ public class LevelGoal : MonoBehaviour
 
     private CoherenceSync coherenceSync;
 
+    // Takes Full authority over this LevelGoal. Used by forfeit handling: when
+    // the opponent (who owned this entity) disconnects, the proxy GameObject
+    // would otherwise be disabled by Coherence, killing any coroutine still
+    // running on it. Grabbing authority keeps the entity active locally.
+    public void TakeAuthority()
+    {
+        if (coherenceSync != null && !coherenceSync.HasStateAuthority)
+            coherenceSync.RequestAuthority(AuthorityType.Full);
+    }
+
     private bool Initialized;
 
     [SerializeField]

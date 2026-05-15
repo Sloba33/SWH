@@ -26,7 +26,6 @@ public static class CoherenceMatchmaker
     /// <summary>
     /// Finds or creates a 1v1 lobby, waits until the game session starts,
     /// and returns the room to connect to (call <c>bridge.JoinRoom(result.Room)</c>).
-    /// The lobby is closed but not left, so it can be used for in-game reconnection.
     /// <para>
     /// <c>onProgress</c> is an optional callback that receives a human-readable
     /// status string each time the matchmaker advances to the next step.
@@ -180,14 +179,6 @@ public static class CoherenceMatchmaker
 
             try
             {
-                // Reconnection short-circuit: if the lobby already has a room, return it immediately.
-                if (lobbySession.LobbyData.RoomData is { } existingRoom)
-                {
-                    Report(onProgress, "Reconnecting to existing match...");
-                    keepLobby = true;
-                    return new MatchResult(lobbySession, existingRoom, isHost);
-                }
-
                 if (isHost)
                 {
                     if (lobbySession.LobbyData.Players.Count < MatchSize)

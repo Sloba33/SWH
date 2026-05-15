@@ -55,6 +55,11 @@ public class GameManager : MonoBehaviour
     private int _countdownSeconds;
     private bool _isFirstPlayer;
     private bool _countdownStarted;
+    // Set when the local player initiates a disconnect (Main Menu / quit). Tells
+    // OnMultiplayerDisconnected to skip the forfeit LoseScreen, since we're
+    // already scene-loading back to matchmaking. Involuntary disconnects leave
+    // this false and get the LoseScreen.
+    private bool _voluntaryDisconnect;
 
     /// <summary>
     /// Invoked when local player's character is spawned, true is passed if local player is the first player.
@@ -84,6 +89,7 @@ public class GameManager : MonoBehaviour
 
     public void DisconnectAndReturnToMatchmaking()
     {
+        _voluntaryDisconnect = true;
         if (coherenceBridge != null && coherenceBridge.IsConnected)
             coherenceBridge.Disconnect();
 
@@ -286,11 +292,32 @@ public class GameManager : MonoBehaviour
         if(coherenceBridge.ClientConnections.GetMine() != connection)
         {
             Debug.LogWarning("[MP] Opponent connection destroyed");
+            TryForfeitWin();
         }
         else
         {
             Debug.LogWarning("[MP] My own connection destroyed");
         }
+    }
+
+    // Opponent vanished mid-match (voluntary quit or network drop). We treat any
+    // disconnect as a forfeit: the surviving player wins via the existing
+    // WinLevel flow. No grace period — Coherence's connection-destroyed fires
+    // after its own timeout, which is already the soak time.
+    //
+    // Two non-obvious bits:
+    // 1. We steal authority over LevelGoal. If the disconnected opponent owned
+    //    it, Coherence will otherwise disable its GameObject on this proxy.
+    // 2. We host the coroutine on GameManager, not on LevelGoal, so the
+    //    coroutine survives any momentary disable between disconnect-detection
+    //    and authority-grant.
+    private void TryForfeitWin()
+    {
+        if (levelGoal == null) return;
+        Settings settings = FindObjectOfType<Settings>();
+        if (settings != null && (settings.gameWon || settings.gameLost)) return;
+        levelGoal.TakeAuthority();
+        StartCoroutine(levelGoal.WinLevel(0.9f));
     }
 
     private void OnClientConnectionCreated(CoherenceClientConnection newConnection)
@@ -310,6 +337,23 @@ public class GameManager : MonoBehaviour
     private void OnMultiplayerDisconnected(CoherenceBridge arg0, ConnectionCloseReason arg1)
     {
         Debug.Log("[MP] Disconnected");
+        if (_voluntaryDisconnect) return;
+        TryForfeitLose();
+    }
+
+    // Local player got dropped (network failure, server kick). Treat it as a
+    // forfeit on our side too — LoseScreen, symmetric with the opponent's
+    // WinScreen. Voluntary leaves skip this via the _voluntaryDisconnect flag
+    // because they're already scene-loading back to matchmaking.
+    private void TryForfeitLose()
+    {
+        if (levelGoal == null) return;
+        Settings settings = FindObjectOfType<Settings>();
+        if (settings != null && (settings.gameWon || settings.gameLost)) return;
+        // Hosted on GameManager (not LevelGoal) for the same reason as
+        // TryForfeitWin — our bridge is down, so we can't rely on LevelGoal
+        // staying enabled.
+        StartCoroutine(levelGoal.LoseLevel());
     }
 
     private void OnMultiplayerConnectionError(CoherenceBridge arg0, ConnectionException arg1)
