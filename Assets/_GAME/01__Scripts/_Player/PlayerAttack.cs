@@ -343,7 +343,10 @@ public class PlayerAttack : MonoBehaviour
         _anim.SetBool("HitSpecial", true);
 
         Vector3 aoePosition = playerMovement != null ? playerMovement.WallDetectPosition : transform.position;
-        _coherenceSync.SendCommand<PlayerAttack>(nameof(CmdPlaySpecialVisuals), MessageTarget.All, aoePosition);
+        if (_coherenceSync != null)
+            _coherenceSync.SendCommand<PlayerAttack>(nameof(CmdPlaySpecialVisuals), MessageTarget.All, aoePosition);
+        else
+            CmdPlaySpecialVisuals(aoePosition);
     }
 
     [Command(defaultRouting = MessageTarget.All)]

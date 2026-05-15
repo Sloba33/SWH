@@ -216,13 +216,17 @@ public class Bomb : MonoBehaviour
     public void Explode()
     {
         LevelGoal levelGoal = FindObjectOfType<LevelGoal>();
+        bool isMultiplayer = GameManager.Instance != null && GameManager.Instance.IsMultiplayer;
         if (levelGoal != null)
         {
             for (int i = 0; i < obstaclesToHit.Count; i++)
             {
                 Obstacle obs = obstaclesToHit[i];
                 if (obs == null) continue;
-                if (!levelGoal.ObstaclesToDestroy_Player.Contains(obs)) continue;
+                // In MP, only destroy obstacles from this player's goal list — proxies
+                // shouldn't try to destroy the opponent's obstacles. SP keeps the old
+                // behavior of destroying everything in range.
+                if (isMultiplayer && !levelGoal.ObstaclesToDestroy_Player.Contains(obs)) continue;
 
                 Debug.Log("Obstacle found in levelgoal");
                 levelGoal.RemoveObstacle(obs);
@@ -231,7 +235,7 @@ public class Bomb : MonoBehaviour
         }
         else
         {
-            // countdownText.text = time + "...";                                                                                                                                                                        
+            // countdownText.text = time + "...";
             for(int i = 0; i < obstaclesToHit.Count; i++)
             {
                 if(obstaclesToHit[i] != null)
@@ -253,22 +257,32 @@ public class Bomb : MonoBehaviour
         Debug.Log("Exploding colored bomb");
 
         LevelGoal levelGoal = FindObjectOfType<LevelGoal>();
+        bool isMultiplayer = GameManager.Instance != null && GameManager.Instance.IsMultiplayer;
         List<Obstacle> obstaclesToNuke = new List<Obstacle>();
-        if (levelGoal != null)
+
+        // SP scans every obstacle in the scene. MP scopes to this player's goal list
+        // + spawned obstacles, so a colored bomb can't affect the opponent's side.
+        IEnumerable<Obstacle> candidates;
+        if (isMultiplayer && levelGoal != null)
         {
-            IEnumerable<Obstacle> candidates = levelGoal.ObstaclesToDestroy_Player
+            candidates = levelGoal.ObstaclesToDestroy_Player
                 .Concat(levelGoal.spawnedObstacles)
                 .Where(o => o != null)
                 .Distinct();
+        }
+        else
+        {
+            candidates = FindObjectsOfType<Obstacle>();
+        }
 
-            foreach (Obstacle obstacle in candidates)
+        foreach (Obstacle obstacle in candidates)
+        {
+            if (obstacle == null) continue;
+            Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
+            if (obstacle.obstacleColor == bombColor || bombColor == ObstacleColor.Universal)
             {
-                Debug.Log("Obstacle Color : " + obstacle.obstacleColor + ", Bomb Color: " + bombColor);
-                if (obstacle.obstacleColor == bombColor || bombColor == ObstacleColor.Universal)
-                {
-                    Debug.Log("Matching obstacle found: " + obstacle.name);
-                    obstaclesToNuke.Add(obstacle);
-                }
+                Debug.Log("Matching obstacle found: " + obstacle.name);
+                obstaclesToNuke.Add(obstacle);
             }
         }
 
@@ -278,6 +292,10 @@ public class Bomb : MonoBehaviour
         {
             if (obs == null) continue;
             Debug.Log("Destroying obstacle: " + obs.name);
+            // SP removes from the goal list explicitly, in MP
+            // Obstacle.ParticleDestroy already does that via RemoveObstacleFromSection.
+            if (!isMultiplayer && levelGoal != null)
+                levelGoal.RemoveObstacle(obs);
             obs.ParticleDestroy(Obstacle.ObstacleDestructionSource.Bomb);
         }
 
