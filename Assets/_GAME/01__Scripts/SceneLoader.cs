@@ -16,6 +16,11 @@ public class SceneLoader : MonoBehaviour
     [Header("Loading Settings")]
     [SerializeField] private float minimumLoadingTime = 5f; // Minimum time loading screen is visible
     [SerializeField] private bool allowSceneActivationOnProgress = true; // Set to false for manual activation
+    // Build index of the last single-player level. Multiplayer scenes are appended
+    // after it in Build Settings but are entered via matchmaking, not linear advance,
+    // so the SP "next level" walk must stop here and route to main menu instead of
+    // rolling into MP scenes. Leave at 0 to disable the clamp.
+    [SerializeField] private int lastSinglePlayerLevelIndex;
 
     private bool waitingForFirebase;
 
@@ -75,7 +80,15 @@ public class SceneLoader : MonoBehaviour
 
         // Correctly calculate nextLevelIndex and handle boundary
         nextLevelIndex = currentLevelIndex + 1;
-        if (nextLevelIndex >= SceneManager.sceneCountInBuildSettings)
+        if (lastSinglePlayerLevelIndex > 0 &&
+            currentLevelIndex <= lastSinglePlayerLevelIndex &&
+            nextLevelIndex > lastSinglePlayerLevelIndex)
+        {
+            // Stepped past the last SP level — fall back to main menu rather than
+            // rolling into the multiplayer scenes that sit after it in build order.
+            nextLevelIndex = 1;
+        }
+        else if (nextLevelIndex >= SceneManager.sceneCountInBuildSettings)
         {
             nextLevelIndex = currentLevelIndex; // Or handle end-of-game logic
             Debug.LogWarning("Attempted to load next level beyond build settings. Looping to current level or custom end logic.");

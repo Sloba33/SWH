@@ -511,4 +511,9 @@ public class MainMenuManager : MonoBehaviour
         PlayerPrefs.Save();
         Application.Quit();
     }
+    
+    public void StartMultiplayer()
+    {
+        SceneManager.LoadScene("MatchmakingTest");
+    }
 }

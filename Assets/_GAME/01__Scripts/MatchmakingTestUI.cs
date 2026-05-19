@@ -60,6 +60,7 @@ public class MatchmakingTestUI : MonoBehaviour
         }
 
         SetStatus("Ready.");
+        
     }
 
     private void OnDestroy()
@@ -177,5 +178,15 @@ public class MatchmakingTestUI : MonoBehaviour
             statusText.text = text;
             Debug.Log("[MatchmakingTestUI] " + text);
         }
+    }
+    
+    public void OnBackButtonClicked()
+    {
+        if (_cts != null)
+        {
+            _cts.Cancel();
+        }
+        SetStatus("Cancelled matchmaking. Returning to main menu...");
+        SceneManager.LoadScene(1);
     }
 }
