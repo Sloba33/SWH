@@ -6,10 +6,12 @@ public class PlayerInputHandler : MonoBehaviour
     private InputActions inputActions;
     public Vector2 MoveInput { get; private set; }
 
+    private CameraController cameraController;
+
     private void Awake()
     {
         inputActions = new InputActions();
-        inputActions.Player.Move.performed += ctx => OnMove(ctx.ReadValue<Vector2>());
+        inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += _ => MoveInput = Vector2.zero;
 
         // No need to set up specific event handlers for these in PlayerInputHandler.
@@ -18,6 +20,33 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnEnable() => inputActions.Enable();
     private void OnDisable() => inputActions.Disable();
+
+    private void OnMovePerformed(InputAction.CallbackContext ctx)
+    {
+        Vector2 raw = ctx.ReadValue<Vector2>();
+
+        // Only keyboard / real-gamepad input needs rotation here. The on-screen
+        // stick's value is already camera-rotated through the joystickHolder
+        // transform (the authored visual tilt isn't part of that path), so any
+        // rotation we apply on top of it just doubles up. Virtual devices
+        // created by OnScreenControl report native == false, so we use that to
+        // skip the rotation for joystick input.
+        if (ctx.control.device.native)
+        {
+            if (cameraController == null)
+                cameraController = FindObjectOfType<CameraController>();
+
+            if (cameraController != null)
+            {
+                float thetaRad = cameraController.CameraYawDegrees * Mathf.Deg2Rad;
+                float c = Mathf.Cos(thetaRad);
+                float s = Mathf.Sin(thetaRad);
+                raw = new Vector2(raw.x * c + raw.y * s, -raw.x * s + raw.y * c);
+            }
+        }
+
+        OnMove(raw);
+    }
 
     private void OnMove(Vector2 rawInput)
     {

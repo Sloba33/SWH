@@ -42,6 +42,31 @@ public class CameraController : MonoBehaviour
     bool previousRotation;
     public Transform parentTransform;
 
+    // Offset between Cinemachine's m_XAxis (starts at 0) and the player's
+    // spawn yaw. Joystick z-rotation == m_XAxis + this offset, so visual stick
+    // direction lines up with on-screen player movement regardless of which way
+    // the player spawned facing. Captured once when the camera is enabled.
+    private float joystickYawOffset;
+    // The joystick's authored localRotation.z saved in the scene (e.g. -45° for
+    // a diamond layout). Stored separately so we can expose the camera yaw
+    // without it for systems like keyboard input that need to follow the
+    // camera direction but shouldn't pick up the visual tilt.
+    private float joystickOnScreenTilt;
+    private bool joystickAlignmentInitialized;
+
+    /// <summary>
+    /// World yaw the camera is currently looking along, in degrees, excluding
+    /// the on-screen joystick's authored visual tilt. Use this to rotate
+    /// non-joystick input (keyboard/gamepad) so it stays camera-relative.
+    /// </summary>
+    public float CameraYawDegrees
+    {
+        get
+        {
+            if (playerCamera == null) return 0f;
+            return playerCamera.m_XAxis.Value + (joystickYawOffset - joystickOnScreenTilt);
+        }
+    }
 
     private void Update()
     {
@@ -273,7 +298,7 @@ public class CameraController : MonoBehaviour
             float newValue = Mathf.Lerp(startValue, targetValue, t);
 
             playerCamera.m_XAxis.Value = newValue;
-            joystickHolder.localRotation = Quaternion.Euler(0, 0, newValue);
+            joystickHolder.localRotation = Quaternion.Euler(0, 0, newValue + joystickYawOffset);
 
             yield return null;
         }
@@ -340,6 +365,21 @@ public class CameraController : MonoBehaviour
         yield return null; // Wait one frame to ensure Cinemachine processes orbits
         playerCamera.enabled = true; // Now safe to go Live
         Debug.Log($"Camera enabled with orbit {currentOrbit}, Y-Value: {playerCamera.m_YAxis.Value}");
+
+        if (!joystickAlignmentInitialized && joystickHolder != null && playerController != null)
+        {
+            // Include the joystick's authored localRotation (e.g. a -45° visual
+            // tilt set in the scene) in the offset so we layer m_XAxis and
+            // spawn yaw on top of it rather than overwriting it. Save the tilt
+            // separately so CameraYawDegrees can return the camera direction
+            // without it.
+            joystickOnScreenTilt = joystickHolder.localEulerAngles.z;
+            // because the camera's initial m_XAxis.Value is 0, the initial offset is just the difference between the player's spawn yaw and the joystick's visual tilt.
+            // As the camera rotates, we maintain that same offset so the joystick continues to visually line up with the player's movement direction.
+            joystickYawOffset = joystickOnScreenTilt + playerController.transform.eulerAngles.y - playerCamera.m_XAxis.Value;
+            joystickHolder.localRotation = Quaternion.Euler(0, 0, playerCamera.m_XAxis.Value + joystickYawOffset);
+            joystickAlignmentInitialized = true;
+        }
     }
     public void ZoomOut()
     {
