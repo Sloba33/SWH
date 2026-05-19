@@ -5928,10 +5928,10 @@ namespace Coherence.Generated
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_47413e218e3440a9aa1114614b39d49e : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_00665f1921eb46f9887840bfd8701d89 : IEntityCommand
         {
-                public System.Int32 kind;
-                public System.Boolean active;
+                public System.Boolean didHitObstacle;
+                public Vector3 impactPoint;
             
             public Entity Entity { get; set; }
             public Coherence.ChannelID ChannelID { get; set; }
@@ -5980,10 +5980,10 @@ namespace Coherence.Generated
             public void NullEntityRefs(Entity entity) {
             }
             
-            public _9d2e9d257e8387b45979b55403f8a357_47413e218e3440a9aa1114614b39d49e(
+            public _9d2e9d257e8387b45979b55403f8a357_00665f1921eb46f9887840bfd8701d89(
                 Entity entity,
-                System.Int32 kind,
-                System.Boolean active
+                System.Boolean didHitObstacle,
+                Vector3 impactPoint
             )
             {
                 Entity = entity;
@@ -5995,32 +5995,34 @@ namespace Coherence.Generated
                 Frame = 0;
                 UsesMeta = false;
                 
-                this.kind = kind; 
-                this.active = active; 
+                this.didHitObstacle = didHitObstacle; 
+                this.impactPoint = impactPoint; 
             }
             
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_47413e218e3440a9aa1114614b39d49e commandData, IOutProtocolBitStream bitStream)
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_00665f1921eb46f9887840bfd8701d89 commandData, IOutProtocolBitStream bitStream)
             {
-                bitStream.WriteIntegerRange(commandData.kind, 32, -2147483648);
-                bitStream.WriteBool(commandData.active);
+                bitStream.WriteBool(commandData.didHitObstacle);
+                var converted_impactPoint = commandData.impactPoint.ToCoreVector3();
+                bitStream.WriteVector3(converted_impactPoint, FloatMeta.NoCompression());
             }
             
-            public static _9d2e9d257e8387b45979b55403f8a357_47413e218e3440a9aa1114614b39d49e Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            public static _9d2e9d257e8387b45979b55403f8a357_00665f1921eb46f9887840bfd8701d89 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
             {
-                var datakind = bitStream.ReadIntegerRange(32, -2147483648);
-                var dataactive = bitStream.ReadBool();
+                var datadidHitObstacle = bitStream.ReadBool();
+                var converted_impactPoint = bitStream.ReadVector3(FloatMeta.NoCompression());
+                var dataimpactPoint = converted_impactPoint.ToUnityVector3();
         
-                return new _9d2e9d257e8387b45979b55403f8a357_47413e218e3440a9aa1114614b39d49e()
+                return new _9d2e9d257e8387b45979b55403f8a357_00665f1921eb46f9887840bfd8701d89()
                 {
                     Entity = entity,
                     Routing = target,
                     Target = target,
-                    kind = datakind,
-                    active = dataactive
+                    didHitObstacle = datadidHitObstacle,
+                    impactPoint = dataimpactPoint
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_52ff7f68ff08497698e497f264cb1101 : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_6f74df68aca349839087a3c076caccff : IEntityCommand
         {
                 public System.Boolean female;
             
@@ -6071,7 +6073,7 @@ namespace Coherence.Generated
             public void NullEntityRefs(Entity entity) {
             }
             
-            public _9d2e9d257e8387b45979b55403f8a357_52ff7f68ff08497698e497f264cb1101(
+            public _9d2e9d257e8387b45979b55403f8a357_6f74df68aca349839087a3c076caccff(
                 Entity entity,
                 System.Boolean female
             )
@@ -6088,16 +6090,16 @@ namespace Coherence.Generated
                 this.female = female; 
             }
             
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_52ff7f68ff08497698e497f264cb1101 commandData, IOutProtocolBitStream bitStream)
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_6f74df68aca349839087a3c076caccff commandData, IOutProtocolBitStream bitStream)
             {
                 bitStream.WriteBool(commandData.female);
             }
             
-            public static _9d2e9d257e8387b45979b55403f8a357_52ff7f68ff08497698e497f264cb1101 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            public static _9d2e9d257e8387b45979b55403f8a357_6f74df68aca349839087a3c076caccff Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
             {
                 var datafemale = bitStream.ReadBool();
         
-                return new _9d2e9d257e8387b45979b55403f8a357_52ff7f68ff08497698e497f264cb1101()
+                return new _9d2e9d257e8387b45979b55403f8a357_6f74df68aca349839087a3c076caccff()
                 {
                     Entity = entity,
                     Routing = target,
@@ -6106,8 +6108,10 @@ namespace Coherence.Generated
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_7ba9f3d1b98f4f79a94456ff96d28ce7 : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_77145c765ef341d78ae62b1dd454b829 : IEntityCommand
         {
+                public System.Int32 kind;
+                public System.Boolean active;
             
             public Entity Entity { get; set; }
             public Coherence.ChannelID ChannelID { get; set; }
@@ -6156,26 +6160,49 @@ namespace Coherence.Generated
             public void NullEntityRefs(Entity entity) {
             }
             
-            
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_7ba9f3d1b98f4f79a94456ff96d28ce7 commandData, IOutProtocolBitStream bitStream)
+            public _9d2e9d257e8387b45979b55403f8a357_77145c765ef341d78ae62b1dd454b829(
+                Entity entity,
+                System.Int32 kind,
+                System.Boolean active
+            )
             {
+                Entity = entity;
+                ChannelID = Coherence.ChannelID.Default;
+                Target = default;
+                Routing = MessageTarget.All;
+                SenderParticipant = 0;
+                SenderClientID = default;
+                Frame = 0;
+                UsesMeta = false;
+                
+                this.kind = kind; 
+                this.active = active; 
             }
             
-            public static _9d2e9d257e8387b45979b55403f8a357_7ba9f3d1b98f4f79a94456ff96d28ce7 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_77145c765ef341d78ae62b1dd454b829 commandData, IOutProtocolBitStream bitStream)
             {
+                bitStream.WriteIntegerRange(commandData.kind, 32, -2147483648);
+                bitStream.WriteBool(commandData.active);
+            }
+            
+            public static _9d2e9d257e8387b45979b55403f8a357_77145c765ef341d78ae62b1dd454b829 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            {
+                var datakind = bitStream.ReadIntegerRange(32, -2147483648);
+                var dataactive = bitStream.ReadBool();
         
-                return new _9d2e9d257e8387b45979b55403f8a357_7ba9f3d1b98f4f79a94456ff96d28ce7()
+                return new _9d2e9d257e8387b45979b55403f8a357_77145c765ef341d78ae62b1dd454b829()
                 {
                     Entity = entity,
                     Routing = target,
                     Target = target,
+                    kind = datakind,
+                    active = dataactive
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_9407c535be214c099c8cd86ee91c6551 : IEntityCommand
         {
-                public System.Boolean didHitObstacle;
-                public Vector3 impactPoint;
+                public System.Int32 amount;
             
             public Entity Entity { get; set; }
             public Coherence.ChannelID ChannelID { get; set; }
@@ -6224,10 +6251,9 @@ namespace Coherence.Generated
             public void NullEntityRefs(Entity entity) {
             }
             
-            public _9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a(
+            public _9d2e9d257e8387b45979b55403f8a357_9407c535be214c099c8cd86ee91c6551(
                 Entity entity,
-                System.Boolean didHitObstacle,
-                Vector3 impactPoint
+                System.Int32 amount
             )
             {
                 Entity = entity;
@@ -6239,35 +6265,30 @@ namespace Coherence.Generated
                 Frame = 0;
                 UsesMeta = false;
                 
-                this.didHitObstacle = didHitObstacle; 
-                this.impactPoint = impactPoint; 
+                this.amount = amount; 
             }
             
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a commandData, IOutProtocolBitStream bitStream)
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_9407c535be214c099c8cd86ee91c6551 commandData, IOutProtocolBitStream bitStream)
             {
-                bitStream.WriteBool(commandData.didHitObstacle);
-                var converted_impactPoint = commandData.impactPoint.ToCoreVector3();
-                bitStream.WriteVector3(converted_impactPoint, FloatMeta.NoCompression());
+                bitStream.WriteIntegerRange(commandData.amount, 32, -2147483648);
             }
             
-            public static _9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            public static _9d2e9d257e8387b45979b55403f8a357_9407c535be214c099c8cd86ee91c6551 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
             {
-                var datadidHitObstacle = bitStream.ReadBool();
-                var converted_impactPoint = bitStream.ReadVector3(FloatMeta.NoCompression());
-                var dataimpactPoint = converted_impactPoint.ToUnityVector3();
+                var dataamount = bitStream.ReadIntegerRange(32, -2147483648);
         
-                return new _9d2e9d257e8387b45979b55403f8a357_874ab9ae8f1b42c58c9e6518d081fb9a()
+                return new _9d2e9d257e8387b45979b55403f8a357_9407c535be214c099c8cd86ee91c6551()
                 {
                     Entity = entity,
                     Routing = target,
                     Target = target,
-                    didHitObstacle = datadidHitObstacle,
-                    impactPoint = dataimpactPoint
+                    amount = dataamount
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_ab84b43c39f64c47a02f38d9fa968410 : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_bff54fe9af1b4c7d81c56d06a75d2d1a : IEntityCommand
         {
+                public Vector3 aoePosition;
             
             public Entity Entity { get; set; }
             public Coherence.ChannelID ChannelID { get; set; }
@@ -6316,25 +6337,45 @@ namespace Coherence.Generated
             public void NullEntityRefs(Entity entity) {
             }
             
-            
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_ab84b43c39f64c47a02f38d9fa968410 commandData, IOutProtocolBitStream bitStream)
+            public _9d2e9d257e8387b45979b55403f8a357_bff54fe9af1b4c7d81c56d06a75d2d1a(
+                Entity entity,
+                Vector3 aoePosition
+            )
             {
+                Entity = entity;
+                ChannelID = Coherence.ChannelID.Default;
+                Target = default;
+                Routing = MessageTarget.All;
+                SenderParticipant = 0;
+                SenderClientID = default;
+                Frame = 0;
+                UsesMeta = false;
+                
+                this.aoePosition = aoePosition; 
             }
             
-            public static _9d2e9d257e8387b45979b55403f8a357_ab84b43c39f64c47a02f38d9fa968410 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_bff54fe9af1b4c7d81c56d06a75d2d1a commandData, IOutProtocolBitStream bitStream)
             {
+                var converted_aoePosition = commandData.aoePosition.ToCoreVector3();
+                bitStream.WriteVector3(converted_aoePosition, FloatMeta.NoCompression());
+            }
+            
+            public static _9d2e9d257e8387b45979b55403f8a357_bff54fe9af1b4c7d81c56d06a75d2d1a Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            {
+                var converted_aoePosition = bitStream.ReadVector3(FloatMeta.NoCompression());
+                var dataaoePosition = converted_aoePosition.ToUnityVector3();
         
-                return new _9d2e9d257e8387b45979b55403f8a357_ab84b43c39f64c47a02f38d9fa968410()
+                return new _9d2e9d257e8387b45979b55403f8a357_bff54fe9af1b4c7d81c56d06a75d2d1a()
                 {
                     Entity = entity,
                     Routing = target,
                     Target = target,
+                    aoePosition = dataaoePosition
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029 : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_dde14440892f4d9992de0aaabdf8aa8d : IEntityCommand
         {
-                public Vector3 aoePosition;
             
             public Entity Entity { get; set; }
             public Coherence.ChannelID ChannelID { get; set; }
@@ -6383,46 +6424,24 @@ namespace Coherence.Generated
             public void NullEntityRefs(Entity entity) {
             }
             
-            public _9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029(
-                Entity entity,
-                Vector3 aoePosition
-            )
+            
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_dde14440892f4d9992de0aaabdf8aa8d commandData, IOutProtocolBitStream bitStream)
             {
-                Entity = entity;
-                ChannelID = Coherence.ChannelID.Default;
-                Target = default;
-                Routing = MessageTarget.All;
-                SenderParticipant = 0;
-                SenderClientID = default;
-                Frame = 0;
-                UsesMeta = false;
-                
-                this.aoePosition = aoePosition; 
             }
             
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029 commandData, IOutProtocolBitStream bitStream)
+            public static _9d2e9d257e8387b45979b55403f8a357_dde14440892f4d9992de0aaabdf8aa8d Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
             {
-                var converted_aoePosition = commandData.aoePosition.ToCoreVector3();
-                bitStream.WriteVector3(converted_aoePosition, FloatMeta.NoCompression());
-            }
-            
-            public static _9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
-            {
-                var converted_aoePosition = bitStream.ReadVector3(FloatMeta.NoCompression());
-                var dataaoePosition = converted_aoePosition.ToUnityVector3();
         
-                return new _9d2e9d257e8387b45979b55403f8a357_cc38682f1af84d309a4f8900961f4029()
+                return new _9d2e9d257e8387b45979b55403f8a357_dde14440892f4d9992de0aaabdf8aa8d()
                 {
                     Entity = entity,
                     Routing = target,
                     Target = target,
-                    aoePosition = dataaoePosition
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_d256866cab2e48c4a65de0a989c6a24d : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_f9ea9b2ff94e45dc91527eaf47de22e1 : IEntityCommand
         {
-                public System.Int32 amount;
             
             public Entity Entity { get; set; }
             public Coherence.ChannelID ChannelID { get; set; }
@@ -6471,42 +6490,23 @@ namespace Coherence.Generated
             public void NullEntityRefs(Entity entity) {
             }
             
-            public _9d2e9d257e8387b45979b55403f8a357_d256866cab2e48c4a65de0a989c6a24d(
-                Entity entity,
-                System.Int32 amount
-            )
+            
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_f9ea9b2ff94e45dc91527eaf47de22e1 commandData, IOutProtocolBitStream bitStream)
             {
-                Entity = entity;
-                ChannelID = Coherence.ChannelID.Default;
-                Target = default;
-                Routing = MessageTarget.All;
-                SenderParticipant = 0;
-                SenderClientID = default;
-                Frame = 0;
-                UsesMeta = false;
-                
-                this.amount = amount; 
             }
             
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_d256866cab2e48c4a65de0a989c6a24d commandData, IOutProtocolBitStream bitStream)
+            public static _9d2e9d257e8387b45979b55403f8a357_f9ea9b2ff94e45dc91527eaf47de22e1 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
             {
-                bitStream.WriteIntegerRange(commandData.amount, 32, -2147483648);
-            }
-            
-            public static _9d2e9d257e8387b45979b55403f8a357_d256866cab2e48c4a65de0a989c6a24d Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
-            {
-                var dataamount = bitStream.ReadIntegerRange(32, -2147483648);
         
-                return new _9d2e9d257e8387b45979b55403f8a357_d256866cab2e48c4a65de0a989c6a24d()
+                return new _9d2e9d257e8387b45979b55403f8a357_f9ea9b2ff94e45dc91527eaf47de22e1()
                 {
                     Entity = entity,
                     Routing = target,
                     Target = target,
-                    amount = dataamount
                 };   
             }
         }
-        public struct _9d2e9d257e8387b45979b55403f8a357_fb3693e8cc6b49e48df65d020110a00f : IEntityCommand
+        public struct _9d2e9d257e8387b45979b55403f8a357_fe037c340e274c8cb1f52117cec0f40e : IEntityCommand
         {
             
             public Entity Entity { get; set; }
@@ -6557,14 +6557,14 @@ namespace Coherence.Generated
             }
             
             
-            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_fb3693e8cc6b49e48df65d020110a00f commandData, IOutProtocolBitStream bitStream)
+            public static void Serialize(_9d2e9d257e8387b45979b55403f8a357_fe037c340e274c8cb1f52117cec0f40e commandData, IOutProtocolBitStream bitStream)
             {
             }
             
-            public static _9d2e9d257e8387b45979b55403f8a357_fb3693e8cc6b49e48df65d020110a00f Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            public static _9d2e9d257e8387b45979b55403f8a357_fe037c340e274c8cb1f52117cec0f40e Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
             {
         
-                return new _9d2e9d257e8387b45979b55403f8a357_fb3693e8cc6b49e48df65d020110a00f()
+                return new _9d2e9d257e8387b45979b55403f8a357_fe037c340e274c8cb1f52117cec0f40e()
                 {
                     Entity = entity,
                     Routing = target,
