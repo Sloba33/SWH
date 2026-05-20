@@ -15,7 +15,7 @@ public class Level : ScriptableObject
     private void OnEnable()
     {
         sceneBuildIndex = levelNumber + 2;
-        Debug.Log("Scene Build Index set to: " + sceneBuildIndex + " for level number: " + levelNumber);
+        // Debug.Log("Scene Build Index set to: " + sceneBuildIndex + " for level number: " + levelNumber);
 
     }
 }

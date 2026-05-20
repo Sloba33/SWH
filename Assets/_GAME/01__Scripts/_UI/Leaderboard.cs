@@ -1,9 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Database;
 using UnityEngine.UI;
 using NaughtyAttributes;
 using Firebase.Extensions;
+using System.Threading.Tasks;
 
 public class Leaderboard : MonoBehaviour
 {
@@ -16,7 +18,7 @@ public class Leaderboard : MonoBehaviour
     private DatabaseReference db;
     [SerializeField] private LeaderboardRank personalRank;
     private GameObject extraRankObject; // Track the extra rank separately
-    
+
     void Start()
     {
         if (FirebaseInit.IsReady)
@@ -32,100 +34,159 @@ public class Leaderboard : MonoBehaviour
         LoadTopPlayers(maxEntries);
         LoadPersonalRank();
     }
-    
-    // Call this BEFORE loading new data to clear the UI
+
     private void ClearLeaderboardUI()
     {
-        // Destroy all tracked rank entries
         foreach (var go in spawnedRanks)
         {
             if (go != null)
                 Destroy(go);
         }
         spawnedRanks.Clear();
-        
-        // Destroy the extra rank if it exists
+
         if (extraRankObject != null)
         {
             Destroy(extraRankObject);
             extraRankObject = null;
         }
-        
-        // OPTIONAL: Also destroy any children that might have been missed
-        // This is a safety net
+
         foreach (Transform child in contentPanel)
         {
             Destroy(child.gameObject);
         }
     }
-    
+
     [NaughtyAttributes.Button("Hello")]
     public void LoadTopPlayersBtnRef()
     {
         LoadTopPlayers(maxEntries);
     }
-    
-    private void LoadTopPlayers(int count)
+
+  private void LoadTopPlayers(int count)
+{
+    if (db == null)
+    {
+        Debug.LogWarning("[Leaderboard] DB not ready");
+        return;
+    }
+
+    // TEMPORARY: Remove ordering and limiting to test
+    db.Child("leaderboard")
+      .GetValueAsync()  // Just get everything
+      .ContinueWithOnMainThread(task =>
+      {
+          if (task.IsFaulted)
+          {
+              Debug.LogError($"[Leaderboard] Load failed: {task.Exception}");
+              return;
+          }
+
+          DataSnapshot snapshot = task.Result;
+          
+          if (!snapshot.Exists)  // This should now be false
+          {
+              Debug.LogWarning("[Leaderboard] No data found");
+              return;
+          }
+
+          Debug.Log($"[Leaderboard] Found {snapshot.ChildrenCount} entries");
+          
+          ClearLeaderboardUI();
+
+          var entries = new List<DataSnapshot>();
+
+          foreach (var child in snapshot.Children)
+          {
+              if (!child.HasChild("trophies") || !child.HasChild("name"))
+                  continue;
+              entries.Add(child);
+          }
+
+          // Sort locally instead of using OrderByChild
+          entries.Sort((a, b) =>
+          {
+              int aVal = int.Parse(a.Child("trophies").Value.ToString());
+              int bVal = int.Parse(b.Child("trophies").Value.ToString());
+              return bVal.CompareTo(aVal);
+          });
+
+          int finalCount = Mathf.Min(entries.Count, maxEntries);
+          Debug.Log($"[Leaderboard] Displaying top {finalCount} players");
+
+          for (int i = 0; i < finalCount; i++)
+          {
+              string playerName = entries[i].Child("name").Value.ToString();
+              int trophies = int.Parse(entries[i].Child("trophies").Value.ToString());
+              int rank = i + 1;
+
+              GameObject go = Instantiate(leaderboardRankPrefab, contentPanel);
+              LeaderboardRank rankUI = go.GetComponent<LeaderboardRank>();
+              rankUI.Set(playerName, trophies, rank);
+              spawnedRanks.Add(go);
+          }
+          
+          if (entries.Count > 0)
+          {
+              extraRankObject = Instantiate(leaderboardRankPrefab, contentPanel);
+              extraRankObject.GetComponent<LeaderboardRank>().SetAsExtra();
+          }
+      });
+}
+    [Button("Debug All Leaderboard Data")]
+
+    public void DebugAllLeaderboardData()
     {
         if (db == null)
         {
-            Debug.LogWarning("[Leaderboard] DB not ready");
+            Debug.LogError("[Leaderboard] DB not ready");
             return;
         }
 
-        db.Child("leaderboard")
-          .OrderByChild("trophies")
-          .LimitToLast(maxEntries) 
-          .GetValueAsync()
-          .ContinueWithOnMainThread(task =>
-          {
-              if (task.IsFaulted)
-              {
-                  Debug.LogError("[Leaderboard] Load failed");
-                  return;
-              }
+        db.Child("leaderboard").GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError($"[Leaderboard] Failed to get data: {task.Exception}");
+                return;
+            }
 
-              // Clear UI before adding new entries
-              ClearLeaderboardUI();
+            DataSnapshot snapshot = task.Result;
 
-              var entries = new List<DataSnapshot>();
+            if (!snapshot.Exists)
+            {
+                Debug.LogWarning("[Leaderboard] No data found in leaderboard node");
+                return;
+            }
 
-              foreach (var child in task.Result.Children)
-              {
-                  if (!child.HasChild("trophies") || !child.HasChild("name"))
-                      continue;
+            Debug.Log($"=== LEADERBOARD DATA ({snapshot.ChildrenCount} entries) ===");
 
-                  entries.Add(child);
-              }
+            foreach (var child in snapshot.Children)
+            {
+                Debug.Log($"Player ID: {child.Key}");
 
-              // Sort descending (highest trophies first)
-              entries.Sort((a, b) =>
-                  int.Parse(b.Child("trophies").Value.ToString())
-                  .CompareTo(int.Parse(a.Child("trophies").Value.ToString()))
-              );
+                // Check for trophies
+                if (child.HasChild("trophies"))
+                {
+                    Debug.Log($"  - trophies: {child.Child("trophies").Value} (Type: {child.Child("trophies").Value.GetType()})");
+                }
+                else
+                {
+                    Debug.LogWarning($"  - trophies: MISSING!");
+                }
 
-              int finalCount = Mathf.Min(entries.Count, maxEntries);
-
-              for (int i = 0; i < finalCount; i++)
-              {
-                  string playerName = entries[i].Child("name").Value.ToString();
-                  int trophies = int.Parse(entries[i].Child("trophies").Value.ToString());
-                  int rank = i + 1;
-
-                  GameObject go = Instantiate(leaderboardRankPrefab, contentPanel);
-                  LeaderboardRank rankUI = go.GetComponent<LeaderboardRank>();
-                  rankUI.Set(playerName, trophies, rank);
-                  spawnedRanks.Add(go);
-              }
-              
-              // Instantiate and track the extra object
-              extraRankObject = Instantiate(leaderboardRankPrefab, contentPanel);
-              extraRankObject.GetComponent<LeaderboardRank>().SetAsExtra();
-
-              Debug.Log($"[Leaderboard] Loaded {finalCount} entries");
-          });
+                // Check for name
+                if (child.HasChild("name"))
+                {
+                    Debug.Log($"  - name: {child.Child("name").Value}");
+                }
+                else
+                {
+                    Debug.LogWarning($"  - name: MISSING!");
+                }
+            }
+            Debug.Log("=====================================");
+        });
     }
-
     private void LoadPersonalRank()
     {
         if (db == null || personalRank == null)
@@ -140,13 +201,22 @@ public class Leaderboard : MonoBehaviour
           {
               if (task.IsFaulted)
               {
-                  Debug.LogError("[Leaderboard] Personal rank load failed");
+                  Debug.LogError($"[Leaderboard] Personal rank load failed: {task.Exception}");
+                  return;
+              }
+
+              DataSnapshot snapshot = task.Result;
+
+              if (!snapshot.Exists)
+              {
+                  Debug.LogWarning("[Leaderboard] No data found for personal rank");
+                  personalRank.Set("Unranked", 0, 0);
                   return;
               }
 
               var entries = new List<DataSnapshot>();
 
-              foreach (var child in task.Result.Children)
+              foreach (var child in snapshot.Children)
               {
                   if (!child.HasChild("trophies") || !child.HasChild("name"))
                       continue;
@@ -156,9 +226,11 @@ public class Leaderboard : MonoBehaviour
 
               // Sort descending
               entries.Sort((a, b) =>
-                  int.Parse(b.Child("trophies").Value.ToString())
-                  .CompareTo(int.Parse(a.Child("trophies").Value.ToString()))
-              );
+              {
+                  int aVal = int.Parse(a.Child("trophies").Value.ToString());
+                  int bVal = int.Parse(b.Child("trophies").Value.ToString());
+                  return bVal.CompareTo(aVal);
+              });
 
               for (int i = 0; i < entries.Count; i++)
               {
@@ -178,8 +250,7 @@ public class Leaderboard : MonoBehaviour
               personalRank.Set("Unranked", 0, 0);
           });
     }
-    
-    // Optional: Call this when closing the leaderboard panel
+
     public void CloseLeaderboard()
     {
         ClearLeaderboardUI();

@@ -24,7 +24,7 @@ public class PlayerMenu : MonoBehaviour
     private void Start()
     {
 
-        Debug.Log("Playermenu loaded");
+        
         SetColors();
         canBlink = true;
     }

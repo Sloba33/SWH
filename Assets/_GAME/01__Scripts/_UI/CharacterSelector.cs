@@ -36,7 +36,7 @@ public class CharacterSelector : MonoBehaviour
             uiShadow.enabled = false;
         else uiShadow.enabled = true;
         unlocked = PlayerPrefs.GetInt(characterStats.characterName) == 1;
-        Debug.Log("Set unlocked to : " + unlocked + " for character: " + characterStats.characterName);
+        // Debug.Log("Set unlocked to : " + unlocked + " for character: " + characterStats.characterName);
 
         button.onClick.AddListener(() =>
         {
@@ -53,7 +53,7 @@ public class CharacterSelector : MonoBehaviour
             bool characterNotificationClicked = PlayerPrefs.GetInt(characterStats.characterName.ToString() + "_clicked") == 0;
             if (characterNotificationClicked)
             {
-                Debug.Log("Item clicked? :" + PlayerPrefs.GetInt(characterStats.characterName + "_clicked"));
+                // Debug.Log("Item clicked? :" + PlayerPrefs.GetInt(characterStats.characterName + "_clicked"));
                 if (characterStats.characterName != "Toby")
                     notificationImage.SetActive(true);
 
@@ -80,7 +80,7 @@ public class CharacterSelector : MonoBehaviour
         bool characterNotificationClicked = PlayerPrefs.GetInt(characterStats.characterName.ToString() + "_clicked") == 0;
         if (characterNotificationClicked && unlocked && characterStats.characterName != "Toby")
         {
-            Debug.Log("Item clicked? :" + PlayerPrefs.GetInt(characterStats.characterName + "_clicked"));
+            // Debug.Log("Item clicked? :" + PlayerPrefs.GetInt(characterStats.characterName + "_clicked"));
             notificationImage.SetActive(true);
 
         }

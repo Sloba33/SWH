@@ -69,12 +69,12 @@ public class LevelProgress : MonoBehaviour
                     if (savedFillAmount >= 0.99f)
                     {
                         image.fillAmount = 1f;
-                        Debug.Log($"{color} loaded as complete (1.0f) in GalleryInit");
+                        // Debug.Log($"{color} loaded as complete (1.0f) in GalleryInit");
                     }
                     else
                     {
                         image.fillAmount = savedFillAmount;
-                        Debug.Log($"{color} loaded at {savedFillAmount} in GalleryInit");
+                        // Debug.Log($"{color} loaded at {savedFillAmount} in GalleryInit");
                     }
                 }
             }

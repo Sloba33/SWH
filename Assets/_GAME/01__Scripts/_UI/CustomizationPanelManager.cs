@@ -138,16 +138,16 @@ public class CustomizationPanelManager : MonoBehaviour
                         colorButtonManagers[i].clothesType == ColorButtonManager.ClothesType.Hat
                     )
                     {
-                        Debug.Log(
-                            "Updating hat color of :"
-                                + colorButtonManagers[i].colorButtons[j].name
-                                + " to : "
-                                + mainMenuManager.currentCharacter.defaultHat
-                        );
-                        colorButtonManagers[i].colorButtons[j].color = mainMenuManager
-                            .currentCharacter
-                            .defaultHat;
-                        defaultHatColor = mainMenuManager.currentCharacter.defaultHat;
+                        // Debug.Log(
+                        //     "Updating hat color of :"
+                        //         + colorButtonManagers[i].colorButtons[j].name
+                        //         + " to : "
+                        //         + mainMenuManager.currentCharacter.defaultHat
+                        // );
+                        // colorButtonManagers[i].colorButtons[j].color = mainMenuManager
+                        //     .currentCharacter
+                        //     .defaultHat;
+                        // defaultHatColor = mainMenuManager.currentCharacter.defaultHat;
                     }
                     else if (
                         colorButtonManagers[i].clothesType == ColorButtonManager.ClothesType.Shoes

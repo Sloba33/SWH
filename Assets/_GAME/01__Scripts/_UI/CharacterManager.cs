@@ -39,7 +39,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + 100);
         }
         PlayerPrefs.Save();
-        Debug.Log("Coins Granted: " + _coinsGranted);
+        // Debug.Log("Coins Granted: " + _coinsGranted);
     }
     public void CheckIfUpgradesAreAffordable()
     {
@@ -157,8 +157,8 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     private void SetStartingHelmets()
     {
-        if (characterPickerManager.characterSelectors.Count == 0) Debug.Log("[SetStartingHelmet] - Count is 0");
-        if (characterPickerManager.characterSelectors == null) Debug.Log("SetStartingHelmet]  No character selector assigned");
+        // if (characterPickerManager.characterSelectors.Count == 0) Debug.Log("[SetStartingHelmet] - Count is 0");
+        // if (characterPickerManager.characterSelectors == null) Debug.Log("SetStartingHelmet]  No character selector assigned");
         if (characterPickerManager.characterSelectors.Count == 0)
         {
             for (int i = 0; i < characterPickerManager.content.childCount; i++)
@@ -676,7 +676,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     {
         // loading character from prefs
         characterIndex = PlayerPrefs.GetInt("SelectedCharacterID", 0);
-        Debug.Log("Index : " + characterIndex + " characters count :" + characters.Count);
+        // Debug.Log("Index : " + characterIndex + " characters count :" + characters.Count);
         currentCharacter = characters[characterIndex];
         currentGameplayCharacter = gameplayCharacters[characterIndex];
         mainMenuManager.currentCharacter = currentCharacter;

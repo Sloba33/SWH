@@ -335,7 +335,7 @@ public class WinScreen : MonoBehaviour
                 if (audioSourceXP != null)
 
                     audioSourceXP.Play();
-                XPText.transform.DOPunchScale(new Vector3(XPText.transform.localScale.x + 0.01f, XPText.transform.localScale.y + 0.01f, XPText.transform.localScale.y + 0.01f), blingInterval).Play();
+                XPText.transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), blingInterval).Play();
             }
             yield return new WaitForSeconds(1f);
         }
@@ -364,7 +364,7 @@ public class WinScreen : MonoBehaviour
                 if (audioSourceTrophies != null)
                     audioSourceTrophies.Play();
 
-                TrophyText.transform.DOPunchScale(new Vector3(TrophyText.transform.localScale.x + 0.01f, TrophyText.transform.localScale.y + 0.01f, TrophyText.transform.localScale.y + 0.01f), blingInterval).Play();
+                TrophyText.transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), blingInterval).Play();
             }
         }
         int starsEarned = 0;

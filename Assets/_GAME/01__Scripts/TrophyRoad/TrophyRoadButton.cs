@@ -30,7 +30,7 @@ public class TrophyRoadButton : MonoBehaviour
 
     public void Initialize(int trophyRequirement, string amount, string description, Sprite rewardSprite, Sprite bgSprite, TrophyRoadManager manager, Transform parentPanel, bool character, TrophyRewardType trophyReward, TrophyRoadData trophyRoadData, AudioClip audioclip)
     {
-        Debug.Log("REWARD TYPE :" + trophyReward);
+      
         CustomScrollTrophyRoad cstr = FindObjectOfType<CustomScrollTrophyRoad>(true);
         button.onClick.RemoveAllListeners();
         TrophyRequirement = trophyRequirement;
@@ -72,7 +72,7 @@ public class TrophyRoadButton : MonoBehaviour
         {
 
             cpm.TrophyRoadTempFlag = flag;
-            Debug.Log("Set TropgyRoadTempFlag to " + flag);
+           
         }
         else Debug.Log("CPM NULL");
     }
@@ -122,7 +122,7 @@ public class TrophyRoadButton : MonoBehaviour
 
         if (characterTokenManager.characterStats == null)
         {
-            Debug.LogError("characterStats is not assigned in CharacterTokenManager.");
+           
             return;
         }
 
@@ -135,12 +135,12 @@ public class TrophyRoadButton : MonoBehaviour
         if (!characterTokenManager.twice)
         {
             SpawnTokenPanels(characterTokenManager.characterStats, null);
-            Debug.Log("Spawning once");
+           
         }
         else
         {
             SpawnTokenPanels(characterTokenManager.previousCharacterStats, characterTokenManager.characterStats);
-            Debug.Log("Spawning twice");
+           
         }
         //   TrophyRoadFlagChanger(false);
     }
@@ -169,7 +169,7 @@ public class TrophyRoadButton : MonoBehaviour
 
     private void SpawnTokenPanels(CharacterStats firstCharacterStats, CharacterStats secondCharacterStats)
     {
-        Debug.Log("Spawning token panels");
+        
         StartCoroutine(SpawnTokenPanelCoroutineSingle(firstCharacterStats));
     }
 
@@ -250,7 +250,7 @@ public class TrophyRoadButton : MonoBehaviour
         ClaimPanel cPanel = Instantiate(claimPanel, parent);
         if (trophyRoadRewardType == TrophyRewardType.Character_Token)
         {
-            Debug.Log("Spawning Characters CPanel instead");
+           
             cPanel.SetTextAndImageCharacter(amountText.text, rewardImage.sprite, backgroundSprite);
         }
         else
@@ -346,7 +346,7 @@ public class TrophyRoadButton : MonoBehaviour
         rewardImage.color = faded;
         button.interactable = false;
         // claimText.gameObject.SetActive(false);
-        Debug.Log("Setting as claimed :" + TrophyRequirement);
+       
         KillTween();
 
 
@@ -355,7 +355,7 @@ public class TrophyRoadButton : MonoBehaviour
     {
 
         button.interactable = true;
-        Debug.Log("Setting as unclaimed but available: " + TrophyRequirement);
+       
 
         // Ensure any old tween is killed before starting a new one
         KillTween();
@@ -369,7 +369,7 @@ public class TrophyRoadButton : MonoBehaviour
     {
 
         button.interactable = false;
-        Debug.Log("Setting as unclaimed but unavailable " + TrophyRequirement);
+        
         KillTween();
     }
 
