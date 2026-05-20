@@ -3068,6 +3068,138 @@ namespace Coherence.Generated
                 };   
             }
         }
+        public struct _4a0ebe817580b2446862a2ecd338a034_6d8d0fbfae22451b8ab2aaeeb1e90ebc : IEntityCommand
+        {
+            
+            public Entity Entity { get; set; }
+            public Coherence.ChannelID ChannelID { get; set; }
+            public MessageTarget Target { get; set; }
+            public MessageTarget Routing { get; set; }
+            public uint SenderParticipant { get; set; }
+            public ClientID SenderClientID { get; set; }
+            public long Frame { get; set; }
+            public uint GetComponentType() => 37;
+            
+            public bool UsesMeta { get; set; }
+            
+            public IEntityMessage Clone()
+            {
+                // This is a struct, so we can safely return
+                // a struct copy.
+                return this;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper, Coherence.Log.Logger logger)
+            {
+                var err = mapper.MapToAbsoluteEntity(Entity, false, out var absoluteEntity);
+                if (err != IEntityMapper.Error.None)
+                {
+                    return err;
+                }
+                Entity = absoluteEntity;
+                return IEntityMapper.Error.None;
+            }
+            
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper, Coherence.Log.Logger logger)
+            {
+                var err = mapper.MapToRelativeEntity(Entity, false, out var relativeEntity);
+                if (err != IEntityMapper.Error.None)
+                {
+                    return err;
+                }
+                Entity = relativeEntity;
+                return IEntityMapper.Error.None;
+            }
+    
+            public HashSet<Entity> GetEntityRefs() {
+                return default;
+            }
+    
+            public void NullEntityRefs(Entity entity) {
+            }
+            
+            
+            public static void Serialize(_4a0ebe817580b2446862a2ecd338a034_6d8d0fbfae22451b8ab2aaeeb1e90ebc commandData, IOutProtocolBitStream bitStream)
+            {
+            }
+            
+            public static _4a0ebe817580b2446862a2ecd338a034_6d8d0fbfae22451b8ab2aaeeb1e90ebc Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            {
+        
+                return new _4a0ebe817580b2446862a2ecd338a034_6d8d0fbfae22451b8ab2aaeeb1e90ebc()
+                {
+                    Entity = entity,
+                    Routing = target,
+                    Target = target,
+                };   
+            }
+        }
+        public struct _4a0ebe817580b2446862a2ecd338a034_7be96ea70f5942c580289a9fe72be301 : IEntityCommand
+        {
+            
+            public Entity Entity { get; set; }
+            public Coherence.ChannelID ChannelID { get; set; }
+            public MessageTarget Target { get; set; }
+            public MessageTarget Routing { get; set; }
+            public uint SenderParticipant { get; set; }
+            public ClientID SenderClientID { get; set; }
+            public long Frame { get; set; }
+            public uint GetComponentType() => 38;
+            
+            public bool UsesMeta { get; set; }
+            
+            public IEntityMessage Clone()
+            {
+                // This is a struct, so we can safely return
+                // a struct copy.
+                return this;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper, Coherence.Log.Logger logger)
+            {
+                var err = mapper.MapToAbsoluteEntity(Entity, false, out var absoluteEntity);
+                if (err != IEntityMapper.Error.None)
+                {
+                    return err;
+                }
+                Entity = absoluteEntity;
+                return IEntityMapper.Error.None;
+            }
+            
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper, Coherence.Log.Logger logger)
+            {
+                var err = mapper.MapToRelativeEntity(Entity, false, out var relativeEntity);
+                if (err != IEntityMapper.Error.None)
+                {
+                    return err;
+                }
+                Entity = relativeEntity;
+                return IEntityMapper.Error.None;
+            }
+    
+            public HashSet<Entity> GetEntityRefs() {
+                return default;
+            }
+    
+            public void NullEntityRefs(Entity entity) {
+            }
+            
+            
+            public static void Serialize(_4a0ebe817580b2446862a2ecd338a034_7be96ea70f5942c580289a9fe72be301 commandData, IOutProtocolBitStream bitStream)
+            {
+            }
+            
+            public static _4a0ebe817580b2446862a2ecd338a034_7be96ea70f5942c580289a9fe72be301 Deserialize(IInProtocolBitStream bitStream, Entity entity, MessageTarget target)
+            {
+        
+                return new _4a0ebe817580b2446862a2ecd338a034_7be96ea70f5942c580289a9fe72be301()
+                {
+                    Entity = entity,
+                    Routing = target,
+                    Target = target,
+                };   
+            }
+        }
         public struct _4ac8c096d7a58a748b8ed5b5151f67c2_50bfeb415ce849d09e82ebbb6fcaf05a : IEntityCommand
         {
                 public Vector3 landPosition;
@@ -3079,7 +3211,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 37;
+            public uint GetComponentType() => 39;
             
             public bool UsesMeta { get; set; }
             
@@ -3167,7 +3299,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 38;
+            public uint GetComponentType() => 40;
             
             public bool UsesMeta { get; set; }
             
@@ -3255,7 +3387,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 39;
+            public uint GetComponentType() => 41;
             
             public bool UsesMeta { get; set; }
             
@@ -3343,7 +3475,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 40;
+            public uint GetComponentType() => 42;
             
             public bool UsesMeta { get; set; }
             
@@ -3431,7 +3563,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 41;
+            public uint GetComponentType() => 43;
             
             public bool UsesMeta { get; set; }
             
@@ -3519,7 +3651,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 42;
+            public uint GetComponentType() => 44;
             
             public bool UsesMeta { get; set; }
             
@@ -3607,7 +3739,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 43;
+            public uint GetComponentType() => 45;
             
             public bool UsesMeta { get; set; }
             
@@ -3695,7 +3827,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 44;
+            public uint GetComponentType() => 46;
             
             public bool UsesMeta { get; set; }
             
@@ -3783,7 +3915,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 45;
+            public uint GetComponentType() => 47;
             
             public bool UsesMeta { get; set; }
             
@@ -3871,7 +4003,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 46;
+            public uint GetComponentType() => 48;
             
             public bool UsesMeta { get; set; }
             
@@ -3959,7 +4091,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 47;
+            public uint GetComponentType() => 49;
             
             public bool UsesMeta { get; set; }
             
@@ -4047,7 +4179,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 48;
+            public uint GetComponentType() => 50;
             
             public bool UsesMeta { get; set; }
             
@@ -4135,7 +4267,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 49;
+            public uint GetComponentType() => 51;
             
             public bool UsesMeta { get; set; }
             
@@ -4223,7 +4355,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 50;
+            public uint GetComponentType() => 52;
             
             public bool UsesMeta { get; set; }
             
@@ -4311,7 +4443,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 51;
+            public uint GetComponentType() => 53;
             
             public bool UsesMeta { get; set; }
             
@@ -4399,7 +4531,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 52;
+            public uint GetComponentType() => 54;
             
             public bool UsesMeta { get; set; }
             
@@ -4486,7 +4618,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 53;
+            public uint GetComponentType() => 55;
             
             public bool UsesMeta { get; set; }
             
@@ -4553,7 +4685,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 54;
+            public uint GetComponentType() => 56;
             
             public bool UsesMeta { get; set; }
             
@@ -4640,7 +4772,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 55;
+            public uint GetComponentType() => 57;
             
             public bool UsesMeta { get; set; }
             
@@ -4706,7 +4838,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 56;
+            public uint GetComponentType() => 58;
             
             public bool UsesMeta { get; set; }
             
@@ -4772,7 +4904,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 57;
+            public uint GetComponentType() => 59;
             
             public bool UsesMeta { get; set; }
             
@@ -4838,7 +4970,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 58;
+            public uint GetComponentType() => 60;
             
             public bool UsesMeta { get; set; }
             
@@ -4904,7 +5036,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 59;
+            public uint GetComponentType() => 61;
             
             public bool UsesMeta { get; set; }
             
@@ -4971,7 +5103,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 60;
+            public uint GetComponentType() => 62;
             
             public bool UsesMeta { get; set; }
             
@@ -5059,7 +5191,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 61;
+            public uint GetComponentType() => 63;
             
             public bool UsesMeta { get; set; }
             
@@ -5147,7 +5279,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 62;
+            public uint GetComponentType() => 64;
             
             public bool UsesMeta { get; set; }
             
@@ -5234,7 +5366,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 63;
+            public uint GetComponentType() => 65;
             
             public bool UsesMeta { get; set; }
             
@@ -5301,7 +5433,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 64;
+            public uint GetComponentType() => 66;
             
             public bool UsesMeta { get; set; }
             
@@ -5388,7 +5520,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 65;
+            public uint GetComponentType() => 67;
             
             public bool UsesMeta { get; set; }
             
@@ -5455,7 +5587,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 66;
+            public uint GetComponentType() => 68;
             
             public bool UsesMeta { get; set; }
             
@@ -5543,7 +5675,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 67;
+            public uint GetComponentType() => 69;
             
             public bool UsesMeta { get; set; }
             
@@ -5631,7 +5763,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 68;
+            public uint GetComponentType() => 70;
             
             public bool UsesMeta { get; set; }
             
@@ -5718,7 +5850,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 69;
+            public uint GetComponentType() => 71;
             
             public bool UsesMeta { get; set; }
             
@@ -5785,7 +5917,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 70;
+            public uint GetComponentType() => 72;
             
             public bool UsesMeta { get; set; }
             
@@ -5873,7 +6005,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 71;
+            public uint GetComponentType() => 73;
             
             public bool UsesMeta { get; set; }
             
@@ -5960,7 +6092,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 72;
+            public uint GetComponentType() => 74;
             
             public bool UsesMeta { get; set; }
             
@@ -6027,7 +6159,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 73;
+            public uint GetComponentType() => 75;
             
             public bool UsesMeta { get; set; }
             
@@ -6115,7 +6247,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 74;
+            public uint GetComponentType() => 76;
             
             public bool UsesMeta { get; set; }
             
@@ -6204,7 +6336,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 75;
+            public uint GetComponentType() => 77;
             
             public bool UsesMeta { get; set; }
             
@@ -6297,7 +6429,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 76;
+            public uint GetComponentType() => 78;
             
             public bool UsesMeta { get; set; }
             
@@ -6384,7 +6516,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 77;
+            public uint GetComponentType() => 79;
             
             public bool UsesMeta { get; set; }
             
@@ -6475,7 +6607,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 78;
+            public uint GetComponentType() => 80;
             
             public bool UsesMeta { get; set; }
             
@@ -6561,7 +6693,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 79;
+            public uint GetComponentType() => 81;
             
             public bool UsesMeta { get; set; }
             
@@ -6648,7 +6780,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 80;
+            public uint GetComponentType() => 82;
             
             public bool UsesMeta { get; set; }
             
@@ -6714,7 +6846,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 81;
+            public uint GetComponentType() => 83;
             
             public bool UsesMeta { get; set; }
             
@@ -6780,7 +6912,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 82;
+            public uint GetComponentType() => 84;
             
             public bool UsesMeta { get; set; }
             
@@ -6847,7 +6979,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 83;
+            public uint GetComponentType() => 85;
             
             public bool UsesMeta { get; set; }
             
@@ -6935,7 +7067,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 84;
+            public uint GetComponentType() => 86;
             
             public bool UsesMeta { get; set; }
             
@@ -7023,7 +7155,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 85;
+            public uint GetComponentType() => 87;
             
             public bool UsesMeta { get; set; }
             
@@ -7111,7 +7243,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 86;
+            public uint GetComponentType() => 88;
             
             public bool UsesMeta { get; set; }
             
@@ -7199,7 +7331,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 87;
+            public uint GetComponentType() => 89;
             
             public bool UsesMeta { get; set; }
             
@@ -7287,7 +7419,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 88;
+            public uint GetComponentType() => 90;
             
             public bool UsesMeta { get; set; }
             
@@ -7375,7 +7507,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 89;
+            public uint GetComponentType() => 91;
             
             public bool UsesMeta { get; set; }
             
@@ -7463,7 +7595,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 90;
+            public uint GetComponentType() => 92;
             
             public bool UsesMeta { get; set; }
             
@@ -7551,7 +7683,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 91;
+            public uint GetComponentType() => 93;
             
             public bool UsesMeta { get; set; }
             
@@ -7639,7 +7771,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 92;
+            public uint GetComponentType() => 94;
             
             public bool UsesMeta { get; set; }
             
@@ -7727,7 +7859,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 93;
+            public uint GetComponentType() => 95;
             
             public bool UsesMeta { get; set; }
             
@@ -7815,7 +7947,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 94;
+            public uint GetComponentType() => 96;
             
             public bool UsesMeta { get; set; }
             
@@ -7903,7 +8035,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 95;
+            public uint GetComponentType() => 97;
             
             public bool UsesMeta { get; set; }
             
@@ -7991,7 +8123,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 96;
+            public uint GetComponentType() => 98;
             
             public bool UsesMeta { get; set; }
             
@@ -8079,7 +8211,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 97;
+            public uint GetComponentType() => 99;
             
             public bool UsesMeta { get; set; }
             
@@ -8167,7 +8299,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 98;
+            public uint GetComponentType() => 100;
             
             public bool UsesMeta { get; set; }
             
@@ -8254,7 +8386,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 99;
+            public uint GetComponentType() => 101;
             
             public bool UsesMeta { get; set; }
             
@@ -8320,7 +8452,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 100;
+            public uint GetComponentType() => 102;
             
             public bool UsesMeta { get; set; }
             
@@ -8386,7 +8518,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 101;
+            public uint GetComponentType() => 103;
             
             public bool UsesMeta { get; set; }
             
@@ -8453,7 +8585,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 102;
+            public uint GetComponentType() => 104;
             
             public bool UsesMeta { get; set; }
             
@@ -8540,7 +8672,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 103;
+            public uint GetComponentType() => 105;
             
             public bool UsesMeta { get; set; }
             
@@ -8606,7 +8738,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 104;
+            public uint GetComponentType() => 106;
             
             public bool UsesMeta { get; set; }
             
@@ -8673,7 +8805,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 105;
+            public uint GetComponentType() => 107;
             
             public bool UsesMeta { get; set; }
             
@@ -8761,7 +8893,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 106;
+            public uint GetComponentType() => 108;
             
             public bool UsesMeta { get; set; }
             
@@ -8849,7 +8981,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 107;
+            public uint GetComponentType() => 109;
             
             public bool UsesMeta { get; set; }
             
@@ -8937,7 +9069,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 108;
+            public uint GetComponentType() => 110;
             
             public bool UsesMeta { get; set; }
             
@@ -9025,7 +9157,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 109;
+            public uint GetComponentType() => 111;
             
             public bool UsesMeta { get; set; }
             
@@ -9113,7 +9245,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 110;
+            public uint GetComponentType() => 112;
             
             public bool UsesMeta { get; set; }
             
@@ -9201,7 +9333,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 111;
+            public uint GetComponentType() => 113;
             
             public bool UsesMeta { get; set; }
             
@@ -9289,7 +9421,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 112;
+            public uint GetComponentType() => 114;
             
             public bool UsesMeta { get; set; }
             
@@ -9377,7 +9509,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 113;
+            public uint GetComponentType() => 115;
             
             public bool UsesMeta { get; set; }
             
@@ -9464,7 +9596,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 114;
+            public uint GetComponentType() => 116;
             
             public bool UsesMeta { get; set; }
             
@@ -9531,7 +9663,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 115;
+            public uint GetComponentType() => 117;
             
             public bool UsesMeta { get; set; }
             
@@ -9619,7 +9751,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 116;
+            public uint GetComponentType() => 118;
             
             public bool UsesMeta { get; set; }
             
@@ -9707,7 +9839,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 117;
+            public uint GetComponentType() => 119;
             
             public bool UsesMeta { get; set; }
             
@@ -9794,7 +9926,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 118;
+            public uint GetComponentType() => 120;
             
             public bool UsesMeta { get; set; }
             
@@ -9860,7 +9992,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 119;
+            public uint GetComponentType() => 121;
             
             public bool UsesMeta { get; set; }
             
@@ -9927,7 +10059,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 120;
+            public uint GetComponentType() => 122;
             
             public bool UsesMeta { get; set; }
             
@@ -10015,7 +10147,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 121;
+            public uint GetComponentType() => 123;
             
             public bool UsesMeta { get; set; }
             
@@ -10103,7 +10235,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 122;
+            public uint GetComponentType() => 124;
             
             public bool UsesMeta { get; set; }
             
@@ -10190,7 +10322,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 123;
+            public uint GetComponentType() => 125;
             
             public bool UsesMeta { get; set; }
             
@@ -10257,7 +10389,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 124;
+            public uint GetComponentType() => 126;
             
             public bool UsesMeta { get; set; }
             
@@ -10345,7 +10477,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 125;
+            public uint GetComponentType() => 127;
             
             public bool UsesMeta { get; set; }
             
@@ -10433,7 +10565,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 126;
+            public uint GetComponentType() => 128;
             
             public bool UsesMeta { get; set; }
             
@@ -10520,7 +10652,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 127;
+            public uint GetComponentType() => 129;
             
             public bool UsesMeta { get; set; }
             
@@ -10586,7 +10718,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 128;
+            public uint GetComponentType() => 130;
             
             public bool UsesMeta { get; set; }
             
@@ -10653,7 +10785,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 129;
+            public uint GetComponentType() => 131;
             
             public bool UsesMeta { get; set; }
             
@@ -10741,7 +10873,7 @@ namespace Coherence.Generated
             public uint SenderParticipant { get; set; }
             public ClientID SenderClientID { get; set; }
             public long Frame { get; set; }
-            public uint GetComponentType() => 130;
+            public uint GetComponentType() => 132;
             
             public bool UsesMeta { get; set; }
             

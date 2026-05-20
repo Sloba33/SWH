@@ -4,9 +4,11 @@ using System.IO;
 using Coherence.Editor;
 using Coherence.Toolkit;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 // Converts the active scene from single-player to a Coherence multiplayer setup.
@@ -22,6 +24,8 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
     private const string LogPrefix = "[SP→MP]";
     private const string LevelGoalPrefabFolder = "Assets/_GAME/02__Prefabs/10_Coherence";
     private const string NetworkedSuffix = "_Networked";
+    private const string DisconnectButtonPrefabPath =
+        "Assets/_GAME/02__Prefabs/09_UI Prefabs/GameplayUI Prefabs/DisconnectButton.prefab";
 
     [MenuItem("Tools/Single Player → Multiplayer Converter")]
     public static void ShowWindow() => GetWindow<SinglePlayerToMultiplayerConverter>("SP→MP Converter");
@@ -94,6 +98,7 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
             WireObstacleList(lg, "ObstaclesToDestroy_Opponent", opponentLevel, "opponentLevel");
 
             SwapLevelGoalSpawnableReferencesInPrefab(scene);
+            AddDisconnectButton(scene, gm);
         }
         catch (Exception ex)
         {
@@ -697,6 +702,92 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
             return null;
         }
         return component;
+    }
+
+    // ---------- Step 9: disconnect button ----------
+
+    private static void AddDisconnectButton(Scene scene, GameManager gm)
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(DisconnectButtonPrefabPath);
+        if (prefab == null)
+        {
+            Debug.LogError($"{LogPrefix} DisconnectButton prefab not found at '{DisconnectButtonPrefabPath}'.");
+            return;
+        }
+
+        var mainUi = FindGameObjectByName(scene, "Main_UI");
+        if (mainUi == null)
+        {
+            Debug.LogError($"{LogPrefix} No GameObject named 'Main_UI' in scene; cannot place DisconnectButton.");
+            return;
+        }
+
+        // Idempotency: look for an existing instance of this prefab directly under Main_UI.
+        GameObject buttonGo = null;
+        foreach (Transform child in mainUi.transform)
+        {
+            var src = PrefabUtility.GetCorrespondingObjectFromOriginalSource(child.gameObject);
+            if (src != null && AssetDatabase.GetAssetPath(src) == DisconnectButtonPrefabPath)
+            {
+                buttonGo = child.gameObject;
+                break;
+            }
+        }
+
+        if (buttonGo != null)
+        {
+            Debug.Log($"{LogPrefix} DisconnectButton already present under Main_UI — skipping instantiation.");
+        }
+        else
+        {
+            buttonGo = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
+            buttonGo.transform.SetParent(mainUi.transform, false);
+            Undo.RegisterCreatedObjectUndo(buttonGo, "Create DisconnectButton");
+            Debug.Log($"{LogPrefix} Instantiated DisconnectButton under Main_UI.");
+        }
+
+        var button = buttonGo.GetComponent<Button>();
+        if (button == null)
+        {
+            Debug.LogError($"{LogPrefix} DisconnectButton has no Button component; cannot wire onClick.");
+            return;
+        }
+
+        // Idempotency: skip if onClick already calls GameManager.DisconnectAndReturnToMatchmaking.
+        for (int i = 0; i < button.onClick.GetPersistentEventCount(); i++)
+        {
+            if (button.onClick.GetPersistentTarget(i) == gm &&
+                button.onClick.GetPersistentMethodName(i) == nameof(GameManager.DisconnectAndReturnToMatchmaking))
+            {
+                Debug.Log($"{LogPrefix} DisconnectButton.onClick already wired to GameManager.DisconnectAndReturnToMatchmaking — skipping.");
+                return;
+            }
+        }
+
+        UnityEventTools.AddPersistentListener(button.onClick, gm.DisconnectAndReturnToMatchmaking);
+        EditorUtility.SetDirty(button);
+        Debug.Log($"{LogPrefix} Wired DisconnectButton.onClick → GameManager.DisconnectAndReturnToMatchmaking.");
+    }
+
+    private static GameObject FindGameObjectByName(Scene scene, string name)
+    {
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            var found = FindByNameRecursive(root.transform, name);
+            if (found != null) return found.gameObject;
+        }
+        return null;
+    }
+
+    private static Transform FindByNameRecursive(Transform t, string name)
+    {
+        if (t.name == name) return t;
+        foreach (Transform child in t)
+        {
+            var found = FindByNameRecursive(child, name);
+            if (found != null) return found;
+        }
+        return null;
     }
 
     // ---------- utilities ----------
