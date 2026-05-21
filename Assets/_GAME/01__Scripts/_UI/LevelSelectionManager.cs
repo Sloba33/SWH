@@ -848,6 +848,24 @@ public class LevelSelectionManager : MonoBehaviour
         }
     }
 
+    // The campaign reads a level's star/bonus PlayerPrefs by scene name. LevelGoal
+    // writes them using SceneManager.GetActiveScene().name at runtime, so the key
+    // must be derived from sceneBuildIndex (the scene that actually loads).
+    // Level.sceneName is only a cached string and goes stale if a scene is renamed
+    // after it was set, which silently breaks the star display.
+    private static string ResolveSceneName(Level level)
+    {
+        if (level != null
+            && level.sceneBuildIndex >= 0
+            && level.sceneBuildIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            string path = SceneUtility.GetScenePathByBuildIndex(level.sceneBuildIndex);
+            if (!string.IsNullOrEmpty(path))
+                return System.IO.Path.GetFileNameWithoutExtension(path);
+        }
+        return level != null ? level.sceneName : string.Empty;
+    }
+
     private void InstantiateLevelButton(Level level, int currentUnlockedLevel, Transform contentParent)
     {
         if (levelButtonPrefab == null)
@@ -884,7 +902,7 @@ public class LevelSelectionManager : MonoBehaviour
             bool isLatestUnbeatenLevel = (level.levelNumber == (currentUnlockedLevel + 1));
             if (levelButtonDisplay != null)
             {
-                levelButtonDisplay.levelSceneName = level.sceneName;
+                levelButtonDisplay.levelSceneName = ResolveSceneName(level);
                 levelButtonDisplay.Initialize();
             }
             else
@@ -1001,7 +1019,7 @@ public class LevelSelectionManager : MonoBehaviour
                 if (tmpText != null) tmpText.text = level.levelNumber.ToString();
                 if (levelButtonDisplay != null)
                 {
-                    levelButtonDisplay.levelSceneName = level.sceneName;
+                    levelButtonDisplay.levelSceneName = ResolveSceneName(level);
                     levelButtonDisplay.Initialize();
                 }
 
