@@ -120,11 +120,10 @@ public class WinScreen : MonoBehaviour
         Debug.Log("FirstTime : " + PlayerPrefs.GetInt("FirstTime"));
         if (!MP && levelGoal != null && PlayerPrefs.GetInt("FirstTime") != 0)
         {
-            string levelName = SceneManager.GetActiveScene().name;
-
-            bool firstTimeBeat = PlayerPrefs.GetInt(levelName + "_beaten", 0) == 0;
-
-            int xpReward = firstTimeBeat ? levelGoal.xp : 0;
+            // Rewards are computed in LevelGoal.WinLevel(): full on the first
+            // clear, and only the difference (better star tier / first-time
+            // bonus) on replays.
+            int xpReward = PlayerPrefs.GetInt("LastRunXPReward", 0);
             int trophyReward = PlayerPrefs.GetInt("LastRunTrophyReward", 0);
             if (levelGoal.trophies != 0)
                 StartCoroutine(GenerateGains(xpReward, trophyReward));
@@ -275,10 +274,8 @@ public class WinScreen : MonoBehaviour
     public IEnumerator GenerateGains(int xpGains, int trophyGains)
     {
         Debug.Log("Generating gains and proceednig");
-        if (levelGoal.bonusUnlocked)
-        {
-            trophyGains += levelGoal.BONUS_TROPHIES;
-        }
+        // Bonus trophies are already folded into trophyGains (LastRunTrophyReward)
+        // by LevelGoal.WinLevel(), and only the first time the bonus is earned.
 
         if (xpGains <= 0 && trophyGains <= 0)
         {
@@ -367,24 +364,10 @@ public class WinScreen : MonoBehaviour
                 TrophyText.transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), blingInterval).Play();
             }
         }
-        int starsEarned = 0;
-        float runTime = levelGoal.currentTime; // or however you measure it
-        if (runTime <= levelGoal.threeStarTime) starsEarned = 3;
-        else if (runTime <= levelGoal.twoStarTime) starsEarned = 2;
-        else if (runTime <= levelGoal.oneStarTime) starsEarned = 1;
 
-        // Save stars only if better than previous
-        string levelKey = SceneManager.GetActiveScene().name + "_Stars";
-        int previousStars = PlayerPrefs.GetInt(levelKey, 0);
-        if (starsEarned > previousStars)
-        {
-            PlayerPrefs.SetInt(levelKey, starsEarned);
-        }
-        starsEarnedTotal = starsEarned;
-
+        // Star progress is calculated and persisted in LevelGoal.WinLevel().
         PlayerPrefs.Save();
     }
-    public int starsEarnedTotal;
     public void Proceed()
     {
         StartCoroutine(ProceedCoroutine());

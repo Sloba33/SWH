@@ -101,7 +101,6 @@ public class LevelGoal : MonoBehaviour
     private Quaternion spawnRotation;
 
     public AudioSource correctObstacle;
-    public bool bonusUnlocked;
     public Dictionary<ObstacleColor, int> destroyedObstacleCounts = new Dictionary<ObstacleColor, int>();
     private int dualLevelCounter = 0;
     public bool isTimeFrozen;
@@ -150,7 +149,7 @@ public class LevelGoal : MonoBehaviour
     private IEnumerator Initialize()
     {
         oneStarTime = 2000;
-        twoStarTime = 15;
+        twoStarTime = 25;
         threeStarTime = 10;
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
         if (Tutorial)
@@ -164,14 +163,6 @@ public class LevelGoal : MonoBehaviour
         AddObstaclesToInitialCounts();
         // PopulateGoalObstaclePrefabs();
         CreateObstacleTemplates();
-
-        bool levelCompletedPreviously = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "_Completed", 0) == 1;
-        if (levelCompletedPreviously)
-        {
-            xp = 0;
-            baseBonusXP = 0;
-            trophies = 0;
-        }
 
         if (DualLevel)
         {
@@ -628,7 +619,6 @@ public class LevelGoal : MonoBehaviour
 
             if (ObstaclesToDestroy_Player.Count == 0)
             {
-                bonusUnlocked = currentTime < bonusTime;
                 Debug.Log("Level Goal all obstacles destroyed");
                 if (coherenceSync != null)
                 {
@@ -918,22 +908,33 @@ public class LevelGoal : MonoBehaviour
 
         bool bonusEarned = currentTime <= bonusTime;
 
-        // Save stars and bonus
-        string levelKey = SceneManager.GetActiveScene().name + "_Stars";
+        // Read the previous best result BEFORE overwriting it, so a replay only
+        // awards the difference relative to that best result.
+        string sceneName = SceneManager.GetActiveScene().name;
+        string levelKey = sceneName + "_Stars";
+        string bonusKey = sceneName + "_Bonus";
         int previousStars = PlayerPrefs.GetInt(levelKey, 0);
-        if (starsEarned > previousStars) PlayerPrefs.SetInt(levelKey, starsEarned);
+        bool previouslyBonusEarned = PlayerPrefs.GetInt(bonusKey, 0) == 1;
+        bool firstCompletion = PlayerPrefs.GetInt(sceneName + "_beaten", 0) == 0;
 
-        string bonusKey = SceneManager.GetActiveScene().name + "_Bonus";
-        if (bonusEarned) PlayerPrefs.SetInt(bonusKey, 1);
-        int newTrophies = GetTrophiesForStars(starsEarned);
-        int previousTrophies = GetTrophiesForStars(previousStars);
-        int trophyDifference = 0;
+        // XP is a one-time completion reward: full amount on the first clear,
+        // nothing on replays.
+        int xpReward = firstCompletion ? xp : 0;
 
+        // Trophies: award the gain over the previous best star tier, plus the
+        // bonus trophies only the first time the bonus is earned.
+        int trophyReward = 0;
         if (starsEarned > previousStars)
-        {
-            trophyDifference = newTrophies - previousTrophies;
-        }
-        PlayerPrefs.SetInt("LastRunTrophyReward", trophyDifference);
+            trophyReward += GetTrophiesForStars(starsEarned) - GetTrophiesForStars(previousStars);
+        if (bonusEarned && !previouslyBonusEarned)
+            trophyReward += BONUS_TROPHIES;
+
+        // Persist the new best result.
+        if (starsEarned > previousStars) PlayerPrefs.SetInt(levelKey, starsEarned);
+        if (bonusEarned) PlayerPrefs.SetInt(bonusKey, 1);
+
+        PlayerPrefs.SetInt("LastRunXPReward", xpReward);
+        PlayerPrefs.SetInt("LastRunTrophyReward", trophyReward);
         PlayerPrefs.Save();
 
     }
