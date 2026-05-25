@@ -7,7 +7,9 @@
       "Bash(xargs grep -l \"class.*Binding\")",
       "Bash(xargs grep -l \"AddBinding\\\\|InstantiateBinding\\\\|RegisterBinding\\\\|CreateBinding\")",
       "Bash(grep -rl \"guid: $\\(grep 'guid:' '/c/Unity Projects SSD/SWH/Assets/_GAME/01__Scripts/_UI/Leaderboard.cs.meta')",
-      "Bash(grep -n -A4 '&__TRACKED_VAR__\\\\b' 'Assets/_GAME/03__Scenes/_Gameplay Scenes/SlobodanLevels/01_MainMenu.unity')"
+      "Bash(grep -n -A4 '&__TRACKED_VAR__\\\\b' 'Assets/_GAME/03__Scenes/_Gameplay Scenes/SlobodanLevels/01_MainMenu.unity')",
+      "mcp__ide__getDiagnostics",
+      "Bash(xargs grep -l \"Pull\")"
     ]
   }
 }
