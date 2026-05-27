@@ -98,8 +98,8 @@ public class GameManager : MonoBehaviour
         // leaking one per game would lock us out after a few matches.
         // LobbySession lives on the PlayerAccount, not on this scene, so the
         // request safely outlives the scene change below.
-        _ = CoherenceMatchmaker.LeaveLobbyAsync(MatchmakingTestUI.MatchResult.Lobby);
-        MatchmakingTestUI.MatchResult = default;
+        _ = CoherenceMatchmaker.LeaveLobbyAsync(CoherenceMatchmaker.LatestMatch.Lobby);
+        CoherenceMatchmaker.ClearLatestMatch();
 
         SceneManager.LoadScene(matchmakingSceneName);
     }
@@ -210,7 +210,7 @@ public class GameManager : MonoBehaviour
                 coherenceBridge.ClientConnections.OnDestroyed += OnClientConnectionDestroyed;
                 coherenceBridge.ClientConnections.OnSynced += OnClientConnectionsSynced;
                 
-                coherenceBridge.JoinRoom(MatchmakingTestUI.MatchResult.Room);
+                coherenceBridge.JoinRoom(CoherenceMatchmaker.LatestMatch.Room);
             }
         }
         else
@@ -265,7 +265,7 @@ public class GameManager : MonoBehaviour
         }
 
         _isFirstPlayer = !opponentAlreadyConnected;
-        bool isHost = MatchmakingTestUI.MatchResult.IsHost;
+        bool isHost = CoherenceMatchmaker.LatestMatch.IsHost;
 
         Transform spawnPoint = isHost ? playerSpawnPoint : opponentSpawnPoint;
         CoherenceSync sync = Instantiate(playerNetworkedPrefab, spawnPoint.position, spawnPoint.rotation);

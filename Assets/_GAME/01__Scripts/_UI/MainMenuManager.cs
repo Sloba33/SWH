@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Eflatun.SceneReference;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -427,6 +428,9 @@ public class MainMenuManager : MonoBehaviour
         _isSettingsAnimating = false;
     }
     [SerializeField] private SceneLoader sceneLoader;
+
+    [SerializeField]
+    private SceneReference multiplayerMatchmakingScene;
     public void StartNextLevel()
     {
         if (sceneLoader != null)
@@ -440,7 +444,6 @@ public class MainMenuManager : MonoBehaviour
     }
     public void HandleMainMenuWorkButton()
     {
-
         int currentLevel = PlayerPrefs.GetInt("Level", 0); // Get current level, default to 0 if not set
 
         // If the player hasn't completed all intro levels yet (Level < 3),
@@ -514,6 +517,34 @@ public class MainMenuManager : MonoBehaviour
     
     public void StartMultiplayer()
     {
-        SceneManager.LoadScene("MatchmakingTest");
+        int trophies = PlayerPrefs.GetInt("Trophies", 0);
+        trophies = Mathf.Max(trophies, 0); // Ensure trophies is not negative
+        int minTrophies = (int)Mathf.Max(trophies * 0.8f, 0);
+        int maxTrophies = (int)(trophies * 1.2f) + 1; // +1 to include the upper bound in matchmaking
+
+        MultiplayerMatchmakingController.Skill = trophies;
+        MultiplayerMatchmakingController.MinOpponentSkill = minTrophies;
+        MultiplayerMatchmakingController.MaxOpponentSkill = maxTrophies;
+
+        if(multiplayerMatchmakingScene == null)
+        {
+            Debug.LogError("MultiplayerMatchmakingScene is not assigned");
+            return;
+        }
+        
+        if(multiplayerMatchmakingScene.UnsafeReason != SceneReferenceUnsafeReason.None)
+        {
+            Debug.LogError("MainMenuManager: multiplayerMatchmakingScene has a problem: " + multiplayerMatchmakingScene.UnsafeReason);
+            return;
+        }
+
+        if (sceneLoader != null)
+        {
+            sceneLoader.LoadSceneByName(multiplayerMatchmakingScene.Name);
+        }
+        else
+        {
+            SceneManager.LoadScene(multiplayerMatchmakingScene.Name);
+        }
     }
 }

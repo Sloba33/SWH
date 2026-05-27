@@ -4,14 +4,14 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class SceneViewWindow : EditorWindow
+public class SceneSelectorMultiplayer : EditorWindow
 {
 	private Vector2 _scrollPos;
 
-	[MenuItem("Tools/Scene Selector")]
+	[MenuItem("Tools/Scene Selector (Multiplayer)")]
 	internal static void Init()
 	{
-		var window = (SceneViewWindow)GetWindow(typeof(SceneViewWindow), false, "Scene Selector");
+		var window = (SceneSelectorMultiplayer)GetWindow(typeof(SceneSelectorMultiplayer), false, "Scene Selector (Multiplayer)");
 		window.position = new Rect(window.position.xMin + 100f, window.position.yMin + 100f, 200f, 400f);
 	}
 
