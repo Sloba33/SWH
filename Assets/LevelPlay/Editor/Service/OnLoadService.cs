@@ -27,7 +27,10 @@ namespace Unity.Services.LevelPlay.Editor
             EditorSessionTracker.NewSession();
             m_EditorAnalyticsService.Initialize();
             ServicesCoreDependencyInstaller.InstallServicesCoreIfNotFound();
-            MobileDependencyResolverInstaller.InstallPlayServicesResolverIfNeeded();
+            // Disabled: installs an older EDM4U at Assets/MobileDependencyResolver/ that conflicts
+            // with the newer one at Assets/ExternalDependencyManager/ and breaks Android builds
+            // (re-emits jcenter() into mainTemplate.gradle).
+            // MobileDependencyResolverInstaller.InstallPlayServicesResolverIfNeeded();
             EnvironmentVariables.BuildManifestPath();
 
             await m_IronSourceSdkInstaller.OnLoad();
