@@ -232,7 +232,7 @@ public class Obstacle : MonoBehaviour
     {
         if (!isPositioned && tile != null && tile.obstacleDict != null)
         {
-            Debug.Log("Repositioning");
+            // Debug.Log("Repositioning");
             tile.RepositionObstacle(obs);
         }
     }

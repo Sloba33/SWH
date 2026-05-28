@@ -517,15 +517,6 @@ public class MainMenuManager : MonoBehaviour
     
     public void StartMultiplayer()
     {
-        int trophies = PlayerPrefs.GetInt("Trophies", 0);
-        trophies = Mathf.Max(trophies, 0); // Ensure trophies is not negative
-        int minTrophies = (int)Mathf.Max(trophies * 0.8f, 0);
-        int maxTrophies = (int)(trophies * 1.2f) + 1; // +1 to include the upper bound in matchmaking
-
-        MultiplayerMatchmakingController.Skill = trophies;
-        MultiplayerMatchmakingController.MinOpponentSkill = minTrophies;
-        MultiplayerMatchmakingController.MaxOpponentSkill = maxTrophies;
-
         if(multiplayerMatchmakingScene == null)
         {
             Debug.LogError("MultiplayerMatchmakingScene is not assigned");

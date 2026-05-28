@@ -757,14 +757,14 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
         for (int i = 0; i < button.onClick.GetPersistentEventCount(); i++)
         {
             if (button.onClick.GetPersistentTarget(i) == gm &&
-                button.onClick.GetPersistentMethodName(i) == nameof(GameManager.DisconnectAndReturnToMatchmaking))
+                button.onClick.GetPersistentMethodName(i) == nameof(GameManager.DisconnectAndReturnToMainMenu))
             {
                 Debug.Log($"{LogPrefix} DisconnectButton.onClick already wired to GameManager.DisconnectAndReturnToMatchmaking — skipping.");
                 return;
             }
         }
 
-        UnityEventTools.AddPersistentListener(button.onClick, gm.DisconnectAndReturnToMatchmaking);
+        UnityEventTools.AddPersistentListener(button.onClick, gm.DisconnectAndReturnToMainMenu);
         EditorUtility.SetDirty(button);
         Debug.Log($"{LogPrefix} Wired DisconnectButton.onClick → GameManager.DisconnectAndReturnToMatchmaking.");
     }

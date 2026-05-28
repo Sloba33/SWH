@@ -49,7 +49,7 @@ public class LeaderboardManager : MonoBehaviour
 
         string playerId = PlayerPrefs.GetString("playerId");
         string playerName = PlayerPrefs.GetString("playerName", "Player");
-        int trophies = PlayerPrefs.GetInt("Trophies", 0);
+        int trophies = TrophyUtility.GetDisplayedTrophies();
 
         Dictionary<string, object> data = new Dictionary<string, object>
         {

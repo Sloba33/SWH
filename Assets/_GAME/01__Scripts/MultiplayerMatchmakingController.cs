@@ -60,6 +60,21 @@ public class MultiplayerMatchmakingController : MonoBehaviour
     private CancellationTokenSource _cts;
     private bool _isExiting;
 
+    [SerializeField]
+    private float opponentSkillBand = 100;
+
+    private void Awake()
+    {
+        int trophies = TrophyUtility.GetDisplayedTrophies();
+        trophies = Mathf.Max(trophies, 0); // Ensure trophies is not negative
+        int minTrophies = (int)Mathf.Max(trophies - opponentSkillBand, 0);
+        int maxTrophies = (int)(trophies + opponentSkillBand);
+
+        Skill = trophies;
+        MinOpponentSkill = minTrophies;
+        MaxOpponentSkill = maxTrophies;
+    }
+
     private void Start()
     {
         if (cancelButton != null)

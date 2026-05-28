@@ -173,7 +173,7 @@ public class TrophyAwarder : MonoBehaviour
         if (trophyLevel < 1) trophyLevel = 1;
         if(trophyRoadManager.currentFillBar!=null)
         fillBar.fillAmount = trophyRoadManager.currentFillBar.fillBar.fillAmount;
-        trophyCountText.text = PlayerPrefs.GetInt("Trophies", 0).ToString();
+        trophyCountText.text = TrophyUtility.GetDisplayedTrophies().ToString();
 
     }
     // public IEnumerator FillTrophyBarNew(float previousFill, TrophyRoadFill previousTrophyRoadFill)
@@ -236,7 +236,10 @@ public class TrophyAwarder : MonoBehaviour
     public IEnumerator TestFill(int trophyAmount)
     {
         yield return new WaitForSeconds(1.13f);
-        int currentTrophies = PlayerPrefs.GetInt("Trophies");
+        // The counter displays the combined SP + MP total. SP trophies are the
+        // only thing this awarder writes to, but the visible number includes
+        // any MP trophies the player has accumulated.
+        int currentTrophies = TrophyUtility.GetDisplayedTrophies();
         PlayerPrefs.SetInt("Trophies", PlayerPrefs.GetInt("Trophies") + trophyAmount);
         float waitTime = trophyAmount - currentTrophies;
         if (waitTime > 20)
@@ -311,7 +314,7 @@ public class TrophyAwarder : MonoBehaviour
             SaveCurrentLevel(Mathf.RoundToInt(fillBar.fillAmount * requiredTrophies));
         }
         StartCoroutine(RevertTargetScale(target));
-        trophyCountText.text = PlayerPrefs.GetInt("Trophies", 0).ToString();
+        trophyCountText.text = TrophyUtility.GetDisplayedTrophies().ToString();
     }
     public IEnumerator RevertTargetScale(Transform target)
     {

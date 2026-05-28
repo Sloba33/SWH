@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Cinemachine;
 using Coherence.Connection;
 using Coherence.Toolkit;
+using Eflatun.SceneReference;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using TMPro;
@@ -50,8 +51,7 @@ public class GameManager : MonoBehaviour
     [Header("Multiplayer Pre-game")]
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private GameObject controlsGameObject;
-    [SerializeField] private string matchmakingSceneName = "MatchmakingTest";
-
+    
     private int _countdownSeconds;
     private bool _isFirstPlayer;
     private bool _countdownStarted;
@@ -89,6 +89,12 @@ public class GameManager : MonoBehaviour
 
     public void DisconnectAndReturnToMatchmaking()
     {
+        Disconnect();
+        FindAnyObjectByType<SceneLoader>().LoadSceneFile("03_Matchmaking");
+    }
+
+    private void Disconnect()
+    {
         _voluntaryDisconnect = true;
         if (coherenceBridge != null && coherenceBridge.IsConnected)
             coherenceBridge.Disconnect();
@@ -100,9 +106,14 @@ public class GameManager : MonoBehaviour
         // request safely outlives the scene change below.
         _ = CoherenceMatchmaker.LeaveLobbyAsync(CoherenceMatchmaker.LatestMatch.Lobby);
         CoherenceMatchmaker.ClearLatestMatch();
-
-        SceneManager.LoadScene(matchmakingSceneName);
     }
+
+    public void DisconnectAndReturnToMainMenu()
+    {
+        Disconnect();
+        FindAnyObjectByType<SceneLoader>().LoadSceneFile("01_MainMenu");
+    }
+    
     private void SetTestBuildPrefs()
     {
         if (PlayerPrefs.GetInt("Level") < 3)

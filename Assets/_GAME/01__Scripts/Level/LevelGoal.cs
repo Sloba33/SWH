@@ -14,6 +14,19 @@ public class LevelGoal : MonoBehaviour
     public int baseBonusXP = 20;
     public int bonusXpMultiplier = 0;
     public int xp, trophies, BONUS_TROPHIES;
+    [Header("Multiplayer Rewards")]
+    [Tooltip("Trophies the player gains from winning a multiplayer match.")]
+    public int multiplayerTrophyWin = 5;
+    [Tooltip("Trophies the player loses from losing a multiplayer match. The " +
+             "actual amount applied is clamped against the player's current " +
+             "MP trophy balance so it never drops below zero.")]
+    public int multiplayerTrophyLoss = 5;
+    /// <summary>
+    /// Signed delta applied to <see cref="TrophyUtility.MultiplayerKey"/> for the
+    /// most recent MP match. Positive on win, negative on loss. Read by the
+    /// multiplayer end screens to drive the trophy animation.
+    /// </summary>
+    public const string PREF_LAST_RUN_MP_TROPHY_DELTA = "LastRunMpTrophyDelta";
     private Settings settings;
     public LevelProgress levelProgress;
     public float currentTime = 0;
@@ -901,6 +914,17 @@ public class LevelGoal : MonoBehaviour
         }
         if (pc != null) pc.enabled = false;
         settings.ActivateWinPanel();
+
+        if (GameManager.Instance != null && GameManager.Instance.IsMultiplayer)
+        {
+            // MP wins award the configured XP every match (no first-clear gating)
+            // and a flat trophy delta that the MP win screen will animate.
+            PlayerPrefs.SetInt("LastRunXPReward", xp);
+            PlayerPrefs.SetInt(PREF_LAST_RUN_MP_TROPHY_DELTA, multiplayerTrophyWin);
+            PlayerPrefs.Save();
+            yield break;
+        }
+
         starsEarned = 0;
         if (currentTime <= threeStarTime) starsEarned = 3;
         else if (currentTime <= twoStarTime) starsEarned = 2;
@@ -995,6 +1019,14 @@ public class LevelGoal : MonoBehaviour
         settings.gameLost = true;
         if (!settings.gameWon)
         {
+            if (GameManager.Instance != null && GameManager.Instance.IsMultiplayer)
+            {
+                // Stored as a negative delta so the MP lose screen can read the
+                // configured loss amount; the screen clamps it against the
+                // player's current MP balance when it actually applies the loss.
+                PlayerPrefs.SetInt(PREF_LAST_RUN_MP_TROPHY_DELTA, -multiplayerTrophyLoss);
+                PlayerPrefs.Save();
+            }
             settings.ActivateLosePanel();
         }
     }
