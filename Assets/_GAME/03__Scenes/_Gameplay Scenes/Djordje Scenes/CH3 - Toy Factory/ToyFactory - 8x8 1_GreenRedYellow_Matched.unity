@@ -2142,6 +2142,11 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 2.05
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -11629,52 +11634,52 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[0]'
       value: 
-      objectReference: {fileID: 1751411964}
+      objectReference: {fileID: 216833273}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[1]'
       value: 
-      objectReference: {fileID: 2079065272}
+      objectReference: {fileID: 2051581833}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[2]'
       value: 
-      objectReference: {fileID: 570795247}
+      objectReference: {fileID: 11514001}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[3]'
       value: 
-      objectReference: {fileID: 216833273}
+      objectReference: {fileID: 2079065272}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[4]'
       value: 
-      objectReference: {fileID: 2015349238}
+      objectReference: {fileID: 331866926}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[5]'
       value: 
-      objectReference: {fileID: 2051581833}
+      objectReference: {fileID: 2015349238}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[6]'
       value: 
-      objectReference: {fileID: 1442315113}
+      objectReference: {fileID: 570795247}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[7]'
       value: 
-      objectReference: {fileID: 331866926}
+      objectReference: {fileID: 757583611}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[8]'
       value: 
-      objectReference: {fileID: 757583611}
+      objectReference: {fileID: 1442315113}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[9]'
       value: 
-      objectReference: {fileID: 11514001}
+      objectReference: {fileID: 1846668022}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[10]'
@@ -11684,7 +11689,7 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[11]'
       value: 
-      objectReference: {fileID: 1846668022}
+      objectReference: {fileID: 1751411964}
     - target: {fileID: 3977909807041550586, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: m_Name

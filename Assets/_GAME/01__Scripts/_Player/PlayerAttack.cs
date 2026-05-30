@@ -53,6 +53,7 @@ public class PlayerAttack : MonoBehaviour
             backWeapon.GetComponent<Weapon>().WeaponDown.gameObject.SetActive(false);
         }
         CheckWeaponAvailability();
+        ShowWeapon(PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 1); //
     }
 
 
@@ -149,7 +150,17 @@ public class PlayerAttack : MonoBehaviour
             StartCoroutine(FinishHit()); //
         }
     }
-
+    public void ShowWeapon(bool flag)
+    {
+        if (flag)
+        {
+            if (backWeapon != null) backWeapon.SetActive(true);
+        }
+        else
+        {
+            if (backWeapon != null) backWeapon.SetActive(false);
+        }
+    }
     public void SpecialAttack()
     {
 

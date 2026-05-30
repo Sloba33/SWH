@@ -421,7 +421,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     public void EnableBoxWeapon()
     {
-        if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 1)
+        if (PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 1)
         {
 
             if (weaponItem != null)

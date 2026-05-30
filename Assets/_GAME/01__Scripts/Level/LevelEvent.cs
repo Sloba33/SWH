@@ -12,6 +12,7 @@ public class LevelEvent : MonoBehaviour
     [SerializeField] bool isTempTrigger;
     public GameObject dialogueBox;
     public TutorialDialogue tutorialDialogue;
+    public bool isWeaponEvent;
     private void Start()
     {
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
@@ -30,6 +31,11 @@ public class LevelEvent : MonoBehaviour
             }
             if (objectToTurnOff != null) objectToTurnOff.SetActive(false);
             if (objectToTurnOn != null) objectToTurnOn.SetActive(true);
+            if (isWeaponEvent)
+            {
+                PlayerPrefs.SetInt("AnyWeaponsUnlocked", 1);
+                other.GetComponent<PlayerAttack>().ShowWeapon(true);
+            }
         }
     }
     private void OnTriggerExit(Collider other)

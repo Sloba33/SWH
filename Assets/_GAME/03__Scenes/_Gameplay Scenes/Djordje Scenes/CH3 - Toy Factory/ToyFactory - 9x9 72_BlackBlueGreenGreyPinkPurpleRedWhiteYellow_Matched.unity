@@ -9497,6 +9497,11 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 2.6799998
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -20304,112 +20309,112 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[0]'
       value: 
-      objectReference: {fileID: 1103398864}
+      objectReference: {fileID: 1009835004}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[1]'
       value: 
-      objectReference: {fileID: 1223143235}
+      objectReference: {fileID: 1062045959}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[2]'
       value: 
-      objectReference: {fileID: 908981085}
+      objectReference: {fileID: 670350283}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[3]'
       value: 
-      objectReference: {fileID: 1062045959}
+      objectReference: {fileID: 1266890338}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[4]'
       value: 
-      objectReference: {fileID: 393288501}
+      objectReference: {fileID: 1834569140}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[5]'
       value: 
-      objectReference: {fileID: 1060853329}
+      objectReference: {fileID: 357749819}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[6]'
       value: 
-      objectReference: {fileID: 1266890338}
+      objectReference: {fileID: 1223143235}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[7]'
       value: 
-      objectReference: {fileID: 2132767398}
+      objectReference: {fileID: 1060853329}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[8]'
       value: 
-      objectReference: {fileID: 1924188278}
+      objectReference: {fileID: 1983778518}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[9]'
       value: 
-      objectReference: {fileID: 1097489695}
+      objectReference: {fileID: 569518358}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[10]'
       value: 
-      objectReference: {fileID: 1696954322}
+      objectReference: {fileID: 393288501}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[11]'
       value: 
-      objectReference: {fileID: 924116485}
+      objectReference: {fileID: 556368564}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[12]'
       value: 
-      objectReference: {fileID: 775155872}
+      objectReference: {fileID: 1627941494}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[13]'
       value: 
-      objectReference: {fileID: 443556226}
+      objectReference: {fileID: 775155872}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[14]'
       value: 
-      objectReference: {fileID: 1649776120}
+      objectReference: {fileID: 1924188278}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[15]'
       value: 
-      objectReference: {fileID: 1983778518}
+      objectReference: {fileID: 1070562077}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[16]'
       value: 
-      objectReference: {fileID: 740472091}
+      objectReference: {fileID: 845355652}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[17]'
       value: 
-      objectReference: {fileID: 225967379}
+      objectReference: {fileID: 910926119}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[18]'
       value: 
-      objectReference: {fileID: 626582289}
+      objectReference: {fileID: 1103398864}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[19]'
       value: 
-      objectReference: {fileID: 2015680505}
+      objectReference: {fileID: 740472091}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[20]'
       value: 
-      objectReference: {fileID: 1627941494}
+      objectReference: {fileID: 130716807}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[21]'
       value: 
-      objectReference: {fileID: 789473616}
+      objectReference: {fileID: 443556226}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[22]'
@@ -20419,97 +20424,97 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[23]'
       value: 
-      objectReference: {fileID: 910926119}
+      objectReference: {fileID: 1894573216}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[24]'
       value: 
-      objectReference: {fileID: 342229419}
+      objectReference: {fileID: 1649776120}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[25]'
       value: 
-      objectReference: {fileID: 1243978799}
+      objectReference: {fileID: 2094584435}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[26]'
       value: 
-      objectReference: {fileID: 357749819}
+      objectReference: {fileID: 144691734}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[27]'
       value: 
-      objectReference: {fileID: 556368564}
+      objectReference: {fileID: 2092331243}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[28]'
       value: 
-      objectReference: {fileID: 144691734}
+      objectReference: {fileID: 1243978799}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[29]'
       value: 
-      objectReference: {fileID: 670350283}
+      objectReference: {fileID: 626582289}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[30]'
       value: 
-      objectReference: {fileID: 569518358}
+      objectReference: {fileID: 789473616}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[31]'
       value: 
-      objectReference: {fileID: 130716807}
+      objectReference: {fileID: 1645635210}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[32]'
       value: 
-      objectReference: {fileID: 2094584435}
+      objectReference: {fileID: 1696954322}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[33]'
       value: 
-      objectReference: {fileID: 1894573216}
+      objectReference: {fileID: 394153603}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[34]'
       value: 
-      objectReference: {fileID: 394153603}
+      objectReference: {fileID: 908981085}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[35]'
       value: 
-      objectReference: {fileID: 1009835004}
+      objectReference: {fileID: 2015680505}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[36]'
       value: 
-      objectReference: {fileID: 2092331243}
+      objectReference: {fileID: 924116485}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[37]'
       value: 
-      objectReference: {fileID: 1070562077}
+      objectReference: {fileID: 1097489695}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[38]'
       value: 
-      objectReference: {fileID: 1834569140}
+      objectReference: {fileID: 2132767398}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[39]'
       value: 
-      objectReference: {fileID: 1645635210}
+      objectReference: {fileID: 860311866}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[40]'
       value: 
-      objectReference: {fileID: 860311866}
+      objectReference: {fileID: 342229419}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[41]'
       value: 
-      objectReference: {fileID: 845355652}
+      objectReference: {fileID: 225967379}
     - target: {fileID: 3977909807041550586, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: m_Name

@@ -10,6 +10,7 @@ public class Obstacle : MonoBehaviour
     public Sprite obstacleSprite;
     public ParticleSystem obstacleFallPS;
     public GameObject fallIndicator;
+    public ParticleSystem destructionParticleSystem;
     public Material obstacleMaterial;
     public bool MoveOverride;
     public bool isSpawnedForRecovery = false;
@@ -531,7 +532,6 @@ public class Obstacle : MonoBehaviour
         playerController = null;
     }
 
-    public ParticleSystem destructionParticleSystem;
     public bool queuedForDestruction;
 
     public bool AIObstacle;

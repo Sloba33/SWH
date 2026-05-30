@@ -105,13 +105,18 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
     private const string PREF_FIRST_TIME = "FirstTime";
-
+    public bool shouldIgnoreBonusStars;
+    public bool shouldHaveFasterEnergyRecharge;
 
     private IEnumerator Start()
     {
-        oneStarTime = 2000;
-        twoStarTime = 15;
-        threeStarTime = 10;
+
+        Debug.Log("Should Ignore STARS " + shouldIgnoreBonusStars);
+
+            oneStarTime = 2000;
+            twoStarTime = 15;
+            threeStarTime = 10;
+        
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
         if (Tutorial)
         {
@@ -916,12 +921,25 @@ public class LevelGoal : MonoBehaviour
 
     public int GetTrophiesForStars(int stars)
     {
-        switch (stars)
+        if (!shouldIgnoreBonusStars)
         {
-            case 3: return 10;
-            case 2: return 7;
-            case 1: return 5;
-            default: return 0;
+            switch (stars)
+            {
+                case 3: return 10;
+                case 2: return 7;
+                case 1: return 5;
+                default: return 0;
+            }
+        }
+        else
+        {
+            switch (stars)
+            {
+                case 3: return 5;
+                case 2: return 5;
+                case 1: return 5;
+                default: return 0;
+            }
         }
     }
     #region NEW SYSTEM COROUTINES

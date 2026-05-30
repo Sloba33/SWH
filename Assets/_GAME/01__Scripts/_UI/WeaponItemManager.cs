@@ -85,7 +85,7 @@ public class WeaponItemManager : MonoBehaviour
             if (weaponItem.unlocked)
             {
                 purchaseButton.gameObject.SetActive(false);
-                upgradeButton.gameObject.SetActive(true);
+                // upgradeButton.gameObject.SetActive(true);
             }
             else
             {
@@ -152,7 +152,7 @@ public class WeaponItemManager : MonoBehaviour
             if (weaponItem.unlocked)
             {
                 purchaseButton.gameObject.SetActive(false);
-                upgradeButton.gameObject.SetActive(true);
+                // upgradeButton.gameObject.SetActive(true);
             }
             else
             {
@@ -166,7 +166,7 @@ public class WeaponItemManager : MonoBehaviour
         {
             Debug.Log("Weapon is unlocked, showing upgrade button");
             purchaseButton.gameObject.SetActive(false);
-            upgradeButton.gameObject.SetActive(true);
+            // upgradeButton.gameObject.SetActive(true);
             PlayerPrefs.SetInt("SelectedWeaponID", weaponItem.id);
         }
         else
@@ -202,7 +202,7 @@ public class WeaponItemManager : MonoBehaviour
             weaponItem.LockWeapon(false);
             PlayerPrefs.SetInt("gems", PlayerPrefs.GetInt("gems") - weaponItem.weaponPrice);
             SelectWeapon(weaponItem);
-            PlayerPrefs.SetInt("AnyWeaponUnlocked", 1);
+            PlayerPrefs.SetInt("AnyWeaponsUnlocked", 1);
         }
         else
             Debug.Log(" NO MONEY ");

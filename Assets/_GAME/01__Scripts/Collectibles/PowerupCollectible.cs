@@ -15,8 +15,8 @@ public class PowerupCollectible : CollectibleItem
     {
         yield return new WaitForSeconds(0.1f);
         _beingPickedUp = false;
-        if(isWeapon) FindPlayerWeapon();
-        if(isHelmet) FindPlayerHelmet();
+        if (isWeapon) FindPlayerWeapon();
+        if (isHelmet) FindPlayerHelmet();
     }
     public override void Collect(PlayerController player)
     {
@@ -37,18 +37,24 @@ public class PowerupCollectible : CollectibleItem
                 other.BuffStrengthAndSpeed(4f, 1f, 2f);
                 break;
             case PowerupType.Energy:
-                other.BuffEnergy(50f);
+                if (other.Energy >= 95f)
+                {
+                    wasCollected = false; // Don't collect if energy is already high
+                    break;
+                }
+                else
+                    other.BuffEnergy(50f);
                 break;
             case PowerupType.Helmet:
-                // Check if helmet can be collected first
-                if (other.helmet.IsHelmetRepairable()) // Add this method to your helmet class
+
+                if (other.helmet.IsHelmetRepairable())
                 {
                     StartCoroutine(FloatAndLand(other.helmet.transform, 1f, 10f, 10f));
                 }
                 else
                 {
-                    wasCollected = false; // Don't collect
-                    return; // Exit early
+                    wasCollected = false;
+                    return;
                 }
                 break;
             case PowerupType.Loot_Coins:

@@ -3125,6 +3125,11 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 2.35
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -3901,6 +3906,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
+  xp: 25
+  trophies: 3
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: e67eb8e6210dce84783c147e61f028be,
     type: 3}
   currentTime: 0
@@ -3974,31 +3984,31 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1823703935}
-  - {fileID: 1306357301}
-  - {fileID: 1160789397}
   - {fileID: 2108490855}
-  - {fileID: 331866927}
-  - {fileID: 2040436224}
-  - {fileID: 652852134}
-  - {fileID: 1846668023}
+  - {fileID: 1823703935}
   - {fileID: 216833274}
-  - {fileID: 1628429257}
-  - {fileID: 622310997}
-  - {fileID: 1751411965}
-  - {fileID: 11514002}
-  - {fileID: 1721609037}
-  - {fileID: 1691700691}
-  - {fileID: 501622341}
+  - {fileID: 1306357301}
+  - {fileID: 1846668023}
+  - {fileID: 1224067394}
+  - {fileID: 1160789397}
   - {fileID: 2065392497}
-  - {fileID: 690483533}
-  - {fileID: 282043476}
+  - {fileID: 1628429257}
   - {fileID: 2079065273}
+  - {fileID: 2087246115}
+  - {fileID: 690483533}
+  - {fileID: 331866927}
+  - {fileID: 1751411965}
+  - {fileID: 501622341}
+  - {fileID: 11514002}
+  - {fileID: 652852134}
+  - {fileID: 622310997}
+  - {fileID: 2040436224}
+  - {fileID: 1721609037}
+  - {fileID: 1563016264}
   - {fileID: 570795248}
   - {fileID: 2051581834}
-  - {fileID: 1563016264}
-  - {fileID: 2087246115}
-  - {fileID: 1224067394}
+  - {fileID: 1691700691}
+  - {fileID: 282043476}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -4023,9 +4033,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 25
-  trophies: 3
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -4034,6 +4041,8 @@ MonoBehaviour:
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  starsEarned: 0
   currentStep: 0
   tutorialBridges: []
   tutorialBarriers: []

@@ -111,7 +111,7 @@ public class MainMenuManager : MonoBehaviour
         backgroundPanel.SetActive(true);
         CharacterManager.Instance.currentCharacter.playerStand.SetActive(true);
         CharacterManager.Instance.currentCharacter.GetComponent<Animator>().SetBool("Profile", true);
-        CharacterManager.Instance.currentCharacter.GetComponent<Animator>().SetBool("Picking", true);
+        // CharacterManager.Instance.currentCharacter.GetComponent<Animator>().SetBool("Picking", true);
     }
     public void OpenLevelSelectionMenu()
     {

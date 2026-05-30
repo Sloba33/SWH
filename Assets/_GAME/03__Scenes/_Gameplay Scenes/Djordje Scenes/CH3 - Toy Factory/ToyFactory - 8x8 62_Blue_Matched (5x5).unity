@@ -11023,7 +11023,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1887087373573577604}
     m_Modifications:
     - target: {fileID: 927726653548321429, guid: 45484a8630efb0e449ca7ff0764f3d4b,
         type: 3}
@@ -11097,6 +11097,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &479217519 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 927726653548321429, guid: 45484a8630efb0e449ca7ff0764f3d4b,
+    type: 3}
+  m_PrefabInstance: {fileID: 479217517}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &482565160
 GameObject:
   m_ObjectHideFlags: 0
@@ -21572,7 +21578,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1887087373573577604}
     m_Modifications:
     - target: {fileID: 5009936899231337774, guid: f2b9311cc643a2b459010a0eaa480325,
         type: 3}
@@ -21634,6 +21640,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2b9311cc643a2b459010a0eaa480325, type: 3}
+--- !u!4 &978942588 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5672946733639585834, guid: f2b9311cc643a2b459010a0eaa480325,
+    type: 3}
+  m_PrefabInstance: {fileID: 978942587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &979619546
 GameObject:
   m_ObjectHideFlags: 0
@@ -22131,7 +22143,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1887087373573577604}
     m_Modifications:
     - target: {fileID: 927726653548321429, guid: 45484a8630efb0e449ca7ff0764f3d4b,
         type: 3}
@@ -22205,6 +22217,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1013094618 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 927726653548321429, guid: 45484a8630efb0e449ca7ff0764f3d4b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1013094616}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1013584494
 GameObject:
   m_ObjectHideFlags: 0
@@ -42488,6 +42506,11 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 1.06
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -50247,7 +50270,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1013094618}
+  - {fileID: 978942588}
+  - {fileID: 479217519}
   m_Father: {fileID: 7658388356784426095}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1892297344354496622
@@ -56464,6 +56490,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
+  xp: 25
+  trophies: 3
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: 1884fc3afc18181478e4725a0f80ce58,
     type: 3}
   currentTime: 0
@@ -56538,8 +56569,8 @@ MonoBehaviour:
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
   - {fileID: 1013094617}
-  - {fileID: 479217518}
   - {fileID: 586406222}
+  - {fileID: 479217518}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -56564,9 +56595,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 25
-  trophies: 3
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -56575,6 +56603,8 @@ MonoBehaviour:
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  starsEarned: 0
   currentStep: 0
   tutorialBridges: []
   tutorialBarriers: []
@@ -115829,6 +115859,3 @@ SceneRoots:
   - {fileID: 80322817}
   - {fileID: 952868772}
   - {fileID: 1871480812}
-  - {fileID: 1013094616}
-  - {fileID: 479217517}
-  - {fileID: 978942587}

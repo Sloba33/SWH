@@ -27,14 +27,16 @@ public class Player : MonoBehaviour
     public Image hitDownFillImage;
     public Weapon weapon;
     public int specialCharges, specialChargesMax;
+    private LevelGoal levelGoal;
 
     private void Awake()
     {
         SpawnHelmet();
-   
+
     }
     private void Start()
     {
+
         if (!GetComponent<PlayerController>().AI)
         {
 
@@ -60,7 +62,7 @@ public class Player : MonoBehaviour
         if (helmet != null) helmet.playerAttack = GetComponent<PlayerAttack>();
 
 
-
+        levelGoal = FindFirstObjectByType<LevelGoal>();
 
 
 
@@ -93,11 +95,15 @@ public class Player : MonoBehaviour
     }
     public void SpendEnergy(float amount)
     {
-        Energy -= amount;
-        float fillAmount = Energy / 100f;
-        hitFillImage.fillAmount = fillAmount;
+        if (levelGoal != null && !levelGoal.shouldHaveFasterEnergyRecharge)
+        {
 
-        Debug.Log("Energy: " + Energy);
+            Energy -= amount;
+            float fillAmount = Energy / 100f;
+            hitFillImage.fillAmount = fillAmount;
+
+            Debug.Log("Energy: " + Energy);
+        }
     }
     public void SpendHitDownEnergy(float amount)
     {

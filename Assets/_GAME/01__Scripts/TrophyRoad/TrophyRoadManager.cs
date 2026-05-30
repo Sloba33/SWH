@@ -248,6 +248,7 @@ public class TrophyRoadManager : MonoBehaviour
     }
     public void UnlockWeapon(WeaponType weaponType)
     {
+        Debug.Log("Unlocking weapon :" + weaponType);
         PlayerPrefs.SetInt(weaponType.ToString(), 1);
 
         WeaponItem[] weaponItems = FindObjectsOfType<WeaponItem>(true);
@@ -255,10 +256,10 @@ public class TrophyRoadManager : MonoBehaviour
         {
             if (weaponItems[i].weaponType == weaponType)
             {
-                if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 0)
+                if (PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 0)
                     CharacterManager.Instance.weaponItem = weaponItems[i];
                 weaponItems[i].LockWeapon(false);
-                PlayerPrefs.SetInt("AnyWeaponUnlocked", 1);
+                PlayerPrefs.SetInt("AnyWeaponsUnlocked", 1);
             }
         }
     }
@@ -662,7 +663,7 @@ public class TrophyRoadManager : MonoBehaviour
     }
     public void CheckIfWeaponIsUnlocked()
     {
-        if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 1)
+        if (PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 1)
         {
             CharacterManager.Instance.EnableBoxWeapon();
         }

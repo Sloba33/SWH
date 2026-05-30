@@ -83,7 +83,7 @@ public class CustomizationTab : MonoBehaviour
 
     public void ToggleWeaponsInHand(bool flag)
     {
-        if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 0) Debug.LogWarning("Selecting weapon when none are unlocked");
+        if (PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 0) Debug.LogWarning("Selecting weapon when none are unlocked");
         else customizationPanelManager.currentCharacter.weaponsInHand.gameObject.SetActive(flag);
     }
 
