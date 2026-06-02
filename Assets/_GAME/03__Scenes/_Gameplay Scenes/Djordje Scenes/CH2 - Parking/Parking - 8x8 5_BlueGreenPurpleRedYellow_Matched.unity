@@ -10556,7 +10556,7 @@ Transform:
   m_GameObject: {fileID: 768018413}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.096, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23272,6 +23272,7 @@ MonoBehaviour:
   obstaclesToFreeze: []
   collectibleDatabase: {fileID: 0}
   CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -26484,6 +26485,8 @@ MonoBehaviour:
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
   isTimeFrozen: 0
+  shouldIgnoreBonusStars: 0
+  shouldHaveFasterEnergyRecharge: 0
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []

@@ -51,6 +51,7 @@ public class CustomizationTab : MonoBehaviour
             ToggleWeaponsInHand(false);
             CharacterManager.Instance.CancelHelmetPreview();
             customizationPanelManager.mainMenuManager.SetColorCamera();
+            CharacterManager.Instance.RevertWeaponSelection();
         }
         else if (tabType == TabType.Character)
         {
@@ -59,6 +60,7 @@ public class CustomizationTab : MonoBehaviour
             CharacterManager.Instance.CancelHelmetPreview();
             customizationPanelManager.mainMenuManager.SetCharacterCamera();
             HighlightSeletedButton(this);
+             CharacterManager.Instance.RevertWeaponSelection();
         }
         else if (tabType == TabType.Helmet)
         {
@@ -66,6 +68,7 @@ public class CustomizationTab : MonoBehaviour
             ToggleWeaponsInHand(false);
 
             customizationPanelManager.mainMenuManager.SetHelmetCamera();
+             CharacterManager.Instance.RevertWeaponSelection();
         }
         customizationPanelManager.currentTab = this;
     }

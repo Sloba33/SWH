@@ -10,6 +10,7 @@ using Coffee.UIExtensions;
 
 public class WinScreen : MonoBehaviour
 {
+    private UIFitToParent uiFitToParent;
     public WinStarAnimator winStarAnimator;
     public bool sceneOverride;
     public string sceneOverrideName = "01_MainMenu";
@@ -38,9 +39,13 @@ public class WinScreen : MonoBehaviour
 
     private void Start()
     {
-
+        uiFitToParent = GetComponent<UIFitToParent>();
         GameManager.Instance.FreezeObstacles();
-        AudioManager.Instance.BGMVolume = 0.1f;
+        for (float i = AudioManager.Instance.BGMVolume; i > 0f; i -= 0.1f)
+        {
+            AudioManager.Instance.BGMVolume = i;
+        }
+        if (AudioManager.Instance.BGMVolume > 0) AudioManager.Instance.BGMVolume = 0f;
         playerEmoteObject = FindObjectOfType<Player>().gameObject;
         if (playerEmoteObject != null)
         {
@@ -140,6 +145,12 @@ public class WinScreen : MonoBehaviour
         if (levelGoal != null && levelGoal.levelProgress != null)
         {
             levelProgress = Instantiate(levelGoal.levelProgress, this.transform);
+            if (uiFitToParent != null && uiFitToParent.enabled)
+            {
+                uiFitToParent.levelProgress = levelProgress;
+                uiFitToParent.Initialize();
+            }
+            else Debug.LogError("UIFitToParent component is missing on WinScreen!");
             levelProgress.levelGoal = levelGoal;
             levelProgress.Initialize();
             uIParticle = GetComponentInChildren<UIParticle>();
@@ -182,7 +193,13 @@ public class WinScreen : MonoBehaviour
         {
             levelCompleteText.text = "Level " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3).ToString() + " Complete!";
         }
+        PowerupCollectible[] powerupCollectibles = FindObjectsByType<PowerupCollectible>(FindObjectsSortMode.None);
+        //clear collectibles on scene
 
+        for (int i = 0; i < powerupCollectibles.Length; i++)
+        {
+            Destroy(powerupCollectibles[i].gameObject);
+        }
         PlayerPrefs.SetInt(currentLevelName + "_beaten", 1);
         PlayerPrefs.Save();
     }

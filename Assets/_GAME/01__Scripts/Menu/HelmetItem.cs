@@ -13,7 +13,7 @@ public class HelmetItem : MonoBehaviour
     public GameObject lockImage;
     public GameObject notificationImage;
     public Image helmetImage;
-    public Color lockedColor, unlockedColor;
+    public Color lockedColor, unlockedColor, lockedBackgroundColor;
     public UIShadow uiShadow;
     public int helmetPrice;
     public bool unlocked;
@@ -51,14 +51,16 @@ public class HelmetItem : MonoBehaviour
         {
             LockHelmet(true);
         }
-        if(id==0) notificationImage.SetActive(false);
+        if (id == 0) notificationImage.SetActive(false);
 
     }
     public void LockHelmet(bool flag)
     {
+        Debug.Log("Locking helmet: " + helmetType.ToString() + " flag: " + flag);
         if (lockImage != null)
             lockImage.SetActive(flag);
         helmetImage.color = flag ? lockedColor : unlockedColor;
+        GetComponent<Image>().color = flag ? lockedBackgroundColor : unlockedColor;
         if (PlayerPrefs.GetInt(helmetType.ToString() + "_clicked") == 0 && unlocked)
         {
             notificationImage.SetActive(true);

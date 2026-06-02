@@ -54,13 +54,34 @@ public class ImageGallery : MonoBehaviour
 
     private bool cachedHasUnclaimedRewards;
     private int lastUnclaimedCheckFrame = -1;
-
+    private CanvasGroup canvasGroup;
+    public void CloseImageGallery()
+    {
+        canvasGroup.alpha = 0;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
+    }
+    public void OpenImageGallery()
+    {
+        canvasGroup.alpha = 1;
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.interactable = true;
+    }
     private class SlotData
     {
         public GameObject root;
         public GallerySlotPrefab gallerySlot;
         public LevelProgress levelProgress;
         public int currentDataIndex = -1;
+    }
+    private void Start()
+    {
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (!isPopulated && !isPopulating)
+        {
+            StartCoroutine(PopulateGalleryCoroutine());
+        }
+        ScrollToFirstUnclaimedReward();
     }
     private void Update()
     {
@@ -80,10 +101,7 @@ public class ImageGallery : MonoBehaviour
 
     private void OnEnable()
     {
-        if (!isPopulated && !isPopulating)
-        {
-            StartCoroutine(PopulateGalleryCoroutine());
-        }
+
     }
     public void PopulateOnLoad()
     {
@@ -151,8 +169,8 @@ public class ImageGallery : MonoBehaviour
             slotPool.Add(slotData);
             activeSlots.Add(slotObject);
 
-       
-                
+
+
         }
 
         if (scrollRect != null)
@@ -165,7 +183,7 @@ public class ImageGallery : MonoBehaviour
 
         // Force scroll to top
         scrollRect.verticalNormalizedPosition = 1f;
-  
+
         // Record initial scroll position
         lastScrollY = Content.GetComponent<RectTransform>().anchoredPosition.y;
         LogDebug($"Initial scroll Y position: {lastScrollY}");
@@ -198,7 +216,7 @@ public class ImageGallery : MonoBehaviour
             {
                 BindDataToSlot(slot, dataIndex);
 
-              
+
             }
         }
 
@@ -526,6 +544,7 @@ public class ImageGallery : MonoBehaviour
 
     private void BindDataToSlot(SlotData slot, int dataIndex)
     {
+        slot.gallerySlot.ResetSlot();
         slot.currentDataIndex = dataIndex;
 
         LevelProgress targetPrefab = levelProgressPrefabs[dataIndex];

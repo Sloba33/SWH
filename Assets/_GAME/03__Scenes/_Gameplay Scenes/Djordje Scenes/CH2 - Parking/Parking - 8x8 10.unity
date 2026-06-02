@@ -9011,6 +9011,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SP_Controls_Hit1&2,Jump,Pull
       objectReference: {fileID: 0}
+    - target: {fileID: 6504079056417975854, guid: 74eaa8b06a780264f9fad2c4fa798b57,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21140,6 +21145,7 @@ MonoBehaviour:
   obstaclesToFreeze: []
   collectibleDatabase: {fileID: 0}
   CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 0
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -23402,6 +23408,8 @@ MonoBehaviour:
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
   isTimeFrozen: 0
+  shouldIgnoreBonusStars: 0
+  shouldHaveFasterEnergyRecharge: 0
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []

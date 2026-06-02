@@ -490,7 +490,8 @@ public class Obstacle : MonoBehaviour
             // Debug.Log("fallsprite LATE at start   :   " + fallSprite.transform.localScale);
             hasFallStarted = false;
             isFalling = false;
-            tile.PositionHeight(this);
+            if (tile != null && this != null)
+                tile.PositionHeight(this);
             // Debug.Log("We hit ground " + groundHeight);
             if (GetComponent<MatchThreeObstacle>() != null && GetComponent<MatchThreeObstacle>().isDestructible)
             {

@@ -462,7 +462,7 @@ public class TrophyRoadManager : MonoBehaviour
             // character rewards except Character_Token
             character = (type != TrophyRewardType.Character_Token);
             width = 190f;
-            height = 250f;
+            height = 111f;
         }
         else
         {

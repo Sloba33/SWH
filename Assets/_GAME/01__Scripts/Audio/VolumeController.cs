@@ -25,7 +25,7 @@ public class VolumeController : MonoBehaviour
         }
         else
         {
-            slider.value = PlayerPrefs.GetFloat("BGM_Volume", 1f);
+            slider.value = PlayerPrefs.GetFloat("BGM_Volume", 0.25f);
             slider.onValueChanged.AddListener(AudioManager.Instance.SetBGMVolume);
         }
 

@@ -183,56 +183,61 @@ public class TrophyAwarder : MonoBehaviour
 
     // }
     public IEnumerator FillTheTrophyBar(float previousFill, TrophyRoadFill previousTrophyRoadFill)
+{
+    float blingCount = PlayerPrefs.GetInt("TrophyGain") / 10;
+    int blings = Mathf.RoundToInt(blingCount);
+    if (blings < 1) blings = 1;
+    yield return new WaitForSeconds(1.15f);
+    
+    bool firstTrophyReward = PlayerPrefs.GetInt("FirstTrophyReward") == 0;
+    if (firstTrophyReward)
     {
-        float blingCount = PlayerPrefs.GetInt("TrophyGain") / 10;
-        int blings = Mathf.RoundToInt(blingCount);
-        if (blings < 1) blings = 1;
-        yield return new WaitForSeconds(1.15f);
-        bool firstTrophyReward = PlayerPrefs.GetInt("FirstTrophyReward") == 0;
-        if (firstTrophyReward)
+        PlayerPrefs.SetInt("FirstTrophyReward", 1);
+        StartCoroutine(FakeFirstTimeCurrency());
+        yield return new WaitForSeconds(0.5f);
+        
+        // Skip the rest of the method since this was just the intro animation
+        // The actual fill will happen through TestFill
+        yield break;
+    }
+    
+    TrophyRoadFill newTrophyRoadFill = trophyRoadManager.currentFillBar;
+
+    if (fillBar.fillAmount < previousFill)
+    {
+        fillBar.fillAmount += 0.05f;
+        yield return new WaitForSeconds(0.01f);
+    }
+    
+    if (fillBar.fillAmount >= 0.999f || previousTrophyRoadFill != newTrophyRoadFill)
+    {
+        while (fillBar.fillAmount < 0.99)
         {
-            PlayerPrefs.SetInt("FirstTrophyReward", 1);
-            StartCoroutine(FakeFirstTimeCurrency());
-            yield return new WaitForSeconds(0.5f);
+            fillBar.fillAmount += 0.05f;
+            yield return null;
         }
-        TrophyRoadFill newTrophyRoadFill = trophyRoadManager.currentFillBar;
 
-        if (fillBar.fillAmount < previousFill)
+        fillBar.fillAmount = 0f;
+
+        while (blings > 0)
         {
+            AudioManager.Instance.PlayUISound("trophy_levelup");
+            yield return new WaitForSeconds(0.3f);
+            blings--;
+        }
+    }
+    
+    float newFill = trophyRoadManager.currentFillBar.fillBar.fillAmount;
 
+    if (newFill > 0)
+    {
+        while (fillBar.fillAmount < newFill)
+        {
             fillBar.fillAmount += 0.05f;
             yield return new WaitForSeconds(0.01f);
         }
-        if (fillBar.fillAmount >= 0.999f || previousTrophyRoadFill != newTrophyRoadFill)
-        {
-
-
-            while (fillBar.fillAmount < 0.99)
-            {
-                fillBar.fillAmount += 0.05f;
-                yield return null;
-
-            }
-
-            fillBar.fillAmount = 0f;
-
-            while (blings > 0)
-            {
-                AudioManager.Instance.PlayUISound("trophy_levelup");
-                yield return new WaitForSeconds(0.3f);
-                blings--;
-            }
-
-        }
-        float newFill = trophyRoadManager.currentFillBar.fillBar.fillAmount;
-
-        if (newFill > 0)
-            while (fillBar.fillAmount < newFill)
-            {
-                fillBar.fillAmount += 0.05f;
-                yield return new WaitForSeconds(0.01f);
-            }
     }
+}
     public IEnumerator TestFill(int trophyAmount)
     {
         yield return new WaitForSeconds(1.13f);

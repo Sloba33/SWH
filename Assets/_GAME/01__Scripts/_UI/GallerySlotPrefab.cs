@@ -22,6 +22,7 @@ public class GallerySlotPrefab : MonoBehaviour
     public bool isFilled;
     public bool isClaimed;
     public GameObject xpPile;
+    private string claimTextText = "Claim";
 
     // NEW: Track which slot index this prefab currently represents (for recycling)
     public int currentIndex = -1;
@@ -48,6 +49,19 @@ public class GallerySlotPrefab : MonoBehaviour
         {
             backgroundImage.sprite = claimableSprite;
             claimButton.interactable = true;
+            claimText.text = claimTextText;
+
+            if (uIEffect != null)
+            {
+                uIEffect.enabled = true;
+
+
+                uIEffect.SetVerticesDirty();
+            }
+            if (isClaimed)
+                backgroundImage.color = unclaimedColor;
+            else backgroundImage.color = claimedColor;
+
             StartTweening();
         }
         else
