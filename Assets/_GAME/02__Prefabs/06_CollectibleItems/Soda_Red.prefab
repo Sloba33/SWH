@@ -14475,7 +14475,7 @@ GameObject:
   - component: {fileID: 2500064198602405535}
   - component: {fileID: 8666089607579201817}
   m_Layer: 17
-  m_Name: SodaCanCollectableRed
+  m_Name: Soda_Red
   m_TagString: OtherObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14490,7 +14490,7 @@ Transform:
   m_GameObject: {fileID: 7335002144845053451}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.206, y: 0, z: 3.629}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14534,6 +14534,9 @@ MonoBehaviour:
   collectibleSprite: {fileID: 0}
   collectSound: {fileID: 8300000, guid: 5f3bedeff5339eb44837d80a3dfb30d2, type: 3}
   isConsumable: 0
+  isCollected: 0
+  isWeapon: 0
+  isHelmet: 0
   objectToDestroy: {fileID: 7335002144845053451}
   sprinkles: {fileID: 0}
   mesh: {fileID: 3291937026413065014}

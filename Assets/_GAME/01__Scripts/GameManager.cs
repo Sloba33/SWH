@@ -181,8 +181,11 @@ public class GameManager : MonoBehaviour
         ObstaclesToModify = new List<Obstacle>(FindObjectsOfType<Obstacle>());
         for (int i = 0; i < ObstaclesToModify.Count; i++)
         {
-            ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
+            if (ObstaclesToModify[i].obstacleType != ObstacleType.Cardboard)
+            {
 
+                ObstaclesToModify[i].Weight *= ObstacleWeightModifier;
+            }
         }
         if (ShouldHaveSkipButton)
             GenerateSkipButton();
