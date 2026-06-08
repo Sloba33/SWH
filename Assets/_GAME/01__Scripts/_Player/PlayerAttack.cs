@@ -20,6 +20,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] GameObject tool, toolDown;
     [SerializeField] Vector3 hitRayOffset;
     [SerializeField] float hitRayDistance = 1f;
+    public PlayerControls playerControls;
     private bool canHit = true;
     public bool hittingDown;
     private PlayerController playerController;
@@ -138,10 +139,11 @@ public class PlayerAttack : MonoBehaviour
             if (ObstacleToHit != null && levelGoal != null && !levelGoal.Tutorial)
             {
                 player.specialCharges++;
+                playerControls.FillChargeImage();
                 if (player.specialCharges >= player.specialChargesMax && player.pc != null && player.pc.specialButton != null) //
                 {
                     //SPECIAL ATTACK DISABLED
-                    // player.pc.specialButton.gameObject.SetActive(true);
+                    player.pc.specialButton.gameObject.SetActive(true);
                 }
             }
 
@@ -172,6 +174,8 @@ public class PlayerAttack : MonoBehaviour
 
         if (canHit)
         {
+            playerControls.EmptyChargeImage();
+            Debug.Log("Performing special attack");
             if (!playerController.AI)
             {
                 if (player.specialCharges < player.specialChargesMax) return; //
@@ -194,7 +198,7 @@ public class PlayerAttack : MonoBehaviour
         yield return new WaitForSeconds(delayBeforeSwing);
 
         yield return new WaitForSeconds(delayAfterSwing);
-        yield return new WaitForSeconds(0.15f);
+
 
         if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = false;
 
@@ -206,7 +210,7 @@ public class PlayerAttack : MonoBehaviour
         {
             if (weaponSpecialSwingParticle != null) weaponSpecialSwingParticle.Play();
         }
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.2f);
         PerformSpecialAttack(); //
 
         if (weaponSpecialAOE != null && playerMovement != null)

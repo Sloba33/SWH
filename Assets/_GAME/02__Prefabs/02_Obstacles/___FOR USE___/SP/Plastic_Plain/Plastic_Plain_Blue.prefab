@@ -102,14 +102,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  is_x_box: 0
+  isFrozen: 0
   obstacleMesh: {fileID: 6495572814305115806}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
   fallIndicator: {fileID: 6784415547297523, guid: a4e235524660d32499460ccf7e0885fe,
     type: 3}
+  destructionParticleSystem: {fileID: 7273198906942701609, guid: 7fb925589d04bab4ba95c722e0a405b6,
+    type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
-  wasSucked: 0
+  isSpawnedForRecovery: 0
+  shouldFall: 1
   obstacleType: 10
   obstacleModifier: 0
   obstacleColor: 2
@@ -196,8 +201,6 @@ MonoBehaviour:
   fallSpeed: 0.003
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
-  destructionParticleSystem: {fileID: 7273198906942701609, guid: 7fb925589d04bab4ba95c722e0a405b6,
-    type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
   audioClip: {fileID: 0}
@@ -237,6 +240,8 @@ MonoBehaviour:
   currentTile: {fileID: 0}
   hasGameStarted: 0
   isDestructible: 1
+  rewardParticleSystem: {fileID: 2455439757628155, guid: 6230ed4bb94c2254697abbfb4ec3e001,
+    type: 3}
   groundObject: {fileID: 0}
   previousGroundObject: {fileID: 0}
   verticalList: []

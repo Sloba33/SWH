@@ -63,8 +63,10 @@ public class PlayerAnimation : MonoBehaviour
         {
             if (_anim.GetBool("HitDown"))
                 return PlayerAnimState.HitDown;
-            else if (_anim.GetBool("Hit") || _anim.GetBool("HitSpecial"))
+            else if (_anim.GetBool("Hit"))
                 return PlayerAnimState.Hit;
+            else if(_anim.GetBool("HitSpecial"))
+                return PlayerAnimState.HitSpecial;
         }
 
         // **** SECOND PRIORITY: Push/Pull states (but not during attacks) ****

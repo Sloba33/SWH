@@ -110,6 +110,8 @@ MonoBehaviour:
     type: 3}
   fallIndicator: {fileID: 6784415547297523, guid: 63b9f1e8b94a99343934a6b6a7d8347b,
     type: 3}
+  destructionParticleSystem: {fileID: 4569825690227890022, guid: b2f8a2bba4ecbdc41a2b6264344be7fa,
+    type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
   isSpawnedForRecovery: 0
@@ -200,8 +202,6 @@ MonoBehaviour:
   fallSpeed: 0.003
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
-  destructionParticleSystem: {fileID: 4569825690227890022, guid: b2f8a2bba4ecbdc41a2b6264344be7fa,
-    type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
   audioClip: {fileID: 0}
@@ -241,6 +241,8 @@ MonoBehaviour:
   currentTile: {fileID: 0}
   hasGameStarted: 0
   isDestructible: 1
+  rewardParticleSystem: {fileID: 2455439757628155, guid: 6230ed4bb94c2254697abbfb4ec3e001,
+    type: 3}
   groundObject: {fileID: 0}
   previousGroundObject: {fileID: 0}
   verticalList: []

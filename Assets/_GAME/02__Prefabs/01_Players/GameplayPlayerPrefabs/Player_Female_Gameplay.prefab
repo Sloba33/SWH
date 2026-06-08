@@ -5759,6 +5759,8 @@ MonoBehaviour:
   sprintParticleBlueJuice2: {fileID: 4447603266257228941}
   sprintParticleRedJuice1: {fileID: 2060886570909256845}
   sprintParticleRedJuice2: {fileID: 2733554519797383396}
+  strengthParticle1: {fileID: 0}
+  strengthParticle2: {fileID: 0}
   pc: {fileID: 0}
   Energy: 100
   HitDownEnergy: 0
@@ -5965,6 +5967,7 @@ MonoBehaviour:
   toolDown: {fileID: 0}
   hitRayOffset: {x: 0, y: 0, z: 0}
   hitRayDistance: 0.95
+  playerControls: {fileID: 0}
   hittingDown: 0
   player: {fileID: 0}
   weaponSpecialRadius: 0
@@ -18086,6 +18089,7 @@ GameObject:
   - component: {fileID: 2256590964218511409}
   - component: {fileID: 7698058944663604137}
   - component: {fileID: 8024037999100871070}
+  - component: {fileID: 6903998917311607926}
   m_Layer: 7
   m_Name: Camera
   m_TagString: MainCamera
@@ -18238,6 +18242,14 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!81 &6903998917311607926
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7429096730290393317}
+  m_Enabled: 1
 --- !u!1 &7591247016177939572
 GameObject:
   m_ObjectHideFlags: 0
@@ -21461,36 +21473,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7395263540031606586, guid: 25c2dde5a9fb2e4408af016425dd0245,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5774857745039950052}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25c2dde5a9fb2e4408af016425dd0245, type: 3}
---- !u!1 &683457050326105502 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7395263540031606586, guid: 25c2dde5a9fb2e4408af016425dd0245,
-    type: 3}
-  m_PrefabInstance: {fileID: 8060706191717118628}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5774857745039950052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 683457050326105502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 2
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!4 &1234788630529640726 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9151235438831090610, guid: 25c2dde5a9fb2e4408af016425dd0245,

@@ -55,6 +55,14 @@ public class PlayerControls : MonoBehaviour
             playerController.StopPull();
         }
     }
+    public void FillChargeImage()
+    {
+        specialChargeImage.fillAmount += 0.33333f;
+    }
+    public void EmptyChargeImage()
+    {
+        specialChargeImage.fillAmount = 0f;
+    }
     public void AssignControls() //
     {
         playerController = FindObjectOfType<PlayerController>(); //
@@ -83,7 +91,7 @@ public class PlayerControls : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //
         settings = FindAnyObjectByType<Settings>(FindObjectsInactive.Include); //
         specialChargeImage = GameObject.Find("SpecialChargeFrame")?.GetComponent<Image>(); //
-        if (specialChargeImage != null) specialChargeImage.GetComponent<Image>().enabled = false;
+        // if (specialChargeImage != null) specialChargeImage.GetComponent<Image>().enabled = false;
         // Only add listener if jumpButton is assigned
         // if (jumpButton != null) //
         // {
@@ -161,6 +169,7 @@ public class PlayerControls : MonoBehaviour
     public void SetReferences() //
     {
         if (playerController == null) return; //
+        if (playerAttack != null) playerAttack.playerControls = this;
         playerRegularCamera = playerController.playerCamera; //
         // playerCamera = playerController.followCamera.gameObject; //
 
@@ -411,7 +420,7 @@ public class PlayerControls : MonoBehaviour
                 {
                     ConsumableSlot slot = consumableSlots[i]; //
                     slot.gameObject.SetActive(true); //
-                    slot.transform.DOShakeScale(0.2f, 0.5f, 2, 10f, false).Play(); 
+                    slot.transform.DOShakeScale(0.2f, 0.5f, 2, 10f, false).Play();
                     slot.SetConsumable(collectibleItem); //
 
                     EventTrigger.Entry bomb = new EventTrigger.Entry(); //

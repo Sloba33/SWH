@@ -11,6 +11,7 @@ public class MatchThreeObstacle : MonoBehaviour
     public Tile currentTile;
     public bool hasGameStarted;
     public bool isDestructible;
+    public ParticleSystem rewardParticleSystem;
 
     private static HashSet<int> processedMatchSignatures = new HashSet<int>();
     private List<Obstacle> obstaclesToProcessForSpawns = new();
@@ -115,6 +116,8 @@ public class MatchThreeObstacle : MonoBehaviour
             Vector3 roundedPos = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
 
             Instantiate(prefab, roundedPos, Quaternion.identity);
+            if (rewardParticleSystem != null)
+                Instantiate(rewardParticleSystem, roundedPos, Quaternion.identity);
             Debug.Log("Spawning :" + prefab.name + " Collectible");
         }
 

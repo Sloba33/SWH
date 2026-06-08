@@ -11639,6 +11639,7 @@ GameObject:
   - component: {fileID: 6558219075281940067}
   - component: {fileID: 6114639036333840577}
   - component: {fileID: 5360971810374036908}
+  - component: {fileID: 7938414566598337465}
   m_Layer: 7
   m_Name: Camera
   m_TagString: MainCamera
@@ -11791,6 +11792,14 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!81 &7938414566598337465
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4430850077618859788}
+  m_Enabled: 1
 --- !u!1 &4619359966872496065
 GameObject:
   m_ObjectHideFlags: 0
@@ -17279,6 +17288,8 @@ MonoBehaviour:
   sprintParticleBlueJuice2: {fileID: 6680799120757039615}
   sprintParticleRedJuice1: {fileID: 7876306440401757415}
   sprintParticleRedJuice2: {fileID: 718967219072061894}
+  strengthParticle1: {fileID: 0}
+  strengthParticle2: {fileID: 0}
   pc: {fileID: 0}
   Energy: 100
   HitDownEnergy: 0
@@ -17483,6 +17494,7 @@ MonoBehaviour:
   toolDown: {fileID: 0}
   hitRayOffset: {x: 0, y: 0, z: 0}
   hitRayDistance: 0.95
+  playerControls: {fileID: 0}
   hittingDown: 0
   player: {fileID: 0}
   weaponSpecialRadius: 0
