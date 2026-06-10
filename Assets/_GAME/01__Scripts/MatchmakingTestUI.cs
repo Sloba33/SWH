@@ -32,8 +32,6 @@ public class MatchmakingTestUI : MonoBehaviour
     [SerializeField] private int defaultMaxOpponentSkill = 120;
 
     private CancellationTokenSource _cts;
-    
-    public static CoherenceMatchmaker.MatchResult MatchResult;
 
     private void Awake()
     {
@@ -122,7 +120,7 @@ public class MatchmakingTestUI : MonoBehaviour
         try
         {
             SetStatus($"Searching match on '{mapName}' ({region})...");
-            MatchResult = await CoherenceMatchmaker.FindMatchAsync(
+            var matchResult = await CoherenceMatchmaker.FindMatchAsync(
                 mapName,
                 skill,
                 minSkill,
@@ -131,8 +129,8 @@ public class MatchmakingTestUI : MonoBehaviour
                 onProgress: SetStatus,
                 cancellationToken: cancellationToken);
 
-            SetStatus($"Match found (host={MatchResult.IsHost}). Loading '{mapName}'...");
-            Debug.Log($"[MatchmakingTestUI] Match ready. Host={MatchResult.IsHost} Lobby={MatchResult.Lobby?.LobbyData.Id} Room={MatchResult.Room.UniqueId}");
+            SetStatus($"Match found (host={matchResult.IsHost}). Loading '{mapName}'...");
+            Debug.Log($"[MatchmakingTestUI] Match ready. Host={matchResult.IsHost} Lobby={matchResult.Lobby?.LobbyData.Id} Room={matchResult.Room.UniqueId}");
 
             // Load the selected map scene. The scene must be added to Build Settings.
             SceneManager.LoadScene(mapName);

@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Cinemachine;
 using Coherence.Connection;
 using Coherence.Toolkit;
+using Eflatun.SceneReference;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using TMPro;
@@ -50,8 +51,7 @@ public class GameManager : MonoBehaviour
     [Header("Multiplayer Pre-game")]
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private GameObject controlsGameObject;
-    [SerializeField] private string matchmakingSceneName = "MatchmakingTest";
-
+    
     private int _countdownSeconds;
     private bool _isFirstPlayer;
     private bool _countdownStarted;
@@ -89,6 +89,12 @@ public class GameManager : MonoBehaviour
 
     public void DisconnectAndReturnToMatchmaking()
     {
+        Disconnect();
+        FindAnyObjectByType<SceneLoader>().LoadSceneFile("03_Matchmaking");
+    }
+
+    private void Disconnect()
+    {
         _voluntaryDisconnect = true;
         if (coherenceBridge != null && coherenceBridge.IsConnected)
             coherenceBridge.Disconnect();
@@ -98,11 +104,16 @@ public class GameManager : MonoBehaviour
         // leaking one per game would lock us out after a few matches.
         // LobbySession lives on the PlayerAccount, not on this scene, so the
         // request safely outlives the scene change below.
-        _ = CoherenceMatchmaker.LeaveLobbyAsync(MatchmakingTestUI.MatchResult.Lobby);
-        MatchmakingTestUI.MatchResult = default;
-
-        SceneManager.LoadScene(matchmakingSceneName);
+        _ = CoherenceMatchmaker.LeaveLobbyAsync(CoherenceMatchmaker.LatestMatch.Lobby);
+        CoherenceMatchmaker.ClearLatestMatch();
     }
+
+    public void DisconnectAndReturnToMainMenu()
+    {
+        Disconnect();
+        FindAnyObjectByType<SceneLoader>().LoadSceneFile("01_MainMenu");
+    }
+    
     private void SetTestBuildPrefs()
     {
         if (PlayerPrefs.GetInt("Level") < 3)
@@ -210,7 +221,7 @@ public class GameManager : MonoBehaviour
                 coherenceBridge.ClientConnections.OnDestroyed += OnClientConnectionDestroyed;
                 coherenceBridge.ClientConnections.OnSynced += OnClientConnectionsSynced;
                 
-                coherenceBridge.JoinRoom(MatchmakingTestUI.MatchResult.Room);
+                coherenceBridge.JoinRoom(CoherenceMatchmaker.LatestMatch.Room);
             }
         }
         else
@@ -265,7 +276,7 @@ public class GameManager : MonoBehaviour
         }
 
         _isFirstPlayer = !opponentAlreadyConnected;
-        bool isHost = MatchmakingTestUI.MatchResult.IsHost;
+        bool isHost = CoherenceMatchmaker.LatestMatch.IsHost;
 
         Transform spawnPoint = isHost ? playerSpawnPoint : opponentSpawnPoint;
         CoherenceSync sync = Instantiate(playerNetworkedPrefab, spawnPoint.position, spawnPoint.rotation);

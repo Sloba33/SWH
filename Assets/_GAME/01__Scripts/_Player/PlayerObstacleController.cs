@@ -35,6 +35,17 @@ public class PlayerObstacleController : MonoBehaviour
 
     private float repositionProgress = 0f;
 
+    // Captured at HandlePull_Initiate: the vertical offset between the player
+    // and the obstacle pivot at the moment of latch. HandlePull_Continue keeps
+    // the player at obstacle.y + latchYOffset so a co-fall preserves the latch
+    // geometry instead of letting the two desync vertically.
+    private float latchYOffset = 0f;
+
+    // If |player.y - obstacle.y - latchYOffset| exceeds this, something has
+    // moved one of them outside our control (physics teleport, external
+    // mover); abort the pull rather than keep dragging at invalid geometry.
+    private const float LatchYDesyncThreshold = 1.5f;
+
     private void Start()
     {
         _anim = GetComponent<Animator>();
@@ -54,28 +65,36 @@ public class PlayerObstacleController : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Aborts the pull when the obstacle ungrounded itself but the player
+    /// stayed on solid ground. The two have separated and we can't reconcile
+    /// without forcing the player into a fall they shouldn't be in.
+    /// </summary>
+    /// <returns>True if the pull was aborted.</returns>
+    private bool TryAbortOnGroundedDivergence()
+    {
+        if (!pullObstacle.grounded && playerMovement.IsGrounded)
+        {
+            Debug.Log("Pull stopped: obstacle ungrounded while player grounded.");
+            StopPull();
+            return true;
+        }
+        return false;
+    }
+
     private void ControlPlayerFallWhilePulling()
     {
-        if (playerController.isPulling && pullObstacle != null && pullObstacle.isFalling)
-        {
-            // **** NEW VALIDATION CHECK ****
-            // Check if the obstacle has fallen too far below the player
-            float yDifference = transform.position.y - pullObstacle.transform.position.y;
-            if (yDifference > 0.8f) // Assuming player height is ~1.0, 0.8f seems like a safe threshold
-            {
-                Debug.Log("Obstacle fell too far during repositioning. Stopping pull.");
-                StopPull(); // This will also stop the repositioning
-                return;
-            }
-            // ****************************
+        if (!playerController.isPulling || pullObstacle == null) return;
 
-            // Prevent syncing Y if player is standing on anything
-            if (!playerMovement.IsGrounded)
-            {
-                Vector3 pos = transform.position;
-                pos.y = pullObstacle.transform.position.y;
-                transform.position = pos;
-            }
+        if (TryAbortOnGroundedDivergence()) return;
+
+        // Override the smooth-reposition lerp's Y when both are falling so the
+        // latch geometry is preserved through the joint fall.
+        if (pullObstacle.isFalling && !playerMovement.IsGrounded)
+        {
+            Vector3 pos = transform.position;
+            pos.y = pullObstacle.transform.position.y + latchYOffset;
+            transform.position = pos;
         }
     }
 
@@ -569,8 +588,26 @@ public class PlayerObstacleController : MonoBehaviour
                 Vector3 targetPlayerPosition = pullObstacle.transform.position +
                     (normalizedPullDirection * (obstacleHalfSize + playerHalfSize + pullDistance));
 
-                // Ensure target Y is player's current Y to prevent vertical snapping during reposition
-                targetPlayerPosition.y = transform.position.y;
+                // Clamp the latch Y to the obstacle's vertical extent so a mid-air
+                // pull can't latch above the top or below the bottom. Without this
+                // the player can be left "floating" relative to the obstacle and
+                // any later co-fall ends with the player stuck at obstacle pivot Y.
+                float playerHalfHeight = ((CapsuleCollider)playerCollider).height * 0.5f;
+                float obstacleCenterY = pullObstacle.transform.position.y;
+                float minLatchY = (obstacleCenterY - obstacleHalfSize) + playerHalfHeight;
+                float maxLatchY = (obstacleCenterY + obstacleHalfSize) - playerHalfHeight;
+                // If the player is taller than the obstacle the clamp inverts; fall
+                // back to obstacle center so we always get a sane latch Y.
+                float clampedLatchY = (minLatchY > maxLatchY)
+                    ? obstacleCenterY
+                    : Mathf.Clamp(transform.position.y, minLatchY, maxLatchY);
+                targetPlayerPosition.y = clampedLatchY;
+
+                // Capture the latch-time vertical relationship. HandlePull_Continue
+                // and ControlPlayerFallWhilePulling preserve this offset, which is
+                // what lets a joint fall keep player & obstacle locked together
+                // without the player ending up at the wrong height after landing.
+                latchYOffset = clampedLatchY - obstacleCenterY;
 
                 // Dynamic reposition speed based on player velocity
                 float playerSpeed = _rb.linearVelocity.magnitude;
@@ -606,20 +643,30 @@ public class PlayerObstacleController : MonoBehaviour
             return;
         }
 
-        // **** NEW VALIDATION CHECK ****
-        // Check if the obstacle has fallen too far below the player
-        float yDifference = transform.position.y - pullObstacle.transform.position.y;
-        if (yDifference > 0.8f) // Assuming player height is ~1.0, 0.8f seems like a safe threshold
+        Vector3 obstaclePos = pullObstacle.transform.position;
+        pullDirection = -playerController._movement.GetFacingDirection();
+
+        // Refresh the obstacle's lateral collision flags every tick. Without
+        // this the flags from HandlePull_Initiate stay stale for the whole
+        // pull and Obstacle.PullObstacle's Movable(dir) gate can't see new
+        // neighbours — letting the obstacle sweep through walls that came
+        // into range after latch.
+        pullObstacle.SphereFlags();
+
+        if (TryAbortOnGroundedDivergence()) return;
+
+        // Safety net for physics desync (constraint failure, external mover):
+        // if the player/obstacle vertical relationship breaks too far from
+        // what was captured at latch, abort rather than drag at invalid geometry.
+        float currentYOffset = transform.position.y - obstaclePos.y;
+        if (Mathf.Abs(currentYOffset - latchYOffset) > LatchYDesyncThreshold)
         {
-            Debug.Log("Obstacle fell too far below player. Stopping pull.");
+            Debug.Log("Pull stopped: latch Y offset broke (player/obstacle desynced).");
             StopPull();
             return;
         }
-        // ****************************
-
 
         // --- 1. Move the Obstacle ---
-        pullDirection = -playerController._movement.GetFacingDirection();
         if (pullObstacle.MoveOverride)
         {
             _anim.SetBool("Pull", true); // Ensure anim is playing
@@ -637,18 +684,8 @@ public class PlayerObstacleController : MonoBehaviour
         float offsetDistance = obstacleHalfSize + playerHalfSize + pullDistance;
         Vector3 offset = normalizedPullDirection * offsetDistance;
 
-        Vector3 targetPlayerPosition = pullObstacle.transform.position + offset;
-
-        // --- 3. Handle Falling (Replaces ControlPlayerFallWhilePulling) ---
-        if (pullObstacle.isFalling && !playerMovement.IsGrounded)
-        {
-            targetPlayerPosition.y = pullObstacle.transform.position.y;
-        }
-        else
-        {
-            // Maintain player's current Y if they are grounded or obstacle is grounded
-            targetPlayerPosition.y = transform.position.y;
-        }
+        Vector3 targetPlayerPosition = obstaclePos + offset;
+        targetPlayerPosition.y = obstaclePos.y + latchYOffset;
 
         _rb.MovePosition(targetPlayerPosition);
     }
@@ -687,8 +724,17 @@ public class PlayerObstacleController : MonoBehaviour
         pullObstacle = null;
         playerController.StopPull();
 
-        isRepositioning = false; // Reset repositioning flag
-        repositionProgress = 0f; // Reset repositioning progress
+        isRepositioning = false;
+        repositionProgress = 0f;
+        latchYOffset = 0f;
+
+        // Explicit reset in case PlayerAnimation's IsPulling-derived state
+        // ever desyncs and leaves the Pull animation stuck on.
+        _anim.SetBool("Pull", false);
+
+        // ResetPullConstraints already cleared isKinematic and restored the
+        // original constraints, so if the pull ended in mid-air gravity will
+        // re-engage and PlayerMovement.Fall() will pick it up next frame.
     }
 
     [SerializeField] private float manualPushDistance = 0.1f; // Manually control how far the player should stand from the obstacle

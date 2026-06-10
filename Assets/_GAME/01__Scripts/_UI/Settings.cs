@@ -7,6 +7,10 @@ using TMPro;
 public class Settings : MonoBehaviour
 {
     public GameObject winPanelPrefab, losePanelPrefab, pausePanelPrefab;
+    [Tooltip("Spawned instead of winPanelPrefab when GameManager.IsMultiplayer is true.")]
+    public GameObject multiplayerWinPanelPrefab;
+    [Tooltip("Spawned instead of losePanelPrefab when GameManager.IsMultiplayer is true.")]
+    public GameObject multiplayerLosePanelPrefab;
     public GameObject winPanel, losePanel, pausePanel, settingsButton, controlsPanel;
     public Button rotateLeft, rotateRight, cameraType, zoomIn, zoomOut;
     public TextMeshProUGUI zoomValue, timerText;
@@ -76,11 +80,21 @@ public class Settings : MonoBehaviour
     }
     public void ActivateWinPanel()
     {
-        if (winPanel != null)
+        // Multiplayer always instantiates the dedicated MP prefab — any
+        // pre-assigned scene-embedded SP panel is ignored because it carries
+        // the wrong script and visuals for an MP match.
+        bool isMultiplayer = GameManager.Instance != null && GameManager.Instance.IsMultiplayer;
+        if (isMultiplayer && multiplayerWinPanelPrefab != null)
+        {
+            winPanel = Instantiate(multiplayerWinPanelPrefab, transform.parent);
+            winPanel.SetActive(true);
+        }
+        else if (winPanel != null)
             winPanel.SetActive(!winPanel.activeSelf);
         else
         {
-            winPanel = Instantiate(winPanelPrefab, transform.parent);
+            GameObject prefab = ResolveEndScreenPrefab(multiplayerWinPanelPrefab, winPanelPrefab);
+            winPanel = Instantiate(prefab, transform.parent);
             winPanel.gameObject.SetActive(true);
         }
         settingsButton.gameObject.SetActive(false);
@@ -90,31 +104,35 @@ public class Settings : MonoBehaviour
         rotateRight.gameObject.SetActive(false);
         FindObjectOfType<PlayerControls>().gameObject.SetActive(false);
         timerText.gameObject.SetActive(false);
-
-        if(GameManager.Instance.IsMultiplayer)
-        {
-            Invoke(nameof(GoBackToMainMenu), 10f);
-        }
     }
     
     private void GoBackToMainMenu()
     {
-        GameManager.Instance.DisconnectAndReturnToMatchmaking();
+        GameManager.Instance.DisconnectAndReturnToMainMenu();
     }
     
     public void ActivateLosePanel()
     {
-        if (losePanel != null)
+        bool isMultiplayer = GameManager.Instance != null && GameManager.Instance.IsMultiplayer;
+        if (isMultiplayer && multiplayerLosePanelPrefab != null)
+        {
+            losePanel = Instantiate(multiplayerLosePanelPrefab, transform.parent);
+            losePanel.SetActive(true);
+        }
+        else if (losePanel != null)
             losePanel.SetActive(true);
         else
         {
-            losePanel = Instantiate(losePanelPrefab, transform.parent);
+            GameObject prefab = ResolveEndScreenPrefab(multiplayerLosePanelPrefab, losePanelPrefab);
+            losePanel = Instantiate(prefab, transform.parent);
             losePanel.gameObject.SetActive(true);
         }
-        
-        if(GameManager.Instance.IsMultiplayer)
-        {
-            Invoke(nameof(GoBackToMainMenu), 10f);
-        }
+    }
+
+    private GameObject ResolveEndScreenPrefab(GameObject multiplayerPrefab, GameObject singlePlayerPrefab)
+    {
+        bool isMultiplayer = GameManager.Instance != null && GameManager.Instance.IsMultiplayer;
+        if (isMultiplayer && multiplayerPrefab != null) return multiplayerPrefab;
+        return singlePlayerPrefab;
     }
 }

@@ -56,7 +56,7 @@ public class TrophyRoadManager : MonoBehaviour
         CheckForUnlockedRewards();
         UpdateRewardButtons();
         UpdatePointerPosition();
-        Debug.Log("Loading :" + PlayerPrefs.GetInt("Trophies"));
+        Debug.Log("Loading :" + TrophyUtility.GetDisplayedTrophies());
         CheckForUnclaimedRewards();
     }
     public void GenerateEverything()
@@ -75,7 +75,7 @@ public class TrophyRoadManager : MonoBehaviour
     public TrophyRoadFill currentFillBar = null;
     private void UpdatePointerPosition()
     {
-        int currentTrophies = PlayerPrefs.GetInt("Trophies", 0);
+        int currentTrophies = TrophyUtility.GetDisplayedTrophies();
 
 
         for (int i = 1; i < trophyRoadFills.Count; i++) // Start from the second fill bar
@@ -113,7 +113,7 @@ public class TrophyRoadManager : MonoBehaviour
     }
     private void SetTrophiesAtStart()
     {
-        int trophies = PlayerPrefs.GetInt("Trophies", 0);
+        int trophies = TrophyUtility.GetDisplayedTrophies();
         pointerText.text = trophies.ToString();
         RectTransform pointerRect = pointer.GetComponent<RectTransform>();
 
@@ -123,7 +123,7 @@ public class TrophyRoadManager : MonoBehaviour
 
     public void CheckForUnlockedRewards()
     {
-        int currentTrophies = PlayerPrefs.GetInt("Trophies", 0);
+        int currentTrophies = TrophyUtility.GetDisplayedTrophies();
 
         foreach (var milestone in trophyRoadData.milestones)
         {
@@ -316,7 +316,7 @@ public class TrophyRoadManager : MonoBehaviour
 
     public void UpdateFillBars()
     {
-        int currentTrophies = PlayerPrefs.GetInt("Trophies", 0);
+        int currentTrophies = TrophyUtility.GetDisplayedTrophies();
         int previousTrophyRequirement;
 
         for (int i = 0; i < trophyRoadFills.Count; i++)
@@ -640,7 +640,7 @@ public class TrophyRoadManager : MonoBehaviour
         }
         Debug.Log("Calling update");
         TrophyRoadButton[] rewardButtons = rewardButtonContainer.GetComponentsInChildren<TrophyRoadButton>();
-        int currentTrophies = PlayerPrefs.GetInt("Trophies", 0);
+        int currentTrophies = TrophyUtility.GetDisplayedTrophies();
 
         foreach (var button in rewardButtons)
         {
@@ -706,7 +706,7 @@ public class TrophyRoadManager : MonoBehaviour
     private void CheckForUnclaimedRewards()
     {
         int tempIndex = 0;
-        int currentTrophies = PlayerPrefs.GetInt("Trophies", 0);
+        int currentTrophies = TrophyUtility.GetDisplayedTrophies();
         bool hasUnclaimedRewards = false;
         TrophyRoadMilestone nextUnavailableMilestone = null;
 
