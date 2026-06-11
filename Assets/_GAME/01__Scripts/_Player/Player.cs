@@ -115,7 +115,9 @@ public class Player : MonoBehaviour
     }
     public void SpendEnergy(float amount)
     {
-        if (levelGoal != null && !levelGoal.shouldHaveFasterEnergyRecharge)
+        // Spend energy by default; only the faster-recharge level flag suppresses the cost.
+        // levelGoal can legitimately be null (multiplayer spawn order), which must not make hits free.
+        if (levelGoal == null || !levelGoal.shouldHaveFasterEnergyRecharge)
         {
 
             Energy -= amount;
@@ -268,10 +270,8 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        sprintParticleBlueJuice1.gameObject.SetActive(false);
-        sprintParticleBlueJuice2.gameObject.SetActive(false);
-        sprintParticleRedJuice1.gameObject.SetActive(false);
-        sprintParticleRedJuice2.gameObject.SetActive(false);
+        SetSprintParticlesNetworked(SprintParticleKind.Blue, false);
+        SetSprintParticlesNetworked(SprintParticleKind.Red, false);
 
         MoveSpeed = StartingMoveSpeed;
         buffedSpeed = MoveSpeed;
@@ -288,8 +288,7 @@ public class Player : MonoBehaviour
             Strength += amount;
             hasStrengthBuff = true;
             remainingStrengthBuffTime = duration;
-            strengthParticle1.gameObject.SetActive(true);
-            strengthParticle2.gameObject.SetActive(true);
+            SetSprintParticlesNetworked(SprintParticleKind.Strength, true);
         }
         else
         {
@@ -310,8 +309,7 @@ public class Player : MonoBehaviour
             Debug.Log($"Strength buff remaining: {remainingStrengthBuffTime:F2} seconds");
             yield return null;
         }
-        strengthParticle1.gameObject.SetActive(false);
-        strengthParticle2.gameObject.SetActive(false);
+        SetSprintParticlesNetworked(SprintParticleKind.Strength, false);
         Strength = StartingStrenght;
         characterStats.strength = (int)StartingStrenght;
         buffedStrength = Strength;
@@ -342,8 +340,7 @@ public class Player : MonoBehaviour
             Strength += strengthAmount;
             hasStrengthBuff = true;
             remainingStrengthBuffTime = duration;
-            strengthParticle1.gameObject.SetActive(true);
-            strengthParticle2.gameObject.SetActive(true);
+            SetSprintParticlesNetworked(SprintParticleKind.Strength, true);
         }
         else
         {
@@ -364,7 +361,7 @@ public class Player : MonoBehaviour
         buffedSpeed = MoveSpeed;
     }
 
-    public enum SprintParticleKind { Blue = 0, Red = 1 }
+    public enum SprintParticleKind { Blue = 0, Red = 1, Strength = 2 }
 
     public void SetSprintParticlesNetworked(SprintParticleKind kind, bool active)
     {
@@ -390,6 +387,11 @@ public class Player : MonoBehaviour
         {
             if (sprintParticleRedJuice1 != null) sprintParticleRedJuice1.gameObject.SetActive(active);
             if (sprintParticleRedJuice2 != null) sprintParticleRedJuice2.gameObject.SetActive(active);
+        }
+        else if (kind == (int)SprintParticleKind.Strength)
+        {
+            if (strengthParticle1 != null) strengthParticle1.gameObject.SetActive(active);
+            if (strengthParticle2 != null) strengthParticle2.gameObject.SetActive(active);
         }
     }
     public void RepairHelmet()
@@ -431,38 +433,5 @@ public class Player : MonoBehaviour
     }
 
 
-    private IEnumerator ResetSpeed(float duration)
-    {
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            remainingSpeedBuffTime = duration - elapsed;
-            yield return null;
-        }
-
-        // Buff expired
-        SetSprintParticlesNetworked(SprintParticleKind.Blue, false);
-        SetSprintParticlesNetworked(SprintParticleKind.Red, false);
-
-        MoveSpeed = StartingMoveSpeed;
-        buffedSpeed = MoveSpeed;
-        hasSpeedBuff = false;
-        remainingSpeedBuffTime = 0f;
-        speedBuffCoroutine = null;
-    }
-
-    private IEnumerator ResetStrength(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-
-        strengthParticle1.gameObject.SetActive(false);
-        strengthParticle2.gameObject.SetActive(false);
-        Strength = StartingStrenght;
-        characterStats.strength = (int)StartingStrenght; // Also update characterStats
-        buffedStrength = Strength;
-        hasStrengthBuff = false;
-        strengthBuffCoroutine = null; // Clear the reference
-    }
 }
 

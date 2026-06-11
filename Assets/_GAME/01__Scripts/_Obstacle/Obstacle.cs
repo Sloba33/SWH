@@ -134,7 +134,8 @@ public class Obstacle : MonoBehaviour
     private void Start()
     {
         controllerCleared = true;
-        if (GameManager.Instance != null)
+        // Cardboard keeps its authored weight regardless of the level-wide modifier.
+        if (GameManager.Instance != null && obstacleType != ObstacleType.Cardboard)
             _weightModifier = GameManager.Instance.ObstacleWeightModifier;
 
         FallTimer = 0f;

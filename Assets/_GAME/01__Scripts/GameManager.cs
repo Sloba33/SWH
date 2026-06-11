@@ -253,7 +253,7 @@ public class GameManager : MonoBehaviour
                 playerGoalSetter = goalSetters[0];
             }
         // ObstacleWeightModifier is applied per-obstacle in Obstacle.Start() (see Obstacle.EffectiveWeight),
-        // so it covers both scene-placed and later-spawned falling obstacles.
+        // so it covers both scene-placed and later-spawned falling obstacles. Cardboard is excluded there.
         if (ShouldHaveSkipButton)
             GenerateSkipButton();
     }

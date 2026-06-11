@@ -193,12 +193,16 @@ public class WinScreen : MonoBehaviour
             Debug.LogError("Scene index is : " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3));
             levelCompleteText.text = "Level " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3).ToString() + " Complete!";
         }
-        PowerupCollectible[] powerupCollectibles = FindObjectsByType<PowerupCollectible>(FindObjectsSortMode.None);
         //clear collectibles on scene
-
-        for (int i = 0; i < powerupCollectibles.Length; i++)
+        // In multiplayer the scene-wide sweep would also hit the opponent's collectibles,
+        // including networked entities we don't have authority over.
+        if (!GameManager.Instance.IsMultiplayer)
         {
-            Destroy(powerupCollectibles[i].gameObject);
+            PowerupCollectible[] powerupCollectibles = FindObjectsByType<PowerupCollectible>(FindObjectsSortMode.None);
+            for (int i = 0; i < powerupCollectibles.Length; i++)
+            {
+                Destroy(powerupCollectibles[i].gameObject);
+            }
         }
         PlayerPrefs.SetInt(currentLevelName + "_beaten", 1);
         PlayerPrefs.Save();
