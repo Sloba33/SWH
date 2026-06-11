@@ -20,7 +20,8 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
 
     public AudioSource[] SoundAudioSources;
     public AudioSource[] MusicAudioSources;
-    private float bgmVolume = 0.5f;
+    private bool firstLoad;
+    private float bgmVolume = 0.25f;
     private float sfxVolume = 1f;
 
     // Properties to get and set volumes
@@ -44,6 +45,13 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
     }
     private void Start()
     {
+        // firstLoad = PlayerPrefs.GetInt("FirstLoadVolume", 0) == 0;
+        // if(firstLoad)
+        // {
+        //     SetBGMVolume(PlayerPrefs.GetFloat("BGM_Volume", 0.25f));
+        //     SetSFXVolume(PlayerPrefs.GetFloat("SFX_Volume", 1f));
+        //     PlayerPrefs.SetInt("FirstLoadVolume", 1);
+        // }
         InitializeAudioClips();
         InitializeAudioSourcePool();
         InitializeVolume();
@@ -72,7 +80,7 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
     }
     private void InitializeVolume()
     {
-        SetBGMVolume(PlayerPrefs.GetFloat("BGM_Volume", 0.5f));
+        SetBGMVolume(PlayerPrefs.GetFloat("BGM_Volume", 0.25f));
         SetSFXVolume(PlayerPrefs.GetFloat("SFX_Volume", 1f));
     }
     private void InitializeAudioClips()

@@ -618,7 +618,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 827600586}
     m_Modifications:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -680,6 +680,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18305c258c73a54db12614bd290d981, type: 3}
+--- !u!4 &206509622 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
+    type: 3}
+  m_PrefabInstance: {fileID: 206509621}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &232253558
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1000,7 +1006,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 827600586}
     m_Modifications:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -1062,6 +1068,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18305c258c73a54db12614bd290d981, type: 3}
+--- !u!4 &503930166 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
+    type: 3}
+  m_PrefabInstance: {fileID: 503930165}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &570795246
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1731,6 +1743,12 @@ Transform:
   - {fileID: 1820990250}
   - {fileID: 1146469593}
   - {fileID: 62235106}
+  - {fileID: 1811621426}
+  - {fileID: 503930166}
+  - {fileID: 2114990243}
+  - {fileID: 1096663416}
+  - {fileID: 206509622}
+  - {fileID: 1940241860}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &902032396
@@ -2043,7 +2061,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 827600586}
     m_Modifications:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -2105,6 +2123,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18305c258c73a54db12614bd290d981, type: 3}
+--- !u!4 &1096663416 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
+    type: 3}
+  m_PrefabInstance: {fileID: 1096663415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1123915237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2989,7 +3013,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 827600586}
     m_Modifications:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -3051,6 +3075,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18305c258c73a54db12614bd290d981, type: 3}
+--- !u!4 &1811621426 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
+    type: 3}
+  m_PrefabInstance: {fileID: 1811621425}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1820990249
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3205,7 +3235,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 827600586}
     m_Modifications:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -3267,6 +3297,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18305c258c73a54db12614bd290d981, type: 3}
+--- !u!4 &1940241860 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
+    type: 3}
+  m_PrefabInstance: {fileID: 1940241859}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1959335799
 GameObject:
   m_ObjectHideFlags: 0
@@ -3329,6 +3365,11 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 2.11
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -3654,7 +3695,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 827600586}
     m_Modifications:
     - target: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
         type: 3}
@@ -3716,6 +3757,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18305c258c73a54db12614bd290d981, type: 3}
+--- !u!4 &2114990243 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1533580920501426371, guid: b18305c258c73a54db12614bd290d981,
+    type: 3}
+  m_PrefabInstance: {fileID: 2114990242}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2124328706
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3817,6 +3864,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
+  xp: 25
+  trophies: 3
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: 88d456136324962428e263c887a2a2e0,
     type: 3}
   currentTime: 0
@@ -3890,21 +3942,21 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 902032398}
-  - {fileID: 401467347}
-  - {fileID: 604245989}
   - {fileID: 1665849055}
-  - {fileID: 124730603}
-  - {fileID: 2113492068}
-  - {fileID: 62235107}
-  - {fileID: 1554984405}
-  - {fileID: 757583612}
-  - {fileID: 51645326}
+  - {fileID: 604245989}
   - {fileID: 570795248}
-  - {fileID: 177211437}
-  - {fileID: 1146469594}
   - {fileID: 499797819}
+  - {fileID: 1146469594}
+  - {fileID: 62235107}
+  - {fileID: 51645326}
+  - {fileID: 401467347}
+  - {fileID: 757583612}
+  - {fileID: 2113492068}
+  - {fileID: 1554984405}
+  - {fileID: 902032398}
+  - {fileID: 124730603}
   - {fileID: 1500236546}
+  - {fileID: 177211437}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -3929,9 +3981,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 25
-  trophies: 3
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -3940,6 +3989,8 @@ MonoBehaviour:
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  starsEarned: 0
   currentStep: 0
   tutorialBridges: []
   tutorialBarriers: []
@@ -4324,10 +4375,4 @@ SceneRoots:
   - {fileID: 393278599}
   - {fileID: 1575119259}
   - {fileID: 827600586}
-  - {fileID: 206509621}
-  - {fileID: 1940241859}
-  - {fileID: 1096663415}
-  - {fileID: 503930165}
-  - {fileID: 2114990242}
-  - {fileID: 1811621425}
   - {fileID: 1325806377}

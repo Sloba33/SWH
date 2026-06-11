@@ -11,7 +11,7 @@ PrefabInstance:
     - target: {fileID: 266093931455438587, guid: 9fb5b008e2749b249a1265e747440c9b,
         type: 3}
       propertyPath: m_Name
-      value: RocketNetworked
+      value: Rocket_Networked
       objectReference: {fileID: 0}
     - target: {fileID: 7969113065653233616, guid: 9fb5b008e2749b249a1265e747440c9b,
         type: 3}
@@ -207,6 +207,12 @@ RectTransform:
 --- !u!224 &1777685884693235877 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4318236149698233868, guid: 9fb5b008e2749b249a1265e747440c9b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2541981833988296361}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1816127830564215243 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4211641499569706850, guid: 9fb5b008e2749b249a1265e747440c9b,
     type: 3}
   m_PrefabInstance: {fileID: 2541981833988296361}
   m_PrefabAsset: {fileID: 0}
@@ -491,6 +497,12 @@ MonoBehaviour:
     - component: {fileID: 743143920727610929}
       lodStepsActive: 1
     - component: {fileID: 5878757330201988220}
+      lodStepsActive: 1
+    - component: {fileID: 1816127830564215243}
+      lodStepsActive: 1
+    - component: {fileID: 8702994875134942755}
+      lodStepsActive: 1
+    - component: {fileID: 8146912388615004384}
       lodStepsActive: 1
     GeneratesArchetypeDefinition: 0
   interpolationLocation: 1
@@ -1098,6 +1110,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &8146912388615004384 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 5929352459825589833, guid: 9fb5b008e2749b249a1265e747440c9b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2541981833988296361}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8162362851784068944 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5908835712038420985, guid: 9fb5b008e2749b249a1265e747440c9b,
@@ -1170,6 +1188,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &8702994875134942755 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6593780822135328906, guid: 9fb5b008e2749b249a1265e747440c9b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2541981833988296361}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8724601148868317739 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6508525577947618434, guid: 9fb5b008e2749b249a1265e747440c9b,

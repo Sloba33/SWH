@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public CharacterStats characterStats;
     public ParticleSystem sprintParticleBlueJuice1, sprintParticleBlueJuice2;
     public ParticleSystem sprintParticleRedJuice1, sprintParticleRedJuice2;
+    public ParticleSystem strengthParticle1, strengthParticle2;
     [Header("Stats")]
     public PlayerControls pc;
     public float Energy, HitDownEnergy;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
     public Image hitDownFillImage;
     public Weapon weapon;
     public int specialCharges, specialChargesMax;
+    private LevelGoal levelGoal;
     private CoherenceSync _coherenceSync;
 
     private void Awake()
@@ -80,7 +82,7 @@ public class Player : MonoBehaviour
         if (helmet != null) helmet.playerAttack = GetComponent<PlayerAttack>();
 
 
-
+        levelGoal = FindFirstObjectByType<LevelGoal>();
 
 
 
@@ -113,11 +115,15 @@ public class Player : MonoBehaviour
     }
     public void SpendEnergy(float amount)
     {
-        Energy -= amount;
-        float fillAmount = Energy / 100f;
-        hitFillImage.fillAmount = fillAmount;
+        if (levelGoal != null && !levelGoal.shouldHaveFasterEnergyRecharge)
+        {
 
-        Debug.Log("Energy: " + Energy);
+            Energy -= amount;
+            float fillAmount = Energy / 100f;
+            hitFillImage.fillAmount = fillAmount;
+
+            Debug.Log("Energy: " + Energy);
+        }
     }
     public void SpendHitDownEnergy(float amount)
     {
@@ -153,6 +159,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (dur != 0)
+        {
+            Debug.Log("Duration: " + dur);
+        }
+    }
     public float fillRate;
     public float fillDuration = 3f;
     void UpdateEnergyFill()
@@ -222,39 +235,133 @@ public class Player : MonoBehaviour
     }
     public bool hasSpeedBuff, hasStrengthBuff;
     public float buffedSpeed, buffedStrength;
+    private Coroutine speedBuffCoroutine;
+    private Coroutine strengthBuffCoroutine;
+    private float remainingSpeedBuffTime = 0f;
+    private float remainingStrengthBuffTime = 0f;
     public void BuffSpeed(float duration, float amount)
     {
-        Debug.Log("BUffing speed");
-        hasSpeedBuff = true;
-        MoveSpeed += amount;
+        if (!hasSpeedBuff)
+        {
+            MoveSpeed += amount;
+            hasSpeedBuff = true;
+            SetSprintParticlesNetworked(SprintParticleKind.Blue, true);
+            remainingSpeedBuffTime = duration;
+        }
+        else
+        {
+            remainingSpeedBuffTime += duration;
+        }
+
+        if (speedBuffCoroutine != null)
+            StopCoroutine(speedBuffCoroutine);
+
+        speedBuffCoroutine = StartCoroutine(CountdownSpeedBuff());
         buffedSpeed = MoveSpeed;
-        SetSprintParticlesNetworked(SprintParticleKind.Blue, true);
-        StartCoroutine(ResetSpeed(duration));
     }
+
+    private IEnumerator CountdownSpeedBuff()
+    {
+        while (remainingSpeedBuffTime > 0)
+        {
+            remainingSpeedBuffTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        sprintParticleBlueJuice1.gameObject.SetActive(false);
+        sprintParticleBlueJuice2.gameObject.SetActive(false);
+        sprintParticleRedJuice1.gameObject.SetActive(false);
+        sprintParticleRedJuice2.gameObject.SetActive(false);
+
+        MoveSpeed = StartingMoveSpeed;
+        buffedSpeed = MoveSpeed;
+        hasSpeedBuff = false;
+        remainingSpeedBuffTime = 0f;
+        speedBuffCoroutine = null;
+    }
+    private float dur;
     public void BuffStrength(float duration, float amount)
     {
-        hasStrengthBuff = true;
-        Strength += amount;
+        if (!hasStrengthBuff)
+        {
+            characterStats.strength += (int)amount;
+            Strength += amount;
+            hasStrengthBuff = true;
+            remainingStrengthBuffTime = duration;
+            strengthParticle1.gameObject.SetActive(true);
+            strengthParticle2.gameObject.SetActive(true);
+        }
+        else
+        {
+            remainingStrengthBuffTime += duration;
+        }
+
+        if (strengthBuffCoroutine != null)
+            StopCoroutine(strengthBuffCoroutine);
+
+        strengthBuffCoroutine = StartCoroutine(CountdownStrengthBuff());
         buffedStrength = Strength;
-        StartCoroutine(ResetStrength(duration));
     }
+    private IEnumerator CountdownStrengthBuff()
+    {
+        while (remainingStrengthBuffTime > 0)
+        {
+            remainingStrengthBuffTime -= Time.deltaTime;
+            Debug.Log($"Strength buff remaining: {remainingStrengthBuffTime:F2} seconds");
+            yield return null;
+        }
+        strengthParticle1.gameObject.SetActive(false);
+        strengthParticle2.gameObject.SetActive(false);
+        Strength = StartingStrenght;
+        characterStats.strength = (int)StartingStrenght;
+        buffedStrength = Strength;
+        hasStrengthBuff = false;
+        remainingStrengthBuffTime = 0f;
+        strengthBuffCoroutine = null;
+        Debug.Log("Strength buff EXPIRED!");
+    }
+
     public void BuffStrengthAndSpeed(float duration, float speedAmount, float strengthAmount)
     {
-        Debug.Log("Buffing Strength and speed");
-        hasStrengthBuff = true;
-        hasSpeedBuff = true;
+        // Handle speed buff
+        if (!hasSpeedBuff)
+        {
+            MoveSpeed += speedAmount;
+            hasSpeedBuff = true;
+            SetSprintParticlesNetworked(SprintParticleKind.Red, true);
+            remainingSpeedBuffTime = duration;
+        }
+        else
+        {
+            remainingSpeedBuffTime += duration;
+        }
 
-        // characterStats.strength += strengthAmount; // Increment strength
-        Strength += strengthAmount; // Increment strength
+        // Handle strength buff
+        if (!hasStrengthBuff)
+        {
+            Strength += strengthAmount;
+            hasStrengthBuff = true;
+            remainingStrengthBuffTime = duration;
+            strengthParticle1.gameObject.SetActive(true);
+            strengthParticle2.gameObject.SetActive(true);
+        }
+        else
+        {
+            remainingStrengthBuffTime += duration;
+        }
+
+        // Stop existing coroutines
+        if (speedBuffCoroutine != null)
+            StopCoroutine(speedBuffCoroutine);
+        if (strengthBuffCoroutine != null)
+            StopCoroutine(strengthBuffCoroutine);
+
+        // Start fresh coroutines
+        speedBuffCoroutine = StartCoroutine(CountdownSpeedBuff());
+        strengthBuffCoroutine = StartCoroutine(CountdownStrengthBuff());
+
         buffedStrength = Strength;
-
-        MoveSpeed += speedAmount;
         buffedSpeed = MoveSpeed;
-
-        SetSprintParticlesNetworked(SprintParticleKind.Red, true);
-
-        StartCoroutine(ResetSpeed(duration));
-        StartCoroutine(ResetStrength(duration));
     }
 
     public enum SprintParticleKind { Blue = 0, Red = 1 }
@@ -326,24 +433,36 @@ public class Player : MonoBehaviour
 
     private IEnumerator ResetSpeed(float duration)
     {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            remainingSpeedBuffTime = duration - elapsed;
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(duration);
-
+        // Buff expired
         SetSprintParticlesNetworked(SprintParticleKind.Blue, false);
         SetSprintParticlesNetworked(SprintParticleKind.Red, false);
 
         MoveSpeed = StartingMoveSpeed;
         buffedSpeed = MoveSpeed;
         hasSpeedBuff = false;
+        remainingSpeedBuffTime = 0f;
+        speedBuffCoroutine = null;
     }
+
     private IEnumerator ResetStrength(float duration)
     {
-
         yield return new WaitForSeconds(duration);
 
+        strengthParticle1.gameObject.SetActive(false);
+        strengthParticle2.gameObject.SetActive(false);
         Strength = StartingStrenght;
-        buffedSpeed = Strength;
+        characterStats.strength = (int)StartingStrenght; // Also update characterStats
+        buffedStrength = Strength;
         hasStrengthBuff = false;
+        strengthBuffCoroutine = null; // Clear the reference
     }
 }
 

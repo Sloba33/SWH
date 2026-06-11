@@ -32,20 +32,23 @@ public class HelmetItemManager : MonoBehaviour
     {
         if (helmet != null)
         {
+            if(helmetItem.unlocked) purchaseButton.gameObject.SetActive(false);
             helmetName.text = helmet.helmetName;
             durabilityFillBar.fillAmount = 0.1f * helmet.helmetDurability;
             priceText.text = helmetItem.helmetPrice + "";
         }
-        else Debug.LogError("Weapon item null");
+       
     }
     private UIShadow uiShadow;
     public Button purchaseButton;
     public void SelectHelmet(HelmetItem helmetItem)
     {
         if (uiShadow != null) uiShadow.enabled = false;
+        Debug.Log("Helmet name: " + helmetItem.name + " is unlocked: " + helmetItem.unlocked);
         purchaseButton.onClick.RemoveAllListeners();
         if (!helmetItem.unlocked)
         {
+
             purchaseButton.gameObject.SetActive(true);
             purchaseButton.onClick.AddListener(() =>
                               {

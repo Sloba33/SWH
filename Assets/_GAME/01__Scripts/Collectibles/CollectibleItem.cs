@@ -7,6 +7,7 @@ public abstract class CollectibleItem : MonoBehaviour
     [SerializeField] public Sprite collectibleSprite;
     public AudioClip collectSound;
     public bool isConsumable;
+    public bool isCollected = false;
 
 
     public abstract void Collect(PlayerController player);

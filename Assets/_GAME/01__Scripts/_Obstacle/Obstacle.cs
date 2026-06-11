@@ -12,6 +12,7 @@ public class Obstacle : MonoBehaviour
     public Sprite obstacleSprite;
     public ParticleSystem obstacleFallPS;
     public GameObject fallIndicator;
+    public ParticleSystem destructionParticleSystem;
     public Material obstacleMaterial;
     public bool MoveOverride;
     public bool isSpawnedForRecovery = false;
@@ -529,7 +530,8 @@ public class Obstacle : MonoBehaviour
             }
             hasFallStarted = false;
             isFalling = false;
-            tile.PositionHeight(this);
+            if (tile != null && this != null)
+                tile.PositionHeight(this);
             if (GetComponent<MatchThreeObstacle>() != null && GetComponent<MatchThreeObstacle>().isDestructible)
             {
                 GetComponent<MatchThreeObstacle>().RunMatchOnce();
@@ -579,7 +581,6 @@ public class Obstacle : MonoBehaviour
 
     // not used anymore, obstacleDestructionVfxPrefab is used instead, but keeping it for easy wiring of obstacleDestructionVfxPrefab
     // using CreateObstacleDestructionVfxPrefabs editor tool
-    public ParticleSystem destructionParticleSystem;
     public ObstacleDestructionVfx obstacleDestructionVfxPrefab;
     public bool queuedForDestruction;
 

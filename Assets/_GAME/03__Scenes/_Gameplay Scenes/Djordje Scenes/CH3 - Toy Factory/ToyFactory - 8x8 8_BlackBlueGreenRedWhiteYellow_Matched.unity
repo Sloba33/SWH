@@ -2957,6 +2957,11 @@ MonoBehaviour:
   ObstaclesToModify: []
   ObstacleWeightModifier: 2.11
   defaultZoomValue: 3
+  isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -3217,6 +3222,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
+  xp: 25
+  trophies: 3
+  BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: a545530e38885664e9f0493b8b5be327,
     type: 3}
   currentTime: 0
@@ -3290,24 +3300,24 @@ MonoBehaviour:
   minCollectibleSpawnHeight: 30
   maxCollectibleSpawnHeight: 32
   ObstaclesToDestroy_Player:
-  - {fileID: 1457925190}
-  - {fileID: 815062243}
-  - {fileID: 455397612}
+  - {fileID: 388309935}
   - {fileID: 584524039}
-  - {fileID: 1470480440}
-  - {fileID: 1293537117}
-  - {fileID: 1294133391}
-  - {fileID: 1811421786}
-  - {fileID: 53191257}
-  - {fileID: 1892072952}
   - {fileID: 394889183}
-  - {fileID: 1763948271}
+  - {fileID: 1422231217}
+  - {fileID: 1811421786}
   - {fileID: 1539792389}
   - {fileID: 751804294}
+  - {fileID: 1763948271}
   - {fileID: 948072521}
-  - {fileID: 388309935}
+  - {fileID: 1892072952}
+  - {fileID: 1293537117}
+  - {fileID: 1294133391}
+  - {fileID: 455397612}
+  - {fileID: 53191257}
+  - {fileID: 1457925190}
+  - {fileID: 815062243}
+  - {fileID: 1470480440}
   - {fileID: 618050945}
-  - {fileID: 1422231217}
   ObstaclesToDestroy_AI: []
   obstacleTypes: 
   DualLevel: 0
@@ -3332,9 +3342,6 @@ MonoBehaviour:
   ObstacleCounter: 0
   ObstacleTotal: 0
   levelType: 0
-  xp: 25
-  trophies: 3
-  BONUS_TROPHIES: 0
   playerSideFallingObstacles: []
   AISideFallingObstacles: []
   dualBoxSpawnDelay: 7
@@ -3343,6 +3350,8 @@ MonoBehaviour:
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  starsEarned: 0
   currentStep: 0
   tutorialBridges: []
   tutorialBarriers: []

@@ -121,9 +121,10 @@ public class LevelGoal : MonoBehaviour
     private const string PREF_INTRO_MENU_TUTORIAL_STAGE = "IntroMenuTutorialStage";
     private const string PREF_CURRENT_INTRO_LEVEL = "Level";
     private const string PREF_FIRST_TIME = "FirstTime";
-
+    public bool shouldIgnoreBonusStars;
+    public bool shouldHaveFasterEnergyRecharge;
     private CoherenceSync coherenceSync;
-
+    
     // Takes Full authority over this LevelGoal. Used by forfeit handling: when
     // the opponent (who owned this entity) disconnects, the proxy GameObject
     // would otherwise be disabled by Coherence, killing any coroutine still
@@ -161,9 +162,13 @@ public class LevelGoal : MonoBehaviour
 
     private IEnumerator Initialize()
     {
+
+        Debug.Log("Should Ignore STARS " + shouldIgnoreBonusStars);
+
         oneStarTime = 2000;
         twoStarTime = 25;
         threeStarTime = 10;
+
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
         if (Tutorial)
         {
@@ -280,54 +285,63 @@ public class LevelGoal : MonoBehaviour
         Debug.Log("ProcessDestroyedObstaclesInternal: Finished processing batch and cleared queue.");
     }
     private void CheckForSingleColorSpawnOpportunity()
+{
+    ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
+
+    var activeObstacles = ObstaclesToDestroy_Player
+        .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
+        .ToList();
+
+    var uniqueColors = new HashSet<ObstacleColor>(activeObstacles.Select(o => o.obstacleColor));
+
+    if (uniqueColors.Count != 1)
+        return;
+
+    var remainingColor = uniqueColors.First();
+    var obstaclesOfThatColor = activeObstacles.Where(o => o.obstacleColor == remainingColor).ToList();
+    
+    if (obstaclesOfThatColor.Count == 0) return;
+
+    var sample = obstaclesOfThatColor[0];
+    var key = System.Tuple.Create(sample.obstacleType, sample.obstacleColor);
+
+    if (ignoredTypes.Contains(sample.obstacleType))
+        return;
+
+    // --- Check initial count ---
+    int initialCount = 1;
+    if (initialObstacleCounts.TryGetValue(key, out int storedCount))
     {
-        ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
+        initialCount = storedCount;
+    }
 
-        // Filter all relevant obstacles
-        var activeObstacles = ObstaclesToDestroy_Player
-            .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
-            .ToList();
+    // --- Don't spawn if initial count was 1 ---
+    if (initialCount <= 1)
+    {
+        Debug.Log($"[SingleColorCheck] {sample.obstacleType}-{sample.obstacleColor}: initial count is 1, not spawning.");
+        return;
+    }
 
-        // Count unique colors
-        var uniqueColors = new HashSet<ObstacleColor>(activeObstacles.Select(o => o.obstacleColor));
+    int remaining = obstaclesOfThatColor.Count;
+    
+    // Only spawn if below 3 and below initial count
+    if (remaining < 3 && remaining < initialCount)
+    {
+        int toSpawn = Mathf.Min(3 - remaining, initialCount - remaining);
 
-        // Only proceed if exactly one color remains
-        if (uniqueColors.Count != 1)
-            return;
-
-        var remainingColor = uniqueColors.First();
-
-        // Determine the most common type of this color (to know what to spawn)
-        var obstaclesOfThatColor = activeObstacles.Where(o => o.obstacleColor == remainingColor).ToList();
-        if (obstaclesOfThatColor.Count == 0) return; // None left, color cleared
-
-        // Pick the first one as a representative (all same color anyway)
-        var sample = obstaclesOfThatColor[0];
-        var key = System.Tuple.Create(sample.obstacleType, sample.obstacleColor);
-
-        // Skip ignored types
-        if (ignoredTypes.Contains(sample.obstacleType))
-            return;
-
-        // Only spawn if 1 or 2 remain
-        int remaining = obstaclesOfThatColor.Count;
-        if (remaining > 0 && remaining < 3)
+        if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
         {
-            int toSpawn = 3 - remaining;
+            Debug.LogWarning($"[SingleColorCheck] Missing template for {sample.obstacleType}-{sample.obstacleColor}");
+            return;
+        }
 
-            if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
-            {
-                Debug.LogWarning($"[SingleColorCheck] Missing template for {sample.obstacleType}-{sample.obstacleColor}");
-                return;
-            }
-
-            Debug.Log($"[SingleColorCheck] Only {remaining} {sample.obstacleType}-{sample.obstacleColor} left → spawning {toSpawn} more.");
-            for (int i = 0; i < toSpawn; i++)
-            {
-                StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
-            }
+        Debug.Log($"[SingleColorCheck] Only {remaining} {sample.obstacleType}-{sample.obstacleColor} left (initial: {initialCount}) → spawning {toSpawn} more.");
+        for (int i = 0; i < toSpawn; i++)
+        {
+            StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
         }
     }
+}
 
     private void AddObstaclesToInitialCounts()
     {
@@ -773,58 +787,75 @@ public class LevelGoal : MonoBehaviour
 
         var key = System.Tuple.Create(destroyedType, destroyedColor);
 
-        // --- Skip suppressed types (used only after full cleanup) ---
+        // --- Skip suppressed types ---
         if (suppressedSpawnTypes.Contains(key))
         {
             Debug.Log($"[CDOS] Spawn blocked for {destroyedType}-{destroyedColor} (suppressed).");
             return;
         }
 
-        // --- Count active colors (excluding ignored types) ---
-        var activeColors = new HashSet<ObstacleColor>(
-            ObstaclesToDestroy_Player
-                .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
-                .Select(o => o.obstacleColor)
-        );
-
-        // Only spawn if exactly one color remains in the scene
-        if (activeColors.Count > 1)
-        {
-            Debug.Log($"[CDOS] Multiple colors remain ({string.Join(", ", activeColors)}). Skipping spawn.");
-            return;
-        }
-
-        // --- Determine how many of this type/color remain ---
+        // --- Count how many of this SPECIFIC type/color remain ---
         int remaining = ObstaclesToDestroy_Player
             .Count(o => o != null && o.obstacleType == destroyedType && o.obstacleColor == destroyedColor);
 
+        Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: {remaining} remaining after destruction.");
+
+        // --- If 3 or more remain, don't spawn anything ---
         if (remaining >= 3)
         {
-            Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: already has {remaining}, no need to spawn.");
+            Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: has {remaining} remaining (>= 3), no need to spawn.");
             return;
         }
 
-        // ✅ Only trigger if there are 1 or 2 remaining (not 0)
-        if (remaining > 0 && remaining < 3)
+        // --- Get the initial count for this type/color ---
+        int initialCount = 1;
+        if (initialObstacleCounts.TryGetValue(key, out int storedCount))
         {
-            int toSpawn = 3 - remaining;
-
-            if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
-            {
-                Debug.LogWarning($"[CDOS] Missing template for {destroyedType}-{destroyedColor}, cannot spawn.");
-                return;
-            }
-
-            Debug.Log($"[CDOS] Spawning {toSpawn} new recovery {destroyedType}-{destroyedColor} obstacles.");
-            for (int i = 0; i < toSpawn; i++)
-            {
-                StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
-            }
+            initialCount = storedCount;
         }
-        else
+
+        // --- If initial count was 1, never spawn recovery obstacles ---
+        if (initialCount <= 1)
         {
-            // 0 left → color cleared → do nothing
+            Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: initial count is {initialCount}, not spawning recovery obstacles.");
+            return;
+        }
+
+        // --- If we have 0 remaining, don't spawn (color is cleared) ---
+        if (remaining == 0)
+        {
             Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: fully cleared, not spawning.");
+            return;
+        }
+
+        // --- Now we know: remaining is 1 or 2, and initial count > 1 ---
+        // Check if there are other colors still present
+        var otherColorsExist = ObstaclesToDestroy_Player
+            .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
+            .Any(o => o.obstacleColor != destroyedColor);
+
+        if (otherColorsExist)
+        {
+            Debug.Log($"[CDOS] {destroyedType}-{destroyedColor}: other colors still exist, not spawning yet.");
+            return;
+        }
+
+        // --- This is the last color, and only 1-2 remain - spawn to reach 3 ---
+        int toSpawn = 3 - remaining;
+        toSpawn = Mathf.Min(toSpawn, initialCount - remaining);
+
+        if (toSpawn <= 0) return;
+
+        if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
+        {
+            Debug.LogWarning($"[CDOS] Missing template for {destroyedType}-{destroyedColor}, cannot spawn.");
+            return;
+        }
+
+        Debug.Log($"[CDOS] Last color {destroyedType}-{destroyedColor} has only {remaining} left (initial: {initialCount}) → spawning {toSpawn} more.");
+        for (int i = 0; i < toSpawn; i++)
+        {
+            StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
         }
     }
 
@@ -1045,12 +1076,25 @@ public class LevelGoal : MonoBehaviour
 
     public int GetTrophiesForStars(int stars)
     {
-        switch (stars)
+        if (!shouldIgnoreBonusStars)
         {
-            case 3: return 10;
-            case 2: return 7;
-            case 1: return 5;
-            default: return 0;
+            switch (stars)
+            {
+                case 3: return 10;
+                case 2: return 7;
+                case 1: return 5;
+                default: return 0;
+            }
+        }
+        else
+        {
+            switch (stars)
+            {
+                case 3: return 5;
+                case 2: return 5;
+                case 1: return 5;
+                default: return 0;
+            }
         }
     }
     #region NEW SYSTEM COROUTINES

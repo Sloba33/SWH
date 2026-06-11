@@ -6,6 +6,7 @@ using System;
 using DG.Tweening;
 using Coffee.UIEffects;
 using Coffee.UIExtensions;
+using UnityEngine.SceneManagement;
 
 public class LevelProgress : MonoBehaviour
 {
@@ -26,9 +27,26 @@ public class LevelProgress : MonoBehaviour
     public WinScreen winScreen;
     public bool ImageComplete;
     public bool isFilled;
-
+    private RectTransform rectTransform;
+    private Scene _scene;
+    private string _sceneName;
+    private void Awake()
+    {
+        _scene = SceneManager.GetActiveScene();
+        if (_scene != null)
+            _sceneName = _scene.name;
+        Debug.Log("Scene name : " + _sceneName);
+    }
     public void Initialize()
     {
+
+        rectTransform = GetComponent<RectTransform>();
+        if (_sceneName != "01_MainMenu" && _scene != null)
+        {
+            Debug.Log("Resziing images");
+            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 600);
+            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 600); // Set to your desired height
+        }
         AutoAssignImages();
         originalScale = transform.localScale;
         Debug.Log("Original scale + " + originalScale);
@@ -109,8 +127,9 @@ public class LevelProgress : MonoBehaviour
                 case "universal": if (Universal == null) Universal = img; break;
                 case "default": if (Default == null) Default = img; break;
             }
-
         }
+
+       
     }
     private void FillImages()
     {
@@ -273,13 +292,13 @@ public class LevelProgress : MonoBehaviour
             newTweener.Play();
         }
         // Check if all *assigned* images are filled
-            winScreen.winStarAnimator.Initialize(levelGoal.starsEarned);
+        winScreen.winStarAnimator.Initialize(levelGoal.starsEarned);
         if (AreAllImagesFilled() && !wiggleTriggered)
         {
             wiggleTriggered = true; // Set the flag
             StartCoroutine(WiggleImage());
         }
-        
+
         winScreen.ActivateButtons();
 
 

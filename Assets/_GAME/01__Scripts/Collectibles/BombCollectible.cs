@@ -13,7 +13,6 @@ public class BombCollectible : CollectibleItem
     public ObstacleColor bombColor; // Changed from ObstacleColor to BombType
     public Bomb bombPrefab;
     public CoherenceSync coherenceSync;
-    bool isCollected;
     // private AudioSource audioSource;
 
     private void Awake()

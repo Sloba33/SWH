@@ -107,7 +107,9 @@ MonoBehaviour:
   obstacleMesh: {fileID: 4257678630482523523}
   obstacleSprite: {fileID: 0}
   obstacleFallPS: {fileID: 0}
-  fallIndicator: {fileID: 6784415547297523, guid: bc50a1aa5f994234dbb097fdc80576e9,
+  fallIndicator: {fileID: 6784415547297523, guid: 03c7da36554e714418a35dfe9f624860,
+    type: 3}
+  destructionParticleSystem: {fileID: 8259014392222745416, guid: 16de265cbb00f804a8aa9f87e9b49c71,
     type: 3}
   obstacleMaterial: {fileID: 0}
   MoveOverride: 0
@@ -199,10 +201,6 @@ MonoBehaviour:
   fallSpeed: 0.003
   startFallPosition: {x: 0, y: 0, z: 0}
   recentlyFallen: 0
-  destructionParticleSystem: {fileID: 8259014392222745416, guid: 16de265cbb00f804a8aa9f87e9b49c71,
-    type: 3}
-  obstacleDestructionVfxPrefab: {fileID: 8425420195695574948, guid: d6d84fd66eba5d842b8a22f4750893e6,
-    type: 3}
   queuedForDestruction: 0
   AIObstacle: 0
   audioClip: {fileID: 8300000, guid: 765b60e2e1ac002428974ad5ef905f68, type: 3}

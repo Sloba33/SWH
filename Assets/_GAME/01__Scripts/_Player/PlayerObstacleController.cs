@@ -536,15 +536,23 @@ public class PlayerObstacleController : MonoBehaviour
 
         return;
     }
-
+    bool collected = false;
+    private IEnumerator SetCollected()
+    {
+        yield return new WaitForSeconds(0.5f);
+        collected = false;
+    }
     public float delayTimer;
     private bool started, ended;
 
     /// <summary>
     /// Checks for a pullable obstacle and starts the repositioning process.
     /// </summary>
+    /// 
+    /// 
     public void HandlePull_Initiate()
     {
+
         PlayerAttack playerAttack = GetComponent<PlayerAttack>();
         if (playerAttack != null && playerAttack.IsAttacking())
         {
@@ -557,7 +565,12 @@ public class PlayerObstacleController : MonoBehaviour
             if (hitCollectible.transform.TryGetComponent<CollectibleItem>(out var collectibleItem))
             {
                 Debug.Log("Looted collectible");
-                collectibleItem.Collect(playerController);
+
+                if (!collectibleItem.isCollected)
+                {
+                    collectibleItem.Collect(playerController);
+                    collectibleItem.isCollected=true;
+                }
             }
         }
         else if (Physics.Raycast(ray, out RaycastHit hit, 0.5f, playerController._movement._obstacleMask))
@@ -628,6 +641,7 @@ public class PlayerObstacleController : MonoBehaviour
             // No obstacle found, but pull button is held. Stop.
             StopPull();
         }
+
     }
 
 

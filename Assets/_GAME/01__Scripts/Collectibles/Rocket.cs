@@ -8,10 +8,11 @@ using UnityEngine;
 using UnityEngine.UI;
 public class Rocket : MonoBehaviour
 {
+    [SerializeField] private Animator _animator;
     public SphereCollider _playerTrigger;
     public CapsuleCollider _obstacleDestructionTrigger;
     private Rigidbody _rb;
-    private Animator _animator;
+    // private Animator _animator;
     private CoherenceSync _coherenceSync;
     private const string PlayerTag = "Player";
     private const string ObstacleTag = "Obstacle";
@@ -31,8 +32,18 @@ public class Rocket : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _animator = GetComponent<Animator>();
+        // _animator = GetComponent<Animator>();
         _coherenceSync = GetComponent<CoherenceSync>();
+        // Get the animator's transform for launch direction
+        if (_animator != null)
+        {
+            launchDirectionTransform = _animator.transform;
+        }
+        else
+        {
+            Debug.LogError("Animator component not found!");
+            launchDirectionTransform = transform; // fallback to parent transform
+        }
 
         if (_playerTrigger == null || _obstacleDestructionTrigger == null || _rb == null || _animator == null)
         {
@@ -104,6 +115,8 @@ public class Rocket : MonoBehaviour
         }
 
     }
+    [SerializeField] private Transform launchDirectionTransform;
+    
     [Command(defaultRouting = MessageTarget.Other)]
     public void CmdLaunchRocket()
     {
@@ -123,22 +136,26 @@ public class Rocket : MonoBehaviour
         StartCoroutine(MoveForwardWithAcceleration());
     }
     private IEnumerator MoveForwardWithAcceleration()
+{
+    _isLaunched = true;
+    
+    // Determine which direction to use based on the rotation
+    // If rotated 90 on X, try using 'up' instead of 'forward'
+    Vector3 launchDirection = launchDirectionTransform.up; // or .right depending on your setup
+    
+    while (_currentSpeed < maxSpeed)
     {
-        _isLaunched = true;
-        while (_currentSpeed < maxSpeed)
-        {
-            _currentSpeed += acceleration * Time.deltaTime;
-            transform.Translate(Vector3.forward * _currentSpeed * Time.deltaTime);
-            yield return null;
-        }
-
-
-        while (true)
-        {
-            transform.Translate(Vector3.forward * maxSpeed * Time.deltaTime);
-            yield return null;
-        }
+        _currentSpeed += acceleration * Time.deltaTime;
+        transform.Translate(launchDirection * _currentSpeed * Time.deltaTime, Space.World);
+        yield return null;
     }
+
+    while (true)
+    {
+        transform.Translate(launchDirection * maxSpeed * Time.deltaTime, Space.World);
+        yield return null;
+    }
+}
     void ApplyFakeGravity()
     {
 

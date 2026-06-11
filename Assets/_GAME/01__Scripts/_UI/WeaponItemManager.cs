@@ -20,7 +20,7 @@ public class WeaponItemManager : MonoBehaviour
     public Image energyRechargeBar;
     public TextMeshProUGUI weaponName;
     public Transform weaponContentPanel;
-    public Button purchaseButton, upgradeButton;
+    public Button purchaseButton;
     public Image currencyImage;
     public TextMeshProUGUI priceText;
     public GameObject statsPanel;
@@ -29,6 +29,7 @@ public class WeaponItemManager : MonoBehaviour
     {
         SetWeaponStats();
         ToggleWeaponInteractability();
+        currentlySelectedWeapon = CharacterManager.Instance.currentWeapon.GetComponent<WeaponItem>();
     }
     private void ToggleWeaponInteractability()
     {
@@ -60,13 +61,27 @@ public class WeaponItemManager : MonoBehaviour
         }
         else Debug.LogError("Weaponitem null");
     }
+    public void SetWeaponStats(WeaponItem wepItem)
+    {
+        if (weaponItem.unlocked) purchaseButton.gameObject.SetActive(false);
+        Debug.Log("WeaponItem name : " + wepItem.weaponName);
+        weaponName.text = wepItem.weaponName;
+        hitsFillBar.fillAmount = 10 / wepItem.weaponToSpawn.energyConsumption;
+        energyRechargeBar.fillAmount = wepItem.weaponToSpawn.energyRecharge * 0.2f;
+        priceText.text = wepItem.weaponPrice + "";
+        if (PlayerPrefs.GetInt("gems") < wepItem.weaponPrice)
+        {
+            priceText.color = Color.red;
+        }
+        else priceText.color = Color.white;
+    }
     public void CheckWeaponUpgradePurchaseButton()
     {
         if (!weaponItem.unlocked)
         {
 
             purchaseButton.gameObject.SetActive(true);
-            upgradeButton.gameObject.SetActive(false);
+
             purchaseButton.onClick.AddListener(() =>
                               {
                                   PurchaseWeapon(weaponItem);
@@ -85,12 +100,12 @@ public class WeaponItemManager : MonoBehaviour
             if (weaponItem.unlocked)
             {
                 purchaseButton.gameObject.SetActive(false);
-                upgradeButton.gameObject.SetActive(true);
+
             }
             else
             {
                 purchaseButton.gameObject.SetActive(false);
-                upgradeButton.gameObject.SetActive(false);
+
             }
         }
     }
@@ -124,6 +139,8 @@ public class WeaponItemManager : MonoBehaviour
         return weaponItem = weaponItems[index];
     }
     private UIShadow uiShadow;
+    public WeaponItem previouslySelectedWeapon;
+    public WeaponItem currentlySelectedWeapon;
     public void SelectWeapon(WeaponItem weaponItem)
     {
 
@@ -132,9 +149,9 @@ public class WeaponItemManager : MonoBehaviour
 
         if (!weaponItem.unlocked)
         {
-
+            currentlySelectedWeapon = weaponItem;
             purchaseButton.gameObject.SetActive(true);
-            upgradeButton.gameObject.SetActive(false);
+
             purchaseButton.onClick.AddListener(() =>
                               {
                                   PurchaseWeapon(weaponItem);
@@ -152,27 +169,29 @@ public class WeaponItemManager : MonoBehaviour
             if (weaponItem.unlocked)
             {
                 purchaseButton.gameObject.SetActive(false);
-                upgradeButton.gameObject.SetActive(true);
+
             }
             else
             {
                 purchaseButton.gameObject.SetActive(false);
-                upgradeButton.gameObject.SetActive(false);
+
             }
         }
 
 
         if (weaponItem.unlocked)
         {
+            currentlySelectedWeapon = weaponItem;
+            previouslySelectedWeapon = weaponItem;
             Debug.Log("Weapon is unlocked, showing upgrade button");
             purchaseButton.gameObject.SetActive(false);
-            upgradeButton.gameObject.SetActive(true);
+            // upgradeButton.gameObject.SetActive(true);
             PlayerPrefs.SetInt("SelectedWeaponID", weaponItem.id);
         }
         else
         {
             Debug.Log("Weapon is locked, showing purchase button");
-            upgradeButton.gameObject.SetActive(false);
+
             purchaseButton.gameObject.SetActive(true);
         }
         this.weaponItem = weaponItem;
@@ -202,7 +221,7 @@ public class WeaponItemManager : MonoBehaviour
             weaponItem.LockWeapon(false);
             PlayerPrefs.SetInt("gems", PlayerPrefs.GetInt("gems") - weaponItem.weaponPrice);
             SelectWeapon(weaponItem);
-            PlayerPrefs.SetInt("AnyWeaponUnlocked", 1);
+            PlayerPrefs.SetInt("AnyWeaponsUnlocked", 1);
         }
         else
             Debug.Log(" NO MONEY ");

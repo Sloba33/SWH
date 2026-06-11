@@ -10,7 +10,6 @@ public class FreezeTimeCollectible : CollectibleItem
     public GameObject objectToDestroy;
     private LevelGoal levelGoal;
     public float freezeDuration = 5f;
-    bool isCollected;
     // private AudioSource audioSource;
 
     public override void Collect(PlayerController player)

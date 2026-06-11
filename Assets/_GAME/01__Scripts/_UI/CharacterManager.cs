@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 {
     public GameObject currentWeapon, currentHelmet;
+
     public MainMenuManager mainMenuManager;
     public HelmetItem helmetItem;
     public Helmet helmet;
@@ -126,6 +127,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
 
         currentCharacter.SetColors();
         previousWeapon = currentWeapon;
+        previouslyEquippedWeapon = weaponItem;
         characterPickerManager.UpdateCharacterStats();
         CheckIfUpgradesAreAffordable();
         if (PlayerPrefs.GetInt("gems") < 2000) PlayerPrefs.SetInt("gems", 5000);
@@ -190,16 +192,17 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     public GameObject boxWeapon;
     public WeaponItem weaponItem;
     public GameObject previousWeapon;
+    public WeaponItem previouslyEquippedWeapon, currentlyEquippedweapon;
     public GameObject previousHelmet;
+
     public void SetWeapon(Component sender, object data)
     {
-        Debug.Log("Setting weapon");
+        Debug.Log(sender.name + " sent weapon change event with data: " + ((WeaponItem)data).name);
         weaponItem = (WeaponItem)data;
         // spawn weapon in players hand - MENU
         if (currentWeapon != null)
         {
             Debug.Log("Destroying current weapon");
-            // Destroy(previousWeapon);
             Destroy(currentWeapon);
             if (weaponItem.unlocked) Destroy(boxWeapon);
         }
@@ -212,8 +215,14 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             // if (previousWeapon != null) Destroy(previousWeapon);
             weaponIndex = PlayerPrefs.GetInt("SelectedWeaponID", 0);
             previousWeapon = weaponItemManager.FindWeaponByID().weaponToSpawn.GetComponent<Weapon>().WeaponStandard;
+            previouslyEquippedWeapon = weaponItem;
+            currentlyEquippedweapon = weaponItem;
         }
 
+        if (!weaponItem.unlocked)
+        {
+            currentlyEquippedweapon = weaponItem;
+        }
         currentWeapon.SetActive(true);
 
 
@@ -228,6 +237,21 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         if (!currentCharacter.weaponsInHand.gameObject.activeSelf) currentCharacter.weaponsInHand.gameObject.SetActive(true);
 
     }
+
+    public void RevertWeaponSelection()
+    {
+        if (previouslyEquippedWeapon != null && previouslyEquippedWeapon != currentlyEquippedweapon)
+        {
+            Debug.Log("Weapons are not the same, reverting to previously equipped weapon: " + previouslyEquippedWeapon.name);
+            Destroy(currentWeapon);
+            currentWeapon = Instantiate(previouslyEquippedWeapon.weaponToSpawn.GetComponent<Weapon>().WeaponStandard, currentCharacter.weaponsInHand);
+            currentWeapon.SetActive(true);
+            
+            if (weaponItemManager != null) weaponItemManager.SetWeaponStats(previouslyEquippedWeapon);
+            else Debug.LogError("WIM is null");
+        }
+    }
+
     private bool characterChanged;
     public CharacterSelector currentCharacterSelector;
     public Helmet revertedHelmet;
@@ -267,15 +291,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
                 Debug.Log("[REVERT] DefaultColor: " + revertedHelmet.defaultColor);
                 revertedHelmet.material.color = helmet.defaultColor;
                 revertedHelmet.SetTex(currentCharacter.helmetMaterial);
-                // revertedHelmet.mesh.material = new Material(revertedHelmet.mesh.material); // ensure instancing
-                // revertedHelmet.material = revertedHelmet.mesh.material;
-                // revertedHelmet.material.color = revertedHelmet.defaultColor;
-                // Material newMat = new Material(revertedHelmet.mesh.material);
-                // revertedHelmet.mesh.material = newMat;
-                // revertedHelmet.material = newMat;
 
-                // revertedHelmet.material.color = revertedHelmet.defaultColor;
-                // revertedHelmet.SetTex(currentCharacter.helmetMaterial);
 
                 for (int j = 0; j < customizationPanelManager.colorButtonManagers.Count; j++)
                 {
@@ -421,7 +437,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
     }
     public void EnableBoxWeapon()
     {
-        if (PlayerPrefs.GetInt("AnyWeaponUnlocked") == 1)
+        if (PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 1)
         {
 
             if (weaponItem != null)
