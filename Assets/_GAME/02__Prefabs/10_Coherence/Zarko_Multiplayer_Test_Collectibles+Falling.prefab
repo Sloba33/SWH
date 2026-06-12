@@ -57,6 +57,8 @@ MonoBehaviour:
   xp: 100
   trophies: 5
   BONUS_TROPHIES: 0
+  multiplayerTrophyWin: 5
+  multiplayerTrophyLoss: 5
   levelProgress: {fileID: 4741343503558475765, guid: b2f5c0c39238f324dbabb927ce00321c,
     type: 3}
   currentTime: 0
@@ -72,17 +74,17 @@ MonoBehaviour:
   fixedFallingObstacles: []
   fixedFallingBombs: []
   fixedFallingCollectibles: []
-  SpawnFallingObstacles: 0
+  SpawnFallingObstacles: 1
   FallingObstacles:
-  - item: {fileID: 2760922574431167146, guid: 1911b57fc5424ac4f8388cc514941f17, type: 3}
+  - item: {fileID: 5616364818191066812, guid: df2f29af56c91bd4f9755f5056262669, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: 798c02443606707419c46dffb5589fed, type: 3}
+  - item: {fileID: 8162038572874200958, guid: b3fcda143a6033045a71b410cca65634, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: 3b5621e9c14841d4a85a5ac47cad88bf, type: 3}
+  - item: {fileID: 3167791067738335576, guid: a197b2259d30b6d41990f03c2374db24, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: ef6d583b7c22f27479f932db0e8854f2, type: 3}
+  - item: {fileID: 8932688128754549860, guid: 3322181c6ab544543a570ea088ccb5c8, type: 3}
     weight: 10
-  - item: {fileID: 2760922574431167146, guid: e3507a700acbb85408de54d971d9f19f, type: 3}
+  - item: {fileID: 6897569844761605978, guid: 563b33fa13d57944489ba641d43b5915, type: 3}
     weight: 10
   - item: {fileID: 7005171224531000225, guid: c751254a2ec19a444becd674a53bbc4a, type: 3}
     weight: 1
@@ -93,7 +95,7 @@ MonoBehaviour:
   spawnedObstacles: []
   minObstacleSpawnHeight: 20
   maxObstacleSpawnHeight: 25
-  SpawnFallingBombs: 0
+  SpawnFallingBombs: 1
   FallingBombs:
   - item: {fileID: 3557158741924768945, guid: 232e64f5aeedebd4e9c904a4346d0634, type: 3}
     weight: 3
@@ -112,7 +114,7 @@ MonoBehaviour:
   bombSpawnFrequency: 60
   minBombSpawnHeight: 26
   maxBombSpawnHeight: 27
-  SpawnFallingCollectibles: 0
+  SpawnFallingCollectibles: 1
   FallingCollectibles:
   - item: {fileID: 242851541413591640, guid: f7791ba7b68c6b9428230132667fb3c5, type: 3}
     weight: 3
@@ -173,8 +175,9 @@ MonoBehaviour:
   bombUniversalPrefab: {fileID: 0}
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
-  bonusUnlocked: 0
   isTimeFrozen: 0
+  shouldIgnoreBonusStars: 0
+  shouldHaveFasterEnergyRecharge: 0
   playerLevel: {fileID: 0}
   opponentLevel: {fileID: 0}
   starsEarned: 0

@@ -78607,6 +78607,11 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5359623918732035414, guid: 3d9e10878c1e5584293b130303d0aabc,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 5372546503715450339, guid: 3d9e10878c1e5584293b130303d0aabc,
         type: 3}
       propertyPath: m_fontSize
@@ -78643,6 +78648,11 @@ PrefabInstance:
       value: 175
       objectReference: {fileID: 0}
     - target: {fileID: 6310950246103921870, guid: 3d9e10878c1e5584293b130303d0aabc,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 7842033190857058735, guid: 3d9e10878c1e5584293b130303d0aabc,
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
@@ -85741,7 +85751,7 @@ PrefabInstance:
     - target: {fileID: 6352803703422260304, guid: c862c3869ac1e0249a6abcd9520c123a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DisconnectAndReturnToMatchmaking
+      value: DisconnectAndReturnToMainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 6352803703422260304, guid: c862c3869ac1e0249a6abcd9520c123a,
         type: 3}
@@ -93609,34 +93619,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1966951706}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1969875068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5de7df1b084447b9a6555e1089e52aa, type: 3}
-  m_Name: None
-  m_EditorClassIdentifier: 
-  interpolator:
-    rid: 3132023081892315575
-  smoothing:
-    smoothTime: 0
-    maxSpeed: 0
-  latencySettings:
-    networkLatencyFactor: 0
-    additionalLatency: 0
-  maxDistance: 0
-  maxOvershootAllowed: 0
-  references:
-    version: 2
-    RefIds:
-    - rid: 3132023081892315575
-      type: {class: Interpolator, ns: Coherence.Interpolation, asm: Coherence.Interpolation}
-      data: 
 --- !u!1 &1970106860
 GameObject:
   m_ObjectHideFlags: 0
@@ -163959,16 +163941,6 @@ PrefabInstance:
       propertyPath: scenePrefabInstanceUUID
       value: 332422
       objectReference: {fileID: 0}
-    - target: {fileID: 650248273007011283, guid: cd929231a54f48f45a02b9ca54ca4833,
-        type: 3}
-      propertyPath: managedReferences[3132023081892315570]._interpolationSettings
-      value: 
-      objectReference: {fileID: 1969875068}
-    - target: {fileID: 650248273007011283, guid: cd929231a54f48f45a02b9ca54ca4833,
-        type: 3}
-      propertyPath: managedReferences[3132023081892315571]._interpolationSettings
-      value: 
-      objectReference: {fileID: 1969875068}
     - target: {fileID: 1601070059046856975, guid: cd929231a54f48f45a02b9ca54ca4833,
         type: 3}
       propertyPath: m_LocalPosition.x

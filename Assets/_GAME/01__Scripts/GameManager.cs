@@ -66,6 +66,21 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public event Action<bool> OnLocalPlayerSpawned;
     public Player LocalPlayer;
+
+    /// <summary>
+    /// The player this client controls. In multiplayer both characters are Player
+    /// instances, so a scene-wide find can return the opponent — always resolve
+    /// through here instead of FindObjectOfType&lt;Player&gt;(). LocalPlayer is only
+    /// assigned on the multiplayer spawn path; in single player we fall back to a
+    /// scene find (there is exactly one Player). May return null in multiplayer
+    /// before the local character has spawned.
+    /// </summary>
+    public Player GetLocalPlayer()
+    {
+        if (LocalPlayer == null && !IsMultiplayer)
+            LocalPlayer = FindFirstObjectByType<Player>();
+        return LocalPlayer;
+    }
     
     public static GameManager Instance
     {

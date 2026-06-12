@@ -17,13 +17,18 @@ public class Weapon : MonoBehaviour
         energyConsumption = PlayerPrefs.GetFloat(weaponName + "_EnergyConsumption", energyConsumption);
         Debug.Log("Weapon Start: " + weaponName + " Energy Consumption: " + energyConsumption);
         energyRecharge = PlayerPrefs.GetFloat(weaponName + "_EnergyRecharge", energyRecharge);
-        Player player = FindObjectOfType<Player>();
-        PlayerAttack playerAttack = player.GetComponent<PlayerAttack>();
+        // The weapon is spawned under its owner's hierarchy. A scene-wide find
+        // could bind to the opponent's Player in multiplayer and overwrite their
+        // weapon stats with ours.
+        Player player = GetComponentInParent<Player>();
+        if (player == null && GameManager.Instance != null)
+            player = GameManager.Instance.GetLocalPlayer();
         if (player != null)
         {
+            PlayerAttack playerAttack = player.GetComponent<PlayerAttack>();
             player.weapon = this;
             player.fillRate = energyRecharge;
-            playerAttack.SetWeaponSpecial(weaponSpecialRadius);
+            if (playerAttack != null) playerAttack.SetWeaponSpecial(weaponSpecialRadius);
             player.specialCharges = this.specialCharges;
             player.specialChargesMax = this.specialChargesMax;
         }

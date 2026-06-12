@@ -14,9 +14,12 @@ public class BonusMatchXP : MonoBehaviour
     }
     void OnEnable()
     {
-        player= FindFirstObjectByType<Player>();
+        player = GameManager.Instance != null
+            ? GameManager.Instance.GetLocalPlayer()
+            : FindFirstObjectByType<Player>();
 
-        transform.position= player.transform.position + new Vector3(0, 0.5f, 0);
+        if (player != null)
+            transform.position = player.transform.position + new Vector3(0, 0.5f, 0);
         transform.DOScale(1.5f, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
         {
             transform.DOScale(0, 0.5f).SetEase(Ease.InBack).OnComplete(() =>

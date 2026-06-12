@@ -71,7 +71,11 @@ public class MultiplayerLoseScreen : MonoBehaviour
         playerEmoteObject = player.gameObject;
         Animator animator = playerEmoteObject.GetComponent<Animator>();
         if (animator != null) animator.Play("Defeat_1");
-        if (player.EndScreenCamera != null) player.EndScreenCamera.SetActive(true);
+        if (player.EndScreenCamera != null)
+        {
+            MultiplayerWinScreen.HideOpponentFromEndScreenCamera(player);
+            player.EndScreenCamera.SetActive(true);
+        }
     }
 
     private void SetupTitle()

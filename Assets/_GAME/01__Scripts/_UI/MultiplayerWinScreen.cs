@@ -77,7 +77,28 @@ public class MultiplayerWinScreen : MonoBehaviour
             animator.SetBool("Idle", false);
             animator.Play("Victory_2");
         }
-        if (player.EndScreenCamera != null) player.EndScreenCamera.SetActive(true);
+        if (player.EndScreenCamera != null)
+        {
+            HideOpponentFromEndScreenCamera(player);
+            player.EndScreenCamera.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// The emote camera culls everything except the UI and Player layers, but the
+    /// opponent's character is on the Player layer too. Layers are not synced over
+    /// the network, so relayering the remote avatar only affects this client's view.
+    /// </summary>
+    public static void HideOpponentFromEndScreenCamera(Player localPlayer)
+    {
+        int dontRender = LayerMask.NameToLayer("DontRender");
+        if (dontRender < 0) return;
+        foreach (Player p in FindObjectsByType<Player>(FindObjectsSortMode.None))
+        {
+            if (p == localPlayer) continue;
+            foreach (Transform t in p.GetComponentsInChildren<Transform>(true))
+                t.gameObject.layer = dontRender;
+        }
     }
 
     private void SetupTitle()

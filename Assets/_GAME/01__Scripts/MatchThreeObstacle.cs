@@ -117,10 +117,15 @@ public class MatchThreeObstacle : MonoBehaviour
         Obstacle randomObstacle = groupObstacles[Random.Range(0, groupObstacles.Count)];
         if (matchCount == 4)
         {
-            Player player = FindObjectOfType<Player>();
-            Vector3 pos = player.transform.position;
-            Vector3 spawnPos = pos + new Vector3(0, 0.5f, 0);
-            Instantiate(prefab, spawnPos, Quaternion.identity);
+            // Spawn at the local player, not whichever Player a scene-wide find returns first.
+            Player player = GameManager.Instance != null
+                ? GameManager.Instance.GetLocalPlayer()
+                : FindObjectOfType<Player>();
+            if (player != null)
+            {
+                Vector3 spawnPos = player.transform.position + new Vector3(0, 0.5f, 0);
+                Instantiate(prefab, spawnPos, Quaternion.identity);
+            }
         }
         else if (randomObstacle != null)
         {

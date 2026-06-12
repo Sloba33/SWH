@@ -25,8 +25,6 @@ public class PowerupCollectible : CollectibleItem
     {
         yield return new WaitForSeconds(0.1f);
         _beingPickedUp = false;
-        if (isWeapon) FindPlayerWeapon();
-        if (isHelmet) FindPlayerHelmet();
     }
     public override void Collect(PlayerController player)
     {
@@ -103,19 +101,6 @@ public class PowerupCollectible : CollectibleItem
                 mesh.enabled = false;
             PlayCollectSound(objectToDestroy);
         }
-    }
-    private Weapon FindPlayerWeapon()
-    {
-        Player player = FindFirstObjectByType<Player>();
-        Debug.Log("Finding player weapon, player found: " + (player != null) + ", weapon found: " + (player != null ? player.weapon : "N/A"));
-        return player != null ? player.GetComponent<Weapon>() : null;
-    }
-    private Helmet FindPlayerHelmet()
-    {
-        Player player = FindObjectsByType<Player>(FindObjectsSortMode.None)[0];
-        Debug.Log("Finding player helmet, player found: " + (player != null) + ", helmet found: " + (player != null ? player.helmet != null : "N/A"));
-        return player != null ? player.GetComponent<Helmet>() : null;
-
     }
     private void AddCurrency(string currency, int amount)
     {

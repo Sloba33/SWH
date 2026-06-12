@@ -46,14 +46,13 @@ public class WinScreen : MonoBehaviour
             AudioManager.Instance.BGMVolume = i;
         }
         if (AudioManager.Instance.BGMVolume > 0) AudioManager.Instance.BGMVolume = 0f;
-        playerEmoteObject = FindObjectOfType<Player>().gameObject;
-        if (playerEmoteObject != null)
+        Player emotePlayer = GameManager.Instance.GetLocalPlayer();
+        if (emotePlayer != null)
         {
+            playerEmoteObject = emotePlayer.gameObject;
             playerEmoteObject.GetComponent<Animator>().SetBool("Idle", false);
-            Player p = FindObjectOfType<Player>();
-            p.EndScreenCamera.SetActive(true);
+            emotePlayer.EndScreenCamera.SetActive(true);
             playerEmoteObject.GetComponent<Animator>().Play("Victory_2");
-
         }
         if (levelGoal == null)
             levelGoal = FindFirstObjectByType<LevelGoal>(FindObjectsInactive.Include);
