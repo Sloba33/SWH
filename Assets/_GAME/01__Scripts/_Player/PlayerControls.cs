@@ -57,11 +57,11 @@ public class PlayerControls : MonoBehaviour
     }
     public void FillChargeImage()
     {
-        specialChargeImage.fillAmount += 0.33333f;
+        if (specialChargeImage != null) specialChargeImage.fillAmount += 0.33333f;
     }
     public void EmptyChargeImage()
     {
-        specialChargeImage.fillAmount = 0f;
+        if (specialChargeImage != null) specialChargeImage.fillAmount = 0f;
     }
     public void AssignControls() //
     {

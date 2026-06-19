@@ -107,6 +107,7 @@ public class SceneLoader : MonoBehaviour
     {
         // Ensure PlayerPrefs.GetInt("Level") is managed correctly to avoid out-of-bounds
         StartCoroutine(LoadLevelInternal(PlayerPrefs.GetInt("Level") + 3));
+        Debug.Log("Loading scene index " + (PlayerPrefs.GetInt("Level") + 3) + "named : " + SceneManager.GetSceneByBuildIndex(PlayerPrefs.GetInt("Level") + 3).name);
     }
 
     // Refactored internal method for loading by index

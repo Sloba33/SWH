@@ -191,7 +191,7 @@ public class WinScreen : MonoBehaviour
 
         if (levelCompleteText != null)
         {
-            Debug.LogError("Scene index is : " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3));
+            // Debug.LogError("Scene index is : " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3));
             levelCompleteText.text = "Level " + ((SceneManager.GetActiveScene().buildIndex + 1) - 3).ToString() + " Complete!";
         }
         PowerupCollectible[] powerupCollectibles = FindObjectsByType<PowerupCollectible>(FindObjectsSortMode.None);
