@@ -29,6 +29,10 @@ public class Rocket : MonoBehaviour
     [SerializeField] GameObject _smokeParticleObject;
     private String rocketDisablerTag = "RocketDisabler";
     private bool isDisabledForMultiplayer;
+    // The player whose touch launched this rocket. Used in local bot matches to
+    // scope destruction to that player's side (there's no Coherence authority to
+    // do it offline).
+    private Player _launcher;
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -63,6 +67,7 @@ public class Rocket : MonoBehaviour
     {
         if (other.CompareTag(PlayerTag) && !_isLaunched)
         {
+            _launcher = other.GetComponent<Player>();
             if (_coherenceSync == null || _coherenceSync.HasStateAuthority)
             {
                 LaunchRocket();
@@ -83,7 +88,14 @@ public class Rocket : MonoBehaviour
             Obstacle obstacle = other.GetComponent<Obstacle>();
             if (obstacle == null) return;
 
-            if (_coherenceSync != null)
+            // Local bot match: there's no Coherence authority to scope this to one
+            // side (offline every entity reports authority), so gate by side
+            // explicitly — a rocket only clears obstacles on its launcher's half.
+            if (GameManager.Instance != null && GameManager.Instance.IsBotMatch)
+            {
+                if (!ObstacleOnLauncherSide(obstacle)) return;
+            }
+            else if (_coherenceSync != null)
             {
                 CoherenceSync obstacleSync = obstacle.GetComponent<CoherenceSync>();
                 if (obstacleSync == null || !obstacleSync.HasStateAuthority) return;
@@ -92,6 +104,27 @@ public class Rocket : MonoBehaviour
             obstacle.ParticleDestroy(Obstacle.ObstacleDestructionSource.Weapon);
         }
     }
+    /// <summary>
+    /// True if the obstacle belongs to the goal of the player who launched this
+    /// rocket, per the LevelGoal lists: the bot's obstacles are in
+    /// ObstaclesToDestroy_Opponent, the human's in ObstaclesToDestroy_Player.
+    /// A rocket only clears its launcher's own goal obstacles. Used only in local
+    /// bot matches, replacing the Coherence authority gate that scopes destruction
+    /// to one side in real multiplayer.
+    /// </summary>
+    private bool ObstacleOnLauncherSide(Obstacle obstacle)
+    {
+        LevelGoal levelGoal = GameManager.Instance.levelGoal;
+        if (levelGoal == null) return true; // can't determine side — don't over-restrict
+
+        bool launcherIsOpponent = _launcher != null && _launcher != GameManager.Instance.GetLocalPlayer();
+        List<Obstacle> ownSide = launcherIsOpponent
+            ? levelGoal.ObstaclesToDestroy_Opponent
+            : levelGoal.ObstaclesToDestroy_Player;
+
+        return ownSide != null && ownSide.Contains(obstacle);
+    }
+
     [SerializeField] float colorFillTimer = 1.33f;
     private bool isFilling = false;
     private IEnumerator AnimateArrowColors()

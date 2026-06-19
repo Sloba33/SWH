@@ -25,12 +25,21 @@ public class BombCollectible : CollectibleItem
         if (isCollected) return;
 
         Player other = player.GetComponent<Player>();
-        if (GameManager.Instance.IsMultiplayer && GameManager.Instance.LocalPlayer != other) return;
+
+        // Real networked multiplayer collects only for this client's player. A
+        // local bot match runs both locally, so let either collect (they only
+        // overlap their own side's collectibles).
+        bool networkedMp = GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsBotMatch;
+        if (networkedMp && GameManager.Instance.LocalPlayer != other) return;
 
         DisableCollectible();
-        other.pc.AddConsumable(this);
 
-        if (GameManager.Instance.IsMultiplayer)
+        // The bomb goes into the consumable UI, which belongs to the human; a bot
+        // just clears the collectible from the field.
+        if (other == GameManager.Instance.LocalPlayer)
+            other.pc.AddConsumable(this);
+
+        if (networkedMp)
         {
             coherenceSync.SendCommand<BombCollectible>(nameof(CmdDisableCollectible), MessageTarget.Other);
         }

@@ -30,10 +30,16 @@ public class PowerupCollectible : CollectibleItem
     {
         other = player.GetComponent<Player>();
 
-        if(GameManager.Instance.IsMultiplayer)
-        {
-            if(GameManager.Instance.LocalPlayer != other) return;
-        }
+        // Real networked multiplayer: only collect for the player this client
+        // owns (the opponent's pickups are handled on their client and synced).
+        // A local bot match runs both players locally, so allow either — each
+        // only overlaps collectibles on its own half of the level.
+        bool networkedMp = GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsBotMatch;
+        if (networkedMp && GameManager.Instance.LocalPlayer != other) return;
+
+        // Buffs apply to whoever collected (bot or human); player-save effects
+        // (loot) must only ever credit the real local human.
+        bool isLocalHuman = other == GameManager.Instance.LocalPlayer;
 
         switch (powerupType)
         {
@@ -65,19 +71,20 @@ public class PowerupCollectible : CollectibleItem
                 }
                 break;
             case PowerupType.Loot_Coins:
-                AddCurrency("coins", 100);
+                if (isLocalHuman) AddCurrency("coins", 100);
                 break;
             case PowerupType.Loot_Money:
-                AddCurrency("money", 100);
+                if (isLocalHuman) AddCurrency("money", 100);
                 break;
             case PowerupType.Loot_Gems:
-                AddCurrency("gems", 100);
+                if (isLocalHuman) AddCurrency("gems", 100);
                 break;
         }
 
         DisableCollectible();
 
-        if(GameManager.Instance.IsMultiplayer)
+        // No remote client to sync to in a local bot match.
+        if(networkedMp)
         {
             coherenceSync.SendCommand<PowerupCollectible>(nameof(CmdDisableCollectible), MessageTarget.Other);
         }
