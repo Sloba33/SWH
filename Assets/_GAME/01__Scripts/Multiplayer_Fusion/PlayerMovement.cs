@@ -17,7 +17,6 @@ public class PlayerMovement : MonoBehaviour
     public float landedTime = 0f; // To track when the player landed
     public float LAND_GRACE_PERIOD = 0.15f; // Adjust this value as needed (e.g., 0.1s to 0.2s)
     [Header("Movement Settings")]
-    [SerializeField] private float _walkSpeed = 2f; //
     public float _jumpForce = 5.8f; //
     [SerializeField] private ParticleSystem _jumpParticle; // Assign in inspector
     [HideInInspector] public bool justJumpedOutOfPush = false;

@@ -184,12 +184,25 @@ public class Player : MonoBehaviour
         GetComponent<Animator>().Play("Death_Animation");
         obstacle.transform.GetComponent<Obstacle>().ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
         GetComponent<PlayerController>().enabled = false;
+        if (GameManager.Instance != null && GameManager.Instance.IsBotMatch)
+        {
+            // The shared Settings means a player's own LoseLevel can't decide the
+            // match — the arbiter maps "who died" to the local human's outcome.
+            BotMatchArbiter.Instance?.NotifyDeath(this);
+            return;
+        }
         NotifyOpponentOfWinIfMultiplayer();
         StartCoroutine(LoseLevel());
     }
     public void Die()
     {
         GetComponent<Animator>().Play("Death_Animation");
+        if (GameManager.Instance != null && GameManager.Instance.IsBotMatch)
+        {
+            GetComponent<PlayerController>().enabled = false;
+            BotMatchArbiter.Instance?.NotifyDeath(this);
+            return;
+        }
         NotifyOpponentOfWinIfMultiplayer();
         StartCoroutine(LoseLevel());
 

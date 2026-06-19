@@ -52,7 +52,8 @@ public class PlayerControls : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.F))
         {
-            playerController.StopPull();
+            if (playerController != null) // Safety check — controls outlive the player at match end
+                playerController.StopPull();
         }
     }
     public void AssignControls(PlayerController playerController) //

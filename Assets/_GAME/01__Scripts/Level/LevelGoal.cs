@@ -142,18 +142,29 @@ public class LevelGoal : MonoBehaviour
     [SerializeField]
     private Transform opponentLevel;
 
+    /// <summary>
+    /// Parent transform of the opponent's half of the level. In a bot match this
+    /// is the base transform the bot's replay positions are relative to, so the
+    /// whole opponent level can be moved/rotated and the replay still lines up.
+    /// </summary>
+    public Transform OpponentLevelRoot => opponentLevel;
+
     private bool started;
     
     private void Start()
     {
         coherenceSync = GetComponent<CoherenceSync>();
         
-        if(GameManager.Instance.IsMultiplayer)
+        if(GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsBotMatch)
         {
             GameManager.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
         }
         else
         {
+            // Single player and local bot matches both initialize directly. A bot
+            // match runs the human as "host" (no side swap), so the scene's
+            // ObstaclesToDestroy_Player stays the human's side and
+            // ObstaclesToDestroy_Opponent stays the bot's.
             StartCoroutine(Initialize());
         }
 
@@ -647,7 +658,9 @@ public class LevelGoal : MonoBehaviour
             if (ObstaclesToDestroy_Player.Count == 0)
             {
                 Debug.Log("Level Goal all obstacles destroyed");
-                if (coherenceSync != null)
+                // In a local bot match there is no connection/opponent client to
+                // notify — the BotMatchArbiter handles the bot's loss locally.
+                if (coherenceSync != null && !GameManager.Instance.IsBotMatch)
                 {
                     GameManager.Instance.FreezeObstacles();
                     coherenceSync.SendCommand<LevelGoal>(nameof(CmdLoseLevel), MessageTarget.Other);

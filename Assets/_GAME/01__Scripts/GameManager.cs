@@ -18,6 +18,14 @@ public class GameManager : MonoBehaviour
     public GameObject skipButton;
     bool DeveloperMode;
     public bool IsMultiplayer;
+    /// <summary>
+    /// True for a local bot match: the level is a multiplayer scene, but we run it
+    /// locally with no Coherence connection against a replay-driven bot. Set in
+    /// Awake (before any Start) so LevelGoal and the networked-command guards can
+    /// rely on it. IsMultiplayer stays true so the MP win/lose screens are used.
+    /// </summary>
+    public bool IsBotMatch { get; private set; }
+    private BotReplay _pendingBotReplay;
     public CharacterCollection characterCollection;
     public CharacterCollection multiplayerCharacterCollection;
     public bool Recording, DarkLevel;
@@ -147,6 +155,13 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         collectibleDatabase = Resources.Load<CollectibleItemDatabase>("CollectibleItemsDatabase");
         _instance = this;
+
+        // Consume the bot-match handoff here (in Awake) so the flag is set before
+        // any other component's Start reads it — notably LevelGoal, which picks
+        // its init path based on it.
+        IsBotMatch = BotMatchContext.IsBotMatch;
+        _pendingBotReplay = BotMatchContext.PendingReplay;
+        BotMatchContext.Clear();
     }
     private void GenerateSkipButton()
     {
@@ -222,7 +237,11 @@ public class GameManager : MonoBehaviour
         start = true;
 
         levelGoal = FindFirstObjectByType<LevelGoal>();
-        if(IsMultiplayer)
+        // Bot scenes are multiplayer scenes too, so IsMultiplayer is set in both
+        // cases. IsBotMatch (resolved in Awake) is what tells us to run locally
+        // (no Coherence) instead of connecting to a room.
+        bool isBotMatch = IsBotMatch;
+        if(IsMultiplayer && !isBotMatch)
         {
             // connectNetworkUI.gameObject.SetActive(true);
             if (CoherenceBridgeStore.TryGetBridge(gameObject.scene, out coherenceBridge))
@@ -238,6 +257,10 @@ public class GameManager : MonoBehaviour
                 
                 coherenceBridge.JoinRoom(CoherenceMatchmaker.LatestMatch.Room);
             }
+        }
+        else if (isBotMatch)
+        {
+            StartBotMatch();
         }
         else
         {
@@ -271,6 +294,65 @@ public class GameManager : MonoBehaviour
         // so it covers both scene-placed and later-spawned falling obstacles. Cardboard is excluded there.
         if (ShouldHaveSkipButton)
             GenerateSkipButton();
+    }
+
+    /// <summary>
+    /// Runs a local, non-networked match against a bot. The level is a normal
+    /// multiplayer scene, but instead of connecting to Coherence we spawn the
+    /// local human (their selected character) and a bot opponent driven by the
+    /// chosen replay. To the player it should be indistinguishable from a real
+    /// match, so we still run the pre-game countdown.
+    /// </summary>
+    private void StartBotMatch()
+    {
+        if (connectNetworkUI != null)
+            connectNetworkUI.gameObject.SetActive(false);
+
+        if (characterCollection == null || characterCollection.Characters.Count == 0)
+        {
+            Debug.LogError("[BotMatch] characterCollection is empty; cannot spawn bot match.");
+            return;
+        }
+
+        // Local human player — their selected single-player character.
+        int selectedId = Mathf.Clamp(PlayerPrefs.GetInt("SelectedCharacterID", 0), 0, characterCollection.Characters.Count - 1);
+        GameObject humanPrefab = characterCollection.Characters[selectedId];
+        GameObject human = Instantiate(humanPrefab, playerSpawnPoint.position, humanPrefab.transform.rotation);
+        LocalPlayer = human.GetComponent<Player>();
+        // Note: we deliberately do NOT fire OnLocalPlayerSpawned here. Its only
+        // listener (LevelGoal) self-initializes for bot matches, and invoking it
+        // synchronously from Start would race LevelGoal's own Start (it may not
+        // have subscribed yet).
+
+        // Bot opponent — a random single-player character driven by the replay.
+        // BotController repositions it to the replay's recorded start, so the
+        // spawn point only needs to be a sane default.
+        int botId = UnityEngine.Random.Range(0, characterCollection.Characters.Count);
+        GameObject botPrefab = characterCollection.Characters[botId];
+        GameObject bot = Instantiate(botPrefab, opponentSpawnPoint.position, botPrefab.transform.rotation);
+
+        // Reuse a BotController already on the prefab (if any) rather than adding a
+        // second one — otherwise the prefab's own controller auto-plays with no
+        // replay. We drive Play() explicitly after configuring, so autoPlay is off
+        // and there's no dependence on Start ordering.
+        BotController controller = bot.GetComponent<BotController>();
+        if (controller == null) controller = bot.AddComponent<BotController>();
+        controller.autoPlay = false;
+        controller.replay = _pendingBotReplay;
+        // Replay positions are authored relative to the opponent level's parent,
+        // so the whole level can be moved/rotated and the replay still lines up.
+        controller.levelRoot = levelGoal != null ? levelGoal.OpponentLevelRoot : null;
+        controller.Play();
+
+        // The local human vs. the bot share one Settings/LevelGoal, so neither
+        // player's own win/lose path can decide the match. The arbiter owns the
+        // outcome and routes it through the existing MP win/lose flow.
+        BotMatchArbiter arbiter = gameObject.AddComponent<BotMatchArbiter>();
+        arbiter.Initialize(LocalPlayer, levelGoal);
+
+        // Both "players" are present from the start, so kick off the countdown
+        // immediately (mirrors the player-2 path in OnClientConnectionsSynced).
+        StartCoroutine(RunCountdown());
     }
 
     private void OnClientConnectionsSynced(CoherenceClientConnectionManager manager)

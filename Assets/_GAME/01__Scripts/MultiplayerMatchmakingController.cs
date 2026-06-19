@@ -42,7 +42,9 @@ public class MultiplayerMatchmakingController : MonoBehaviour
     [Header("Bot Fallback")]
     [SerializeField] private bool fallbackToBotEnabled = true;
     [SerializeField] private float botFallbackTimeoutSeconds = 15f;
-    [SerializeField] private List<SceneReference> botFallbackLevelScenes = new();
+    [Tooltip("Resources sub-folder that holds the BotReplay assets. On fallback one is picked at " +
+             "random and its scene is loaded as a local bot match.")]
+    [SerializeField] private string botReplaysResourcesFolder = "BotReplays";
 
     [Header("Navigation")]
     [SerializeField] private SceneReference mainMenuScene;
@@ -115,6 +117,19 @@ public class MultiplayerMatchmakingController : MonoBehaviour
     {
         try
         {
+            // Pick the bot replay up front (on the main thread, before any await).
+            // We hand the matchmaker just this replay's scene as the bot-level pool
+            // so its fallback path resolves to the same scene we then load with the
+            // replay attached. If no replays exist, fallback is effectively off and
+            // matchmaking simply keeps waiting for a real opponent.
+            BotReplay botCandidate = PickRandomBotReplay();
+            var botLevelNames = new List<string>();
+            if (botCandidate != null && botCandidate.scene != null &&
+                botCandidate.scene.UnsafeReason == SceneReferenceUnsafeReason.None)
+            {
+                botLevelNames.Add(botCandidate.scene.Name);
+            }
+
             var result = await CoherenceMatchmaker.FindMatchAsync(
                 mapName: mapName,
                 skillLevel: Skill,
@@ -122,7 +137,7 @@ public class MultiplayerMatchmakingController : MonoBehaviour
                 maxOpponentSkill: MaxOpponentSkill,
                 region: region,
                 multiplayerLevels: ToSceneNames(multiplayerLevelScenes),
-                botLevels: ToSceneNames(botFallbackLevelScenes),
+                botLevels: botLevelNames,
                 fallbackToBotEnabled: fallbackToBotEnabled,
                 botFallbackTimeout: TimeSpan.FromSeconds(botFallbackTimeoutSeconds),
                 onProgress: msg => Debug.Log("[Matchmaking] " + msg),
@@ -130,10 +145,14 @@ public class MultiplayerMatchmakingController : MonoBehaviour
 
             if (result.IsBotFallback)
             {
+                // Hand the chosen replay to the level scene, then load it. GameManager
+                // reads BotMatchContext to run the match locally against this bot.
+                BotMatchContext.PendingReplay = botCandidate;
                 SceneManager.LoadScene(result.BotLevelScene);
             }
             else
             {
+                BotMatchContext.Clear();
                 // Use the resolved MapName from the result — when matchmaking any-map,
                 // the local `mapName` field is empty and the real scene comes from the
                 // lobby attribute.
@@ -239,6 +258,27 @@ public class MultiplayerMatchmakingController : MonoBehaviour
         {
             statusText.text = text;
         }
+    }
+
+    /// <summary>
+    /// Loads every BotReplay from the configured Resources folder and returns a
+    /// random one, or null when fallback is disabled or no replays exist. Must be
+    /// called on the main thread (Resources.LoadAll is not thread-safe).
+    /// </summary>
+    private BotReplay PickRandomBotReplay()
+    {
+        if (!fallbackToBotEnabled)
+        {
+            return null;
+        }
+        BotReplay[] replays = Resources.LoadAll<BotReplay>(botReplaysResourcesFolder);
+        if (replays == null || replays.Length == 0)
+        {
+            Debug.LogWarning($"[Matchmaking] Bot fallback is enabled but no BotReplay assets were found in " +
+                             $"Resources/{botReplaysResourcesFolder}. Matchmaking will keep waiting for a real opponent.");
+            return null;
+        }
+        return replays[UnityEngine.Random.Range(0, replays.Length)];
     }
 
     private static List<string> ToSceneNames(List<SceneReference> refs)
