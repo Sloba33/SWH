@@ -16,9 +16,10 @@ using UnityEngine.SceneManagement;
 /// executor uses), and stats are captured at record time so playback timing
 /// matches. Saving to an asset is handled by the editor (BotRecorderEditor).
 ///
-/// Known limitation: the executor is sequential, so a jump/attack performed while
-/// running is recorded as walk-to-spot → act → continue (a brief stop the human
-/// didn't make). Fine for grid puzzle pacing; revisit if a level needs run-jumps.
+/// Discrete actions (jump/hit/...) are recorded with the position at which they
+/// fired and are replayed concurrently with movement at that position — so a jump
+/// or hit performed mid-run is reproduced without stopping (e.g. jumping onto an
+/// obstacle, hitting while falling).
 /// </summary>
 public class BotRecorder : MonoBehaviour
 {
@@ -170,11 +171,15 @@ public class BotRecorder : MonoBehaviour
 
     private void EmitDiscrete(BotActionType type)
     {
-        // If still mid-run, drop a waypoint at the current spot so the bot walks
-        // here before acting (then keeps going to the next corner/stop).
-        if (_lastMoveDir != Vector3.zero) EmitMove();
-
-        _actions.Add(new BotAction(type) { preDelay = _idleAccumulator });
+        // Record where the action fired (its anchor). The executor fires it by
+        // position along the movement leg it falls within, concurrently with the
+        // walk — so we do NOT insert a stop here. (preDelay is only used if this
+        // ends up as a standing/dwell action with no movement around it.)
+        _actions.Add(new BotAction(type)
+        {
+            targetPosition = ToLocal(target.transform.position),
+            preDelay = _idleAccumulator,
+        });
         _idleAccumulator = 0f;
     }
 

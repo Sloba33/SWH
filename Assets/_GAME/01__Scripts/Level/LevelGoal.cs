@@ -297,6 +297,10 @@ public class LevelGoal : MonoBehaviour
     }
     private void CheckForSingleColorSpawnOpportunity()
 {
+    // Recovery spawning is disabled in multiplayer (online and bot): where the
+    // recovered obstacles land isn't deterministic, which desyncs bot replays.
+    if (GameManager.Instance.IsMultiplayer) return;
+
     ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
 
     var activeObstacles = ObstaclesToDestroy_Player
@@ -790,6 +794,10 @@ public class LevelGoal : MonoBehaviour
     // }
     private void CheckForMissingObstaclesAndSpawn(ObstacleType destroyedType, ObstacleColor destroyedColor)
     {
+        // Recovery spawning is disabled in multiplayer (online and bot): where the
+        // recovered obstacles land isn't deterministic, which desyncs bot replays.
+        if (GameManager.Instance.IsMultiplayer) return;
+
         // --- Ignore irrelevant types completely ---
         ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
         if (ignoredTypes.Contains(destroyedType))
@@ -875,10 +883,21 @@ public class LevelGoal : MonoBehaviour
 
     private void FindAndAddTilesToList()
     {
-        if (GameManager.Instance.IsMultiplayer && coherenceSync != null && playerLevel != null)
+        // In any multiplayer context (networked or local bot match) live falling
+        // spawns belong to the local player's half only. The old coherenceSync
+        // requirement made offline bot matches / solo recording sessions fall
+        // through to the all-tiles branch, raining fixed falling obstacles over
+        // BOTH halves — duplicating the bot side, whose falling obstacles come
+        // exclusively from its replay.
+        if (GameManager.Instance.IsMultiplayer && playerLevel != null)
             tileList = new List<Tile>(playerLevel.GetComponentsInChildren<Tile>());
         else
             tileList = new List<Tile>(FindObjectsOfType<Tile>());
+
+        // Belt-and-suspenders for bot matches: never spawn onto the bot's half,
+        // whatever branch produced the list.
+        if (GameManager.Instance.IsBotMatch && opponentLevel != null)
+            tileList.RemoveAll(t => t == null || t.transform.IsChildOf(opponentLevel));
     }
     // private Obstacle GetSpecificSpawnableObstacle(ObstacleType type, ObstacleColor color)
     // {
@@ -901,6 +920,10 @@ public class LevelGoal : MonoBehaviour
     // }
     public IEnumerator SpawnSpecificFallingObstacle(Obstacle obstaclePrefab, float spawnFrequency, float initialDelay)
     {
+        // Belt-and-suspenders: this coroutine only ever spawns recovery obstacles,
+        // which are disabled in multiplayer (see CheckForMissingObstaclesAndSpawn).
+        if (GameManager.Instance.IsMultiplayer) yield break;
+
         yield return new WaitForSeconds(initialDelay);
 
         int randomHeight = Random.Range(minObstacleSpawnHeight, maxObstacleSpawnHeight);
@@ -949,6 +972,10 @@ public class LevelGoal : MonoBehaviour
     {
         Debug.Log("Winning Level");
         if (settings == null) settings = FindObjectOfType<Settings>();
+        // First result stands: if the match is already lost (opponent/bot finished
+        // first, forfeit), clearing the goal behind the lose screen must not also
+        // pop the win screen.
+        if (settings != null && settings.gameLost) yield break;
         PlayerController pc = FindObjectOfType<PlayerController>();
         settings.gameWon = true;
         yield return new WaitForSeconds(delay);

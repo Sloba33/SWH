@@ -122,7 +122,7 @@ public class MultiplayerMatchmakingController : MonoBehaviour
             // so its fallback path resolves to the same scene we then load with the
             // replay attached. If no replays exist, fallback is effectively off and
             // matchmaking simply keeps waiting for a real opponent.
-            BotReplay botCandidate = PickRandomBotReplay();
+            StateReplay botCandidate = PickRandomBotReplay();
             var botLevelNames = new List<string>();
             if (botCandidate != null && botCandidate.scene != null &&
                 botCandidate.scene.UnsafeReason == SceneReferenceUnsafeReason.None)
@@ -261,20 +261,20 @@ public class MultiplayerMatchmakingController : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads every BotReplay from the configured Resources folder and returns a
+    /// Loads every StateReplay from the configured Resources folder and returns a
     /// random one, or null when fallback is disabled or no replays exist. Must be
     /// called on the main thread (Resources.LoadAll is not thread-safe).
     /// </summary>
-    private BotReplay PickRandomBotReplay()
+    private StateReplay PickRandomBotReplay()
     {
         if (!fallbackToBotEnabled)
         {
             return null;
         }
-        BotReplay[] replays = Resources.LoadAll<BotReplay>(botReplaysResourcesFolder);
+        StateReplay[] replays = Resources.LoadAll<StateReplay>(botReplaysResourcesFolder);
         if (replays == null || replays.Length == 0)
         {
-            Debug.LogWarning($"[Matchmaking] Bot fallback is enabled but no BotReplay assets were found in " +
+            Debug.LogWarning($"[Matchmaking] Bot fallback is enabled but no StateReplay assets were found in " +
                              $"Resources/{botReplaysResourcesFolder}. Matchmaking will keep waiting for a real opponent.");
             return null;
         }

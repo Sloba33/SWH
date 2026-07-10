@@ -9,20 +9,20 @@ using UnityEngine;
 [CustomEditor(typeof(BotMatchDebugLauncher))]
 public class BotMatchDebugLauncherEditor : Editor
 {
-    private BotReplay[] _replays = new BotReplay[0];
+    private StateReplay[] _replays = new StateReplay[0];
     private string[] _replayNames = new string[0];
 
     private void OnEnable() => RefreshReplayList();
 
     private void RefreshReplayList()
     {
-        string[] guids = AssetDatabase.FindAssets("t:BotReplay");
-        _replays = new BotReplay[guids.Length];
+        string[] guids = AssetDatabase.FindAssets("t:StateReplay");
+        _replays = new StateReplay[guids.Length];
         _replayNames = new string[guids.Length];
         for (int i = 0; i < guids.Length; i++)
         {
             string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            _replays[i] = AssetDatabase.LoadAssetAtPath<BotReplay>(path);
+            _replays[i] = AssetDatabase.LoadAssetAtPath<StateReplay>(path);
             _replayNames[i] = _replays[i] != null ? _replays[i].name : path;
         }
     }

@@ -57,6 +57,8 @@ MonoBehaviour:
   xp: 100
   trophies: 5
   BONUS_TROPHIES: 0
+  multiplayerTrophyWin: 5
+  multiplayerTrophyLoss: 5
   levelProgress: {fileID: 4741343503558475765, guid: b2f5c0c39238f324dbabb927ce00321c,
     type: 3}
   currentTime: 0
@@ -133,7 +135,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  ObstaclesToDestroy_Opponent: []
+  ObstaclesToDestroy_Opponent:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   obstacleTypes: 
   DualLevel: 0
   Tutorial: 0
@@ -164,8 +169,9 @@ MonoBehaviour:
   bombUniversalPrefab: {fileID: 0}
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
-  bonusUnlocked: 0
   isTimeFrozen: 0
+  shouldIgnoreBonusStars: 0
+  shouldHaveFasterEnergyRecharge: 0
   playerLevel: {fileID: 0}
   opponentLevel: {fileID: 0}
   starsEarned: 0

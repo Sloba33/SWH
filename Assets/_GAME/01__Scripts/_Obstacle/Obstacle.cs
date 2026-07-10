@@ -166,7 +166,18 @@ public class Obstacle : MonoBehaviour
         {
             StartCoroutine(BlinkCoroutine());
         }
+
+        ObstacleSpawned?.Invoke(this);
     }
+
+    /// <summary>
+    /// Raised when an obstacle finishes initializing (end of Start). The
+    /// state-replay recorder uses it to detect obstacles spawned during play
+    /// (falling waves etc.): anything appearing mid-recording without a ReplayId
+    /// gets a runtime id and a spawn event. Fires for scene obstacles at level
+    /// load too — subscribers ignore those (not recording yet / already have ids).
+    /// </summary>
+    public static event System.Action<Obstacle> ObstacleSpawned;
 
     private bool controllerCleared;
 
@@ -590,12 +601,43 @@ public class Obstacle : MonoBehaviour
     public GoalSetter[] goalSetters;
     public AudioSource audioSource;
 
+    /// <summary>
+    /// Raised the moment a destruction is committed (all ParticleDestroy guards
+    /// passed). The state-replay recorder subscribes to this to write destroy
+    /// events; destruction paths that bypass ParticleDestroy are not recorded.
+    /// </summary>
+    public static event System.Action<Obstacle> ObstacleDestroyed;
+
     public void ParticleDestroy(ObstacleDestructionSource source = ObstacleDestructionSource.None)
     {
         if (queuedForDestruction) return;
         if (_coherenceSync != null && !_coherenceSync.HasStateAuthority) return;
         queuedForDestruction = true;
+        ObstacleDestroyed?.Invoke(this);
         StartCoroutine(DestroyRoutine(source));
+    }
+
+    /// <summary>
+    /// Replay-driven destruction: visuals only. Spawns the same destruction VFX as
+    /// DestroyRoutine and removes the object, but performs NONE of the gameplay
+    /// bookkeeping (goal lists, GoalSetter UI, spawn processing) — a replayed bot's
+    /// obstacles must not touch the human's goal state. Win/lose still works
+    /// because BotMatchArbiter counts the destroyed entries in
+    /// ObstaclesToDestroy_Opponent directly.
+    /// </summary>
+    public void ReplayDestroy()
+    {
+        if (queuedForDestruction) return;
+        queuedForDestruction = true;
+
+        if (obstacleDestructionVfxPrefab != null)
+        {
+            Vector3 vfxPos = new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z);
+            ObstacleDestructionVfx vfx = Instantiate(obstacleDestructionVfxPrefab, vfxPos, obstacleDestructionVfxPrefab.transform.rotation);
+            vfx.ObstacleAudioType = obstacleAudioType;
+        }
+        if (fallSprite != null) Destroy(fallSprite);
+        Destroy(gameObject);
     }
 
     private IEnumerator DestroyRoutine(ObstacleDestructionSource source)

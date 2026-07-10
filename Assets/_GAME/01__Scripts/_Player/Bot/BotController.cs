@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -6,16 +7,22 @@ using UnityEngine;
 /// <see cref="PlayerInputHandler"/> (BotControlled mode). It never touches
 /// movement physics directly: it sets MoveInput / queues button presses exactly
 /// like a human's controls would, so PlayerMovement, PlayerObstacleController and
-/// PlayerAttack run unchanged. That is what makes the bot indistinguishable from
-/// a real opponent in a multiplayer match.
+/// PlayerAttack run unchanged — that is what makes the bot indistinguishable from
+/// a real opponent.
 ///
-/// Movement is closed-loop (drive toward a target world position and stop on
-/// arrival) rather than timed input playback, so it self-corrects and never
-/// drifts off the level over a long sequence.
+/// Concurrent model: movement is the continuous backbone (a path of waypoints
+/// walked without stopping), and discrete actions (jump/hit/hit-down/special)
+/// are <i>overlays</i> anchored to the position along the current movement leg
+/// where they were recorded. They are queued at that point without interrupting
+/// movement, so a hit/jump happens <i>while</i> moving/jumping/falling and a jump
+/// can carry the bot onto an obstacle. Pull is a stateful leg that drives the bot
+/// to a recorded end position (works airborne too).
 ///
-/// Per-instance variation (start delay + per-action "thinking" jitter) lets one
-/// recording produce several distinct-feeling opponents, so a small library of
-/// replays doesn't feel repetitive.
+/// Everything is position-anchored (not timed), so it self-corrects and never
+/// drifts against the level's timed/falling obstacles.
+///
+/// Per-instance variation (start delay + per-pause "thinking" jitter) lets one
+/// recording produce several distinct-feeling opponents.
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(PlayerInputHandler))]
@@ -33,12 +40,12 @@ public class BotController : MonoBehaviour
     [Tooltip("Random delay before the bot makes its first move.")]
     public float startDelayMin = 0.3f;
     public float startDelayMax = 1.0f;
-    [Tooltip("Extra random pause added on top of each action's recorded preDelay.")]
+    [Tooltip("Extra random pause added on top of each recorded pause.")]
     public float actionJitterMin = 0f;
     public float actionJitterMax = 0.25f;
 
     [Header("Movement tuning")]
-    [Tooltip("How close (world units) counts as 'arrived' on an axis.")]
+    [Tooltip("Planar (XZ) distance to a waypoint that counts as 'arrived' on an axis.")]
     public float arriveThreshold = 0.06f;
     [Tooltip("Safety cap so a blocked move can never hang the sequence forever.")]
     public float moveTimeout = 8f;
@@ -53,6 +60,20 @@ public class BotController : MonoBehaviour
     private PlayerInputHandler _input;
     private Player _player;
     private bool _running;
+
+    // A leg is one stretch of the path: a continuous walk to a waypoint, a pull,
+    // or an in-place dwell. Discrete actions recorded during a leg ride along as
+    // overlays and fire by position, concurrently with the movement.
+    private enum LegKind { Move, Pull, Dwell }
+
+    private class Leg
+    {
+        public LegKind kind;
+        public Vector3 target;   // local; Move/Pull
+        public float preDelay;   // pause before this leg starts
+        public float dwellWait;  // extra idle for a Wait action (Dwell only)
+        public readonly List<BotAction> overlays = new List<BotAction>();
+    }
 
     private void Awake()
     {
@@ -139,96 +160,190 @@ public class BotController : MonoBehaviour
 
         yield return new WaitForSeconds(Random.Range(startDelayMin, startDelayMax));
 
-        foreach (BotAction action in replay.actions)
+        List<Leg> legs = BuildLegs(replay.actions);
+        Vector3 prevLocal = replay.startPosition;
+
+        foreach (Leg leg in legs)
         {
             if (!_running) yield break;
 
-            float pause = action.preDelay + Random.Range(actionJitterMin, actionJitterMax);
+            float pause = leg.preDelay + Random.Range(actionJitterMin, actionJitterMax);
             if (pause > 0f)
             {
                 _input.BotSetMove(Vector2.zero);
                 yield return new WaitForSeconds(pause);
             }
 
-            yield return ExecuteAction(action);
+            switch (leg.kind)
+            {
+                case LegKind.Move:
+                    yield return RunMoveLeg(prevLocal, leg.target, leg.overlays);
+                    prevLocal = leg.target;
+                    break;
+                case LegKind.Pull:
+                    FireOverlays(leg.overlays); // pull is exclusive; fire any overlays at its start
+                    yield return RunPull(leg.target);
+                    prevLocal = leg.target;
+                    break;
+                case LegKind.Dwell:
+                    yield return RunDwell(leg);
+                    break;
+            }
         }
 
         _input.BotSetMove(Vector2.zero);
         _running = false;
     }
 
-    private IEnumerator ExecuteAction(BotAction action)
+    /// <summary>
+    /// Splits the flat recorded action list into legs. Discrete actions accumulate
+    /// as overlays and attach to the next Move/Pull leg (they occurred during the
+    /// travel toward that target). A Wait, or trailing discretes with no following
+    /// movement, become a Dwell leg.
+    /// </summary>
+    private List<Leg> BuildLegs(List<BotAction> actions)
     {
-        switch (action.type)
+        var legs = new List<Leg>();
+        var pending = new List<BotAction>();
+
+        foreach (BotAction a in actions)
         {
-            case BotActionType.MoveToPosition:
-                yield return MoveTo(action.targetPosition);
-                break;
-
-            case BotActionType.Jump:
-                _input.BotQueueJump();
-                yield return new WaitForSeconds(0.15f);
-                break;
-
-            case BotActionType.Hit:
-                _input.BotQueueHit();
-                yield return new WaitForSeconds(0.3f);
-                break;
-
-            case BotActionType.HitDown:
-                _input.BotQueueHitDown();
-                yield return new WaitForSeconds(0.5f);
-                break;
-
-            case BotActionType.Special:
-                _input.BotQueueSpecial();
-                yield return new WaitForSeconds(0.6f);
-                break;
-
-            case BotActionType.Pull:
-                yield return DoPull(action.targetPosition);
-                break;
-
-            case BotActionType.Wait:
-                _input.BotSetMove(Vector2.zero);
-                yield return new WaitForSeconds(action.duration);
-                break;
+            switch (a.type)
+            {
+                case BotActionType.MoveToPosition:
+                {
+                    var leg = new Leg { kind = LegKind.Move, target = a.targetPosition, preDelay = a.preDelay };
+                    leg.overlays.AddRange(pending);
+                    pending.Clear();
+                    legs.Add(leg);
+                    break;
+                }
+                case BotActionType.Pull:
+                {
+                    var leg = new Leg { kind = LegKind.Pull, target = a.targetPosition, preDelay = a.preDelay };
+                    leg.overlays.AddRange(pending);
+                    pending.Clear();
+                    legs.Add(leg);
+                    break;
+                }
+                case BotActionType.Wait:
+                {
+                    var leg = new Leg { kind = LegKind.Dwell, preDelay = a.preDelay, dwellWait = a.duration };
+                    leg.overlays.AddRange(pending);
+                    pending.Clear();
+                    legs.Add(leg);
+                    break;
+                }
+                default: // discrete overlay (Jump/Hit/HitDown/Special)
+                    pending.Add(a);
+                    break;
+            }
         }
+
+        if (pending.Count > 0)
+        {
+            var leg = new Leg { kind = LegKind.Dwell };
+            leg.overlays.AddRange(pending);
+            legs.Add(leg);
+        }
+
+        return legs;
     }
 
     /// <summary>
-    /// Walk to a position one cardinal axis at a time (X then Z), matching how
-    /// PlayerInputHandler quantizes human input to a single axis. Everything is
-    /// done in the level's local frame so the path follows the (possibly rotated)
-    /// level grid; the cardinal local direction is converted to the world-space
-    /// MoveInput that PlayerMovement consumes. Holding MoveInput drives the real
-    /// velocity / push detection — we just pick direction and detect arrival.
+    /// Walks from <paramref name="fromLocal"/> to <paramref name="toLocal"/> one
+    /// cardinal axis at a time (X then Z), matching how PlayerInputHandler quantizes
+    /// human input. Movement is in the level's local frame so the path follows the
+    /// (possibly rotated) grid. Overlay actions fire by their fraction along this
+    /// leg, queued without stopping the walk — so they overlap movement. Arrival is
+    /// planar (ignores Y) so a jump that lands the bot on a raised obstacle still
+    /// counts as reaching the waypoint.
     /// </summary>
-    private IEnumerator MoveTo(Vector3 localTarget)
+    private IEnumerator RunMoveLeg(Vector3 fromLocal, Vector3 toLocal, List<BotAction> overlays)
     {
+        // Pre-compute each overlay's fraction along the leg and sort ascending.
+        Vector3 seg = toLocal - fromLocal; seg.y = 0f;
+        float segLenSq = seg.x * seg.x + seg.z * seg.z;
+
+        var fires = new List<(float frac, BotAction action)>(overlays.Count);
+        foreach (BotAction a in overlays)
+            fires.Add((LegFraction(a.targetPosition, fromLocal, seg, segLenSq), a));
+        fires.Sort((x, y) => x.frac.CompareTo(y.frac));
+
+        int next = 0;
         float elapsed = 0f;
 
-        // Local X axis first.
-        while (Mathf.Abs(localTarget.x - ToLocal(transform.position).x) > arriveThreshold)
+        while (_running)
         {
-            float dir = Mathf.Sign(localTarget.x - ToLocal(transform.position).x);
-            _input.BotSetMove(WorldMoveFromLocalDir(new Vector3(dir, 0f, 0f)));
+            Vector3 curLocal = ToLocal(transform.position);
+            float f = LegFraction(curLocal, fromLocal, seg, segLenSq);
+
+            // Fire any overlays we've reached, in order — concurrent with movement.
+            while (next < fires.Count && fires[next].frac <= f)
+            {
+                FireDiscrete(fires[next].action);
+                next++;
+            }
+
+            bool reachedX = Mathf.Abs(toLocal.x - curLocal.x) <= arriveThreshold;
+            bool reachedZ = Mathf.Abs(toLocal.z - curLocal.z) <= arriveThreshold;
+            if (reachedX && reachedZ) break;
+
+            Vector3 dirLocal = !reachedX
+                ? new Vector3(Mathf.Sign(toLocal.x - curLocal.x), 0f, 0f)
+                : new Vector3(0f, 0f, Mathf.Sign(toLocal.z - curLocal.z));
+            _input.BotSetMove(WorldMoveFromLocalDir(dirLocal));
+
             elapsed += Time.fixedDeltaTime;
             if (elapsed > moveTimeout) break;
+
             yield return new WaitForFixedUpdate();
         }
 
-        // Then local Z axis.
-        while (Mathf.Abs(localTarget.z - ToLocal(transform.position).z) > arriveThreshold)
-        {
-            float dir = Mathf.Sign(localTarget.z - ToLocal(transform.position).z);
-            _input.BotSetMove(WorldMoveFromLocalDir(new Vector3(0f, 0f, dir)));
-            elapsed += Time.fixedDeltaTime;
-            if (elapsed > moveTimeout) break;
-            yield return new WaitForFixedUpdate();
-        }
+        // Fire any overlays not reached by position (e.g. anchored at the very end).
+        while (next < fires.Count) { FireDiscrete(fires[next].action); next++; }
 
+        // Deliberately do NOT zero MoveInput here: if the next leg is another move
+        // it redirects immediately (continuous motion through waypoints); pauses
+        // and the end of the sequence zero it in RunSequence.
+    }
+
+    /// <summary>Projection of a local point onto the leg, as a 0..1 fraction (planar).</summary>
+    private static float LegFraction(Vector3 pointLocal, Vector3 fromLocal, Vector3 seg, float segLenSq)
+    {
+        if (segLenSq <= 1e-6f) return 1f;
+        float dot = (pointLocal.x - fromLocal.x) * seg.x + (pointLocal.z - fromLocal.z) * seg.z;
+        return Mathf.Clamp01(dot / segLenSq);
+    }
+
+    private void FireDiscrete(BotAction action)
+    {
+        switch (action.type)
+        {
+            case BotActionType.Jump: _input.BotQueueJump(); break;
+            case BotActionType.Hit: _input.BotQueueHit(); break;
+            case BotActionType.HitDown: _input.BotQueueHitDown(); break;
+            case BotActionType.Special: _input.BotQueueSpecial(); break;
+        }
+    }
+
+    private void FireOverlays(List<BotAction> overlays)
+    {
+        foreach (BotAction a in overlays) FireDiscrete(a);
+    }
+
+    /// <summary>An in-place segment: spaced discrete actions and/or a Wait.</summary>
+    private IEnumerator RunDwell(Leg leg)
+    {
         _input.BotSetMove(Vector2.zero);
+        foreach (BotAction a in leg.overlays)
+        {
+            float pause = a.preDelay + Random.Range(actionJitterMin, actionJitterMax);
+            if (pause > 0f) yield return new WaitForSeconds(pause);
+            FireDiscrete(a);
+            yield return new WaitForFixedUpdate();
+        }
+        if (leg.dwellWait > 0f) yield return new WaitForSeconds(leg.dwellWait);
     }
 
     // --- Level-relative helpers ---------------------------------------------
@@ -252,20 +367,16 @@ public class BotController : MonoBehaviour
     }
 
     /// <summary>
-    /// Latch + pull until the player reaches <paramref name="target"/>, then
+    /// Latch + pull until the player reaches <paramref name="localTarget"/>, then
     /// release. The bot is assumed to already be adjacent and facing the obstacle
-    /// (the MoveToPosition that brought it here set its forward). One pull-press
-    /// latches via PlayerController.StartPull; the obstacle is then dragged
-    /// automatically by PlayerObstacleController for as long as the button is
-    /// "held". Because the obstacle's travel-per-second changes with move speed,
-    /// upgrades and weight, we close the loop on the player's end position rather
-    /// than a fixed duration so the result is drift-free.
-    ///
-    /// We also bail the moment the obstacle vanishes: once the pull has actually
-    /// engaged, a null pullObstacle means the sim destroyed or aborted it, so
-    /// there's nothing left to pull toward the target.
+    /// (the move leg that brought it here set its forward). One pull-press latches
+    /// via PlayerController.StartPull; the obstacle is then dragged automatically
+    /// for as long as the button is "held". We close the loop on the player's end
+    /// position (not a fixed duration) so it can't drift when move speed varies,
+    /// and bail the moment the obstacle vanishes (destroyed / aborted by the sim).
+    /// Works airborne — the pull mechanic handles falling obstacles.
     /// </summary>
-    private IEnumerator DoPull(Vector3 localTarget)
+    private IEnumerator RunPull(Vector3 localTarget)
     {
         _input.BotSetMove(Vector2.zero);
         _input.BotQueuePull();
@@ -275,14 +386,12 @@ public class BotController : MonoBehaviour
         bool engaged = false;
         float elapsed = 0f;
 
-        while (true)
+        while (_running)
         {
             Vector3 planar = worldTarget - transform.position;
             planar.y = 0f;
             if (planar.magnitude <= pullArriveThreshold) break;
 
-            // Watch the live pull target: once it has engaged, losing it means
-            // the obstacle was destroyed or the pull was aborted by the sim.
             if (obstacles != null && obstacles.pullObstacle != null) engaged = true;
             else if (engaged) break;
 

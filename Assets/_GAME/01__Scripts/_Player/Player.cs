@@ -179,8 +179,15 @@ public class Player : MonoBehaviour
         hitFillImage.fillAmount = fillAmount;
         hitDownFillImage.fillAmount = fillHitDownAmount;
     }
+    /// <summary>
+    /// Raised when any player dies, before the lose flow runs. The state-replay
+    /// recorder subscribes to capture the death as a replay event.
+    /// </summary>
+    public static event System.Action<Player> PlayerDied;
+
     public void Die(Transform obstacle)
     {
+        PlayerDied?.Invoke(this);
         GetComponent<Animator>().Play("Death_Animation");
         obstacle.transform.GetComponent<Obstacle>().ParticleDestroy(Obstacle.ObstacleDestructionSource.Other);
         GetComponent<PlayerController>().enabled = false;
@@ -196,6 +203,7 @@ public class Player : MonoBehaviour
     }
     public void Die()
     {
+        PlayerDied?.Invoke(this);
         GetComponent<Animator>().Play("Death_Animation");
         if (GameManager.Instance != null && GameManager.Instance.IsBotMatch)
         {
@@ -236,8 +244,25 @@ public class Player : MonoBehaviour
         }
         GetComponent<PlayerController>().enabled = false;
     }
+
+    /// <summary>
+    /// Direct-lose path (falling off the platform — see CameraController.HandlePlayerFall),
+    /// which bypasses Die(). It must still: raise PlayerDied so the state-replay
+    /// recorder captures fall-deaths (deduped if Die already fired), and in a bot
+    /// match route through the arbiter so the loss carries the MP trophy delta via
+    /// LevelGoal.LoseLevel instead of popping a bare lose panel here.
+    /// </summary>
     public IEnumerator LoseLevel(float delay)
     {
+        PlayerDied?.Invoke(this);
+
+        if (GameManager.Instance != null && GameManager.Instance.IsBotMatch)
+        {
+            BotMatchArbiter.Instance?.NotifyDeath(this);
+            GetComponent<PlayerController>().enabled = false;
+            yield break;
+        }
+
         Settings settings = FindObjectOfType<Settings>();
         if (settings != null) settings.gameLost = true;
         yield return new WaitForSeconds(delay);

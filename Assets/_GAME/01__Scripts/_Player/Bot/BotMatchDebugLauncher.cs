@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// Debug-only entry point for starting a local bot match without going through
 /// matchmaking. Drop this on a GameObject in a throwaway debug scene, assign a
-/// <see cref="BotReplay"/>, and press play: it sets the same static handoff the
+/// <see cref="StateReplay"/>, and press play: it sets the same static handoff the
 /// matchmaking bot-fallback uses (<see cref="BotMatchContext.PendingReplay"/>)
 /// and loads the target scene, so GameManager spins up the bot match exactly as
 /// it would in production.
@@ -15,7 +15,7 @@ using UnityEngine.SceneManagement;
 public class BotMatchDebugLauncher : MonoBehaviour
 {
     [Tooltip("Replay to play. Its own scene is loaded unless a Scene Override is set below.")]
-    public BotReplay replay;
+    public StateReplay replay;
 
     [Tooltip("Optional: load this scene instead of the one stored on the replay.")]
     public SceneReference sceneOverride;

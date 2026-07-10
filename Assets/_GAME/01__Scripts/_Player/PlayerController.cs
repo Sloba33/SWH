@@ -29,7 +29,10 @@ public class PlayerController : MonoBehaviour
     public bool isPulling = false;
     public bool isPushing = false;
 
-    public bool HasAuthority => coherenceSync != null && coherenceSync.HasStateAuthority;
+    // No CoherenceSync means the player is purely local (single player, or the
+    // human in an offline bot match) — the local client IS the authority. Only a
+    // networked proxy (sync present, authority elsewhere) reports false.
+    public bool HasAuthority => coherenceSync == null || coherenceSync.HasStateAuthority;
     
     private void Awake()
     {

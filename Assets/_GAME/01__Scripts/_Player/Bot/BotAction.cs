@@ -41,7 +41,10 @@ public class BotAction
 {
     public BotActionType type;
 
-    [Tooltip("Target world position: where to walk to for MoveToPosition, and the player's end position for Pull.")]
+    [Tooltip("Position (local to the level root) relevant to this action: the waypoint to walk to for " +
+             "MoveToPosition, the player's end position for Pull, and the anchor where it fired for the " +
+             "discrete actions (Jump/Hit/HitDown/Special) — the executor fires those at this position along " +
+             "the movement leg, concurrently with the walk.")]
     public Vector3 targetPosition;
 
     [Tooltip("Idle time for Wait.")]

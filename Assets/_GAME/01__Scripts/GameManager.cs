@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour
     /// rely on it. IsMultiplayer stays true so the MP win/lose screens are used.
     /// </summary>
     public bool IsBotMatch { get; private set; }
-    private BotReplay _pendingBotReplay;
+    private StateReplay _pendingBotReplay;
+    private StateReplayDriver _botGhostDriver;
     public CharacterCollection characterCollection;
     public CharacterCollection multiplayerCharacterCollection;
     public bool Recording, DarkLevel;
@@ -324,31 +325,26 @@ public class GameManager : MonoBehaviour
         // synchronously from Start would race LevelGoal's own Start (it may not
         // have subscribed yet).
 
-        // Bot opponent — a random single-player character driven by the replay.
-        // BotController repositions it to the replay's recorded start, so the
-        // spawn point only needs to be a sane default.
+        // Bot opponent — a random single-player character turned into a state-replay
+        // ghost: AttachGhost neutralizes it (gameplay components disabled, colliders
+        // off, cameras destroyed) and the driver kinematically replays the recorded
+        // run into the opponent half. Playback starts when the countdown finishes
+        // (see RunCountdown), mirroring when the recorded human gained control.
         int botId = UnityEngine.Random.Range(0, characterCollection.Characters.Count);
         GameObject botPrefab = characterCollection.Characters[botId];
         GameObject bot = Instantiate(botPrefab, opponentSpawnPoint.position, botPrefab.transform.rotation);
 
-        // Reuse a BotController already on the prefab (if any) rather than adding a
-        // second one — otherwise the prefab's own controller auto-plays with no
-        // replay. We drive Play() explicitly after configuring, so autoPlay is off
-        // and there's no dependence on Start ordering.
-        BotController controller = bot.GetComponent<BotController>();
-        if (controller == null) controller = bot.AddComponent<BotController>();
-        controller.autoPlay = false;
-        controller.replay = _pendingBotReplay;
-        // Replay positions are authored relative to the opponent level's parent,
-        // so the whole level can be moved/rotated and the replay still lines up.
-        controller.levelRoot = levelGoal != null ? levelGoal.OpponentLevelRoot : null;
-        controller.Play();
+        Transform opponentRoot = levelGoal != null ? levelGoal.OpponentLevelRoot : null;
+        // The bot half is replay-driven only: freeze its live physics so authored
+        // at-height obstacles don't free-fall on their own at match start.
+        StateReplayDriver.FreezeReplayHalf(opponentRoot);
+        _botGhostDriver = StateReplayDriver.AttachGhost(bot, _pendingBotReplay, opponentRoot, autoPlay: false);
 
         // The local human vs. the bot share one Settings/LevelGoal, so neither
         // player's own win/lose path can decide the match. The arbiter owns the
         // outcome and routes it through the existing MP win/lose flow.
         BotMatchArbiter arbiter = gameObject.AddComponent<BotMatchArbiter>();
-        arbiter.Initialize(LocalPlayer, levelGoal);
+        arbiter.Initialize(LocalPlayer, levelGoal, _botGhostDriver);
 
         // Both "players" are present from the start, so kick off the countdown
         // immediately (mirrors the player-2 path in OnClientConnectionsSynced).
@@ -501,6 +497,12 @@ public class GameManager : MonoBehaviour
 
         if (controlsGameObject != null)
             controlsGameObject.SetActive(true);
+
+        // Bot match: the ghost starts the moment the human gains control, matching
+        // the recording's t=0 (when the recorded human started playing). Null in
+        // real multiplayer.
+        if (_botGhostDriver != null)
+            _botGhostDriver.Play();
     }
 
 }
