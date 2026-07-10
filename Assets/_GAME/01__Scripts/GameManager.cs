@@ -25,6 +25,33 @@ public class GameManager : MonoBehaviour
     /// rely on it. IsMultiplayer stays true so the MP win/lose screens are used.
     /// </summary>
     public bool IsBotMatch { get; private set; }
+    /// <summary>
+    /// True from match setup until gameplay begins. While set, live obstacles
+    /// hold still (no scripted falling) so both sides' falling schedules start
+    /// together. Cleared: at countdown end (bot matches and real multiplayer),
+    /// or at the player's first action (replay take sessions).
+    /// </summary>
+    public bool PreMatchFreeze { get; private set; }
+
+    /// <summary>
+    /// Single entry point for freeze transitions — rockets pause their idle spin
+    /// while frozen and restart it from phase 0 at gameplay start, keeping their
+    /// spin phase aligned between recording sessions and match playback.
+    /// </summary>
+    public void SetPreMatchFreeze(bool value)
+    {
+        if (PreMatchFreeze == value) return;
+        PreMatchFreeze = value;
+        Rocket.OnPreMatchFreezeChanged(value);
+    }
+
+    /// <summary>
+    /// Editor-only recording session started via Tools/SWH/Replay: the scene runs
+    /// locally (no Coherence), a local human is spawned, and ReplayTakeController
+    /// records the run. Always false in builds.
+    /// </summary>
+    public bool IsReplayTakeSession { get; private set; }
+
     private StateReplay _pendingBotReplay;
     private StateReplayDriver _botGhostDriver;
     public CharacterCollection characterCollection;
@@ -163,6 +190,12 @@ public class GameManager : MonoBehaviour
         IsBotMatch = BotMatchContext.IsBotMatch;
         _pendingBotReplay = BotMatchContext.PendingReplay;
         BotMatchContext.Clear();
+
+#if UNITY_EDITOR
+        // Editor-only: a replay take session flagged by the Tools/SWH/Replay menu
+        // (SessionState survives the play-mode domain reload).
+        IsReplayTakeSession = !IsBotMatch && ReplayTakeSession.IsActive;
+#endif
     }
     private void GenerateSkipButton()
     {
@@ -240,10 +273,15 @@ public class GameManager : MonoBehaviour
         levelGoal = FindFirstObjectByType<LevelGoal>();
         // Bot scenes are multiplayer scenes too, so IsMultiplayer is set in both
         // cases. IsBotMatch (resolved in Awake) is what tells us to run locally
-        // (no Coherence) instead of connecting to a room.
+        // (no Coherence) instead of connecting to a room; IsReplayTakeSession is
+        // the editor-only recording flow, also fully local.
         bool isBotMatch = IsBotMatch;
-        if(IsMultiplayer && !isBotMatch)
+        if(IsMultiplayer && !isBotMatch && !IsReplayTakeSession)
         {
+            // Real multiplayer freezes obstacle simulation until the countdown
+            // ends (cleared in RunCountdown), same as bot matches — no boxes
+            // falling while the players can't move yet.
+            SetPreMatchFreeze(true);
             // connectNetworkUI.gameObject.SetActive(true);
             if (CoherenceBridgeStore.TryGetBridge(gameObject.scene, out coherenceBridge))
             {
@@ -262,6 +300,10 @@ public class GameManager : MonoBehaviour
         else if (isBotMatch)
         {
             StartBotMatch();
+        }
+        else if (IsReplayTakeSession)
+        {
+            StartReplayTakeSession();
         }
         else
         {
@@ -306,6 +348,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void StartBotMatch()
     {
+        // Hold all live obstacle simulation until the countdown ends (cleared in
+        // RunCountdown, right where the ghost starts playing).
+        SetPreMatchFreeze(true);
+
         if (connectNetworkUI != null)
             connectNetworkUI.gameObject.SetActive(false);
 
@@ -316,10 +362,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Local human player — their selected single-player character.
-        int selectedId = Mathf.Clamp(PlayerPrefs.GetInt("SelectedCharacterID", 0), 0, characterCollection.Characters.Count - 1);
-        GameObject humanPrefab = characterCollection.Characters[selectedId];
-        GameObject human = Instantiate(humanPrefab, playerSpawnPoint.position, humanPrefab.transform.rotation);
-        LocalPlayer = human.GetComponent<Player>();
+        LocalPlayer = SpawnLocalHumanCharacter();
         // Note: we deliberately do NOT fire OnLocalPlayerSpawned here. Its only
         // listener (LevelGoal) self-initializes for bot matches, and invoking it
         // synchronously from Start would race LevelGoal's own Start (it may not
@@ -349,6 +392,45 @@ public class GameManager : MonoBehaviour
         // Both "players" are present from the start, so kick off the countdown
         // immediately (mirrors the player-2 path in OnClientConnectionsSynced).
         StartCoroutine(RunCountdown());
+    }
+
+    private Player SpawnLocalHumanCharacter()
+    {
+        int selectedId = Mathf.Clamp(PlayerPrefs.GetInt("SelectedCharacterID", 0), 0, characterCollection.Characters.Count - 1);
+        GameObject humanPrefab = characterCollection.Characters[selectedId];
+        GameObject human = Instantiate(humanPrefab, playerSpawnPoint.position, humanPrefab.transform.rotation);
+        return human.GetComponent<Player>();
+    }
+
+    /// <summary>
+    /// Editor-only recording flow (Tools/SWH/Replay/Record Replay In This Scene):
+    /// runs the multiplayer scene fully locally with just the human, frozen until
+    /// their first action. ReplayTakeController owns the record/unfreeze/save
+    /// lifecycle. No countdown, no bot, no arbiter — this is a take, not a match.
+    /// </summary>
+    private void StartReplayTakeSession()
+    {
+#if UNITY_EDITOR
+        SetPreMatchFreeze(true);
+
+        if (connectNetworkUI != null)
+            connectNetworkUI.gameObject.SetActive(false);
+
+        if (characterCollection == null || characterCollection.Characters.Count == 0)
+        {
+            Debug.LogError("[ReplayTake] characterCollection is empty; cannot start a take session.");
+            return;
+        }
+
+        LocalPlayer = SpawnLocalHumanCharacter();
+
+        if (controlsGameObject != null)
+            controlsGameObject.SetActive(true);
+
+        GameObject takeGO = new GameObject("ReplayTakeController");
+        ReplayTakeController take = takeGO.AddComponent<ReplayTakeController>();
+        take.Initialize(LocalPlayer, levelGoal != null ? levelGoal.PlayerLevelRoot : null);
+#endif
     }
 
     private void OnClientConnectionsSynced(CoherenceClientConnectionManager manager)
@@ -498,9 +580,10 @@ public class GameManager : MonoBehaviour
         if (controlsGameObject != null)
             controlsGameObject.SetActive(true);
 
-        // Bot match: the ghost starts the moment the human gains control, matching
-        // the recording's t=0 (when the recorded human started playing). Null in
-        // real multiplayer.
+        // Gameplay begins — live obstacles may fall and rocket spins restart from
+        // phase 0. In a bot match the ghost starts at the same instant, matching
+        // the recording's t=0 (driver null in real multiplayer).
+        SetPreMatchFreeze(false);
         if (_botGhostDriver != null)
             _botGhostDriver.Play();
     }

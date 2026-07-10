@@ -149,22 +149,25 @@ public class LevelGoal : MonoBehaviour
     /// </summary>
     public Transform OpponentLevelRoot => opponentLevel;
 
+    /// <summary>Parent transform of the local player's half — the recording root for replay take sessions.</summary>
+    public Transform PlayerLevelRoot => playerLevel;
+
     private bool started;
     
     private void Start()
     {
         coherenceSync = GetComponent<CoherenceSync>();
         
-        if(GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsBotMatch)
+        if(GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsBotMatch && !GameManager.Instance.IsReplayTakeSession)
         {
             GameManager.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;
         }
         else
         {
-            // Single player and local bot matches both initialize directly. A bot
-            // match runs the human as "host" (no side swap), so the scene's
-            // ObstaclesToDestroy_Player stays the human's side and
-            // ObstaclesToDestroy_Opponent stays the bot's.
+            // Single player, local bot matches and replay take sessions all
+            // initialize directly. A bot match runs the human as "host" (no side
+            // swap), so the scene's ObstaclesToDestroy_Player stays the human's
+            // side and ObstaclesToDestroy_Opponent stays the bot's.
             StartCoroutine(Initialize());
         }
 
@@ -173,6 +176,12 @@ public class LevelGoal : MonoBehaviour
 
     private IEnumerator Initialize()
     {
+        // Hold all timed systems (falling-obstacle schedules, the match timer via
+        // the Initialized flag) until gameplay actually begins: countdown end in
+        // matches, the player's first action in replay take sessions. Keeps the
+        // level's timed events aligned between recordings and playback. No-op in
+        // single player (PreMatchFreeze is never set there).
+        yield return new WaitUntil(() => GameManager.Instance == null || !GameManager.Instance.PreMatchFreeze);
 
         Debug.Log("Should Ignore STARS " + shouldIgnoreBonusStars);
 

@@ -116,6 +116,7 @@ public class StateReplayRecorder : MonoBehaviour
         Obstacle.ObstacleDestroyed += OnObstacleDestroyed;
         Obstacle.ObstacleSpawned += OnObstacleSpawned;
         Player.PlayerDied += OnPlayerDied;
+        Rocket.RocketLaunched += OnRocketLaunched;
         _deathRecorded = false;
 
         ComputeHalfBounds();
@@ -126,7 +127,11 @@ public class StateReplayRecorder : MonoBehaviour
         {
             foreach (var kvp in _scope.Entities)
             {
-                if (kvp.Value == null || kvp.Value.GetComponent<Obstacle>() == null) continue;
+                if (kvp.Value == null) continue;
+                // Obstacles move when pushed/pulled/falling; rockets when they fly.
+                // Both are sparse tracks — nothing is written while they hold still
+                // (a rocket's idle spin animates a child, not the tracked root).
+                if (kvp.Value.GetComponent<Obstacle>() == null && kvp.Value.GetComponent<Rocket>() == null) continue;
                 StartTracking(kvp.Value);
             }
         }
@@ -146,6 +151,7 @@ public class StateReplayRecorder : MonoBehaviour
         Obstacle.ObstacleDestroyed -= OnObstacleDestroyed;
         Obstacle.ObstacleSpawned -= OnObstacleSpawned;
         Player.PlayerDied -= OnPlayerDied;
+        Rocket.RocketLaunched -= OnRocketLaunched;
         SamplePlayer(); // final pose
         foreach (TrackBuilder tb in _tracks)
         {
@@ -161,6 +167,26 @@ public class StateReplayRecorder : MonoBehaviour
         Obstacle.ObstacleDestroyed -= OnObstacleDestroyed;
         Obstacle.ObstacleSpawned -= OnObstacleSpawned;
         Player.PlayerDied -= OnPlayerDied;
+        Rocket.RocketLaunched -= OnRocketLaunched;
+    }
+
+    /// <summary>
+    /// A rocket launched during recording. Only the launch moment is an event;
+    /// the flight itself is captured by the rocket's movement track and its
+    /// destructions by the ordinary obstacle destroy events.
+    /// </summary>
+    private void OnRocketLaunched(Rocket rocket)
+    {
+        if (!_recording) return;
+        ReplayId rid = ReplayId.Of(rocket);
+        if (rid == null || rid.Id == 0)
+        {
+            Debug.LogWarning($"[StateReplayRecorder] Launched rocket '{rocket.name}' has no ReplayId — " +
+                             "not recorded. Run Tools/SWH/Replay/Assign Replay IDs.", rocket);
+            return;
+        }
+        if (_scope != null && rid.Scope != _scope) return;
+        _events.Add(new ReplayEvent { t = _time, entityId = rid.Id, kind = ReplayEventKind.RocketLaunched });
     }
 
     private bool _deathRecorded;

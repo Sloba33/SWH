@@ -181,11 +181,28 @@ public class Obstacle : MonoBehaviour
 
     private bool controllerCleared;
 
+    /// <summary>
+    /// Set for obstacles on the bot's half of a local bot match: their movement
+    /// comes exclusively from the state replay's tracks, so all self-simulation
+    /// (scripted falling, repositioning, ground checks) must be off — same idea
+    /// as the Coherence remote-proxy early-out below, but for offline replays.
+    /// </summary>
+    [HideInInspector] public bool replayDriven;
+
     private void FixedUpdate()
     {
         Moving = isFalling || isBeingPulled || isBeingPushed || !isPositioned;
 
         if (_coherenceSync != null && !_coherenceSync.HasStateAuthority)
+        {
+            UpdateProxyFallIndicator();
+            return;
+        }
+
+        // Replay-driven (bot-half) obstacles are moved by StateReplayDriver;
+        // PreMatchFreeze holds the live half still until the countdown ends so
+        // both sides' falling schedules start at the same moment the replay does.
+        if (replayDriven || (GameManager.Instance != null && GameManager.Instance.PreMatchFreeze))
         {
             UpdateProxyFallIndicator();
             return;

@@ -157,9 +157,13 @@ public class Rocket : MonoBehaviour
         LaunchRocket();
     }
 
+    /// <summary>Raised when a rocket actually launches. The state-replay recorder captures it as a replay event.</summary>
+    public static event System.Action<Rocket> RocketLaunched;
+
     [Button("Launch Rocket")]
     private void LaunchRocket()
     {
+        RocketLaunched?.Invoke(this);
         _animator.enabled = false;
         _playerTrigger.enabled = false;
         spriteCanvas.SetActive(false);
@@ -167,6 +171,46 @@ public class Rocket : MonoBehaviour
         _fireParticleObject.SetActive(true);
         _smokeParticleObject.SetActive(true);
         StartCoroutine(MoveForwardWithAcceleration());
+    }
+
+    /// <summary>
+    /// Replay-driven launch: visuals only. The flight path is played back by the
+    /// entity movement track and the destroyed obstacles by recorded destroy
+    /// events, so no live movement, no destruction trigger. Disables this
+    /// component so Update's fake gravity can't fight the track.
+    /// </summary>
+    public void ReplayLaunch()
+    {
+        if (_isLaunched) return;
+        _isLaunched = true;
+        _animator.enabled = false;
+        _playerTrigger.enabled = false;
+        spriteCanvas.SetActive(false);
+        _fireParticleObject.SetActive(true);
+        _smokeParticleObject.SetActive(true);
+        enabled = false;
+    }
+
+    /// <summary>
+    /// PreMatchFreeze hook: the idle spin (a looping Animator clip) pauses while
+    /// frozen and restarts from phase 0 at gameplay start. Recording sessions and
+    /// match playback both unfreeze at their t=0, so the spin phase at any
+    /// gameplay time matches the recording up to minor animator drift — which is
+    /// purely cosmetic, since the actual fired direction is replayed as a
+    /// movement track, not derived from rotation.
+    /// </summary>
+    public static void OnPreMatchFreezeChanged(bool frozen)
+    {
+        foreach (Rocket rocket in FindObjectsByType<Rocket>(FindObjectsSortMode.None))
+        {
+            if (rocket._animator == null || rocket._isLaunched) continue;
+            rocket._animator.speed = frozen ? 0f : 1f;
+            if (!frozen)
+            {
+                AnimatorStateInfo state = rocket._animator.GetCurrentAnimatorStateInfo(0);
+                rocket._animator.Play(state.fullPathHash, 0, 0f);
+            }
+        }
     }
     private IEnumerator MoveForwardWithAcceleration()
 {

@@ -38,6 +38,9 @@ public class StateReplayDriver : MonoBehaviour
         public int cursor;
         public Transform target;     // resolved lazily (spawned entities appear mid-replay)
         public bool resolvedOnce;    // resolved then Unity-null again ⇒ destroyed, track done
+        public Obstacle obstacle;    // cached for isFalling parity (fall indicator)
+        public float lastY;
+        public bool hasLastY;
     }
     private readonly List<TrackState> _trackStates = new List<TrackState>();
 
@@ -98,6 +101,10 @@ public class StateReplayDriver : MonoBehaviour
         if (root == null) return;
         foreach (Obstacle obs in root.GetComponentsInChildren<Obstacle>(true))
         {
+            // Obstacle falling is scripted (HandleFall), not gravity — so the
+            // kinematic rigidbody alone doesn't stop it. replayDriven makes the
+            // obstacle behave like a network proxy: no self-simulation at all.
+            obs.replayDriven = true;
             Rigidbody rb = obs.GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;
             foreach (Collider col in obs.GetComponentsInChildren<Collider>(true))
@@ -128,11 +135,20 @@ public class StateReplayDriver : MonoBehaviour
 
     public void Play()
     {
+        // Reentry guard: a second Play mid-replay would rewind time and every
+        // cursor, visibly replaying falls/events from the start. Nothing should
+        // call it twice — if the log below ever shows up mid-match, find the caller.
+        if (_playing)
+        {
+            Debug.LogWarning("[StateReplayDriver] Play() called while already playing — ignored.", this);
+            return;
+        }
         if (replay == null || replay.playerTrack.Count == 0)
         {
             Debug.LogWarning("[StateReplayDriver] No replay (or empty player track); nothing to play.", this);
             return;
         }
+        Debug.Log($"[StateReplayDriver] Playback started: '{replay.name}' ({replay.duration:F1}s).", this);
         _animator = GetComponent<Animator>();
         _scope = levelRoot != null ? levelRoot.GetComponent<ReplayScope>() : null;
         if (_scope == null && replay.events.Count > 0)
@@ -256,6 +272,11 @@ public class StateReplayDriver : MonoBehaviour
                 if (obstacle != null) obstacle.ReplayDestroy();
                 else entity.gameObject.SetActive(false); // fallback: at least make it vanish
                 break;
+
+            case ReplayEventKind.RocketLaunched:
+                Rocket rocket = entity.GetComponent<Rocket>();
+                if (rocket != null) rocket.ReplayLaunch();
+                break;
         }
     }
 
@@ -277,6 +298,7 @@ public class StateReplayDriver : MonoBehaviour
                 if (_scope == null || !_scope.TryResolve(ts.track.entityId, out ReplayId entity) || entity == null)
                     continue; // not spawned yet (or unknown id — spawn/destroy paths warn already)
                 ts.target = entity.transform;
+                ts.obstacle = entity.GetComponent<Obstacle>();
                 ts.resolvedOnce = true;
             }
 
@@ -304,7 +326,19 @@ public class StateReplayDriver : MonoBehaviour
             }
 
             ts.target.position = ToWorld(pos);
-            ts.target.rotation = Quaternion.Euler(0f, RootYaw() + yaw, 0f);
+            // Preserve the entity's authored X/Z tilt (rockets are tilted; only
+            // yaw is recorded) — obstacles have zero tilt, so this is a no-op there.
+            Vector3 euler = ts.target.eulerAngles;
+            ts.target.rotation = Quaternion.Euler(euler.x, RootYaw() + yaw, euler.z);
+
+            // Parity with MP proxies: flag downward track motion as isFalling so
+            // the ground fall-indicator shows under bot-side falling obstacles.
+            if (ts.obstacle != null)
+            {
+                ts.obstacle.isFalling = ts.hasLastY && (ts.lastY - pos.y) > 0.005f;
+                ts.lastY = pos.y;
+                ts.hasLastY = true;
+            }
         }
     }
 

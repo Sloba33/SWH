@@ -94,7 +94,14 @@ public enum ReplayEventKind
     /// dying is how the human wins a match against a losing recording.
     /// </summary>
     PlayerDied = 1,
-    // Collect / activate events follow in later slices.
+    /// <summary>
+    /// The rocket launched. Playback runs Rocket.ReplayLaunch (visuals only) —
+    /// the flight path comes from the rocket's movement track and the obstacles
+    /// it destroys from recorded destroy events, so the fired direction is exact
+    /// without recording rotation.
+    /// </summary>
+    RocketLaunched = 2,
+    // Collect / activate events for other collectibles follow next.
 }
 
 /// <summary>A discrete state change on a tracked entity, resolved by <see cref="ReplayId"/> at playback.</summary>
