@@ -41702,6 +41702,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReplayId
   id: 35
+--- !u!114 &904181985 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8162038572874200958, guid: b3fcda143a6033045a71b410cca65634,
+    type: 3}
+  m_PrefabInstance: {fileID: 904181981}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904181983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &907631624
 GameObject:
   m_ObjectHideFlags: 0
@@ -83861,6 +83873,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReplayId
   id: 35
+--- !u!114 &1790783410 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8162038572874200958, guid: b3fcda143a6033045a71b410cca65634,
+    type: 3}
+  m_PrefabInstance: {fileID: 1790783406}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790783408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a13c85dcd13d834993a023acd694b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1792891836
 GameObject:
   m_ObjectHideFlags: 0
@@ -148317,12 +148341,12 @@ PrefabInstance:
     - target: {fileID: 3836054489190410858, guid: 36277b2db15074b4b973a36e96eb7272,
         type: 3}
       propertyPath: ObstaclesToDestroy_Player.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3836054489190410858, guid: 36277b2db15074b4b973a36e96eb7272,
         type: 3}
       propertyPath: ObstaclesToDestroy_Opponent.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3836054489190410858, guid: 36277b2db15074b4b973a36e96eb7272,
         type: 3}
@@ -148348,7 +148372,7 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[4]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1790783410}
     - target: {fileID: 3836054489190410858, guid: 36277b2db15074b4b973a36e96eb7272,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Player.Array.data[5]'
@@ -148463,7 +148487,7 @@ PrefabInstance:
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Opponent.Array.data[4]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 904181985}
     - target: {fileID: 3836054489190410858, guid: 36277b2db15074b4b973a36e96eb7272,
         type: 3}
       propertyPath: 'ObstaclesToDestroy_Opponent.Array.data[5]'

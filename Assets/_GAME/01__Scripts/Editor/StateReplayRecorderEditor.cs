@@ -59,6 +59,15 @@ public class StateReplayRecorderEditor : Editor
 
         StateReplay replay = ScriptableObject.CreateInstance<StateReplay>();
         recorder.PopulateReplay(replay);
+        // Same parseable label format as ReplayTakeController (minus the outcome,
+        // which only the take flow knows).
+        if (recorder.target != null)
+        {
+            replay.label = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "speed={0:0.##} strength={1:0.##} duration={2}",
+                recorder.target.StartingMoveSpeed, recorder.target.StartingStrenght,
+                Mathf.RoundToInt(replay.duration));
+        }
         AssetDatabase.CreateAsset(replay, path);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();

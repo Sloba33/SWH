@@ -200,7 +200,12 @@ public class LevelGoal : MonoBehaviour
         FindAndAddTilesToList();
         AddObstaclesToInitialCounts();
         // PopulateGoalObstaclePrefabs();
-        CreateObstacleTemplates();
+        // Recovery-spawn templates clone live goal obstacles — including their
+        // ReplayId components, which pollutes the replay scope with duplicate ids.
+        // The recovery system is disabled in multiplayer (bot and online) and
+        // unwanted during replay take sessions, so don't build its templates there.
+        if (!GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsReplayTakeSession)
+            CreateObstacleTemplates();
 
         if (DualLevel)
         {

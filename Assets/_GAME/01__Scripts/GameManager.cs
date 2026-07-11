@@ -141,7 +141,21 @@ public class GameManager : MonoBehaviour
     public void DisconnectAndReturnToMatchmaking()
     {
         Disconnect();
-        FindAnyObjectByType<SceneLoader>().LoadSceneFile("03_Matchmaking");
+        LoadSceneViaLoaderOrDirect("03_Matchmaking");
+    }
+
+    /// <summary>
+    /// Prefers SceneLoader (loading screen) but falls back to a direct load —
+    /// not every scene carries a SceneLoader, and the flow must survive being
+    /// started from the matchmaking scene without the boot/menu scenes.
+    /// </summary>
+    private static void LoadSceneViaLoaderOrDirect(string sceneName)
+    {
+        SceneLoader loader = FindAnyObjectByType<SceneLoader>();
+        if (loader != null)
+            loader.LoadSceneFile(sceneName);
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
     }
 
     private void Disconnect()
@@ -162,7 +176,7 @@ public class GameManager : MonoBehaviour
     public void DisconnectAndReturnToMainMenu()
     {
         Disconnect();
-        FindAnyObjectByType<SceneLoader>().LoadSceneFile("01_MainMenu");
+        LoadSceneViaLoaderOrDirect("01_MainMenu");
     }
     
     private void SetTestBuildPrefs()

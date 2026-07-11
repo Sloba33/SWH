@@ -16,7 +16,10 @@
       "mcp__unity-mcp-gateway__Unity_RunCommand",
       "mcp__unity-mcp-gateway__Unity_GetConsoleLogs",
       "Bash(xargs grep -l \"EndScreenCamera\")",
-      "Bash(xargs grep -l \"m_RenderType\\\\|m_Cameras\\\\|cameraStack\")"
+      "Bash(xargs grep -l \"m_RenderType\\\\|m_Cameras\\\\|cameraStack\")",
+      "Bash(rm -v \"_GAME/01__Scripts/_Player/Bot/BotController.cs\" \"_GAME/01__Scripts/_Player/Bot/BotController.cs.meta\" \"_GAME/01__Scripts/_Player/Bot/BotAction.cs\" \"_GAME/01__Scripts/_Player/Bot/BotAction.cs.meta\" \"_GAME/01__Scripts/_Player/Bot/BotReplay.cs\" \"_GAME/01__Scripts/_Player/Bot/BotReplay.cs.meta\" \"_GAME/01__Scripts/_Player/Bot/BotRecorder.cs\" \"_GAME/01__Scripts/_Player/Bot/BotRecorder.cs.meta\" \"_GAME/01__Scripts/Editor/BotRecorderEditor.cs\" \"_GAME/01__Scripts/Editor/BotRecorderEditor.cs.meta\")",
+      "Bash(rm -rv \"Resources/BotReplays\")",
+      "Bash(cd *)"
     ]
   }
 }

@@ -11,8 +11,15 @@ using UnityEngine.UI;
 /// <summary>
 /// Drives <see cref="CoherenceMatchmaker"/> for the production matchmaking-waiting
 /// scene. Shows a "Waiting for opponent / Opponent found / Game starting" status,
-/// wires the cancel button, and falls back to a bot scene if no opponent shows up
-/// within the configured timeout.
+/// wires the cancel button, and falls back to a local bot match (a state-replay
+/// ghost, see <see cref="StateReplay"/>) if no opponent shows up within the
+/// configured timeout.
+///
+/// The scene is self-sufficient: it can be entered directly in the editor (or be
+/// the first scene of a test build) without going through boot/menu scenes — all
+/// inputs come from PlayerPrefs and serialized fields. For fast iteration,
+/// <see cref="debugInstantBotMatch"/> skips Coherence entirely and starts a bot
+/// match immediately.
 /// </summary>
 public class MultiplayerMatchmakingController : MonoBehaviour
 {
@@ -42,9 +49,14 @@ public class MultiplayerMatchmakingController : MonoBehaviour
     [Header("Bot Fallback")]
     [SerializeField] private bool fallbackToBotEnabled = true;
     [SerializeField] private float botFallbackTimeoutSeconds = 15f;
-    [Tooltip("Resources sub-folder that holds the BotReplay assets. On fallback one is picked at " +
-             "random and its scene is loaded as a local bot match.")]
+    [Tooltip("Resources sub-folder that holds the StateReplay assets. On fallback one valid replay is " +
+             "picked at random and its scene is loaded as a local bot match.")]
     [SerializeField] private string botReplaysResourcesFolder = "BotReplays";
+
+    [Header("Testing")]
+    [Tooltip("Skip Coherence matchmaking entirely and start a bot match immediately with a random replay. " +
+             "For iterating from this scene without waiting out the fallback timeout. Leave OFF in production.")]
+    [SerializeField] private bool debugInstantBotMatch;
 
     [Header("Navigation")]
     [SerializeField] private SceneReference mainMenuScene;
@@ -89,7 +101,33 @@ public class MultiplayerMatchmakingController : MonoBehaviour
         CoherenceMatchmaker.StateChanged += OnMatchmakingStateChanged;
         ApplyState(CoherenceMatchmaker.MatchmakingState.WaitingForOpponent);
 
+        if (debugInstantBotMatch && TryStartInstantBotMatch())
+        {
+            return;
+        }
+
         StartMatchmaking();
+    }
+
+    /// <summary>
+    /// Testing shortcut: start a bot match right now, no Coherence involved.
+    /// Returns false (falling through to normal matchmaking) when no usable
+    /// replay exists.
+    /// </summary>
+    private bool TryStartInstantBotMatch()
+    {
+        StateReplay replay = PickRandomBotReplay();
+        if (replay == null)
+        {
+            Debug.LogWarning("[Matchmaking] debugInstantBotMatch is on but no usable replay was found — running normal matchmaking.");
+            return false;
+        }
+        Debug.Log($"[Matchmaking] debugInstantBotMatch: starting bot match with '{replay.name}' in '{replay.scene.Name}'.");
+        SetStatus(botFallbackText);
+        SetCancelInteractable(false);
+        BotMatchContext.PendingReplay = replay;
+        SceneManager.LoadScene(replay.scene.Name);
+        return true;
     }
 
     private void OnDestroy()
@@ -120,12 +158,11 @@ public class MultiplayerMatchmakingController : MonoBehaviour
             // Pick the bot replay up front (on the main thread, before any await).
             // We hand the matchmaker just this replay's scene as the bot-level pool
             // so its fallback path resolves to the same scene we then load with the
-            // replay attached. If no replays exist, fallback is effectively off and
-            // matchmaking simply keeps waiting for a real opponent.
-            StateReplay botCandidate = PickRandomBotReplay();
+            // replay attached. If no usable replay exists, fallback is effectively
+            // off and matchmaking simply keeps waiting for a real opponent.
+            StateReplay botCandidate = PickRandomBotReplay(); // validated: scene is loadable
             var botLevelNames = new List<string>();
-            if (botCandidate != null && botCandidate.scene != null &&
-                botCandidate.scene.UnsafeReason == SceneReferenceUnsafeReason.None)
+            if (botCandidate != null)
             {
                 botLevelNames.Add(botCandidate.scene.Name);
             }
@@ -262,7 +299,9 @@ public class MultiplayerMatchmakingController : MonoBehaviour
 
     /// <summary>
     /// Loads every StateReplay from the configured Resources folder and returns a
-    /// random one, or null when fallback is disabled or no replays exist. Must be
+    /// random one whose scene is loadable (assigned + in Build Settings), or null
+    /// when fallback is disabled or nothing usable exists. Invalid assets are
+    /// reported individually instead of silently disabling the fallback. Must be
     /// called on the main thread (Resources.LoadAll is not thread-safe).
     /// </summary>
     private StateReplay PickRandomBotReplay()
@@ -271,6 +310,7 @@ public class MultiplayerMatchmakingController : MonoBehaviour
         {
             return null;
         }
+
         StateReplay[] replays = Resources.LoadAll<StateReplay>(botReplaysResourcesFolder);
         if (replays == null || replays.Length == 0)
         {
@@ -278,7 +318,23 @@ public class MultiplayerMatchmakingController : MonoBehaviour
                              $"Resources/{botReplaysResourcesFolder}. Matchmaking will keep waiting for a real opponent.");
             return null;
         }
-        return replays[UnityEngine.Random.Range(0, replays.Length)];
+
+        var valid = new List<StateReplay>(replays.Length);
+        foreach (StateReplay replay in replays)
+        {
+            if (replay.scene != null && replay.scene.UnsafeReason == SceneReferenceUnsafeReason.None)
+                valid.Add(replay);
+            else
+                Debug.LogWarning($"[Matchmaking] Replay '{replay.name}' has no loadable scene " +
+                                 $"({(replay.scene == null ? "unassigned" : replay.scene.UnsafeReason.ToString())}) — skipped.", replay);
+        }
+
+        if (valid.Count == 0)
+        {
+            Debug.LogWarning("[Matchmaking] No replay with a loadable scene — bot fallback unavailable.");
+            return null;
+        }
+        return valid[UnityEngine.Random.Range(0, valid.Count)];
     }
 
     private static List<string> ToSceneNames(List<SceneReference> refs)

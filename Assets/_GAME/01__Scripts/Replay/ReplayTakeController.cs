@@ -26,6 +26,11 @@ public class ReplayTakeController : MonoBehaviour
     private bool _started;
     private bool _ending;
 
+    // Captured at recording start (after Player.Start applied override/upgrade
+    // stats) and stamped into the saved replay's label for later filtering.
+    private float _takeMoveSpeed;
+    private float _takeStrength;
+
     public void Initialize(Player player, Transform levelRoot)
     {
         _player = player;
@@ -54,6 +59,8 @@ public class ReplayTakeController : MonoBehaviour
             if (_input != null && FirstActionDetected())
             {
                 _started = true;
+                _takeMoveSpeed = _player != null ? _player.StartingMoveSpeed : 0f;
+                _takeStrength = _player != null ? _player.StartingStrenght : 0f;
                 GameManager.Instance.SetPreMatchFreeze(false);
                 _recorder.StartRecording();
                 Debug.Log("[ReplayTake] First action — level unfrozen, recording started.");
@@ -125,11 +132,15 @@ public class ReplayTakeController : MonoBehaviour
         {
             StateReplay replay = ScriptableObject.CreateInstance<StateReplay>();
             _recorder.PopulateReplay(replay);
-            replay.label = outcome;
+            // Parseable key=value label for filtering replays later (invariant
+            // culture so decimals are always dots regardless of editor locale).
+            replay.label = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "{0} speed={1:0.##} strength={2:0.##} duration={3}",
+                outcome, _takeMoveSpeed, _takeStrength, Mathf.RoundToInt(replay.duration));
             AssetDatabase.CreateAsset(replay, path);
             AssetDatabase.SaveAssets();
             EditorGUIUtility.PingObject(replay);
-            Debug.Log($"[ReplayTake] Saved {replay.duration:F1}s replay ({outcome}) to {path}.");
+            Debug.Log($"[ReplayTake] Saved replay to {path} — label: '{replay.label}'.");
         }
 
         EditorApplication.isPlaying = false;

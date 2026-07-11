@@ -8,10 +8,9 @@ using UnityEngine;
 /// recorded playthrough, played back kinematically (no simulation, no physics,
 /// no gameplay logic — so no drift and no determinism requirements).
 ///
-/// This is the successor to the command-based <see cref="BotReplay"/>. Positions
-/// follow the same convention: local to the level root (<see cref="ReplayScope"/>
-/// transform), so a replay recorded on one half of an MP level plays back on the
-/// other half, and levels can be moved/rotated without invalidating replays.
+/// Positions are local to the level root (<see cref="ReplayScope"/> transform),
+/// so a replay recorded on one half of an MP level plays back on the other half,
+/// and levels can be moved/rotated without invalidating replays.
 ///
 /// Player-only slice for now: player transform track + animator parameter events.
 /// Entity tracks (obstacles), lifecycle events (spawn/destroy) and powerup events

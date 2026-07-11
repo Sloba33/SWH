@@ -49,18 +49,19 @@ public class Player : MonoBehaviour
             if(playerController.HasAuthority)
             {
                 pc.AssignControls(playerController);
+                // Multiplayer (online and bot matches) respects player upgrades,
+                // same as single player. Remote proxies skip this — their movement
+                // is synced, not simulated.
+                ApplyLocalPlayerStats();
             }
         }
         else
         {
             if(!playerController.AI)
             {
-                StartingStrenght =
-                    PlayerPrefs.GetFloat(characterStats.characterName + "_strength", characterStats.strength);
-
-                StartingMoveSpeed = PlayerPrefs.GetFloat(characterStats.characterName + "_speed", characterStats.speed);
+                ApplyLocalPlayerStats();
             }
-            
+
             pc.AssignControls(playerController);
         }
         
@@ -91,6 +92,28 @@ public class Player : MonoBehaviour
         // StartingMoveSpeed = 4f;
 
     }
+    /// <summary>
+    /// Sets Starting* stats for the local human: the upgrade system's values
+    /// (PlayerPrefs per character, falling back to the CharacterStats base) — or,
+    /// in an editor replay take session with an override armed, the exact stats
+    /// chosen in the Record Replay window, so takes are made at controlled stats.
+    /// </summary>
+    private void ApplyLocalPlayerStats()
+    {
+#if UNITY_EDITOR
+        if (GameManager.Instance.IsReplayTakeSession && ReplayTakeSession.OverrideStats)
+        {
+            StartingMoveSpeed = ReplayTakeSession.MoveSpeed;
+            StartingStrenght = ReplayTakeSession.Strength;
+            Debug.Log($"[ReplayTake] Recording with overridden stats: speed {StartingMoveSpeed}, strength {StartingStrenght}.");
+            return;
+        }
+#endif
+        StartingStrenght =
+            PlayerPrefs.GetFloat(characterStats.characterName + "_strength", characterStats.strength);
+        StartingMoveSpeed = PlayerPrefs.GetFloat(characterStats.characterName + "_speed", characterStats.speed);
+    }
+
     public float newMoveSpeed;
     public float PushAndPullSpeed(float obstacleWeight)
     {
@@ -322,7 +345,11 @@ public class Player : MonoBehaviour
     {
         if (!hasStrengthBuff)
         {
-            characterStats.strength += (int)amount;
+            // Deliberately does NOT touch characterStats: that's a shared
+            // ScriptableObject asset — in the editor a write persists across play
+            // sessions (a buff that never expired permanently inflated the base
+            // stat). The live Strength field alone carries the buff; nothing in
+            // gameplay reads characterStats.strength at runtime.
             Strength += amount;
             hasStrengthBuff = true;
             remainingStrengthBuffTime = duration;
@@ -349,7 +376,6 @@ public class Player : MonoBehaviour
         }
         SetSprintParticlesNetworked(SprintParticleKind.Strength, false);
         Strength = StartingStrenght;
-        characterStats.strength = (int)StartingStrenght;
         buffedStrength = Strength;
         hasStrengthBuff = false;
         remainingStrengthBuffTime = 0f;
