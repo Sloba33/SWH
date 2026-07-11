@@ -4,7 +4,18 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     private InputActions inputActions;
-    public Vector2 MoveInput { get; private set; }
+    private Vector2 _moveInput;
+
+    /// <summary>
+    /// Reads zero while the pre-match countdown freeze is on (the backing value
+    /// still updates, so a stick held through "GO!" engages immediately).
+    /// </summary>
+    public Vector2 MoveInput => InputLocked ? Vector2.zero : _moveInput;
+
+    // Players may not act during the pre-match countdown. Replay take sessions
+    // are exempt: there the first action WHILE frozen is what starts recording.
+    private static bool InputLocked =>
+        GameManager.Instance != null && GameManager.Instance.PreMatchFreeze && !GameManager.Instance.IsReplayTakeSession;
 
     private CameraController cameraController;
 
@@ -17,7 +28,7 @@ public class PlayerInputHandler : MonoBehaviour
     [HideInInspector] public bool BotControlled = false;
     private bool _botJump, _botHit, _botHitDown, _botSpecial, _botPull, _botPullReleased;
 
-    public void BotSetMove(Vector2 dir) { if (BotControlled) MoveInput = dir; }
+    public void BotSetMove(Vector2 dir) { if (BotControlled) _moveInput = dir; }
     public void BotQueueJump() { _botJump = true; }
     public void BotQueueHit() { _botHit = true; }
     public void BotQueueHitDown() { _botHitDown = true; }
@@ -29,7 +40,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         inputActions = new InputActions();
         inputActions.Player.Move.performed += OnMovePerformed;
-        inputActions.Player.Move.canceled += _ => { if (!BotControlled) MoveInput = Vector2.zero; };
+        inputActions.Player.Move.canceled += _ => { if (!BotControlled) _moveInput = Vector2.zero; };
 
         // No need to set up specific event handlers for these in PlayerInputHandler.
         // WasPressedThisFrame() handles the single-frame detection automatically.
@@ -72,15 +83,15 @@ public class PlayerInputHandler : MonoBehaviour
         // Prevent diagonal movement, prioritize larger axis
         if (Mathf.Abs(rawInput.x) > Mathf.Abs(rawInput.y))
         {
-            MoveInput = new Vector2(Mathf.Sign(rawInput.x), 0);
+            _moveInput = new Vector2(Mathf.Sign(rawInput.x), 0);
         }
         else if (Mathf.Abs(rawInput.y) > 0)
         {
-            MoveInput = new Vector2(0, Mathf.Sign(rawInput.y));
+            _moveInput = new Vector2(0, Mathf.Sign(rawInput.y));
         }
         else
         {
-            MoveInput = Vector2.zero;
+            _moveInput = Vector2.zero;
         }
     }
 
@@ -89,18 +100,21 @@ public class PlayerInputHandler : MonoBehaviour
     // fires for exactly one consumer-read, mirroring WasPressedThisFrame.
     public bool GetJumpPressedThisFrame()
     {
+        if (InputLocked) return false;
         if (BotControlled) { bool v = _botJump; _botJump = false; return v; }
         return inputActions.Player.Jump.WasPressedThisFrame();
     }
 
     public bool GetHitPressedThisFrame()
     {
+        if (InputLocked) return false;
         if (BotControlled) { bool v = _botHit; _botHit = false; return v; }
         return inputActions.Player.Hit.WasPressedThisFrame(); // Assuming "Hit" action for C key
     }
 
     public bool GetHitDownPressedThisFrame()
     {
+        if (InputLocked) return false;
         if (BotControlled) { bool v = _botHitDown; _botHitDown = false; return v; }
         return inputActions.Player.HitDown.WasPressedThisFrame(); // Assuming "HitDown" action for X key
     }
@@ -108,17 +122,20 @@ public class PlayerInputHandler : MonoBehaviour
     // You might need a "Special" action in your InputActions for keyboard/gamepad special attack
     public bool GetSpecialAttackPressedThisFrame()
     {
+        if (InputLocked) return false;
         if (BotControlled) { bool v = _botSpecial; _botSpecial = false; return v; }
         // Assuming you add a "Special" action (e.g., bound to 'V' key from PlayerControls)
         return inputActions.Player.Special.WasPressedThisFrame();
     }
     public bool GetPullPressedThisFrame()
     {
+        if (InputLocked) return false;
         if (BotControlled) { bool v = _botPull; _botPull = false; return v; }
         return inputActions.Player.Pull.WasPressedThisFrame();
     }
     public bool GetPullReleasedThisFrame()
     {
+        if (InputLocked) return false;
         if (BotControlled) { bool v = _botPullReleased; _botPullReleased = false; return v; }
         return inputActions.Player.Pull.WasReleasedThisFrame();
     }

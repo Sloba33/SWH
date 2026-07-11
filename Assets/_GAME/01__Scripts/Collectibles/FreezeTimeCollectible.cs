@@ -22,6 +22,7 @@ public class FreezeTimeCollectible : CollectibleItem
                 Debug.Log("Freezing time for " + freezeDuration + " seconds.");
                 StartCoroutine(levelGoal.FreezeTime(freezeDuration));
             }
+            RaiseConsumed();
             isCollected = true;
             if (MeshList.Count > 0)
             {
@@ -37,4 +38,21 @@ public class FreezeTimeCollectible : CollectibleItem
         }
     }
 
+    /// <summary>
+    /// Replay pickup: vanish + sound only. The time-freeze effect itself needs no
+    /// replay action — the frozen obstacles' (non-)motion is baked into the
+    /// recorded movement tracks.
+    /// </summary>
+    public override void ReplayCollect(Player ghostPlayer)
+    {
+        if (isCollected) return;
+        isCollected = true;
+        foreach (MeshRenderer m in MeshList)
+        {
+            if (m != null) m.enabled = false;
+        }
+        if (mesh != null) mesh.enabled = false;
+        if (sphereCollider != null) sphereCollider.enabled = false;
+        PlayCollectSound(objectToDestroy);
+    }
 }

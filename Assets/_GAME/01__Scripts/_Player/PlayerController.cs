@@ -129,6 +129,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Scene-appropriate lamp state for characters whose Start() never runs
+    /// (replay ghosts are neutralized right after Instantiate): lights off on
+    /// normal levels — mirroring Start() — and the headlamp on in dark levels,
+    /// like any live player would show.
+    /// </summary>
+    public void ApplyGhostLightState()
+    {
+        bool dark = GameManager.Instance != null && GameManager.Instance.DarkLevel;
+        if (flashlight != null) flashlight.SetActive(dark);
+        if (spotlight != null) spotlight.SetActive(dark);
+    }
+
     public void StartPull()
     {
         isPulling = true;

@@ -46,6 +46,25 @@ public class PlayerAttack : MonoBehaviour
         if (headSmashCollider != null)
             headSmashCollider.playerController = playerController;
 
+        InitializeWeaponVisuals();
+    }
+
+    private bool _weaponVisualsInitialized;
+
+    /// <summary>
+    /// Spawns the hand + back weapon models and applies unlock visibility.
+    /// Factored out of Start so replay ghosts — whose Start never runs (they are
+    /// neutralized right after Instantiate) — get weapon visuals too. Also caches
+    /// the refs the swing-visual coroutines need on a ghost.
+    /// </summary>
+    public void InitializeWeaponVisuals()
+    {
+        if (_weaponVisualsInitialized) return;
+        _weaponVisualsInitialized = true;
+
+        if (_anim == null) _anim = GetComponent<Animator>();
+        if (_coherenceSync == null) _coherenceSync = GetComponent<CoherenceSync>();
+
         SpawnWeapon();
         if (backWeaponSlot != null && weapon != null)
         {
@@ -55,6 +74,55 @@ public class PlayerAttack : MonoBehaviour
         }
         CheckWeaponAvailability();
         ShowWeapon(PlayerPrefs.GetInt("AnyWeaponsUnlocked") == 1); //
+    }
+
+    // --- Replay ghost swing visuals ------------------------------------------
+    // Triggered by StateReplayDriver when the recorded animator bools flip on
+    // (Hit / HitDown / HitSpecial). The live visual coroutines are reused where
+    // they are side-effect free on a ghost: didHitObstacle=false skips the
+    // destruction in HitVisuals, and HitDownVisuals' destroy is gated on
+    // ObstacleToHit, which a ghost never sets. Their trailing anim-bool resets
+    // coincide with the recorded resets — harmless. The special swing gets its
+    // own routine because SpecialVisuals calls PerformSpecialAttack (real AOE
+    // destruction); the ghost's destruction comes from recorded events instead.
+
+    public void ReplayPlayHitVisuals() => StartCoroutine(HitVisuals(false, transform.position));
+
+    public void ReplayPlayHitDownVisuals() => StartCoroutine(HitDownVisuals());
+
+    public void ReplayPlaySpecialVisuals() => StartCoroutine(ReplaySpecialVisualsRoutine());
+
+    private IEnumerator ReplaySpecialVisualsRoutine()
+    {
+        if (weapon != null && weapon.WeaponStandard != null) weapon.WeaponStandard.SetActive(true);
+
+        yield return new WaitForSeconds(delayBeforeSwing);
+        yield return new WaitForSeconds(delayAfterSwing);
+        yield return new WaitForSeconds(0.15f);
+
+        if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = false;
+
+        if (useTrail)
+        {
+            if (weapon != null && weapon.trailRenderer != null) weapon.trailRenderer.enabled = true;
+        }
+        else
+        {
+            if (weaponSpecialSwingParticle != null) weaponSpecialSwingParticle.Play();
+        }
+
+        yield return new WaitForSeconds(0.4f);
+
+        // No PerformSpecialAttack — the obstacles it destroyed replay as events.
+        if (weaponSpecialAOE != null)
+        {
+            Vector3 aoePosition = transform.position + transform.forward * 0.5f;
+            ParticleSystem ps = Instantiate(weaponSpecialAOE, aoePosition, weaponSpecialAOE.transform.rotation);
+            ps.Play();
+        }
+
+        yield return new WaitForSeconds(0.1f);
+        if (weapon != null && weapon.WeaponStandard != null) weapon.WeaponStandard.SetActive(false);
     }
 
     private void Update()

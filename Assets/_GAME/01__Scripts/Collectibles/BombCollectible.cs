@@ -32,6 +32,7 @@ public class BombCollectible : CollectibleItem
         bool networkedMp = GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsBotMatch;
         if (networkedMp && GameManager.Instance.LocalPlayer != other) return;
 
+        RaiseConsumed();
         DisableCollectible();
 
         // The bomb goes into the consumable UI, which belongs to the human; a bot
@@ -57,6 +58,13 @@ public class BombCollectible : CollectibleItem
         mesh.enabled = false;
         sphereCollider.enabled = false;
         PlayCollectSound(objectToDestroy);
+    }
+
+    /// <summary>Replay pickup: same vanish as a live collect (no consumable UI entry — that's the human's).</summary>
+    public override void ReplayCollect(Player ghostPlayer)
+    {
+        if (isCollected) return;
+        DisableCollectible();
     }
 
     public bool Grounded;

@@ -368,12 +368,15 @@ public class GameManager : MonoBehaviour
         // synchronously from Start would race LevelGoal's own Start (it may not
         // have subscribed yet).
 
-        // Bot opponent — a random single-player character turned into a state-replay
+        // Bot opponent — a single-player character turned into a state-replay
         // ghost: AttachGhost neutralizes it (gameplay components disabled, colliders
         // off, cameras destroyed) and the driver kinematically replays the recorded
         // run into the opponent half. Playback starts when the countdown finishes
         // (see RunCountdown), mirroring when the recorded human gained control.
-        int botId = UnityEngine.Random.Range(0, characterCollection.Characters.Count);
+        // TEMP (testing): the ghost uses the same character as the human so visual
+        // parity is easy to eyeball. Restore the random pick for variety later:
+        //   int botId = UnityEngine.Random.Range(0, characterCollection.Characters.Count);
+        int botId = Mathf.Clamp(PlayerPrefs.GetInt("SelectedCharacterID", 0), 0, characterCollection.Characters.Count - 1);
         GameObject botPrefab = characterCollection.Characters[botId];
         GameObject bot = Instantiate(botPrefab, opponentSpawnPoint.position, botPrefab.transform.rotation);
 

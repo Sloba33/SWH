@@ -117,6 +117,8 @@ public class StateReplayRecorder : MonoBehaviour
         Obstacle.ObstacleSpawned += OnObstacleSpawned;
         Player.PlayerDied += OnPlayerDied;
         Rocket.RocketLaunched += OnRocketLaunched;
+        CollectibleItem.CollectibleConsumed += OnCollectibleConsumed;
+        Player.HelmetDamaged += OnHelmetDamaged;
         _deathRecorded = false;
 
         ComputeHalfBounds();
@@ -152,6 +154,8 @@ public class StateReplayRecorder : MonoBehaviour
         Obstacle.ObstacleSpawned -= OnObstacleSpawned;
         Player.PlayerDied -= OnPlayerDied;
         Rocket.RocketLaunched -= OnRocketLaunched;
+        CollectibleItem.CollectibleConsumed -= OnCollectibleConsumed;
+        Player.HelmetDamaged -= OnHelmetDamaged;
         SamplePlayer(); // final pose
         foreach (TrackBuilder tb in _tracks)
         {
@@ -168,6 +172,38 @@ public class StateReplayRecorder : MonoBehaviour
         Obstacle.ObstacleSpawned -= OnObstacleSpawned;
         Player.PlayerDied -= OnPlayerDied;
         Rocket.RocketLaunched -= OnRocketLaunched;
+        CollectibleItem.CollectibleConsumed -= OnCollectibleConsumed;
+        Player.HelmetDamaged -= OnHelmetDamaged;
+    }
+
+    /// <summary>
+    /// The recorded player's helmet took damage. Player-level event: entityId
+    /// carries the damage amount so the ghost's helmet cracks identically.
+    /// </summary>
+    private void OnHelmetDamaged(Player who, int amount)
+    {
+        if (!_recording || who != target) return;
+        _events.Add(new ReplayEvent { t = _time, entityId = amount, kind = ReplayEventKind.PlayerHelmetDamaged });
+    }
+
+    /// <summary>
+    /// A collectible was consumed during recording. Only the pickup moment is an
+    /// event — the effect's consequences (buffed speed, frozen obstacles, bomb
+    /// blasts) are captured by the player/entity tracks and destroy events.
+    /// </summary>
+    private void OnCollectibleConsumed(CollectibleItem collectible)
+    {
+        if (!_recording) return;
+        ReplayId rid = ReplayId.Of(collectible);
+        if (rid == null || rid.Id == 0)
+        {
+            Debug.LogWarning($"[StateReplayRecorder] Consumed collectible '{collectible.name}' has no ReplayId — " +
+                             "not recorded. Run Tools/SWH/Replay/Assign Replay IDs (runtime-spawned collectibles " +
+                             "aren't supported yet).", collectible);
+            return;
+        }
+        if (_scope != null && rid.Scope != _scope) return;
+        _events.Add(new ReplayEvent { t = _time, entityId = rid.Id, kind = ReplayEventKind.CollectibleCollected });
     }
 
     /// <summary>

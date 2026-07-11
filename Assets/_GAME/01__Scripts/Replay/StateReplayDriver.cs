@@ -23,6 +23,8 @@ public class StateReplayDriver : MonoBehaviour
     public Transform levelRoot;
 
     private Animator _animator;
+    private Player _ghostPlayer; // the replayed character's Player (disabled component; used for visuals)
+    private PlayerAttack _ghostAttack; // for swing visuals triggered off replayed anim bools
     private ReplayScope _scope; // playback scope: resolves event entityIds on this half
     private bool _playing;
     private float _time;
@@ -66,8 +68,30 @@ public class StateReplayDriver : MonoBehaviour
         StateReplayDriver driver = character.AddComponent<StateReplayDriver>();
         driver.replay = replay;
         driver.levelRoot = levelRoot;
+        driver.PrimeStartState();
         if (autoPlay) driver.Play();
         return driver;
+    }
+
+    /// <summary>
+    /// Puts the ghost into the replay's t=0 state without starting playback:
+    /// recorded start pose + the initial animator parameter snapshot. Without
+    /// this, a ghost waiting for the countdown stands at its spawn point running
+    /// the animator's default state (walk/push) instead of idling where the
+    /// recording began.
+    /// </summary>
+    public void PrimeStartState()
+    {
+        if (replay == null || replay.playerTrack.Count == 0) return;
+        _animator = GetComponent<Animator>();
+        _ghostPlayer = GetComponent<Player>();
+        _ghostAttack = GetComponent<PlayerAttack>();
+        _time = 0f;
+        _cursor = 0;
+        _animCursor = 0;
+        ApplyPose();
+        ApplyAnimEventsUpTo(0f);
+        // Play() re-initializes all cursors, so priming twice is harmless.
     }
 
     /// <summary>
@@ -83,7 +107,17 @@ public class StateReplayDriver : MonoBehaviour
             if (pc.playerCamera != null) Destroy(pc.playerCamera.gameObject);
             if (pc.followCamera != null) Destroy(pc.followCamera.gameObject);
         }
+
+        // Weapon models normally spawn in PlayerAttack.Start, which never runs on
+        // a ghost. Spawn them BEFORE the neutralize sweep so the fresh weapon's
+        // scripts and colliders get disabled along with everything else.
+        PlayerAttack attack = character.GetComponent<PlayerAttack>();
+        if (attack != null) attack.InitializeWeaponVisuals();
+
         NeutralizeEntity(character);
+        // Neutralizing skips PlayerController.Start, which is what normally sets
+        // the headlamp state for the scene — re-apply it explicitly.
+        if (pc != null) pc.ApplyGhostLightState();
     }
 
     /// <summary>
@@ -150,6 +184,8 @@ public class StateReplayDriver : MonoBehaviour
         }
         Debug.Log($"[StateReplayDriver] Playback started: '{replay.name}' ({replay.duration:F1}s).", this);
         _animator = GetComponent<Animator>();
+        _ghostPlayer = GetComponent<Player>();
+        _ghostAttack = GetComponent<PlayerAttack>();
         _scope = levelRoot != null ? levelRoot.GetComponent<ReplayScope>() : null;
         if (_scope == null && replay.events.Count > 0)
             Debug.LogWarning("[StateReplayDriver] Replay has entity events but the level root has no ReplayScope — " +
@@ -231,10 +267,30 @@ public class StateReplayDriver : MonoBehaviour
             AnimParamEvent e = events[_animCursor++];
             switch (e.kind)
             {
-                case AnimParamKind.Bool: _animator.SetBool(e.param, e.value > 0.5f); break;
+                case AnimParamKind.Bool:
+                    bool value = e.value > 0.5f;
+                    _animator.SetBool(e.param, value);
+                    if (value) TriggerAttackVisuals(e.param);
+                    break;
                 case AnimParamKind.Int: _animator.SetInteger(e.param, Mathf.RoundToInt(e.value)); break;
                 case AnimParamKind.Float: _animator.SetFloat(e.param, e.value); break;
             }
+        }
+    }
+
+    /// <summary>
+    /// The attack weapon/particle presentation normally runs in PlayerAttack's
+    /// visual coroutines, which a neutralized ghost never starts on its own —
+    /// the recorded animator bools flipping on are our signal to run them.
+    /// </summary>
+    private void TriggerAttackVisuals(string param)
+    {
+        if (_ghostAttack == null) return;
+        switch (param)
+        {
+            case "Hit": _ghostAttack.ReplayPlayHitVisuals(); break;
+            case "HitDown": _ghostAttack.ReplayPlayHitDownVisuals(); break;
+            case "HitSpecial": _ghostAttack.ReplayPlaySpecialVisuals(); break;
         }
     }
 
@@ -249,11 +305,19 @@ public class StateReplayDriver : MonoBehaviour
 
     private void ApplyEntityEvent(ReplayEvent e)
     {
-        // Player-level events carry no entityId — handle before resolution.
+        // Player-level events carry no entity reference — handle before resolution.
         if (e.kind == ReplayEventKind.PlayerDied)
         {
             if (_animator != null) _animator.Play("Death_Animation"); // same clip Player.Die plays
             ReplayPlayerDied?.Invoke();
+            return;
+        }
+        if (e.kind == ReplayEventKind.PlayerHelmetDamaged)
+        {
+            // entityId carries the damage amount. No sync on a ghost, so this is
+            // local-only: the helmet cracks (and vanishes at 0 durability) exactly
+            // as it did in the recording.
+            if (_ghostPlayer != null) _ghostPlayer.DamageHelmetNetworked(e.entityId);
             return;
         }
 
@@ -276,6 +340,12 @@ public class StateReplayDriver : MonoBehaviour
             case ReplayEventKind.RocketLaunched:
                 Rocket rocket = entity.GetComponent<Rocket>();
                 if (rocket != null) rocket.ReplayLaunch();
+                break;
+
+            case ReplayEventKind.CollectibleCollected:
+                CollectibleItem collectible = entity.GetComponent<CollectibleItem>();
+                if (collectible != null) collectible.ReplayCollect(_ghostPlayer);
+                else entity.gameObject.SetActive(false); // fallback: at least vanish
                 break;
         }
     }

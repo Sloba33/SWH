@@ -81,6 +81,7 @@ public class PowerupCollectible : CollectibleItem
                 break;
         }
 
+        RaiseConsumed();
         DisableCollectible();
 
         // No remote client to sync to in a local bot match.
@@ -88,6 +89,66 @@ public class PowerupCollectible : CollectibleItem
         {
             coherenceSync.SendCommand<PowerupCollectible>(nameof(CmdDisableCollectible), MessageTarget.Other);
         }
+    }
+
+    /// <summary>
+    /// Replay pickup with full presentation parity: buff particles on the ghost
+    /// (same durations as the live switch above — keep them in sync), the real
+    /// fly-to-head repair for the helmet, loot particles for currency. No stats,
+    /// no save state — the buff durations here drive particles only.
+    /// </summary>
+    public override void ReplayCollect(Player ghostPlayer)
+    {
+        if (_beingPickedUp) return;
+        other = ghostPlayer; // FloatAndLand reads this
+
+        switch (powerupType)
+        {
+            case PowerupType.Speed:
+                if (ghostPlayer != null) ghostPlayer.ReplayBuffVisuals(Player.SprintParticleKind.Blue, 8f);
+                break;
+            case PowerupType.Strength:
+                if (ghostPlayer != null) ghostPlayer.ReplayBuffVisuals(Player.SprintParticleKind.Strength, 5f);
+                break;
+            case PowerupType.Both:
+                if (ghostPlayer != null)
+                {
+                    ghostPlayer.ReplayBuffVisuals(Player.SprintParticleKind.Red, 4f);
+                    ghostPlayer.ReplayBuffVisuals(Player.SprintParticleKind.Strength, 4f);
+                }
+                break;
+            case PowerupType.Helmet:
+                // Same animation as live: float to the ghost's head and repair.
+                // Only plays if the ghost's helmet is actually damaged (cracks come
+                // from replayed PlayerHelmetDamaged events); otherwise fall through
+                // to a plain vanish — an undamaged helmet has nothing to repair.
+                if (ghostPlayer != null && ghostPlayer.helmet != null && ghostPlayer.helmet.IsHelmetRepairable())
+                {
+                    _beingPickedUp = true;
+                    collectibleTrigger.enabled = false;
+                    if (icing != null) icing.enabled = false;
+                    StartCoroutine(FloatAndLand(ghostPlayer.helmet.transform, 1f, 10f, 10f));
+                    return; // FloatAndLand hides the mesh + plays the sound at landing
+                }
+                break;
+            case PowerupType.Loot_Coins:
+            case PowerupType.Loot_Money:
+            case PowerupType.Loot_Gems:
+                // Currency burst only — never credit the player's save from a replay.
+                if (currencyParticleSystem != null)
+                {
+                    ParticleSystem ps = Instantiate(currencyParticleSystem, transform.position, Quaternion.identity);
+                    ps.Play();
+                }
+                break;
+        }
+
+        _beingPickedUp = true;
+        collectibleTrigger.enabled = false;
+        if (icing != null) icing.enabled = false;
+        if (mesh != null) mesh.enabled = false;
+        if (sprinkles != null) sprinkles.SetActive(false);
+        PlayCollectSound(objectToDestroy);
     }
 
     [Command(defaultRouting = MessageTarget.Other)]

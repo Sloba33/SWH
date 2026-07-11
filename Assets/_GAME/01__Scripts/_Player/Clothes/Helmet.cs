@@ -19,7 +19,11 @@ public class Helmet : MonoBehaviour
     // Cache the property ID for better performance
     private int baseMapPropertyID;
     
-    private void Start()
+    // Awake (not Start) on purpose: replay ghosts neutralize all MonoBehaviours
+    // right after Instantiate, so Start never runs on their helmet — but Awake
+    // fires during Instantiate itself. Without this, startDurability stays 0 and
+    // DamageHelmet's percentage math can never pick a crack texture.
+    private void Awake()
     {
         startDurability = helmetDurability;
         baseMapPropertyID = Shader.PropertyToID("_BaseMap");

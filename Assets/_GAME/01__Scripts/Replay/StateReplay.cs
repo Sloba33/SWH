@@ -101,7 +101,19 @@ public enum ReplayEventKind
     /// without recording rotation.
     /// </summary>
     RocketLaunched = 2,
-    // Collect / activate events for other collectibles follow next.
+    /// <summary>
+    /// A collectible was consumed. Playback runs CollectibleItem.ReplayCollect —
+    /// pickup visuals only (vanish + sound); gameplay/on-ghost effects are
+    /// deliberately not replayed (their outcomes are baked into the tracks).
+    /// </summary>
+    CollectibleCollected = 3,
+    /// <summary>
+    /// The recorded player's helmet took damage. Player-level event: entityId
+    /// carries the damage amount instead of an entity reference. Replayed onto
+    /// the ghost's helmet so cracks appear on schedule — and so a later helmet
+    /// pickup's fly-to-head repair has something visible to repair.
+    /// </summary>
+    PlayerHelmetDamaged = 4,
 }
 
 /// <summary>A discrete state change on a tracked entity, resolved by <see cref="ReplayId"/> at playback.</summary>

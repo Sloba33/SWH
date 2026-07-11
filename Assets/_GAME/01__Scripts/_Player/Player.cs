@@ -439,8 +439,16 @@ public class Player : MonoBehaviour
             _coherenceSync.SendCommand<Player>(nameof(CmdRepairHelmet), MessageTarget.Other);
     }
 
+    /// <summary>
+    /// Raised when a player's helmet takes damage. Recorded so the ghost's helmet
+    /// cracks on the same schedule — which is also what makes a later helmet
+    /// pickup's repair animation meaningful on the ghost.
+    /// </summary>
+    public static event System.Action<Player, int> HelmetDamaged;
+
     public void DamageHelmetNetworked(int amount)
     {
+        HelmetDamaged?.Invoke(this, amount);
         ApplyHelmetDamage(amount);
         if (_coherenceSync != null)
             _coherenceSync.SendCommand<Player>(nameof(CmdDamageHelmet), MessageTarget.Other, amount);
@@ -468,6 +476,38 @@ public class Player : MonoBehaviour
         if (helmet == null) return;
         if (!helmet.gameObject.activeSelf) helmet.gameObject.SetActive(true);
         helmet.FullRepairHelmet();
+    }
+
+    // --- Replay ghost buff presentation --------------------------------------
+
+    private readonly System.Collections.Generic.Dictionary<SprintParticleKind, float> _replayBuffEnd =
+        new System.Collections.Generic.Dictionary<SprintParticleKind, float>();
+
+    /// <summary>
+    /// Ghost-side buff visuals: turns the buff particles on for the given
+    /// duration, with stacked pickups extending it like live buffs do. Touches NO
+    /// stats — the ghost's actual speed/strength are baked into the replay's
+    /// movement tracks (and live BuffStrength even mutates the shared
+    /// CharacterStats asset, which a ghost must never do). Works with the Player
+    /// component disabled: coroutines only need the GameObject active.
+    /// </summary>
+    public void ReplayBuffVisuals(SprintParticleKind kind, float duration)
+    {
+        bool wasActive = _replayBuffEnd.TryGetValue(kind, out float end) && end > Time.time;
+        _replayBuffEnd[kind] = wasActive ? end + duration : Time.time + duration;
+        if (!wasActive)
+        {
+            SetSprintParticlesNetworked(kind, true); // no sync on a ghost — local-only
+            StartCoroutine(ReplayBuffVisualCountdown(kind));
+        }
+    }
+
+    private IEnumerator ReplayBuffVisualCountdown(SprintParticleKind kind)
+    {
+        while (_replayBuffEnd.TryGetValue(kind, out float end) && Time.time < end)
+            yield return null;
+        _replayBuffEnd.Remove(kind);
+        SetSprintParticlesNetworked(kind, false);
     }
 
 
