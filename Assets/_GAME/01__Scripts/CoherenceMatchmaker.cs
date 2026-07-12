@@ -9,6 +9,15 @@ public static class CoherenceMatchmaker
 {
     private const int MatchSize = 2;
     private static readonly TimeSpan DefaultBotFallbackTimeout = TimeSpan.FromSeconds(15);
+    // Hard cap on the post-"opponent found" phase (starting the session, waiting
+    // for the room-data push). Past the WaitingForOpponent state the Cancel
+    // button is disabled, so any unbounded await here would strand the player on
+    // "Game starting..." with no way out — a lost server push did exactly that.
+    private static readonly TimeSpan GameStartTimeout = TimeSpan.FromSeconds(30);
+    // Once the lobby is full (or we've joined one), the play-session push should
+    // arrive within seconds. A longer silence means an orphaned/broken session —
+    // e.g. we joined a lobby whose owner is gone and will never start the game.
+    private static readonly TimeSpan RoomDataTimeout = TimeSpan.FromSeconds(15);
 
     public enum MatchmakingState
     {
@@ -104,6 +113,40 @@ public static class CoherenceMatchmaker
     public static void ClearLatestMatch()
     {
         LatestMatch = default;
+    }
+
+    // A lobby we still owe a leave from the previous match. Kept until the leave
+    // is CONFIRMED: a fire-and-forget leave losing the race against the scene
+    // load (or failing silently) left both clients members of the old lobby, and
+    // FindOrCreateLobbyAsync then handed that stale lobby straight back — the
+    // root of the cross-scene room contamination.
+    private static LobbySession _lobbyPendingLeave;
+
+    // Lobbies that already failed us this app run (joined, then no play-session
+    // push ever came — orphaned shells). Never join them again; without this a
+    // single lingering orphan bricked every subsequent matchmaking attempt with
+    // the same 15s room-data timeout until the server culled it.
+    private static readonly HashSet<string> _deadLobbyIds = new HashSet<string>();
+
+    /// <summary>
+    /// Leave the current match's lobby without blocking a scene transition. The
+    /// lobby is remembered until the leave is confirmed, and the next
+    /// <see cref="FindMatchAsync"/> finishes the job (awaited) before searching.
+    /// </summary>
+    public static void LeaveCurrentLobbyInBackground()
+    {
+        LobbySession lobby = LatestMatch.Lobby ?? _lobbyPendingLeave;
+        ClearLatestMatch();
+        if (lobby == null) return;
+        _lobbyPendingLeave = lobby;
+        _ = LeaveAndForgetAsync(lobby);
+    }
+
+    private static async Task LeaveAndForgetAsync(LobbySession lobby)
+    {
+        bool left = await AbandonLobbyAsync(lobby);
+        if (left && ReferenceEquals(_lobbyPendingLeave, lobby))
+            _lobbyPendingLeave = null;
     }
 
     /// <summary>
@@ -258,6 +301,21 @@ public static class CoherenceMatchmaker
         var lobbyService = playerAccount.Services?.Rooms?.LobbyService
             ?? throw new MatchmakingException("LobbiesService is not available on the player account.");
 
+        // Defense against stale lobby reuse: the post-match leave is backgrounded
+        // and can lose the race against the scene load (or fail silently). A
+        // lingering membership lets FindOrCreateLobbyAsync hand the PREVIOUS
+        // match's lobby straight back — instantly "full", with the old match's
+        // map attribute — which is how two clients ended up in one room with
+        // different scenes loaded. Finish any owed leave here, awaited.
+        LobbySession lingering = _lobbyPendingLeave ?? LatestMatch.Lobby;
+        if (lingering != null)
+        {
+            Report(onProgress, "Cleaning up previous match session...");
+            if (await AbandonLobbyAsync(lingering))
+                _lobbyPendingLeave = null;
+            ClearLatestMatch();
+        }
+
         Report(onProgress, "Searching for an available lobby...");
 
         // Lobby attribute layout:
@@ -301,22 +359,48 @@ public static class CoherenceMatchmaker
             },
         };
 
-        LobbySession lobbySession;
-        try
+        LobbySession lobbySession = null;
+        for (int attempt = 0; attempt < 3 && lobbySession == null; attempt++)
         {
-            lobbySession = await lobbyService.FindOrCreateLobbyAsync(findOptions, createOptions, cancellationToken);
+            // Last attempt goes create-only: if the search keeps returning
+            // unusable lobbies (orphaned shells that /match still lists), stop
+            // fishing in the poisoned pool and host a fresh lobby instead —
+            // worst case that resolves via the bot fallback, never a dead end.
+            bool createOnly = attempt == 2;
+            try
+            {
+                lobbySession = createOnly
+                    ? await lobbyService.CreateLobbyAsync(createOptions, cancellationToken)
+                    : await lobbyService.FindOrCreateLobbyAsync(findOptions, createOptions, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (RequestException re)
+            {
+                throw new MatchmakingException($"Failed to find or create lobby: {re.ErrorCode} - {re.Message}", re);
+            }
+            catch (Exception e)
+            {
+                throw new MatchmakingException("Failed to find or create lobby.", e);
+            }
+
+            // Last line of defense against stale/orphaned lobbies — never build a
+            // match on one. Leaving an orphan as its last member also empties it
+            // so the server can cull it instead of it re-matching forever.
+            if (IsUnusableLobby(lobbySession, createMapName, out string staleReason))
+            {
+                UnityEngine.Debug.LogWarning(
+                    $"[Matchmaker] Unusable lobby '{lobbySession.LobbyData.Id}' ({staleReason}, " +
+                    $"players: {lobbySession.LobbyData.Players.Count}) — abandoning it and retrying.");
+                await AbandonLobbyAsync(lobbySession);
+                lobbySession = null;
+            }
         }
-        catch (OperationCanceledException)
+        if (lobbySession == null)
         {
-            throw;
-        }
-        catch (RequestException re)
-        {
-            throw new MatchmakingException($"Failed to find or create lobby: {re.ErrorCode} - {re.Message}", re);
-        }
-        catch (Exception e)
-        {
-            throw new MatchmakingException("Failed to find or create lobby.", e);
+            throw new MatchmakingException("Matchmaking kept receiving unusable (stale/orphaned) lobbies; aborting this attempt.");
         }
 
         // If we fail or get cancelled after this point, leave the lobby on the
@@ -413,10 +497,12 @@ public static class CoherenceMatchmaker
 
                     try
                     {
-                        await lobbySession.LobbyOwnerActions.StartGameSessionAsync(
-                            maxPlayers: MatchSize,
-                            unlistLobby: true,
-                            closeLobby: true);
+                        await AwaitWithTimeout(
+                            lobbySession.LobbyOwnerActions.StartGameSessionAsync(
+                                maxPlayers: MatchSize,
+                                unlistLobby: true,
+                                closeLobby: true),
+                            GameStartTimeout, "the game session to start", cancellationToken);
                     }
                     catch (OperationCanceledException)
                     {
@@ -445,7 +531,11 @@ public static class CoherenceMatchmaker
                 RoomData roomData;
                 try
                 {
-                    roomData = await roomTcs.Task;
+                    // The play-started push can be lost (joiner slipping in right
+                    // as the host starts/closes the lobby) or never come at all
+                    // (we joined an orphaned lobby whose owner is gone) — without
+                    // this bound either case stranded the player on "Game starting...".
+                    roomData = await AwaitWithTimeout(roomTcs.Task, RoomDataTimeout, "room data", cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -453,22 +543,41 @@ public static class CoherenceMatchmaker
                 }
                 catch (MatchmakingException)
                 {
+                    // A joined lobby that never delivered its play session is an
+                    // orphaned shell — remember it so we never join it again.
+                    if (!isHost) _deadLobbyIds.Add(lobbySession.LobbyData.Id);
                     throw;
                 }
                 catch (Exception e)
                 {
+                    if (!isHost) _deadLobbyIds.Add(lobbySession.LobbyData.Id);
                     throw new MatchmakingException("Failed while waiting for room data.", e);
                 }
 
                 Report(onProgress, "Match ready.");
+                // The lobby's "map" attribute is the single source of truth for
+                // which scene this match plays on — for the HOST too: if a
+                // pre-existing lobby slipped past the acquisition checks, the
+                // attribute wins over the local pick, otherwise two clients load
+                // different scenes into one room and each sees the union of both
+                // levels' entities. A missing attribute is only tolerable for the
+                // host (a fresh create whose response didn't echo attributes
+                // locally — the acquisition check guarantees no foreign attribute
+                // was present); a joiner with no attribute cannot know the scene
+                // and must refuse to start.
+                string resolvedMap = lobbySession.LobbyData.GetAttribute("map")?.GetStringValue();
+                if (string.IsNullOrEmpty(resolvedMap))
+                {
+                    if (isHost)
+                        resolvedMap = createMapName;
+                    else
+                        throw new MatchmakingException("Joined lobby has no 'map' attribute — refusing to start a match whose scene the clients could disagree on.");
+                }
+                else if (isHost && resolvedMap != createMapName)
+                {
+                    UnityEngine.Debug.LogWarning($"[Matchmaker] Pre-existing lobby reused: its map '{resolvedMap}' overrides the locally picked '{createMapName}'.");
+                }
                 keepLobby = true;
-                // The host knows their own map (createMapName); the joiner reads it from
-                // the lobby attribute the host set. mapName is the only fallback if the
-                // attribute is somehow absent — which shouldn't happen since we always
-                // write it on create.
-                string resolvedMap = isHost
-                    ? createMapName
-                    : (lobbySession.LobbyData.GetAttribute("map")?.GetStringValue() ?? mapName);
                 return new MatchResult(lobbySession, roomData, isHost, resolvedMap);
             }
             finally
@@ -481,31 +590,135 @@ public static class CoherenceMatchmaker
         {
             if (!keepLobby)
             {
-                await LeaveLobbyAsync(lobbySession);
+                await AbandonLobbyAsync(lobbySession);
             }
         }
     }
 
     /// <summary>
-    /// Leaves the given lobby and disposes the session. Safe to call with a null
-    /// or already-disposed lobby. Errors are swallowed and logged so this can be
-    /// used as a fire-and-forget cleanup on disconnect/scene change paths where
-    /// throwing would just be noise.
+    /// Fully abandons a lobby. If we OWN it, it is closed and unlisted first:
+    /// an owner-abandoned lobby otherwise lingers listed and open, and every
+    /// subsequent search on any client joins it, waits for a host that no longer
+    /// exists, and times out — repeatedly, until the server culls it. This is
+    /// exactly what happened after bot-fallback matches (host created the lobby,
+    /// fell back to the bot, and merely left). Then leaves. Errors logged, never
+    /// thrown. Returns whether the membership is confirmed gone.
     /// </summary>
-    public static async Task LeaveLobbyAsync(LobbySession lobby)
+    public static async Task<bool> AbandonLobbyAsync(LobbySession lobby)
     {
         if (lobby is null || lobby.IsDisposed)
         {
-            return;
+            return true;
+        }
+        if (lobby.LobbyOwnerActions != null)
+        {
+            try
+            {
+                await lobby.LobbyOwnerActions.CloseLobbyAsync();
+                await lobby.LobbyOwnerActions.UnlistLobbyAsync();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogWarning($"[Matchmaker] Failed to close/unlist abandoned lobby: {e.Message}");
+            }
+        }
+        return await LeaveLobbyAsync(lobby);
+    }
+
+    /// <summary>
+    /// Leaves the given lobby and disposes the session. Safe to call with a null
+    /// or already-disposed lobby. Errors are swallowed and logged so this can be
+    /// used as a cleanup on disconnect/scene change paths where throwing would
+    /// just be noise. Returns whether the membership is confirmed gone — callers
+    /// tracking stale memberships (see _lobbyPendingLeave) rely on it.
+    /// Prefer <see cref="AbandonLobbyAsync"/> for lobbies we might own.
+    /// </summary>
+    public static async Task<bool> LeaveLobbyAsync(LobbySession lobby)
+    {
+        if (lobby is null || lobby.IsDisposed)
+        {
+            return true;
         }
         try
         {
             await lobby.LeaveLobbyAsync();
+            return true;
         }
         catch (Exception e)
         {
             UnityEngine.Debug.LogWarning($"[Matchmaker] Failed to leave lobby cleanly: {e.Message}");
+            return false;
         }
+    }
+
+    /// <summary>
+    /// Awaits a task with a hard timeout, surfacing cancellation first. Times out
+    /// into MatchmakingException so the caller's failure flow (status + return to
+    /// menu) takes over instead of stranding the player.
+    /// </summary>
+    private static async Task<T> AwaitWithTimeout<T>(Task<T> task, TimeSpan timeout, string what, CancellationToken token)
+    {
+        var completed = await Task.WhenAny(task, Task.Delay(timeout, token));
+        token.ThrowIfCancellationRequested();
+        if (completed != task)
+        {
+            throw new MatchmakingException($"Timed out after {timeout.TotalSeconds:0}s waiting for {what}.");
+        }
+        return await task;
+    }
+
+    private static async Task AwaitWithTimeout(Task task, TimeSpan timeout, string what, CancellationToken token)
+    {
+        var completed = await Task.WhenAny(task, Task.Delay(timeout, token));
+        token.ThrowIfCancellationRequested();
+        if (completed != task)
+        {
+            throw new MatchmakingException($"Timed out after {timeout.TotalSeconds:0}s waiting for {what}.");
+        }
+        await task;
+    }
+
+    /// <summary>
+    /// True when the lobby FindOrCreate handed us cannot carry a healthy match.
+    ///
+    /// Owned lobby: must look freshly created — a NON-NULL map attribute that
+    /// differs from our pick, or other occupants already present, means our
+    /// previous match's lobby came back via lingering membership. A null
+    /// attribute is NOT staleness: the create response may simply not echo
+    /// attributes locally yet (treating it as stale falsely aborted matchmaking
+    /// and, worse, seeded orphan lobbies with every create-then-leave).
+    ///
+    /// Joined lobbies are NOT judged here: LobbyData.Players proved unreliable at
+    /// join-acquisition time (it can under-report membership), and rejecting on it
+    /// bounced every legitimate match. An orphaned joined lobby (owner gone) shows
+    /// up as a missing play-session push instead, which the bounded room-data wait
+    /// (RoomDataTimeout) converts into a clean failure rather than a hang.
+    /// </summary>
+    private static bool IsUnusableLobby(LobbySession lobby, string createMapName, out string reason)
+    {
+        if (lobby.LobbyOwnerActions != null)
+        {
+            var data = lobby.LobbyData;
+            string mapAttribute = data.GetAttribute("map")?.GetStringValue();
+            if (mapAttribute != null && mapAttribute != createMapName)
+            {
+                reason = $"own lobby carries a foreign map attribute '{mapAttribute}' (expected '{createMapName}')";
+                return true;
+            }
+            if (data.Players.Count >= MatchSize)
+            {
+                reason = "own lobby is already full at acquisition";
+                return true;
+            }
+        }
+        else if (_deadLobbyIds.Contains(lobby.LobbyData.Id))
+        {
+            reason = "this lobby already failed to deliver a game session before (orphaned shell)";
+            return true;
+        }
+
+        reason = null;
+        return false;
     }
 
     private static void SetState(MatchmakingState next)

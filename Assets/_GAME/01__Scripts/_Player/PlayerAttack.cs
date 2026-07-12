@@ -189,6 +189,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void Hit()
     {
+        if (GameManager.PreMatchInputLocked) return; // UI button bypasses the input handler
         if (player == null || weapon == null || _anim == null || playerMovement == null)
         {
             Debug.LogError("PlayerAttack.Hit: Missing required references. Cannot perform attack.");
@@ -295,6 +296,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void HitDown()
     {
+        if (GameManager.PreMatchInputLocked) return; // UI button bypasses the input handler
         if (player == null || weapon == null || _anim == null || playerMovement == null)
         {
             Debug.LogError("PlayerAttack.HitDown: Missing required references. Cannot perform attack.");
@@ -404,6 +406,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void SpecialAttack()
     {
+        if (GameManager.PreMatchInputLocked) return; // UI button bypasses the input handler
         if (player == null || weapon == null || _anim == null || playerMovement == null)
         {
             Debug.LogError("PlayerAttack.SpecialAttack: Missing required references. Cannot perform special attack.");

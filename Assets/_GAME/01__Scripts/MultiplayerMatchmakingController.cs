@@ -67,7 +67,6 @@ public class MultiplayerMatchmakingController : MonoBehaviour
     [SerializeField] private string waitingText = "Waiting for opponent...";
     [SerializeField] private string opponentFoundText = "Opponent found!";
     [SerializeField] private string gameStartingText = "Game starting...";
-    [SerializeField] private string botFallbackText = "No opponent found. Starting bot match...";
     [SerializeField] private string cancelledText = "Cancelling...";
     [SerializeField] private string failedText = "Matchmaking failed.";
 
@@ -123,7 +122,7 @@ public class MultiplayerMatchmakingController : MonoBehaviour
             return false;
         }
         Debug.Log($"[Matchmaking] debugInstantBotMatch: starting bot match with '{replay.name}' in '{replay.scene.Name}'.");
-        SetStatus(botFallbackText);
+        SetStatus(gameStartingText);
         SetCancelInteractable(false);
         BotMatchContext.PendingReplay = replay;
         SceneManager.LoadScene(replay.scene.Name);
@@ -184,11 +183,25 @@ public class MultiplayerMatchmakingController : MonoBehaviour
             {
                 // Hand the chosen replay to the level scene, then load it. GameManager
                 // reads BotMatchContext to run the match locally against this bot.
+                // Dev-facing log only — the on-screen status shows the same messages
+                // as a real match so players can't tell the difference.
+                Debug.Log($"[Matchmaking] BOT match: replay '{botCandidate.name}' ({botCandidate.label}) in '{result.BotLevelScene}'.");
+
+                // Fake the real handshake's pacing: a genuine match has network
+                // latency between "Opponent found!" (already showing, set by the
+                // BotFallback state) and "Game starting..." (session start round
+                // trip), then a short wait for room data. Without this the bot
+                // path flips both messages instantly — a tell.
+                await Task.Delay(TimeSpan.FromSeconds(UnityEngine.Random.Range(1.0f, 2.2f)), token);
+                SetStatus(gameStartingText);
+                await Task.Delay(TimeSpan.FromSeconds(UnityEngine.Random.Range(0.3f, 0.8f)), token);
+
                 BotMatchContext.PendingReplay = botCandidate;
                 SceneManager.LoadScene(result.BotLevelScene);
             }
             else
             {
+                Debug.Log($"[Matchmaking] REAL multiplayer match in '{result.MapName}' (host: {result.IsHost}).");
                 BotMatchContext.Clear();
                 // Use the resolved MapName from the result — when matchmaking any-map,
                 // the local `mapName` field is empty and the real scene comes from the
@@ -267,7 +280,10 @@ public class MultiplayerMatchmakingController : MonoBehaviour
                 SetCancelInteractable(false);
                 break;
             case CoherenceMatchmaker.MatchmakingState.BotFallback:
-                SetStatus(botFallbackText);
+                // Players must not be able to tell a bot match from a real one:
+                // show the same message a real match shows at this point. The
+                // console log in RunMatchmakingAsync keeps the distinction for us.
+                SetStatus(opponentFoundText);
                 SetCancelInteractable(false);
                 break;
             case CoherenceMatchmaker.MatchmakingState.Cancelled:

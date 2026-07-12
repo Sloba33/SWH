@@ -34,6 +34,17 @@ public class GameManager : MonoBehaviour
     public bool PreMatchFreeze { get; private set; }
 
     /// <summary>
+    /// True while player input must be ignored (the pre-match countdown). The
+    /// on-screen controls stay VISIBLE during the countdown so a held joystick
+    /// engages the instant the freeze lifts — this lock is what keeps the input
+    /// inert until then. Checked by PlayerInputHandler and by every mobile UI
+    /// path that bypasses it (jump event, attack/pull buttons, bomb placement).
+    /// Replay take sessions are exempt: there the first action starts the take.
+    /// </summary>
+    public static bool PreMatchInputLocked =>
+        _instance != null && _instance.PreMatchFreeze && !_instance.IsReplayTakeSession;
+
+    /// <summary>
     /// Single entry point for freeze transitions — rockets pause their idle spin
     /// while frozen and restart it from phase 0 at gameplay start, keeping their
     /// spin phase aligned between recording sessions and match playback.
@@ -85,8 +96,67 @@ public class GameManager : MonoBehaviour
     public bool ShouldHaveSkipButton = true;
 
     [Header("Multiplayer Pre-game")]
+    [Tooltip("Optional. When left empty, the CountdownText prefab is instantiated from " +
+             "Resources/" + CountdownTextPrefabPath + " into the main Canvas automatically.")]
     [SerializeField] private TextMeshProUGUI countdownText;
-    [SerializeField] private GameObject controlsGameObject;
+    [Tooltip("Height (px) of the auto-spawned countdown text. It always stretches to full " +
+             "canvas width and sits vertically centered.")]
+    [SerializeField] private float countdownTextHeight = 124f;
+    private const string CountdownTextPrefabPath = "UI/CountdownText";
+
+    /// <summary>
+    /// Makes the countdown text available without scene wiring: when the
+    /// serialized field is empty, instantiates the CountdownText prefab from
+    /// Resources into the main Canvas — the GameObject named "Main_UI" carrying a
+    /// Canvas, else any Canvas in the scene. The instance stretches across the
+    /// full canvas width, vertically centered, at the configured height.
+    /// </summary>
+    private bool EnsureCountdownText()
+    {
+        if (countdownText != null) return true;
+
+        GameObject prefab = Resources.Load<GameObject>(CountdownTextPrefabPath);
+        if (prefab == null)
+        {
+            Debug.LogError($"[GameManager] Countdown text prefab not found at Resources/{CountdownTextPrefabPath}.");
+            return false;
+        }
+
+        Canvas canvas = FindMainCanvas();
+        if (canvas == null)
+        {
+            Debug.LogError("[GameManager] No Canvas found in the scene — cannot show the countdown text.");
+            return false;
+        }
+
+        GameObject instance = Instantiate(prefab, canvas.transform);
+        countdownText = instance.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (countdownText == null)
+        {
+            Debug.LogError($"[GameManager] Prefab at Resources/{CountdownTextPrefabPath} has no TextMeshProUGUI.");
+            Destroy(instance);
+            return false;
+        }
+
+        // Fill the width, center vertically, fixed configurable height.
+        RectTransform rect = (RectTransform)instance.transform;
+        rect.anchorMin = new Vector2(0f, 0.5f);
+        rect.anchorMax = new Vector2(1f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = new Vector2(0f, countdownTextHeight);
+        rect.anchoredPosition = Vector2.zero;
+        return true;
+    }
+
+    /// <summary>"Main_UI" GameObject carrying a Canvas, else any Canvas in the scene, else null.</summary>
+    private static Canvas FindMainCanvas()
+    {
+        GameObject mainUI = GameObject.Find("Main_UI");
+        Canvas canvas = mainUI != null ? mainUI.GetComponent<Canvas>() : null;
+        if (canvas == null)
+            canvas = FindFirstObjectByType<Canvas>();
+        return canvas;
+    }
     
     private int _countdownSeconds;
     private bool _isFirstPlayer;
@@ -165,18 +235,46 @@ public class GameManager : MonoBehaviour
             coherenceBridge.Disconnect();
 
         // Leave the matchmaking lobby so we don't hold a membership in the
-        // background. Coherence caps a player at 3 concurrent lobbies, so
-        // leaking one per game would lock us out after a few matches.
-        // LobbySession lives on the PlayerAccount, not on this scene, so the
-        // request safely outlives the scene change below.
-        _ = CoherenceMatchmaker.LeaveLobbyAsync(CoherenceMatchmaker.LatestMatch.Lobby);
-        CoherenceMatchmaker.ClearLatestMatch();
+        // background (Coherence caps a player at 3 concurrent lobbies, and a
+        // lingering membership can hand the next matchmaking run this same lobby
+        // back — the cross-scene contamination bug). The leave is backgrounded
+        // but TRACKED: if it doesn't complete, the next FindMatchAsync retries it
+        // awaited before searching.
+        CoherenceMatchmaker.LeaveCurrentLobbyInBackground();
     }
 
     public void DisconnectAndReturnToMainMenu()
     {
         Disconnect();
         LoadSceneViaLoaderOrDirect("01_MainMenu");
+    }
+
+    /// <summary>
+    /// Player gives up from the pause menu. Runs the standard lose flow
+    /// (LevelGoal.LoseLevel: gameLost locked immediately, MP lose screen and
+    /// trophy delta after the presentation delay). In real multiplayer it also
+    /// disconnects — flagged voluntary so our own disconnect callback doesn't
+    /// double-fire the forfeit; the opponent's client sees the destroyed
+    /// connection and takes the forfeit win, exactly like a quit.
+    /// </summary>
+    public void SurrenderMatch()
+    {
+        Settings settings = FindAnyObjectByType<Settings>();
+        if (settings != null && (settings.gameWon || settings.gameLost))
+            return; // match already decided — nothing to surrender
+
+        if (levelGoal == null) levelGoal = FindFirstObjectByType<LevelGoal>();
+        if (levelGoal == null)
+        {
+            Debug.LogError("[GameManager] SurrenderMatch: no LevelGoal in scene.");
+            return;
+        }
+
+        Debug.Log(IsBotMatch ? "[GameManager] Match surrendered (bot match)." : "[GameManager] Match surrendered (real multiplayer).");
+        StartCoroutine(levelGoal.LoseLevel());
+
+        if (IsMultiplayer && !IsBotMatch)
+            Disconnect();
     }
     
     private void SetTestBuildPrefs()
@@ -441,9 +539,6 @@ public class GameManager : MonoBehaviour
 
         LocalPlayer = SpawnLocalHumanCharacter();
 
-        if (controlsGameObject != null)
-            controlsGameObject.SetActive(true);
-
         GameObject takeGO = new GameObject("ReplayTakeController");
         ReplayTakeController take = takeGO.AddComponent<ReplayTakeController>();
         take.Initialize(LocalPlayer, levelGoal != null ? levelGoal.PlayerLevelRoot : null);
@@ -477,7 +572,7 @@ public class GameManager : MonoBehaviour
 
         if (_isFirstPlayer)
         {
-            if (countdownText != null)
+            if (EnsureCountdownText())
             {
                 countdownText.gameObject.SetActive(true);
                 countdownText.text = "Waiting for opponent...";
@@ -576,6 +671,7 @@ public class GameManager : MonoBehaviour
         _countdownStarted = true;
         _countdownSeconds = 3;
 
+        EnsureCountdownText();
         if (countdownText != null)
             countdownText.gameObject.SetActive(true);
 
@@ -593,9 +689,6 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(0.8f);
             countdownText.gameObject.SetActive(false);
         }
-
-        if (controlsGameObject != null)
-            controlsGameObject.SetActive(true);
 
         // Gameplay begins — live obstacles may fall and rocket spins restart from
         // phase 0. In a bot match the ghost starts at the same instant, matching

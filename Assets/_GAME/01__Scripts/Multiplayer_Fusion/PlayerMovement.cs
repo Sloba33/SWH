@@ -146,6 +146,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleJumpEvent()
     {
+        // Mobile UI jump bypasses PlayerInputHandler, so the countdown lock is
+        // enforced here (the controls are visible but inert during the freeze).
+        if (GameManager.PreMatchInputLocked) return;
         _jumpInputReceivedThisFrame = true;
     }
 

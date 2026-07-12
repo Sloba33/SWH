@@ -144,6 +144,7 @@ public class PlayerController : MonoBehaviour
 
     public void StartPull()
     {
+        if (GameManager.PreMatchInputLocked) return; // UI pull button bypasses the input handler
         isPulling = true;
         pullButtonHeld = true;
         pullButtonReleased = false;

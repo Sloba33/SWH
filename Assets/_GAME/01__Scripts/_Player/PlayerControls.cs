@@ -336,6 +336,7 @@ public class PlayerControls : MonoBehaviour
 
     public void OnPointerDownDelegateBomb(PointerEventData eventData, GameObject bprefab, ConsumableSlot consumableSlot) //
     {
+        if (GameManager.PreMatchInputLocked) return; // no bomb placement during the countdown
         if (consumableSlot == null) { Debug.LogError("ConsumableSlot is null for bomb delegate."); return; } // Safety check
         if (playerController == null) { Debug.LogError("PlayerController is null for bomb delegate."); return; } // Safety check
 

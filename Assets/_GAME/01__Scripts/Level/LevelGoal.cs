@@ -1099,9 +1099,15 @@ public class LevelGoal : MonoBehaviour
     public IEnumerator LoseLevel()
     {
         Debug.Log("Losing Level");
-        yield return new WaitForSeconds(1.2f);
+        // Lock the outcome BEFORE the presentation delay — first result stands.
+        // gameLost is what WinLevel's guard checks: if it were set after the wait
+        // (as it used to be), a player finishing within the delay window would
+        // still win despite the opponent/bot having finished first. Applies to
+        // both bot matches (arbiter path) and real MP (CmdLoseLevel path).
         if (settings == null) settings = FindObjectOfType<Settings>();
-        settings.gameLost = true;
+        if (settings != null && settings.gameWon) yield break; // already won — don't flip a decided match
+        if (settings != null) settings.gameLost = true;
+        yield return new WaitForSeconds(1.2f);
         if (!settings.gameWon)
         {
             if (GameManager.Instance != null && GameManager.Instance.IsMultiplayer)

@@ -12,10 +12,10 @@ public class PlayerInputHandler : MonoBehaviour
     /// </summary>
     public Vector2 MoveInput => InputLocked ? Vector2.zero : _moveInput;
 
-    // Players may not act during the pre-match countdown. Replay take sessions
-    // are exempt: there the first action WHILE frozen is what starts recording.
-    private static bool InputLocked =>
-        GameManager.Instance != null && GameManager.Instance.PreMatchFreeze && !GameManager.Instance.IsReplayTakeSession;
+    // Players may not act during the pre-match countdown (take sessions exempt) —
+    // see GameManager.PreMatchInputLocked, the single source of truth also used
+    // by the mobile UI paths that bypass this handler.
+    private static bool InputLocked => GameManager.PreMatchInputLocked;
 
     private CameraController cameraController;
 
