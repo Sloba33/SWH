@@ -9,6 +9,7 @@ using System.Linq;
 
 public class BatchSceneReplacer : EditorWindow
 {
+    private Vector2 starTimesScrollPosition;
     [Header("Scene List")]
     public List<SceneAsset> scenesToFix = new();
 
@@ -23,12 +24,17 @@ public class BatchSceneReplacer : EditorWindow
     public bool ShouldReplaceSceneName;
     public bool ShouldFixObstacleWeights;
     public bool ShouldFixDefaultZoom;
-    public bool AddBackToMainMenuButton; // <-- New Toggle Added
+    public bool AddBackToMainMenuButton;
 
-    // Added new field for Default Zoom value
+    // --- NEW: Star Time Toggles & Lists ---
+    public bool ShouldFixStarTimes;
+    public List<float> threeStarTimes = new();
+    public float defaultOneStarTime = 5000f;
+    [TextArea(3, 6)]
+    public string pastedTimesText = ""; // For pasting from Excel/CSV
+
     [Header("Camera Zoom Settings")]
     public int DefaultZoomValue = 2;
-
 
     [Header("Environment Settings")]
     public GameObject environmentPrefab;
@@ -55,7 +61,7 @@ public class BatchSceneReplacer : EditorWindow
     [Header("Name Replace Settings")]
     public string TargetString = "ToyFactory";
     public string ResultString = "City";
-    
+
     [Header("Obstacle Weight Modifier")]
     public float ObstacleWeightModifier = 1f;
     public bool UseIncrementalWeight;
@@ -71,29 +77,24 @@ public class BatchSceneReplacer : EditorWindow
     private void OnGUI()
     {
         SerializedObject so = new SerializedObject(this);
-
         EditorGUILayout.PropertyField(so.FindProperty("scenesToFix"), true);
-
         EditorGUILayout.Space();
+
         EditorGUILayout.LabelField("Scene Modifications", EditorStyles.boldLabel);
 
         // --- Environment ---
         ShouldFixEnvironment = EditorGUILayout.Toggle("Fix Environment", ShouldFixEnvironment);
+
         using (new EditorGUI.DisabledScope(!ShouldFixEnvironment))
         {
             environmentPrefab = (GameObject)EditorGUILayout.ObjectField("Environment Prefab", environmentPrefab, typeof(GameObject), false);
-
             UseCustomEnvironmentName = EditorGUILayout.Toggle("Use Custom Env Name", UseCustomEnvironmentName);
             using (new EditorGUI.DisabledScope(!UseCustomEnvironmentName))
-            {
                 EnvironmentObjectName = EditorGUILayout.TextField("Env Object Name", EnvironmentObjectName);
-            }
 
             OffsetEnvironment = EditorGUILayout.Toggle("Offset Environment", OffsetEnvironment);
             using (new EditorGUI.DisabledScope(!OffsetEnvironment))
-            {
                 EnvironmentOffset = EditorGUILayout.Vector3Field("Environment Offset", EnvironmentOffset);
-            }
 
             ExtraObjectName1 = EditorGUILayout.TextField("Extra Object Name 1", ExtraObjectName1);
             ExtraObjectName2 = EditorGUILayout.TextField("Extra Object Name 2", ExtraObjectName2);
@@ -104,12 +105,9 @@ public class BatchSceneReplacer : EditorWindow
         using (new EditorGUI.DisabledScope(!ShouldFixSettings))
         {
             spSettingsPrefab = (GameObject)EditorGUILayout.ObjectField("SP_Settings Prefab", spSettingsPrefab, typeof(GameObject), false);
-
             UseCustomSettingsName = EditorGUILayout.Toggle("Use Custom Settings Name", UseCustomSettingsName);
             using (new EditorGUI.DisabledScope(!UseCustomSettingsName))
-            {
                 SettingsObjectName = EditorGUILayout.TextField("Settings Obj Name", SettingsObjectName);
-            }
         }
 
         // --- SP_Controls ---
@@ -117,12 +115,9 @@ public class BatchSceneReplacer : EditorWindow
         using (new EditorGUI.DisabledScope(!ShouldFixControls))
         {
             spControlsPrefab = (GameObject)EditorGUILayout.ObjectField("SP_Controls Prefab", spControlsPrefab, typeof(GameObject), false);
-
             UseCustomControlsName = EditorGUILayout.Toggle("Use Custom Controls Name", UseCustomControlsName);
             using (new EditorGUI.DisabledScope(!UseCustomControlsName))
-            {
                 ControlsObjectName = EditorGUILayout.TextField("Controls Obj Name", ControlsObjectName);
-            }
         }
 
         // --- Dialogue ---
@@ -131,9 +126,7 @@ public class BatchSceneReplacer : EditorWindow
         {
             UseCustomDialogueName = EditorGUILayout.Toggle("Use Custom Dialogue Name", UseCustomDialogueName);
             using (new EditorGUI.DisabledScope(!UseCustomDialogueName))
-            {
                 DialogueObjectName = EditorGUILayout.TextField("Dialogue Obj Name", DialogueObjectName);
-            }
         }
 
         // --- LevelGoal + Obstacles ---
@@ -147,13 +140,12 @@ public class BatchSceneReplacer : EditorWindow
             TargetString = EditorGUILayout.TextField("Target String", TargetString);
             ResultString = EditorGUILayout.TextField("Result String", ResultString);
         }
-        
+
         // --- Obstacle Weight Modifier ---
         ShouldFixObstacleWeights = EditorGUILayout.Toggle("Modify Obstacle Weights", ShouldFixObstacleWeights);
         using (new EditorGUI.DisabledScope(!ShouldFixObstacleWeights))
         {
             ObstacleWeightModifier = EditorGUILayout.FloatField("Base Weight Modifier", ObstacleWeightModifier);
-            
             UseIncrementalWeight = EditorGUILayout.Toggle("Use Incremental Weight", UseIncrementalWeight);
             using (new EditorGUI.DisabledScope(!UseIncrementalWeight))
             {
@@ -165,20 +157,200 @@ public class BatchSceneReplacer : EditorWindow
         // --- Camera Zoom Modifier ---
         ShouldFixDefaultZoom = EditorGUILayout.Toggle("Modify Camera Zoom", ShouldFixDefaultZoom);
         using (new EditorGUI.DisabledScope(!ShouldFixDefaultZoom))
-        {
             DefaultZoomValue = EditorGUILayout.IntField("Default Zoom", DefaultZoomValue);
-        }
 
-        // --- New: Back to Main Menu Button ---
+        // --- Back to Main Menu Button ---
         AddBackToMainMenuButton = EditorGUILayout.Toggle("Add Back to Main Menu Button", AddBackToMainMenuButton);
-        
+
+        // ==========================================
+        // --- NEW: STAR TIME AUTOMATION UI ---
+        // ==========================================
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Star Time Automation", EditorStyles.boldLabel);
+        ShouldFixStarTimes = EditorGUILayout.Toggle("Auto-Set Star Times", ShouldFixStarTimes);
+
+        using (new EditorGUI.DisabledScope(!ShouldFixStarTimes))
+        {
+            defaultOneStarTime = EditorGUILayout.FloatField("Default 1-Star Time (Fallback)", defaultOneStarTime);
+
+            // Helper buttons for list management
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Clear All Times"))
+            {
+                threeStarTimes.Clear();
+            }
+            if (GUILayout.Button("Parse Pasted Text"))
+            {
+                ParseTimesFromText();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // Text area for pasting from Excel/CSV
+            EditorGUILayout.LabelField("Paste times from Excel (comma or newline separated):");
+            pastedTimesText = EditorGUILayout.TextArea(pastedTimesText, GUILayout.Height(80));
+
+            // --- Show warning if times count doesn't match scenes count ---
+            SerializedProperty scenesProp = so.FindProperty("scenesToFix");
+            SerializedProperty timesProp = so.FindProperty("threeStarTimes");
+
+            int sceneCount = scenesProp.arraySize;
+            int timeCount = timesProp.arraySize;
+
+            if (sceneCount > 0 && timeCount < sceneCount)
+            {
+                EditorGUILayout.HelpBox(
+                    $"⚠️ Mismatch: {timeCount} times defined but {sceneCount} scenes listed.\n" +
+                    $"Scenes {timeCount} through {sceneCount - 1} will keep their existing LevelGoal times.",
+                    MessageType.Warning
+                );
+            }
+            else if (sceneCount > 0 && timeCount > sceneCount)
+            {
+                EditorGUILayout.HelpBox(
+                    $"ℹ️ You have {timeCount} times but only {sceneCount} scenes.\n" +
+                    $"Extra times beyond index {sceneCount - 1} will be ignored.",
+                    MessageType.Info
+                );
+            }
+
+            EditorGUILayout.LabelField("3-Star Times (Scroll to edit):");
+
+            // Create a scroll view with a fixed height of 250 pixels
+            starTimesScrollPosition = EditorGUILayout.BeginScrollView(starTimesScrollPosition, GUILayout.Height(250), GUILayout.ExpandWidth(true));
+
+            // Show ALL times that exist, regardless of scene count
+            for (int i = 0; i < timesProp.arraySize; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+
+                // Show the scene name if it exists, otherwise show "Extra time"
+                string sceneName;
+                Color labelColor = Color.white;
+
+                if (i < scenesProp.arraySize)
+                {
+                    SerializedProperty sceneElement = scenesProp.GetArrayElementAtIndex(i);
+                    sceneName = sceneElement.objectReferenceValue != null ? sceneElement.objectReferenceValue.name : "Missing Scene";
+                }
+                else
+                {
+                    sceneName = "⚠️ EXTRA TIME";
+                    labelColor = Color.yellow;
+                }
+
+                // Color the label if it's an extra time
+                GUI.color = labelColor;
+                EditorGUILayout.LabelField($"{i,3}: {sceneName}", GUILayout.Width(220));
+                GUI.color = Color.white;
+
+                // Get the time value and format it as mm:ss
+                SerializedProperty timeElement = timesProp.GetArrayElementAtIndex(i);
+                float currentVal = timeElement.floatValue;
+
+                int mins = Mathf.FloorToInt(currentVal / 60f);
+                int secs = Mathf.FloorToInt(currentVal % 60f);
+                string timeFormatted = $"{mins:00}:{secs:00}";
+
+                // Draw the mm:ss label and the editable float field
+                EditorGUILayout.LabelField(timeFormatted, EditorStyles.miniLabel, GUILayout.Width(45));
+                timeElement.floatValue = EditorGUILayout.FloatField(currentVal);
+
+                EditorGUILayout.EndHorizontal();
+            }
+
+            // Option to add a new time
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add Time Slot"))
+            {
+                threeStarTimes.Add(0f);
+            }
+            if (GUILayout.Button("Remove Last Time Slot"))
+            {
+                if (threeStarTimes.Count > 0)
+                    threeStarTimes.RemoveAt(threeStarTimes.Count - 1);
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.EndScrollView();
+        }
+        // ==========================================
+
         EditorGUILayout.Space();
         if (GUILayout.Button("Fix All Scenes"))
         {
             FixScenes();
         }
-
         so.ApplyModifiedProperties();
+    }
+
+    // Helper method to parse text from Excel/CSV
+    // Helper method to parse text from Excel (Handles mm:ss format)
+    private void ParseTimesFromText()
+    {
+        if (string.IsNullOrEmpty(pastedTimesText)) return;
+
+        threeStarTimes.Clear();
+
+        // Split by newline, carriage return, or comma
+        string[] lines = Regex.Split(pastedTimesText, @"[\n\r,]+");
+        int parsedCount = 0;
+
+        foreach (string line in lines)
+        {
+            string cleanLine = line.Trim();
+            if (string.IsNullOrEmpty(cleanLine)) continue;
+
+            if (cleanLine.Contains(":"))
+            {
+                // Format is mm:ss (e.g., "00:05" or "01:30")
+                string[] parts = cleanLine.Split(':');
+                if (parts.Length == 2)
+                {
+                    if (float.TryParse(parts[0], out float minutes) && float.TryParse(parts[1], out float seconds))
+                    {
+                        float totalSeconds = (minutes * 60f) + seconds;
+                        threeStarTimes.Add(totalSeconds);
+                        parsedCount++;
+                    }
+                }
+            }
+            else
+            {
+                // Format is just a number (e.g., "5" or "10.5")
+                string normalized = cleanLine.Replace(',', '.');
+                if (float.TryParse(normalized, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out float seconds))
+                {
+                    threeStarTimes.Add(seconds);
+                    parsedCount++;
+                }
+            }
+        }
+
+        Debug.Log($"✅ Parsed {parsedCount} times from text.");
+
+        // Check if we have enough times for all scenes
+        if (scenesToFix.Count > 0 && threeStarTimes.Count < scenesToFix.Count)
+        {
+            Debug.LogWarning($"⚠️ WARNING: Only {threeStarTimes.Count} times parsed, but you have {scenesToFix.Count} scenes.");
+            Debug.LogWarning($"   Scenes {threeStarTimes.Count} through {scenesToFix.Count - 1} will keep their existing LevelGoal times.");
+
+            // Show which scenes are missing times
+            for (int i = threeStarTimes.Count; i < Mathf.Min(scenesToFix.Count, 10); i++) // Show first 10 missing
+            {
+                string sceneName = scenesToFix[i] != null ? scenesToFix[i].name : $"Scene {i}";
+                Debug.LogWarning($"   Missing time for scene index {i}: '{sceneName}'");
+            }
+            if (scenesToFix.Count - threeStarTimes.Count > 10)
+            {
+                Debug.LogWarning($"   ... and {scenesToFix.Count - threeStarTimes.Count - 10} more scenes missing times.");
+            }
+        }
+        else if (threeStarTimes.Count > scenesToFix.Count && scenesToFix.Count > 0)
+        {
+            Debug.LogWarning($"⚠️ You parsed {threeStarTimes.Count} times but only have {scenesToFix.Count} scenes.");
+            Debug.LogWarning($"   Extra times from index {scenesToFix.Count} onwards will be ignored.");
+        }
     }
 
     private void FixScenes()
@@ -192,19 +364,13 @@ public class BatchSceneReplacer : EditorWindow
 
             string scenePath = AssetDatabase.GetAssetPath(sceneAsset);
             Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
-
             bool modified = false;
-
-            // --- Existing Scene Fixes (omitted for brevity, assume they are still here) ---
-            
-            // ... (All previous fixes like Environment, Settings, Controls, Dialogue, Naming, LevelGoal, Obstacles)
 
             // --- Fix Environment ---
             if (ShouldFixEnvironment)
             {
                 string envName = UseCustomEnvironmentName ? EnvironmentObjectName : "Environment";
                 GameObject oldEnv = GameObject.Find(envName);
-
                 if (oldEnv && environmentPrefab)
                 {
                     Undo.DestroyObjectImmediate(oldEnv);
@@ -213,7 +379,6 @@ public class BatchSceneReplacer : EditorWindow
                     modified = true;
                     Debug.Log($"Replaced Environment in {scene.name}");
                 }
-
                 if (!string.IsNullOrEmpty(ExtraObjectName1))
                 {
                     GameObject extra1 = GameObject.Find(ExtraObjectName1);
@@ -238,14 +403,11 @@ public class BatchSceneReplacer : EditorWindow
                     {
                         Vector3 pos = oldSettings.transform.position;
                         Quaternion rot = oldSettings.transform.rotation;
-
                         GameObject newSettings = (GameObject)PrefabUtility.InstantiatePrefab(spSettingsPrefab, mainUI.transform);
                         newSettings.transform.position = pos;
                         newSettings.transform.rotation = rot;
-
                         Undo.DestroyObjectImmediate(oldSettings);
                         modified = true;
-                        Debug.Log($"Replaced SP_Settings in {scene.name}");
                     }
                 }
             }
@@ -262,14 +424,11 @@ public class BatchSceneReplacer : EditorWindow
                     {
                         Vector3 pos = oldControls.transform.position;
                         Quaternion rot = oldControls.transform.rotation;
-
                         GameObject newControls = (GameObject)PrefabUtility.InstantiatePrefab(spControlsPrefab, mainUI.transform);
                         newControls.transform.position = pos;
                         newControls.transform.rotation = rot;
-
                         Undo.DestroyObjectImmediate(oldControls);
                         modified = true;
-                        Debug.Log($"Replaced SP_Controls in {scene.name}");
                     }
                 }
             }
@@ -282,7 +441,6 @@ public class BatchSceneReplacer : EditorWindow
                 string newSceneName = sceneName.Replace(TargetString, ResultString);
                 AssetDatabase.RenameAsset(path, newSceneName);
                 modified = true;
-                Debug.Log($"Renamed Scene: {sceneName} → {newSceneName}");
             }
 
             // --- Disable Dialogue ---
@@ -296,12 +454,11 @@ public class BatchSceneReplacer : EditorWindow
                     {
                         go.SetActive(false);
                         modified = true;
-                        Debug.Log($"Disabled Dialogue Object: {go.name} in {scene.name}");
                     }
                 }
             }
 
-            // --- Fix LevelGoal + Obstacles ---
+            // --- Fix LevelGoal + Obstacles + Star Times ---
             LevelGoal levelGoal = GameObject.FindFirstObjectByType<LevelGoal>();
             if (levelGoal)
             {
@@ -319,7 +476,6 @@ public class BatchSceneReplacer : EditorWindow
                     levelGoal.ObstaclesToDestroy_Player.AddRange(validObstacles);
                     EditorUtility.SetDirty(levelGoal);
                     modified = true;
-                    Debug.Log($"Fixed LevelGoal's ObstaclesToDestroy list in {scene.name}");
                 }
 
                 if (ShouldParentAllObstacles)
@@ -328,10 +484,45 @@ public class BatchSceneReplacer : EditorWindow
                     obstacleParent.transform.position = Vector3.zero;
                     foreach (Obstacle obs in obstacles)
                         obs.transform.SetParent(obstacleParent.transform, true);
-
-                    Debug.Log($"Grouped {obstacles.Length} obstacles under 'Obstacles' in {scene.name}");
                     modified = true;
                 }
+
+                // ==========================================
+                // --- NEW: APPLY STAR TIMES ---
+                // ==========================================
+                if (ShouldFixStarTimes)
+                {
+                    // Check if we have a time for this scene
+                    if (sceneCounter < threeStarTimes.Count)
+                    {
+                        float targetThreeStar = threeStarTimes[sceneCounter];
+
+                        // Only apply if it's greater than 0 (0 means "not configured")
+                        if (targetThreeStar > 0)
+                        {
+                            // Store original for debug
+                            float originalThreeStar = levelGoal.threeStarTime;
+
+                            levelGoal.threeStarTime = targetThreeStar;
+                            levelGoal.twoStarTime = Mathf.Ceil(targetThreeStar*2);
+                            levelGoal.oneStarTime = defaultOneStarTime;
+
+                            EditorUtility.SetDirty(levelGoal);
+                            modified = true;
+                            Debug.Log($"✅ Scene '{scene.name}' (index {sceneCounter}): Set 3★={targetThreeStar}s (was {originalThreeStar}s)");
+                        }
+                        else
+                        {
+                            Debug.Log($"ℹ️ Scene '{scene.name}' (index {sceneCounter}): Time is 0 (not configured). Keeping existing 3★={levelGoal.threeStarTime}s");
+                        }
+                    }
+                    else
+                    {
+                        // No time defined for this scene - keep existing values
+                        Debug.Log($"ℹ️ Scene '{scene.name}' (index {sceneCounter}): No time defined (only {threeStarTimes.Count} times provided). Keeping existing 3★={levelGoal.threeStarTime}s");
+                    }
+                }
+                // ==========================================
             }
             else
             {
@@ -340,51 +531,36 @@ public class BatchSceneReplacer : EditorWindow
 
             // --- Fix Obstacle Weights ---
             GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
-            
             if (ShouldFixObstacleWeights && gm != null)
             {
-                // Calculate the current weight modifier based on incremental settings
                 float weightToApply = ObstacleWeightModifier;
-                
                 if (UseIncrementalWeight && ScenesPerIncrement > 0)
                 {
                     int incrementGroup = sceneCounter / ScenesPerIncrement;
                     weightToApply = ObstacleWeightModifier + (incrementGroup * WeightIncrement);
                 }
-                
                 gm.ObstacleWeightModifier = weightToApply;
                 EditorUtility.SetDirty(gm);
                 modified = true;
-                Debug.Log($"Set obstacle weight modifier to {weightToApply} in scene {scene.name} (scene #{sceneCounter + 1})");
             }
-            
+
             // --- FIX CAMERA ZOOM ---
             if (ShouldFixDefaultZoom && gm != null)
             {
                 gm.defaultZoomValue = DefaultZoomValue;
                 EditorUtility.SetDirty(gm);
                 modified = true;
-                Debug.Log($"Set GameManager.defaultZoomValue to {DefaultZoomValue} in scene {scene.name}");
             }
 
-            // --- NEW: ADD BACK TO MAIN MENU BUTTON ---
+            // --- ADD BACK TO MAIN MENU BUTTON ---
             if (AddBackToMainMenuButton)
             {
-                if (gm == null)
-                {
-                    gm = GameObject.FindFirstObjectByType<GameManager>(); // Try one more time in case it was missed above
-                }
-                
+                if (gm == null) gm = GameObject.FindFirstObjectByType<GameManager>();
                 if (gm != null)
                 {
                     gm.ShouldHaveMainMenuButton = true;
                     EditorUtility.SetDirty(gm);
                     modified = true;
-                    Debug.Log($"Set GameManager.ShouldHaveMainMenuButton to TRUE in scene {scene.name}");
-                }
-                else
-                {
-                    Debug.LogWarning($"Cannot set Main Menu Button: No GameManager found in scene {scene.name}");
                 }
             }
 
@@ -396,7 +572,6 @@ public class BatchSceneReplacer : EditorWindow
 
             sceneCounter++;
         }
-
         AssetDatabase.SaveAssets();
         Debug.Log("✅ Finished processing all scenes.");
     }

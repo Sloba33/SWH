@@ -113,9 +113,12 @@ public class LevelGoal : MonoBehaviour
 
         Debug.Log("Should Ignore STARS " + shouldIgnoreBonusStars);
 
-        oneStarTime = 2000;
-        twoStarTime = 15;
-        threeStarTime = 10;
+        if (oneStarTime == 0)
+            oneStarTime = 2000;
+        if (twoStarTime == 0)
+            twoStarTime = 15;
+        if (threeStarTime == 0)
+            threeStarTime = 10;
 
         tutorialDialogue = FindObjectOfType<TutorialDialogue>();
         if (Tutorial)
@@ -211,63 +214,63 @@ public class LevelGoal : MonoBehaviour
         Debug.Log("ProcessDestroyedObstaclesInternal: Finished processing batch and cleared queue.");
     }
     private void CheckForSingleColorSpawnOpportunity()
-{
-    ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
-
-    var activeObstacles = ObstaclesToDestroy_Player
-        .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
-        .ToList();
-
-    var uniqueColors = new HashSet<ObstacleColor>(activeObstacles.Select(o => o.obstacleColor));
-
-    if (uniqueColors.Count != 1)
-        return;
-
-    var remainingColor = uniqueColors.First();
-    var obstaclesOfThatColor = activeObstacles.Where(o => o.obstacleColor == remainingColor).ToList();
-    
-    if (obstaclesOfThatColor.Count == 0) return;
-
-    var sample = obstaclesOfThatColor[0];
-    var key = System.Tuple.Create(sample.obstacleType, sample.obstacleColor);
-
-    if (ignoredTypes.Contains(sample.obstacleType))
-        return;
-
-    // --- Check initial count ---
-    int initialCount = 1;
-    if (initialObstacleCounts.TryGetValue(key, out int storedCount))
     {
-        initialCount = storedCount;
-    }
+        ObstacleType[] ignoredTypes = { ObstacleType.Cardboard, ObstacleType.Concrete, ObstacleType.Metal };
 
-    // --- Don't spawn if initial count was 1 ---
-    if (initialCount <= 1)
-    {
-        Debug.Log($"[SingleColorCheck] {sample.obstacleType}-{sample.obstacleColor}: initial count is 1, not spawning.");
-        return;
-    }
+        var activeObstacles = ObstaclesToDestroy_Player
+            .Where(o => o != null && o.isActiveAndEnabled && !ignoredTypes.Contains(o.obstacleType))
+            .ToList();
 
-    int remaining = obstaclesOfThatColor.Count;
-    
-    // Only spawn if below 3 and below initial count
-    if (remaining < 3 && remaining < initialCount)
-    {
-        int toSpawn = Mathf.Min(3 - remaining, initialCount - remaining);
+        var uniqueColors = new HashSet<ObstacleColor>(activeObstacles.Select(o => o.obstacleColor));
 
-        if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
+        if (uniqueColors.Count != 1)
+            return;
+
+        var remainingColor = uniqueColors.First();
+        var obstaclesOfThatColor = activeObstacles.Where(o => o.obstacleColor == remainingColor).ToList();
+
+        if (obstaclesOfThatColor.Count == 0) return;
+
+        var sample = obstaclesOfThatColor[0];
+        var key = System.Tuple.Create(sample.obstacleType, sample.obstacleColor);
+
+        if (ignoredTypes.Contains(sample.obstacleType))
+            return;
+
+        // --- Check initial count ---
+        int initialCount = 1;
+        if (initialObstacleCounts.TryGetValue(key, out int storedCount))
         {
-            Debug.LogWarning($"[SingleColorCheck] Missing template for {sample.obstacleType}-{sample.obstacleColor}");
+            initialCount = storedCount;
+        }
+
+        // --- Don't spawn if initial count was 1 ---
+        if (initialCount <= 1)
+        {
+            Debug.Log($"[SingleColorCheck] {sample.obstacleType}-{sample.obstacleColor}: initial count is 1, not spawning.");
             return;
         }
 
-        Debug.Log($"[SingleColorCheck] Only {remaining} {sample.obstacleType}-{sample.obstacleColor} left (initial: {initialCount}) → spawning {toSpawn} more.");
-        for (int i = 0; i < toSpawn; i++)
+        int remaining = obstaclesOfThatColor.Count;
+
+        // Only spawn if below 3 and below initial count
+        if (remaining < 3 && remaining < initialCount)
         {
-            StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
+            int toSpawn = Mathf.Min(3 - remaining, initialCount - remaining);
+
+            if (!_obstacleTemplates.TryGetValue(key, out Obstacle template) || template == null)
+            {
+                Debug.LogWarning($"[SingleColorCheck] Missing template for {sample.obstacleType}-{sample.obstacleColor}");
+                return;
+            }
+
+            Debug.Log($"[SingleColorCheck] Only {remaining} {sample.obstacleType}-{sample.obstacleColor} left (initial: {initialCount}) → spawning {toSpawn} more.");
+            for (int i = 0; i < toSpawn; i++)
+            {
+                StartCoroutine(SpawnSpecificFallingObstacle(template, ObstacleSpawnFrequency, Random.Range(0f, 0.3f)));
+            }
         }
     }
-}
 
     private void AddObstaclesToInitialCounts()
     {

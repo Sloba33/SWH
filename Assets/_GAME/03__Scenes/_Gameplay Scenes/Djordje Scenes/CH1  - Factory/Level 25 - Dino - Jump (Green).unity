@@ -42410,6 +42410,10 @@ MonoBehaviour:
   ObstacleWeightModifier: 1.21
   defaultZoomValue: 2
   isFinalChapterLevel: 0
+  obstaclesToFreeze: []
+  collectibleDatabase: {fileID: 0}
+  CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -56386,15 +56390,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
   xp: 50
   trophies: 5
   BONUS_TROPHIES: 0
   levelProgress: {fileID: 4741343503558475765, guid: d73cbee2f3f598c419fbc6ba2a30f4eb,
     type: 3}
   currentTime: 0
-  threeStarTime: 0
-  twoStarTime: 0
-  oneStarTime: 0
+  threeStarTime: 4
+  twoStarTime: 8
+  oneStarTime: 5000
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
@@ -56497,6 +56503,10 @@ MonoBehaviour:
   bombUniversal: {fileID: 0}
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
+  isTimeFrozen: 0
+  shouldIgnoreBonusStars: 0
+  shouldHaveFasterEnergyRecharge: 0
+  starsEarned: 0
   currentStep: 0
   tutorialBridges: []
   tutorialBarriers: []
