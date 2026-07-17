@@ -38,8 +38,10 @@ public class PowerupCollectible : CollectibleItem
         if (networkedMp && GameManager.Instance.LocalPlayer != other) return;
 
         // Buffs apply to whoever collected (bot or human); player-save effects
-        // (loot) must only ever credit the real local human.
-        bool isLocalHuman = other == GameManager.Instance.LocalPlayer;
+        // (loot) must only ever credit the real local human. GetLocalPlayer()
+        // (not the raw field) — in single player only the lazy accessor resolves
+        // the local player; the field stays null and would deny SP loot.
+        bool isLocalHuman = other == GameManager.Instance.GetLocalPlayer();
 
         switch (powerupType)
         {

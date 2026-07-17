@@ -36,8 +36,10 @@ public class BombCollectible : CollectibleItem
         DisableCollectible();
 
         // The bomb goes into the consumable UI, which belongs to the human; a bot
-        // just clears the collectible from the field.
-        if (other == GameManager.Instance.LocalPlayer)
+        // just clears the collectible from the field. Must use GetLocalPlayer()
+        // (not the raw field): in single player only the lazy accessor resolves
+        // the local player — the field stays null and would wrongly skip this.
+        if (other == GameManager.Instance.GetLocalPlayer())
             other.pc.AddConsumable(this);
 
         if (networkedMp)
