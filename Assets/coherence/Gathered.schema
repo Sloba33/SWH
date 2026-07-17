@@ -203,191 +203,207 @@ component _50aa170dc7060fd49ab5bb09509bd35d_6251833375066648967 [id "57"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _55399f6c7e06e4f4f8e2fab984748c5f_6668688970381495914 [id "58"]
+component _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468 [id "58"]
+  Walking Bool [bits "1"]
+  Push Bool [bits "1"]
+  Jumping Bool [bits "1"]
+  Pull Bool [bits "1"]
+  Hit Bool [bits "1"]
+  HitDown Bool [bits "1"]
+  HitSpecial Bool [bits "1"]
+  Falling Bool [bits "1"]
+  Grounded Bool [bits "1"]
+  Idle Bool [bits "1"]
+  LookRight Bool [bits "1"]
+  LookLeft Bool [bits "1"]
+  Running Bool [bits "1"]
+  Dead Bool [bits "1"]
+
+component _55399f6c7e06e4f4f8e2fab984748c5f_6668688970381495914 [id "59"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _5639d47fd672fad4ea70709dcd72532d_7842609016358472242 [id "59"]
+component _5639d47fd672fad4ea70709dcd72532d_7842609016358472242 [id "60"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _563b33fa13d57944489ba641d43b5915_6897569844761605978 [id "60"]
+component _563b33fa13d57944489ba641d43b5915_6897569844761605978 [id "61"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _563d68167a00dea4c859cf637d7ba86e_7721045304309058534 [id "61"]
+component _563d68167a00dea4c859cf637d7ba86e_7721045304309058534 [id "62"]
   isColored Bool [bits "1"]
   bombColor ObstacleColor 
   time Float [compression "None"]
 
-component _5a36ab73e08ff1242857abee11ccd2c6_6680874213397349579 [id "62"]
+component _5a36ab73e08ff1242857abee11ccd2c6_6680874213397349579 [id "63"]
   ObstacleAudioType ObstacleAudioType 
 
-component _5b402bbd81045be4cb6a329ca92d0769_2849453984045734657 [id "63"]
+component _5b402bbd81045be4cb6a329ca92d0769_2849453984045734657 [id "64"]
   ObstacleAudioType ObstacleAudioType 
 
-component _5c34fffcca479f646a4ec22fa8495254_7405024468830958954 [id "64"]
+component _5c34fffcca479f646a4ec22fa8495254_7405024468830958954 [id "65"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355 [id "65"]
+component _5d1b59eb5e3d82a43ab86ad56bde00c6_2145511850668060355 [id "66"]
   ObstacleAudioType ObstacleAudioType 
 
-component _611a48816bb040143902938a42458e81_6893774633199848822 [id "66"]
+component _611a48816bb040143902938a42458e81_6893774633199848822 [id "67"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _642bb09ff33286944a84a5cf6c8dd032_8142389142018834667 [id "67"]
+component _642bb09ff33286944a84a5cf6c8dd032_8142389142018834667 [id "68"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _65d74b7ffb2b71744ab963bba5ca1754_3664407726915758311 [id "68"]
+component _65d74b7ffb2b71744ab963bba5ca1754_3664407726915758311 [id "69"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _675e79640c70ae747bebc181bc077dd4_2968620679537565508 [id "69"]
+component _675e79640c70ae747bebc181bc077dd4_2968620679537565508 [id "70"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _6a825d662e2849b4c8badaeee5f87185_7874268093684668785 [id "70"]
+component _6a825d662e2849b4c8badaeee5f87185_7874268093684668785 [id "71"]
   ObstacleAudioType ObstacleAudioType 
 
-component _6b0d395a9dbba6449a687f9c90868533_5689497210021652693 [id "71"]
+component _6b0d395a9dbba6449a687f9c90868533_5689497210021652693 [id "72"]
   ObstacleAudioType ObstacleAudioType 
 
-component _6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296 [id "72"]
+component _6be9b7bb5e5cd8c48b80d33bf4b2f388_1265859320120598296 [id "73"]
   ObstacleAudioType ObstacleAudioType 
 
-component _6cafc9c151d8a0e4cacfcf7db9b40ca9_6110084816858048972 [id "73"]
+component _6cafc9c151d8a0e4cacfcf7db9b40ca9_6110084816858048972 [id "74"]
   ObstacleAudioType ObstacleAudioType 
 
-component _70b0e820a0e22474baeb5f9a6b41698c_8991986786423197095 [id "74"]
+component _70b0e820a0e22474baeb5f9a6b41698c_8991986786423197095 [id "75"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _718e1373f11cd9143bb823ab01bd209a_7633055719913054959 [id "75"]
+component _718e1373f11cd9143bb823ab01bd209a_7633055719913054959 [id "76"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _71e16730afb02b24c9662c742b2bad89_1171582493256671871 [id "76"]
+component _71e16730afb02b24c9662c742b2bad89_1171582493256671871 [id "77"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _72f39c9fe89421244bc0a27019ae524f_5031619914557980791 [id "77"]
+component _72f39c9fe89421244bc0a27019ae524f_5031619914557980791 [id "78"]
   ObstacleAudioType ObstacleAudioType 
 
-component _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220 [id "78"]
+component _77532e495c8fe1a4f853681a2dad91a2_6664632135701739220 [id "79"]
   isColored Bool [bits "1"]
   bombColor ObstacleColor 
   time Float [compression "None"]
 
-component _7872ab191cb3ed241960e909b1bd8ea0_8598913603903793836 [id "79"]
+component _7872ab191cb3ed241960e909b1bd8ea0_8598913603903793836 [id "80"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _7a1739a336bb3fd479a5d23539d63a02_603065366146451046 [id "80"]
+component _7a1739a336bb3fd479a5d23539d63a02_603065366146451046 [id "81"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419 [id "81"]
+component _7a8f5f199fd7723498a6f1cd12f0b57a_7275356482561705419 [id "82"]
   ObstacleAudioType ObstacleAudioType 
 
-component _7d4dc57e028924b4d9101830bd0321a9_5506253454546868086 [id "82"]
+component _7d4dc57e028924b4d9101830bd0321a9_5506253454546868086 [id "83"]
   ObstacleAudioType ObstacleAudioType 
 
-component _7e2285795c6934d44981d8660a9dfb92_3020272178950532635 [id "83"]
+component _7e2285795c6934d44981d8660a9dfb92_3020272178950532635 [id "84"]
   ObstacleAudioType ObstacleAudioType 
 
-component _81aafd1d1229ff547a1866cfd2b56d22_7657352739035270640 [id "84"]
+component _81aafd1d1229ff547a1866cfd2b56d22_7657352739035270640 [id "85"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _841efc4928e868647890579e57607c7d_3331473393965498849 [id "85"]
+component _841efc4928e868647890579e57607c7d_3331473393965498849 [id "86"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _8510d0a4f95693b4e96be25f025b4b92_7938229815810280804 [id "86"]
+component _8510d0a4f95693b4e96be25f025b4b92_7938229815810280804 [id "87"]
   ObstacleAudioType ObstacleAudioType 
 
-component _85b33f2e8177e3142a7f1b119b6dbcd5_8884554018715554047 [id "87"]
+component _85b33f2e8177e3142a7f1b119b6dbcd5_8884554018715554047 [id "88"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _8a165425badc58848be3ba98e886d7fb_5189111004708688516 [id "88"]
+component _8a165425badc58848be3ba98e886d7fb_5189111004708688516 [id "89"]
   ObstacleAudioType ObstacleAudioType 
 
-component _8aebfd6844062b14e858ce62751ea8f0_4277194250260892270 [id "89"]
+component _8aebfd6844062b14e858ce62751ea8f0_4277194250260892270 [id "90"]
   ObstacleAudioType ObstacleAudioType 
 
-component _8bbd55c8440b0934db04e027c54e5908_6750271935437652100 [id "90"]
+component _8bbd55c8440b0934db04e027c54e5908_6750271935437652100 [id "91"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _8cbee4ae58a20164da6072b75deaeff2_5255066945221666317 [id "91"]
+component _8cbee4ae58a20164da6072b75deaeff2_5255066945221666317 [id "92"]
   ObstacleAudioType ObstacleAudioType 
 
-component _8dc92bf066b657446b2946cdeed68235_2868294426522020275 [id "92"]
+component _8dc92bf066b657446b2946cdeed68235_2868294426522020275 [id "93"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _8f974767147e60e4a8e28f30ecb9c59a_2293702069447571665 [id "93"]
+component _8f974767147e60e4a8e28f30ecb9c59a_2293702069447571665 [id "94"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _9149daa1c9b732f4ba25b62556f64fd1_1693468731976272752 [id "94"]
+component _9149daa1c9b732f4ba25b62556f64fd1_1693468731976272752 [id "95"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _934ceb5ce86601747a95b181a9f8b6c3_4847883582420472371 [id "95"]
+component _934ceb5ce86601747a95b181a9f8b6c3_4847883582420472371 [id "96"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _9449bab46e57ecf4c83a39c7a9a6ecd4_7029853033264766063 [id "96"]
+component _9449bab46e57ecf4c83a39c7a9a6ecd4_7029853033264766063 [id "97"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _98613e87778e3a24abb3f8d668153335_4731651063423145697 [id "97"]
+component _98613e87778e3a24abb3f8d668153335_4731651063423145697 [id "98"]
   ObstacleAudioType ObstacleAudioType 
 
-component _99e22fcc6c69db44ca41afa498fc02fa_2105063957835080157 [id "98"]
+component _99e22fcc6c69db44ca41afa498fc02fa_2105063957835080157 [id "99"]
   ObstacleAudioType ObstacleAudioType 
 
-component _9a93e5716c62e0c4ba4e26102c13d2f5_3032056999160085043 [id "99"]
+component _9a93e5716c62e0c4ba4e26102c13d2f5_3032056999160085043 [id "100"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _9bbdac11328949347973e9dbcab76157_4990087292211322927 [id "100"]
+component _9bbdac11328949347973e9dbcab76157_4990087292211322927 [id "101"]
   ObstacleAudioType ObstacleAudioType 
 
-component _9cbe10fe7293668479d9bcb2bf1b777f_454925720618264236 [id "101"]
+component _9cbe10fe7293668479d9bcb2bf1b777f_454925720618264236 [id "102"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _9d2e9d257e8387b45979b55403f8a357_1845314566694899421 [id "102"]
+component _9d2e9d257e8387b45979b55403f8a357_1845314566694899421 [id "103"]
   Walking Bool [bits "1"]
   Push Bool [bits "1"]
   Jumping Bool [bits "1"]
@@ -403,274 +419,274 @@ component _9d2e9d257e8387b45979b55403f8a357_1845314566694899421 [id "102"]
   Running Bool [bits "1"]
   LookLeft Bool [bits "1"]
 
-component _a0b6503a1069b9b458b11843e072b033_2023347408645236096 [id "103"]
+component _a0b6503a1069b9b458b11843e072b033_2023347408645236096 [id "104"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a197b2259d30b6d41990f03c2374db24_3167791067738335576 [id "104"]
+component _a197b2259d30b6d41990f03c2374db24_3167791067738335576 [id "105"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a19ebca7d9b3dc24ea0fbbf7a225e9bc_318379137576612675 [id "105"]
+component _a19ebca7d9b3dc24ea0fbbf7a225e9bc_318379137576612675 [id "106"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a1dd9bbabdab0784597eb0824695a4d2_2571225644528303678 [id "106"]
+component _a1dd9bbabdab0784597eb0824695a4d2_2571225644528303678 [id "107"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329 [id "107"]
+component _a4f8a8c6d433c5b40a3653993cb1fbbd_2849669271137857329 [id "108"]
   ObstacleAudioType ObstacleAudioType 
 
-component _a5b0ff66e7f4ef34b93ac0cf8fe5bf69_6027744999591691556 [id "108"]
+component _a5b0ff66e7f4ef34b93ac0cf8fe5bf69_6027744999591691556 [id "109"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a677253ca13b10349a1863c45889bf32_1067049581948412627 [id "109"]
+component _a677253ca13b10349a1863c45889bf32_1067049581948412627 [id "110"]
   ObstacleAudioType ObstacleAudioType 
 
-component _a6a22ccee4117a74a867992e3346fef2_2433443891388610357 [id "110"]
+component _a6a22ccee4117a74a867992e3346fef2_2433443891388610357 [id "111"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a7bbf5c412f942f41872b0c22a757880_8426270442701092533 [id "111"]
+component _a7bbf5c412f942f41872b0c22a757880_8426270442701092533 [id "112"]
   ObstacleAudioType ObstacleAudioType 
 
-component _a875b909046e5e046baffc046661e392_2639627042943748874 [id "112"]
+component _a875b909046e5e046baffc046661e392_2639627042943748874 [id "113"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _a958e05296d9889418d7de468a4d4d6f_5347174990036618926 [id "113"]
+component _a958e05296d9889418d7de468a4d4d6f_5347174990036618926 [id "114"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _aa63f4b23da306b419b6b0b974238fd6_5726539104989164900 [id "114"]
+component _aa63f4b23da306b419b6b0b974238fd6_5726539104989164900 [id "115"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _ae0b9d8abba3890489d4b5fc7cf46767_3270111726100618815 [id "115"]
+component _ae0b9d8abba3890489d4b5fc7cf46767_3270111726100618815 [id "116"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513 [id "116"]
+component _ae147ec50032b1a4f91bac70e25ceba5_3290196123208716513 [id "117"]
   isColored Bool [bits "1"]
   bombColor ObstacleColor 
   time Float [compression "None"]
 
-component _aea07fdc951f73744bdeb8e29613ef06_6620593189173925396 [id "117"]
+component _aea07fdc951f73744bdeb8e29613ef06_6620593189173925396 [id "118"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _b0a300358b092ef4a8b93292ccf3c8e1_7971022350599138313 [id "118"]
+component _b0a300358b092ef4a8b93292ccf3c8e1_7971022350599138313 [id "119"]
   ObstacleAudioType ObstacleAudioType 
 
-component _b2c90110cb5c4054188322520e9f7f43_1589348263480677302 [id "119"]
+component _b2c90110cb5c4054188322520e9f7f43_1589348263480677302 [id "120"]
   ObstacleAudioType ObstacleAudioType 
 
-component _b3fcda143a6033045a71b410cca65634_8162038572874200958 [id "120"]
+component _b3fcda143a6033045a71b410cca65634_8162038572874200958 [id "121"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _b525cf1523e366c4f9d59a3d4ca601c3_4149201155228813120 [id "121"]
+component _b525cf1523e366c4f9d59a3d4ca601c3_4149201155228813120 [id "122"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _b6e15953057911946b70874ef2276b2e_227156179876011526 [id "122"]
+component _b6e15953057911946b70874ef2276b2e_227156179876011526 [id "123"]
   ObstacleAudioType ObstacleAudioType 
 
-component _b96a92fdf6deb1f41bbc9efd37688783_7644328439273091061 [id "123"]
+component _b96a92fdf6deb1f41bbc9efd37688783_7644328439273091061 [id "124"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _bb6f3955a41c398479c4f8ac565b3e78_4488719207131553866 [id "124"]
+component _bb6f3955a41c398479c4f8ac565b3e78_4488719207131553866 [id "125"]
   ObstacleAudioType ObstacleAudioType 
 
-component _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345 [id "125"]
+component _bba41c5a1f9f57a40932118e77aabf65_3446889254629437345 [id "126"]
   isColored Bool [bits "1"]
   bombColor ObstacleColor 
   time Float [compression "None"]
 
-component _beaa7832796e7ef46851d44d1d9122eb_9209858349307826103 [id "126"]
+component _beaa7832796e7ef46851d44d1d9122eb_9209858349307826103 [id "127"]
   ObstacleAudioType ObstacleAudioType 
 
-component _bf83b5cfb7794a3488a1d83a4038b965_1845946129812841109 [id "127"]
+component _bf83b5cfb7794a3488a1d83a4038b965_1845946129812841109 [id "128"]
   ObstacleAudioType ObstacleAudioType 
 
-component _c6ae16caea45cf44f8d3730888932925_7535990017818397312 [id "128"]
+component _c6ae16caea45cf44f8d3730888932925_7535990017818397312 [id "129"]
   ObstacleAudioType ObstacleAudioType 
 
-component _c751254a2ec19a444becd674a53bbc4a_7005171224531000225 [id "129"]
+component _c751254a2ec19a444becd674a53bbc4a_7005171224531000225 [id "130"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _c75dfd76074e6c340838162b5bb276cb_3846435238845800702 [id "130"]
+component _c75dfd76074e6c340838162b5bb276cb_3846435238845800702 [id "131"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _c7b95536f1c393646aa679e271fc1d73_3660372803696141497 [id "131"]
+component _c7b95536f1c393646aa679e271fc1d73_3660372803696141497 [id "132"]
   ObstacleAudioType ObstacleAudioType 
 
-component _ca98cb6ca1d36cb489960add5feaf99b_8776421846079780505 [id "132"]
+component _ca98cb6ca1d36cb489960add5feaf99b_8776421846079780505 [id "133"]
   ObstacleAudioType ObstacleAudioType 
 
-component _ce2a1d165fb129d4e9dced215e08d0bf_1750647075440943757 [id "133"]
+component _ce2a1d165fb129d4e9dced215e08d0bf_1750647075440943757 [id "134"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _d4515ac69f46629499558839d029ba91_6420470932677502561 [id "134"]
+component _d4515ac69f46629499558839d029ba91_6420470932677502561 [id "135"]
   ObstacleAudioType ObstacleAudioType 
 
-component _d4edec983baa8894cae4c89ff9ca6728_1178709208910922945 [id "135"]
+component _d4edec983baa8894cae4c89ff9ca6728_1178709208910922945 [id "136"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _d6d84fd66eba5d842b8a22f4750893e6_8425420195695574948 [id "136"]
+component _d6d84fd66eba5d842b8a22f4750893e6_8425420195695574948 [id "137"]
   ObstacleAudioType ObstacleAudioType 
 
-component _d763d01760c59d04ca64522addb2500c_866366201771933303 [id "137"]
+component _d763d01760c59d04ca64522addb2500c_866366201771933303 [id "138"]
   ObstacleAudioType ObstacleAudioType 
 
-component _d7ca1fba611b9f34b96764c409792666_2778689549609452412 [id "138"]
+component _d7ca1fba611b9f34b96764c409792666_2778689549609452412 [id "139"]
   ObstacleAudioType ObstacleAudioType 
 
-component _d7e28a6fdf11a4e489706e2b6425c564_6404392499029084683 [id "139"]
+component _d7e28a6fdf11a4e489706e2b6425c564_6404392499029084683 [id "140"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788 [id "140"]
+component _d96a291cd8d3b734aa8c7b21e31239aa_524083699424543788 [id "141"]
   isColored Bool [bits "1"]
   bombColor ObstacleColor 
   time Float [compression "None"]
 
-component _d9d7d990f424d7e4eb037d8cf901dde4_7037521087883542300 [id "141"]
+component _d9d7d990f424d7e4eb037d8cf901dde4_7037521087883542300 [id "142"]
   ObstacleAudioType ObstacleAudioType 
 
-component _dbb09dea165dd2f43b5fa7426013bbd8_726238243660576025 [id "142"]
+component _dbb09dea165dd2f43b5fa7426013bbd8_726238243660576025 [id "143"]
   ObstacleAudioType ObstacleAudioType 
 
-component _dc7734356ebcc744d8a0b649515b56fc_5117684367990392213 [id "143"]
+component _dc7734356ebcc744d8a0b649515b56fc_5117684367990392213 [id "144"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _de67abb7185898b4d91eceec6676f7b8_6684391901936841535 [id "144"]
+component _de67abb7185898b4d91eceec6676f7b8_6684391901936841535 [id "145"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _df2f29af56c91bd4f9755f5056262669_5616364818191066812 [id "145"]
+component _df2f29af56c91bd4f9755f5056262669_5616364818191066812 [id "146"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _df3ddf08ee5d71b40998eee4b28e2379_3445147344073743258 [id "146"]
+component _df3ddf08ee5d71b40998eee4b28e2379_3445147344073743258 [id "147"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _e097cee30d856834c974be50b83ea0b8_4306433403021876798 [id "147"]
+component _e097cee30d856834c974be50b83ea0b8_4306433403021876798 [id "148"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _e24ad073b46134647ad5c02476238e40_7618071522980441646 [id "148"]
+component _e24ad073b46134647ad5c02476238e40_7618071522980441646 [id "149"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _e3cb390323198f0499a70c4c88d9c6b5_9214513227218294677 [id "149"]
+component _e3cb390323198f0499a70c4c88d9c6b5_9214513227218294677 [id "150"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _e60277fa90c56f446b766d35eb9fce13_7928332911080024550 [id "150"]
+component _e60277fa90c56f446b766d35eb9fce13_7928332911080024550 [id "151"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _e6a5fca2ee5601846966f1e5c2dfbfe9_3768186564253534381 [id "151"]
+component _e6a5fca2ee5601846966f1e5c2dfbfe9_3768186564253534381 [id "152"]
   ObstacleAudioType ObstacleAudioType 
 
-component _e7adfb86a5cb6604e90d880a37188aa4_1024325161327916204 [id "152"]
+component _e7adfb86a5cb6604e90d880a37188aa4_1024325161327916204 [id "153"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _ea922d1ff90d2ed45910371a1ad6f579_921896712208685938 [id "153"]
+component _ea922d1ff90d2ed45910371a1ad6f579_921896712208685938 [id "154"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _eba1e2685eb7c8c4fac7a9371c665a63_4802891310894683769 [id "154"]
+component _eba1e2685eb7c8c4fac7a9371c665a63_4802891310894683769 [id "155"]
   ObstacleAudioType ObstacleAudioType 
 
-component _ebdb8812b29825e4d98d2fccd1747539_8008513566321738908 [id "155"]
+component _ebdb8812b29825e4d98d2fccd1747539_8008513566321738908 [id "156"]
   ObstacleAudioType ObstacleAudioType 
 
-component _ec3377534111b404c866b8a8294bd6a5_8536707605344281309 [id "156"]
+component _ec3377534111b404c866b8a8294bd6a5_8536707605344281309 [id "157"]
   ObstacleAudioType ObstacleAudioType 
 
-component _eda158c6d86e9154e955dd8066642f57_8558227990694776514 [id "157"]
+component _eda158c6d86e9154e955dd8066642f57_8558227990694776514 [id "158"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _edd3ef600fb4423478d6eef6b4ba2dc8_3115179246081063515 [id "158"]
+component _edd3ef600fb4423478d6eef6b4ba2dc8_3115179246081063515 [id "159"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _ee0789ecc9f7d6e4281d2a446d658d2e_5882721688948393084 [id "159"]
+component _ee0789ecc9f7d6e4281d2a446d658d2e_5882721688948393084 [id "160"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _ef61b3c114e63534c8fed4849859904e_8797409608671617463 [id "160"]
+component _ef61b3c114e63534c8fed4849859904e_8797409608671617463 [id "161"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _f13ee7f0e55797e409386b20336c948d_3179065814971206563 [id "161"]
+component _f13ee7f0e55797e409386b20336c948d_3179065814971206563 [id "162"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _f6f38d21fafd92a469bbe87f5492b28c_3495989860554502470 [id "162"]
+component _f6f38d21fafd92a469bbe87f5492b28c_3495989860554502470 [id "163"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _f9a8604ccefc7ed40bcadcc868b9a2da_8026819226926320545 [id "163"]
+component _f9a8604ccefc7ed40bcadcc868b9a2da_8026819226926320545 [id "164"]
   ObstacleAudioType ObstacleAudioType 
 
-component _fe51186ca97ba5b4ca09ac9878092fe5_1225827469179333470 [id "164"]
+component _fe51186ca97ba5b4ca09ac9878092fe5_1225827469179333470 [id "165"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
 
-component _ff35b4235421a4b428aa7c7c77e6ecdf_1411537940311847427 [id "165"]
+component _ff35b4235421a4b428aa7c7c77e6ecdf_1411537940311847427 [id "166"]
   ObstacleAudioType ObstacleAudioType 
 
-component _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351 [id "166"]
+component _ff5b72dec484b6e42a3d138e3cbc3ab4_7834530789450202351 [id "167"]
   isBeingPushed Bool [bits "1"]
   isBeingPulled Bool [bits "1"]
   isFalling Bool [bits "1"]
@@ -772,261 +788,284 @@ command _4e72e77cb0ee9e8429fd751ae836e28c_46fdea8cb7ca4a0492478cea22c18934 [id "
 command _50aa170dc7060fd49ab5bb09509bd35d_ce1690b5d665472db02c43d266faa5d2 [id "40", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _55399f6c7e06e4f4f8e2fab984748c5f_92b8689dc9184e7bbd476689e9c8a57b [id "41", routing "All"]
-  landPosition Vector3 [compression "None"]
+command _51cdf3dcde9a6f84eb066de443294e8e_2412d2b57cbb40739dda6a170e44bcbc [id "41", routing "All"]
 
-command _5639d47fd672fad4ea70709dcd72532d_8cb636d17d79477ab274edd6fe7cdd62 [id "42", routing "All"]
-  landPosition Vector3 [compression "None"]
+command _51cdf3dcde9a6f84eb066de443294e8e_3ceeae504cdc4e9284e2b8fd1df18892 [id "42", routing "All"]
+  female Bool 
 
-command _563b33fa13d57944489ba641d43b5915_89687f9788884613b4506f58aaac6e1f [id "43", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _5c34fffcca479f646a4ec22fa8495254_eb2ab685df86450da4dc93519f910716 [id "44", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _611a48816bb040143902938a42458e81_78cde751433a4bfbadafd5d23affb72d [id "45", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _611c8346c14db8949a1aedc9de4e908d_4c9042729f3b43debd57a007b0ef18c6 [id "46", routing "All"]
-
-command _642bb09ff33286944a84a5cf6c8dd032_31e3c52e0e604c1fa860ca57e83749a3 [id "47", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _65d74b7ffb2b71744ab963bba5ca1754_dd3b93c0f1a74dabb2f614aa4797bda2 [id "48", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _675e79640c70ae747bebc181bc077dd4_292c92c62baf4488837fb989425f866b [id "49", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _70b0e820a0e22474baeb5f9a6b41698c_f53fa7f8ea6d4495a559a5b368e225a5 [id "50", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _718e1373f11cd9143bb823ab01bd209a_9eed837e83704da1b1e5bd213f139c1b [id "51", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _71e16730afb02b24c9662c742b2bad89_fe89aedbf2454c71aca384bfd8b34816 [id "52", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _7872ab191cb3ed241960e909b1bd8ea0_6b1372a789fd4df891cc678c9956628a [id "53", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe [id "54", routing "All"]
-
-command _7a1739a336bb3fd479a5d23539d63a02_2f5b42f9ef9140468b2dd6a6a2a395de [id "55", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _7bd2baf3a8b2fd04b81e4d39f19c4a81_7883a031caa94e46b9382d28f8d83271 [id "56", routing "All"]
-
-command _7bd2baf3a8b2fd04b81e4d39f19c4a81_8e3cf9e0383b4a5397f446e9dbe0fd27 [id "57", routing "All"]
-
-command _7de024966f2b1e749a0aaff3f32f7d52_7883a031caa94e46b9382d28f8d83271 [id "58", routing "All"]
-
-command _7de024966f2b1e749a0aaff3f32f7d52_8e3cf9e0383b4a5397f446e9dbe0fd27 [id "59", routing "All"]
-
-command _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047 [id "60", routing "All"]
-
-command _81aafd1d1229ff547a1866cfd2b56d22_967adc122c4b4ed8bff1b3088d0dc47c [id "61", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _8303c37f41e9c994e8c222f3506bbb77_04cf56ee8c124604a96eeb8fec89b3a9 [id "62", routing "All"]
-
-command _8303c37f41e9c994e8c222f3506bbb77_23a82858596d4e7e8d22ab5ac2db5abf [id "63", routing "All"]
-
-command _841efc4928e868647890579e57607c7d_e209892b81174e38b8d03b43f4e64285 [id "64", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _85b33f2e8177e3142a7f1b119b6dbcd5_ed2f52161e814121a534bbe4dd383bf2 [id "65", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _85c9c3f2bce8c6344b8122ddc1c603b9_fd2341cd0ac049e093e0b2900c434ca9 [id "66", routing "All"]
-
-command _891a9432bed15564d9c998864ee284ce_ca2973eb06724ab1bdcae166f1ba0b72 [id "67", routing "All"]
-
-command _8bbd55c8440b0934db04e027c54e5908_9fd6e50715374e809cb4e24c99dcd27e [id "68", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _8c6847a0a09b1d3458e2f6aa31fc0752_2f446ea01f4445a093ff6da59eda1c42 [id "69", routing "All"]
-
-command _8dc92bf066b657446b2946cdeed68235_545cb799bd884a08a4a6410e80b9e9b8 [id "70", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _8f974767147e60e4a8e28f30ecb9c59a_572d8a97458e4af2afd21851544d70bb [id "71", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _9149daa1c9b732f4ba25b62556f64fd1_725a8189fdb7473e85bbfe77971e52f4 [id "72", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _91d3ade4c8936ac49bfe68cf37d66b91_630f9ed05d294f5196af0a1ae40ad54c [id "73", routing "All"]
-
-command _934ceb5ce86601747a95b181a9f8b6c3_8562222cb26b485e97ddba6172a4eca2 [id "74", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _9449bab46e57ecf4c83a39c7a9a6ecd4_a19d7b3c53734f909c8bd89c5faaede5 [id "75", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _993cf619372904f4392684f227865942_fa7bac46a531405d8f640192ebb608c1 [id "76", routing "All"]
-
-command _9a93e5716c62e0c4ba4e26102c13d2f5_d78a133fc87c4e53934451de4e19d40b [id "77", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _9cbe10fe7293668479d9bcb2bf1b777f_4781de5356a343c49a1cff449e45637b [id "78", routing "All"]
-  landPosition Vector3 [compression "None"]
-
-command _9d2e9d257e8387b45979b55403f8a357_00665f1921eb46f9887840bfd8701d89 [id "79", routing "All"]
+command _51cdf3dcde9a6f84eb066de443294e8e_5507c81902d345738e962b95b0ff29f8 [id "43", routing "All"]
   didHitObstacle Bool 
   impactPoint Vector3 [compression "None"]
 
-command _9d2e9d257e8387b45979b55403f8a357_6f74df68aca349839087a3c076caccff [id "80", routing "All"]
-  female Bool 
+command _51cdf3dcde9a6f84eb066de443294e8e_78387fccb2d44071b8dca419781f5eca [id "44", routing "All"]
+  aoePosition Vector3 [compression "None"]
 
-command _9d2e9d257e8387b45979b55403f8a357_77145c765ef341d78ae62b1dd454b829 [id "81", routing "All"]
+command _51cdf3dcde9a6f84eb066de443294e8e_8292b598b9374c0cbfd837764ca40d8e [id "45", routing "All"]
   kind Int 
   active Bool 
 
-command _9d2e9d257e8387b45979b55403f8a357_9407c535be214c099c8cd86ee91c6551 [id "82", routing "All"]
+command _51cdf3dcde9a6f84eb066de443294e8e_9963ad4227ee43a690055f6813703afa [id "46", routing "All"]
+
+command _51cdf3dcde9a6f84eb066de443294e8e_a5e320de0cec429ba3ebcbe87859d696 [id "47", routing "All"]
   amount Int 
 
-command _9d2e9d257e8387b45979b55403f8a357_bff54fe9af1b4c7d81c56d06a75d2d1a [id "83", routing "All"]
+command _51cdf3dcde9a6f84eb066de443294e8e_b20f112ecb4b4894be81a8e94701d8a1 [id "48", routing "All"]
+
+command _55399f6c7e06e4f4f8e2fab984748c5f_92b8689dc9184e7bbd476689e9c8a57b [id "49", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _5639d47fd672fad4ea70709dcd72532d_8cb636d17d79477ab274edd6fe7cdd62 [id "50", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _563b33fa13d57944489ba641d43b5915_89687f9788884613b4506f58aaac6e1f [id "51", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _5c34fffcca479f646a4ec22fa8495254_eb2ab685df86450da4dc93519f910716 [id "52", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _611a48816bb040143902938a42458e81_78cde751433a4bfbadafd5d23affb72d [id "53", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _611c8346c14db8949a1aedc9de4e908d_4c9042729f3b43debd57a007b0ef18c6 [id "54", routing "All"]
+
+command _642bb09ff33286944a84a5cf6c8dd032_31e3c52e0e604c1fa860ca57e83749a3 [id "55", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _65d74b7ffb2b71744ab963bba5ca1754_dd3b93c0f1a74dabb2f614aa4797bda2 [id "56", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _675e79640c70ae747bebc181bc077dd4_292c92c62baf4488837fb989425f866b [id "57", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _70b0e820a0e22474baeb5f9a6b41698c_f53fa7f8ea6d4495a559a5b368e225a5 [id "58", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _718e1373f11cd9143bb823ab01bd209a_9eed837e83704da1b1e5bd213f139c1b [id "59", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _71e16730afb02b24c9662c742b2bad89_fe89aedbf2454c71aca384bfd8b34816 [id "60", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _7872ab191cb3ed241960e909b1bd8ea0_6b1372a789fd4df891cc678c9956628a [id "61", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _7a152dc1710a46b44863568b810c28d5_6728eb09325a4aa495bf38f99131dfbe [id "62", routing "All"]
+
+command _7a1739a336bb3fd479a5d23539d63a02_2f5b42f9ef9140468b2dd6a6a2a395de [id "63", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _7bd2baf3a8b2fd04b81e4d39f19c4a81_7883a031caa94e46b9382d28f8d83271 [id "64", routing "All"]
+
+command _7bd2baf3a8b2fd04b81e4d39f19c4a81_8e3cf9e0383b4a5397f446e9dbe0fd27 [id "65", routing "All"]
+
+command _7de024966f2b1e749a0aaff3f32f7d52_7883a031caa94e46b9382d28f8d83271 [id "66", routing "All"]
+
+command _7de024966f2b1e749a0aaff3f32f7d52_8e3cf9e0383b4a5397f446e9dbe0fd27 [id "67", routing "All"]
+
+command _7ecd556eb03280143980fdc3e87bc912_d75de708eed041dcb1a743dc5a40e047 [id "68", routing "All"]
+
+command _81aafd1d1229ff547a1866cfd2b56d22_967adc122c4b4ed8bff1b3088d0dc47c [id "69", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _8303c37f41e9c994e8c222f3506bbb77_28064e1d39ca4285a63567a7d20e232d [id "70", routing "All"]
+
+command _8303c37f41e9c994e8c222f3506bbb77_e72b475cc9cb4c1dbc40d23d465f8429 [id "71", routing "All"]
+
+command _841efc4928e868647890579e57607c7d_e209892b81174e38b8d03b43f4e64285 [id "72", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _85b33f2e8177e3142a7f1b119b6dbcd5_ed2f52161e814121a534bbe4dd383bf2 [id "73", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _85c9c3f2bce8c6344b8122ddc1c603b9_fd2341cd0ac049e093e0b2900c434ca9 [id "74", routing "All"]
+
+command _891a9432bed15564d9c998864ee284ce_ca2973eb06724ab1bdcae166f1ba0b72 [id "75", routing "All"]
+
+command _8bbd55c8440b0934db04e027c54e5908_9fd6e50715374e809cb4e24c99dcd27e [id "76", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _8c6847a0a09b1d3458e2f6aa31fc0752_2f446ea01f4445a093ff6da59eda1c42 [id "77", routing "All"]
+
+command _8dc92bf066b657446b2946cdeed68235_545cb799bd884a08a4a6410e80b9e9b8 [id "78", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _8f974767147e60e4a8e28f30ecb9c59a_572d8a97458e4af2afd21851544d70bb [id "79", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _9149daa1c9b732f4ba25b62556f64fd1_725a8189fdb7473e85bbfe77971e52f4 [id "80", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _91d3ade4c8936ac49bfe68cf37d66b91_630f9ed05d294f5196af0a1ae40ad54c [id "81", routing "All"]
+
+command _934ceb5ce86601747a95b181a9f8b6c3_8562222cb26b485e97ddba6172a4eca2 [id "82", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _9449bab46e57ecf4c83a39c7a9a6ecd4_a19d7b3c53734f909c8bd89c5faaede5 [id "83", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _993cf619372904f4392684f227865942_fa7bac46a531405d8f640192ebb608c1 [id "84", routing "All"]
+
+command _9a93e5716c62e0c4ba4e26102c13d2f5_d78a133fc87c4e53934451de4e19d40b [id "85", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _9cbe10fe7293668479d9bcb2bf1b777f_4781de5356a343c49a1cff449e45637b [id "86", routing "All"]
+  landPosition Vector3 [compression "None"]
+
+command _9d2e9d257e8387b45979b55403f8a357_00665f1921eb46f9887840bfd8701d89 [id "87", routing "All"]
+  didHitObstacle Bool 
+  impactPoint Vector3 [compression "None"]
+
+command _9d2e9d257e8387b45979b55403f8a357_6f74df68aca349839087a3c076caccff [id "88", routing "All"]
+  female Bool 
+
+command _9d2e9d257e8387b45979b55403f8a357_77145c765ef341d78ae62b1dd454b829 [id "89", routing "All"]
+  kind Int 
+  active Bool 
+
+command _9d2e9d257e8387b45979b55403f8a357_9407c535be214c099c8cd86ee91c6551 [id "90", routing "All"]
+  amount Int 
+
+command _9d2e9d257e8387b45979b55403f8a357_bff54fe9af1b4c7d81c56d06a75d2d1a [id "91", routing "All"]
   aoePosition Vector3 [compression "None"]
 
-command _9d2e9d257e8387b45979b55403f8a357_dde14440892f4d9992de0aaabdf8aa8d [id "84", routing "All"]
+command _9d2e9d257e8387b45979b55403f8a357_dde14440892f4d9992de0aaabdf8aa8d [id "92", routing "All"]
 
-command _9d2e9d257e8387b45979b55403f8a357_f9ea9b2ff94e45dc91527eaf47de22e1 [id "85", routing "All"]
+command _9d2e9d257e8387b45979b55403f8a357_f9ea9b2ff94e45dc91527eaf47de22e1 [id "93", routing "All"]
 
-command _9d2e9d257e8387b45979b55403f8a357_fe037c340e274c8cb1f52117cec0f40e [id "86", routing "All"]
+command _9d2e9d257e8387b45979b55403f8a357_fe037c340e274c8cb1f52117cec0f40e [id "94", routing "All"]
 
-command _a0b6503a1069b9b458b11843e072b033_28911a1169d24806b2815d44852b9d34 [id "87", routing "All"]
+command _a0b6503a1069b9b458b11843e072b033_28911a1169d24806b2815d44852b9d34 [id "95", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a197b2259d30b6d41990f03c2374db24_619bef46f4a24243b8230ab5fb76fa39 [id "88", routing "All"]
+command _a197b2259d30b6d41990f03c2374db24_619bef46f4a24243b8230ab5fb76fa39 [id "96", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a19ebca7d9b3dc24ea0fbbf7a225e9bc_b7bdea196c8a487b8a3d1572f28085ee [id "89", routing "All"]
+command _a19ebca7d9b3dc24ea0fbbf7a225e9bc_b7bdea196c8a487b8a3d1572f28085ee [id "97", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a1dd9bbabdab0784597eb0824695a4d2_0bd4ff9e5d6d4ffb882c780c95a2cd98 [id "90", routing "All"]
+command _a1dd9bbabdab0784597eb0824695a4d2_0bd4ff9e5d6d4ffb882c780c95a2cd98 [id "98", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a5b0ff66e7f4ef34b93ac0cf8fe5bf69_68d3c4dfee7245b9a8f385f4684c9daf [id "91", routing "All"]
+command _a5b0ff66e7f4ef34b93ac0cf8fe5bf69_68d3c4dfee7245b9a8f385f4684c9daf [id "99", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a6a22ccee4117a74a867992e3346fef2_2cdce928522c48ee82741cabd21eb945 [id "92", routing "All"]
+command _a6a22ccee4117a74a867992e3346fef2_2cdce928522c48ee82741cabd21eb945 [id "100", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a875b909046e5e046baffc046661e392_0ed18663be70465296ab41d787747482 [id "93", routing "All"]
+command _a875b909046e5e046baffc046661e392_0ed18663be70465296ab41d787747482 [id "101", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _a958e05296d9889418d7de468a4d4d6f_c33be1cd5431463685b31387f7bbb209 [id "94", routing "All"]
+command _a958e05296d9889418d7de468a4d4d6f_c33be1cd5431463685b31387f7bbb209 [id "102", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _aa63f4b23da306b419b6b0b974238fd6_eb98acda6a9c4fb29d985937ddec3fbd [id "95", routing "All"]
+command _aa63f4b23da306b419b6b0b974238fd6_eb98acda6a9c4fb29d985937ddec3fbd [id "103", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _ae0b9d8abba3890489d4b5fc7cf46767_325256ff501947d1852486e5c2792317 [id "96", routing "All"]
+command _ae0b9d8abba3890489d4b5fc7cf46767_325256ff501947d1852486e5c2792317 [id "104", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _aea07fdc951f73744bdeb8e29613ef06_eaec2e1a08304a9ea68f4690da54d002 [id "97", routing "All"]
+command _aea07fdc951f73744bdeb8e29613ef06_eaec2e1a08304a9ea68f4690da54d002 [id "105", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _b3fcda143a6033045a71b410cca65634_4e06adfcbd2f4971bbcd245c38108714 [id "98", routing "All"]
+command _b3fcda143a6033045a71b410cca65634_4e06adfcbd2f4971bbcd245c38108714 [id "106", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _b525cf1523e366c4f9d59a3d4ca601c3_ce71f769ca5b4e0abb4082e90e0ee706 [id "99", routing "All"]
+command _b525cf1523e366c4f9d59a3d4ca601c3_ce71f769ca5b4e0abb4082e90e0ee706 [id "107", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _b96a92fdf6deb1f41bbc9efd37688783_2566cc3e59e045dbbb7157feb0427df5 [id "100", routing "All"]
+command _b96a92fdf6deb1f41bbc9efd37688783_2566cc3e59e045dbbb7157feb0427df5 [id "108", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _bfe93f9582ac4764599fd9da9ad944ff_f5dc5fecab9547afa1378e768121dce8 [id "101", routing "All"]
+command _bfe93f9582ac4764599fd9da9ad944ff_f5dc5fecab9547afa1378e768121dce8 [id "109", routing "All"]
 
-command _c751254a2ec19a444becd674a53bbc4a_cd1f02bbb2f24efa8d1bb3a7060745c1 [id "102", routing "All"]
+command _c751254a2ec19a444becd674a53bbc4a_cd1f02bbb2f24efa8d1bb3a7060745c1 [id "110", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _c75dfd76074e6c340838162b5bb276cb_591cc693463841918c74ab344e0b8568 [id "103", routing "All"]
+command _c75dfd76074e6c340838162b5bb276cb_591cc693463841918c74ab344e0b8568 [id "111", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _c9a31b8ed1e7c99419837ed02758c5a3_9011664938d2487e9b6fe7f6d8a34c9e [id "104", routing "All"]
+command _c9a31b8ed1e7c99419837ed02758c5a3_9011664938d2487e9b6fe7f6d8a34c9e [id "112", routing "All"]
 
-command _cd929231a54f48f45a02b9ca54ca4833_06cb607223e244aab3826d49e2027a1c [id "105", routing "All"]
+command _cd929231a54f48f45a02b9ca54ca4833_06cb607223e244aab3826d49e2027a1c [id "113", routing "All"]
 
-command _cd929231a54f48f45a02b9ca54ca4833_ac5207f18455423cb762062386e500c3 [id "106", routing "All"]
+command _cd929231a54f48f45a02b9ca54ca4833_ac5207f18455423cb762062386e500c3 [id "114", routing "All"]
 
-command _ce2a1d165fb129d4e9dced215e08d0bf_5828e4aaf3e14e1f8cf32ab0ba4ae367 [id "107", routing "All"]
+command _ce2a1d165fb129d4e9dced215e08d0bf_5828e4aaf3e14e1f8cf32ab0ba4ae367 [id "115", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _d33625ff853241e46b1fbe66033eda64_2d66b0edca4e4e44b7072be4c5b3a823 [id "108", routing "All"]
+command _d33625ff853241e46b1fbe66033eda64_2d66b0edca4e4e44b7072be4c5b3a823 [id "116", routing "All"]
 
-command _d33625ff853241e46b1fbe66033eda64_87fed86729874bf08b3eadc9b606b9f1 [id "109", routing "All"]
+command _d33625ff853241e46b1fbe66033eda64_87fed86729874bf08b3eadc9b606b9f1 [id "117", routing "All"]
 
-command _d4edec983baa8894cae4c89ff9ca6728_1e5e818f75a1442886d0596ae01ef705 [id "110", routing "All"]
+command _d4edec983baa8894cae4c89ff9ca6728_1e5e818f75a1442886d0596ae01ef705 [id "118", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _d7e28a6fdf11a4e489706e2b6425c564_98575b3ccff3488ca919fb9054a80534 [id "111", routing "All"]
+command _d7e28a6fdf11a4e489706e2b6425c564_98575b3ccff3488ca919fb9054a80534 [id "119", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _dc7734356ebcc744d8a0b649515b56fc_713e226290064f2f898d7defc2df714b [id "112", routing "All"]
+command _dc7734356ebcc744d8a0b649515b56fc_713e226290064f2f898d7defc2df714b [id "120", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _de67abb7185898b4d91eceec6676f7b8_d4846b1d26834affb107349e35fbcc4b [id "113", routing "All"]
+command _de67abb7185898b4d91eceec6676f7b8_d4846b1d26834affb107349e35fbcc4b [id "121", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _df2f29af56c91bd4f9755f5056262669_18c40f0fdc5746bd8cdbb10126a20074 [id "114", routing "All"]
+command _df2f29af56c91bd4f9755f5056262669_18c40f0fdc5746bd8cdbb10126a20074 [id "122", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _df3ddf08ee5d71b40998eee4b28e2379_4e0167e8df56493e8135b3a2d8e455fa [id "115", routing "All"]
+command _df3ddf08ee5d71b40998eee4b28e2379_4e0167e8df56493e8135b3a2d8e455fa [id "123", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _e097cee30d856834c974be50b83ea0b8_a6c2de32c62d40f4a777eab9ad7ab38d [id "116", routing "All"]
+command _e097cee30d856834c974be50b83ea0b8_a6c2de32c62d40f4a777eab9ad7ab38d [id "124", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _e24ad073b46134647ad5c02476238e40_c2563528befc4a77b5d7bf7229bb52fc [id "117", routing "All"]
+command _e24ad073b46134647ad5c02476238e40_c2563528befc4a77b5d7bf7229bb52fc [id "125", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _e3cb390323198f0499a70c4c88d9c6b5_7083ed0a314248349f078110c7562973 [id "118", routing "All"]
+command _e3cb390323198f0499a70c4c88d9c6b5_7083ed0a314248349f078110c7562973 [id "126", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _e527a840aafdb064db9a08900c1a6716_d7dd3baf9f904d06b064ebeeaf5420bc [id "119", routing "All"]
+command _e527a840aafdb064db9a08900c1a6716_d7dd3baf9f904d06b064ebeeaf5420bc [id "127", routing "All"]
 
-command _e60277fa90c56f446b766d35eb9fce13_f1658a4d0cf1413f80570f1f4d2eb485 [id "120", routing "All"]
+command _e60277fa90c56f446b766d35eb9fce13_f1658a4d0cf1413f80570f1f4d2eb485 [id "128", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _e7adfb86a5cb6604e90d880a37188aa4_d20aa5f99d4b44e28dc0d960f8e3dd57 [id "121", routing "All"]
+command _e7adfb86a5cb6604e90d880a37188aa4_d20aa5f99d4b44e28dc0d960f8e3dd57 [id "129", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _ea922d1ff90d2ed45910371a1ad6f579_a01c8c9b1be6487e809f3b481cbb745e [id "122", routing "All"]
+command _ea922d1ff90d2ed45910371a1ad6f579_a01c8c9b1be6487e809f3b481cbb745e [id "130", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _eae5bbeda865a434ab909946a70b0a09_6d8d0fbfae22451b8ab2aaeeb1e90ebc [id "123", routing "All"]
+command _eae5bbeda865a434ab909946a70b0a09_6d8d0fbfae22451b8ab2aaeeb1e90ebc [id "131", routing "All"]
 
-command _eae5bbeda865a434ab909946a70b0a09_7be96ea70f5942c580289a9fe72be301 [id "124", routing "All"]
+command _eae5bbeda865a434ab909946a70b0a09_7be96ea70f5942c580289a9fe72be301 [id "132", routing "All"]
 
-command _eda158c6d86e9154e955dd8066642f57_a7389ce23e394930b6d8108c93e0744d [id "125", routing "All"]
+command _eda158c6d86e9154e955dd8066642f57_a7389ce23e394930b6d8108c93e0744d [id "133", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _edd3ef600fb4423478d6eef6b4ba2dc8_1156e360cce94f67b56a48581be4f28e [id "126", routing "All"]
+command _edd3ef600fb4423478d6eef6b4ba2dc8_1156e360cce94f67b56a48581be4f28e [id "134", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _ee0789ecc9f7d6e4281d2a446d658d2e_a8c72137e55f4e398fd854f69a140a97 [id "127", routing "All"]
+command _ee0789ecc9f7d6e4281d2a446d658d2e_a8c72137e55f4e398fd854f69a140a97 [id "135", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _ef2c19b94b0f71340a1d06b5b88350fc_58af21c198de40b2a09c846bf4e5ce2b [id "128", routing "All"]
+command _ef2c19b94b0f71340a1d06b5b88350fc_58af21c198de40b2a09c846bf4e5ce2b [id "136", routing "All"]
 
-command _ef61b3c114e63534c8fed4849859904e_c7cd227e13424a35aa6d5dabd4f224d1 [id "129", routing "All"]
+command _ef61b3c114e63534c8fed4849859904e_c7cd227e13424a35aa6d5dabd4f224d1 [id "137", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _f13ee7f0e55797e409386b20336c948d_8b957a1f04664af3a0bed01b4101417f [id "130", routing "All"]
+command _f13ee7f0e55797e409386b20336c948d_8b957a1f04664af3a0bed01b4101417f [id "138", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _f6f38d21fafd92a469bbe87f5492b28c_1f6d81fb0457405b98465718a24b4d7e [id "131", routing "All"]
+command _f6f38d21fafd92a469bbe87f5492b28c_1f6d81fb0457405b98465718a24b4d7e [id "139", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _f7791ba7b68c6b9428230132667fb3c5_7652167a01f440e28a4f09f7dbb0635e [id "132", routing "All"]
+command _f7791ba7b68c6b9428230132667fb3c5_7652167a01f440e28a4f09f7dbb0635e [id "140", routing "All"]
 
-command _fa00d9f1cb4295d4b95284302b10760f_15df0b6c3b0b4e9a998627aed9d017ae [id "133", routing "All"]
+command _fa00d9f1cb4295d4b95284302b10760f_15df0b6c3b0b4e9a998627aed9d017ae [id "141", routing "All"]
 
-command _fe51186ca97ba5b4ca09ac9878092fe5_f11b9edcd6d248a7832387042a04d550 [id "134", routing "All"]
+command _fe51186ca97ba5b4ca09ac9878092fe5_f11b9edcd6d248a7832387042a04d550 [id "142", routing "All"]
   landPosition Vector3 [compression "None"]
 
-command _ff5b72dec484b6e42a3d138e3cbc3ab4_369ef613fbc74949ba5dce6373872af7 [id "135", routing "All"]
+command _ff5b72dec484b6e42a3d138e3cbc3ab4_369ef613fbc74949ba5dce6373872af7 [id "143", routing "All"]
   landPosition Vector3 [compression "None"]
 

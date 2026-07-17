@@ -185,63 +185,25 @@ public class CreateNetworkedPrefabVariants : EditorWindow
 
         foreach (var (path, descriptor) in work)
         {
-            string dir = Path.GetDirectoryName(path).Replace("\\", "/");
-            string name = Path.GetFileNameWithoutExtension(path);
-            string outputPath = $"{dir}/{name}_Networked.prefab";
-
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(outputPath) != null)
-            {
-                Debug.Log($"[NetworkedPrefabs] Skipping {name}_Networked — already exists.");
-                skipped++;
-                continue;
-            }
-
             var sourceAsset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if (sourceAsset == null) continue;
 
-            var instance = (GameObject)PrefabUtility.InstantiatePrefab(sourceAsset);
-            try
+            var variant = CreateVariant(sourceAsset, descriptor.Bindings, descriptor.PostProcess, descriptor.Label, out bool newlyCreated);
+            if (variant == null) continue; // save failure — already logged
+            if (newlyCreated)
             {
-                var sync = instance.AddComponent<CoherenceSync>();
-                sync.uniquenessType = CoherenceSync.UniquenessType.NoDuplicates;
-
-                foreach (var binding in descriptor.Bindings)
-                {
-                    CoherenceSyncUtils.AddBinding(instance, binding.Component, binding.Member);
-                }
-
-                descriptor.PostProcess?.Invoke(instance);
-
-                PrefabUtility.SaveAsPrefabAsset(instance, outputPath, out bool success);
-                if (success)
-                {
-                    createdPaths.Add(outputPath);
-                    Debug.Log($"[NetworkedPrefabs] Created {descriptor.Label} variant: {outputPath}");
-                    created++;
-                }
-                else
-                {
-                    Debug.LogError($"[NetworkedPrefabs] Failed to save variant: {outputPath}");
-                }
+                createdPaths.Add(AssetDatabase.GetAssetPath(variant));
+                created++;
             }
-            finally
+            else
             {
-                if (instance != null) Object.DestroyImmediate(instance);
+                Debug.Log($"[NetworkedPrefabs] Skipping {variant.name} — already exists.");
+                skipped++;
             }
         }
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-
-        // Register configs against freshly-loaded asset references so EditorTarget points at the
-        // on-disk prefab (the GameObject SaveAsPrefabAsset returns can become stale after the scene
-        // instance is destroyed, leaving a dangling reference that breaks the subsequent bake).
-        foreach (var outputPath in createdPaths)
-        {
-            var assetOnDisk = AssetDatabase.LoadAssetAtPath<GameObject>(outputPath);
-            if (assetOnDisk != null)
-                CoherenceSyncConfigUtils.Create(assetOnDisk);
-        }
 
         if (createdPaths.Count > 0)
         {
@@ -253,5 +215,131 @@ public class CreateNetworkedPrefabVariants : EditorWindow
         }
 
         Debug.Log($"[NetworkedPrefabs] Done. Created: {created}, skipped (existed): {skipped}, ignored (no matching root component or already networked): {ignored}.");
+    }
+
+    // ---------------------------------------------------------------- public API
+    // Used by SinglePlayerToMultiplayerConverter to create missing variants
+    // on demand during scene conversion. Callers are responsible for running a
+    // Coherence bake afterwards when anything reports newlyCreated.
+
+    /// <summary>
+    /// Ensures a _Networked sibling exists for the given source prefab asset,
+    /// creating it from the matching conversion descriptor if needed. Returns the
+    /// networked prefab (existing or new); null when the prefab matches no
+    /// descriptor (not a networkable type) or saving failed. Returns the source
+    /// itself if it already carries a CoherenceSync.
+    /// </summary>
+    public static GameObject GetOrCreateNetworkedVariant(GameObject sourceAsset, out bool newlyCreated)
+    {
+        newlyCreated = false;
+        if (sourceAsset == null) return null;
+        if (sourceAsset.GetComponent<CoherenceSync>() != null) return sourceAsset;
+
+        foreach (var descriptor in Conversions)
+        {
+            if (sourceAsset.GetComponent(descriptor.RootComponent) != null)
+                return CreateVariant(sourceAsset, descriptor.Bindings, descriptor.PostProcess, descriptor.Label, out newlyCreated);
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Ensures a _Networked sibling exists for a PLAYER prefab, following the
+    /// Player_Male_Standard_Gameplay pattern: CoherenceSync syncing Transform
+    /// position + rotation and every non-trigger Animator parameter. (The Cmd*
+    /// bindings visible on the reference prefab come from [Command] attributes
+    /// and are added by coherence automatically.)
+    /// </summary>
+    public static GameObject GetOrCreateNetworkedPlayerVariant(GameObject playerPrefab, out bool newlyCreated)
+    {
+        newlyCreated = false;
+        if (playerPrefab == null) return null;
+        if (playerPrefab.GetComponent<CoherenceSync>() != null) return playerPrefab;
+
+        var bindings = new List<(Type, string)>
+        {
+            (typeof(Transform), "position"),
+            (typeof(Transform), "rotation"),
+        };
+
+        var animator = playerPrefab.GetComponent<Animator>();
+        var runtimeController = animator != null ? animator.runtimeAnimatorController : null;
+        if (runtimeController is AnimatorOverrideController overrideController)
+            runtimeController = overrideController.runtimeAnimatorController;
+
+        if (runtimeController is UnityEditor.Animations.AnimatorController controller)
+        {
+            foreach (var parameter in controller.parameters)
+            {
+                // Triggers can't be synced as parameters (consumed the frame they fire).
+                if (parameter.type != AnimatorControllerParameterType.Trigger)
+                    bindings.Add((typeof(Animator), parameter.name));
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[NetworkedPrefabs] Player prefab '{playerPrefab.name}' has no resolvable AnimatorController — " +
+                             "creating the variant with transform bindings only.");
+        }
+
+        return CreateVariant(playerPrefab, bindings.ToArray(), null, "Player", out newlyCreated);
+    }
+
+    /// <summary>
+    /// Shared creation core: instantiate the source, add CoherenceSync
+    /// (NoDuplicates), add the bindings, run the post-process, save as the
+    /// _Networked sibling, and register its CoherenceSyncConfig against the
+    /// on-disk asset. Returns the existing variant untouched when one is
+    /// already present.
+    /// </summary>
+    private static GameObject CreateVariant(GameObject sourceAsset, (Type Component, string Member)[] bindings,
+        Action<GameObject> postProcess, string label, out bool newlyCreated)
+    {
+        newlyCreated = false;
+
+        string path = AssetDatabase.GetAssetPath(sourceAsset);
+        string dir = Path.GetDirectoryName(path).Replace("\\", "/");
+        string name = Path.GetFileNameWithoutExtension(path);
+        string outputPath = $"{dir}/{name}_Networked.prefab";
+
+        var existing = AssetDatabase.LoadAssetAtPath<GameObject>(outputPath);
+        if (existing != null) return existing;
+
+        var instance = (GameObject)PrefabUtility.InstantiatePrefab(sourceAsset);
+        try
+        {
+            var sync = instance.AddComponent<CoherenceSync>();
+            sync.uniquenessType = CoherenceSync.UniquenessType.NoDuplicates;
+
+            foreach (var binding in bindings)
+            {
+                CoherenceSyncUtils.AddBinding(instance, binding.Component, binding.Member);
+            }
+
+            postProcess?.Invoke(instance);
+
+            PrefabUtility.SaveAsPrefabAsset(instance, outputPath, out bool success);
+            if (!success)
+            {
+                Debug.LogError($"[NetworkedPrefabs] Failed to save variant: {outputPath}");
+                return null;
+            }
+        }
+        finally
+        {
+            if (instance != null) Object.DestroyImmediate(instance);
+        }
+
+        // Register the config against the freshly-loaded asset reference so
+        // EditorTarget points at the on-disk prefab (the GameObject returned by
+        // SaveAsPrefabAsset can go stale once the scene instance is destroyed,
+        // which breaks the subsequent bake).
+        var assetOnDisk = AssetDatabase.LoadAssetAtPath<GameObject>(outputPath);
+        if (assetOnDisk != null)
+            CoherenceSyncConfigUtils.Create(assetOnDisk);
+
+        Debug.Log($"[NetworkedPrefabs] Created {label} variant: {outputPath}");
+        newlyCreated = true;
+        return assetOnDisk;
     }
 }

@@ -44,7 +44,11 @@ public static class ReplayIdTools
         foreach (ReplayScope scope in scopes) AssignInScope(scope);
     }
 
-    private static void AssignInScope(ReplayScope scope)
+    /// <summary>
+    /// Public so pipeline tools (SinglePlayerToMultiplayerConverter) can run the
+    /// same assignment the menu item does.
+    /// </summary>
+    public static void AssignInScope(ReplayScope scope)
     {
         List<GameObject> trackables = FindTrackables(scope);
 
@@ -98,8 +102,16 @@ public static class ReplayIdTools
             Debug.LogError("[ReplayIdTools] Set 'Mirror Source' on this ReplayScope first (the other level half).", target);
             return;
         }
-        ReplayScope source = target.mirrorSource;
+        MirrorIds(target.mirrorSource, target);
+    }
 
+    /// <summary>
+    /// Copies IDs from the source scope onto entities at the same relative
+    /// hierarchy path in the target scope. Public so pipeline tools can run the
+    /// same mirroring the context menu does.
+    /// </summary>
+    public static void MirrorIds(ReplayScope source, ReplayScope target)
+    {
         // Path (sibling-index chain) → id, from the source half.
         var sourceIdsByPath = new Dictionary<string, int>();
         foreach (GameObject go in FindTrackables(source))

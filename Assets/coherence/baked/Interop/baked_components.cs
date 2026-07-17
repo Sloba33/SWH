@@ -10468,6 +10468,553 @@ namespace Coherence.Generated
                     $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(3, '0') })";
             }
         }
+        public struct _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468 : ICoherenceComponentData
+        {
+            public void ResetFrame(AbsoluteSimulationFrame frame)
+            {
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.WalkingMask;
+                WalkingSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.PushMask;
+                PushSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.JumpingMask;
+                JumpingSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.PullMask;
+                PullSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.HitMask;
+                HitSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.HitDownMask;
+                HitDownSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.HitSpecialMask;
+                HitSpecialSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.FallingMask;
+                FallingSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.GroundedMask;
+                GroundedSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.IdleMask;
+                IdleSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.LookRightMask;
+                LookRightSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.LookLeftMask;
+                LookLeftSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.RunningMask;
+                RunningSimulationFrame = frame;
+                FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.DeadMask;
+                DeadSimulationFrame = frame;
+            }
+    
+            public static uint WalkingMask => 0b00000000000000000000000000000001;
+            public AbsoluteSimulationFrame WalkingSimulationFrame;
+            public System.Boolean Walking;
+            public static uint PushMask => 0b00000000000000000000000000000010;
+            public AbsoluteSimulationFrame PushSimulationFrame;
+            public System.Boolean Push;
+            public static uint JumpingMask => 0b00000000000000000000000000000100;
+            public AbsoluteSimulationFrame JumpingSimulationFrame;
+            public System.Boolean Jumping;
+            public static uint PullMask => 0b00000000000000000000000000001000;
+            public AbsoluteSimulationFrame PullSimulationFrame;
+            public System.Boolean Pull;
+            public static uint HitMask => 0b00000000000000000000000000010000;
+            public AbsoluteSimulationFrame HitSimulationFrame;
+            public System.Boolean Hit;
+            public static uint HitDownMask => 0b00000000000000000000000000100000;
+            public AbsoluteSimulationFrame HitDownSimulationFrame;
+            public System.Boolean HitDown;
+            public static uint HitSpecialMask => 0b00000000000000000000000001000000;
+            public AbsoluteSimulationFrame HitSpecialSimulationFrame;
+            public System.Boolean HitSpecial;
+            public static uint FallingMask => 0b00000000000000000000000010000000;
+            public AbsoluteSimulationFrame FallingSimulationFrame;
+            public System.Boolean Falling;
+            public static uint GroundedMask => 0b00000000000000000000000100000000;
+            public AbsoluteSimulationFrame GroundedSimulationFrame;
+            public System.Boolean Grounded;
+            public static uint IdleMask => 0b00000000000000000000001000000000;
+            public AbsoluteSimulationFrame IdleSimulationFrame;
+            public System.Boolean Idle;
+            public static uint LookRightMask => 0b00000000000000000000010000000000;
+            public AbsoluteSimulationFrame LookRightSimulationFrame;
+            public System.Boolean LookRight;
+            public static uint LookLeftMask => 0b00000000000000000000100000000000;
+            public AbsoluteSimulationFrame LookLeftSimulationFrame;
+            public System.Boolean LookLeft;
+            public static uint RunningMask => 0b00000000000000000001000000000000;
+            public AbsoluteSimulationFrame RunningSimulationFrame;
+            public System.Boolean Running;
+            public static uint DeadMask => 0b00000000000000000010000000000000;
+            public AbsoluteSimulationFrame DeadSimulationFrame;
+            public System.Boolean Dead;
+    
+            public uint FieldsMask { get; set; }
+            public uint StoppedMask { get; set; }
+            public uint GetComponentType() => 58;
+            public int PriorityLevel() => 100;
+            public const int order = 0;
+            public uint InitialFieldsMask() => 0b00000000000000000011111111111111;
+            public bool HasFields() => true;
+            public bool HasRefFields() => false;
+    
+    
+            public long[] GetSimulationFrames() {
+                return null;
+            }
+    
+            public int GetFieldCount() => 14;
+    
+    
+            
+            public HashSet<Entity> GetEntityRefs()
+            {
+                return default;
+            }
+    
+            public uint ReplaceReferences(Entity fromEntity, Entity toEntity)
+            {
+                return 0;
+            }
+            
+            public IEntityMapper.Error MapToAbsolute(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public IEntityMapper.Error MapToRelative(IEntityMapper mapper)
+            {
+                return IEntityMapper.Error.None;
+            }
+    
+            public ICoherenceComponentData Clone() => this;
+            public int GetComponentOrder() => order;
+            public bool IsSendOrdered() => false;
+            public bool IsWorldPositionComponent() => false;
+    
+    
+            public AbsoluteSimulationFrame? GetMinSimulationFrame()
+            {
+                AbsoluteSimulationFrame? min = null;
+    
+    
+                return min;
+            }
+    
+            public ICoherenceComponentData MergeWith(ICoherenceComponentData data)
+            {
+                var other = (_51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468)data;
+                var otherMask = other.FieldsMask;
+    
+                FieldsMask |= otherMask;
+                StoppedMask &= ~(otherMask);
+    
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.WalkingSimulationFrame = other.WalkingSimulationFrame;
+                    this.Walking = other.Walking;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.PushSimulationFrame = other.PushSimulationFrame;
+                    this.Push = other.Push;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.JumpingSimulationFrame = other.JumpingSimulationFrame;
+                    this.Jumping = other.Jumping;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.PullSimulationFrame = other.PullSimulationFrame;
+                    this.Pull = other.Pull;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.HitSimulationFrame = other.HitSimulationFrame;
+                    this.Hit = other.Hit;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.HitDownSimulationFrame = other.HitDownSimulationFrame;
+                    this.HitDown = other.HitDown;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.HitSpecialSimulationFrame = other.HitSpecialSimulationFrame;
+                    this.HitSpecial = other.HitSpecial;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.FallingSimulationFrame = other.FallingSimulationFrame;
+                    this.Falling = other.Falling;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.GroundedSimulationFrame = other.GroundedSimulationFrame;
+                    this.Grounded = other.Grounded;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.IdleSimulationFrame = other.IdleSimulationFrame;
+                    this.Idle = other.Idle;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.LookRightSimulationFrame = other.LookRightSimulationFrame;
+                    this.LookRight = other.LookRight;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.LookLeftSimulationFrame = other.LookLeftSimulationFrame;
+                    this.LookLeft = other.LookLeft;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.RunningSimulationFrame = other.RunningSimulationFrame;
+                    this.Running = other.Running;
+                }
+    
+                otherMask >>= 1;
+                if ((otherMask & 0x01) != 0)
+                {
+                    this.DeadSimulationFrame = other.DeadSimulationFrame;
+                    this.Dead = other.Dead;
+                }
+    
+                otherMask >>= 1;
+                StoppedMask |= other.StoppedMask;
+    
+                return this;
+            }
+    
+            public uint DiffWith(ICoherenceComponentData data)
+            {
+                throw new System.NotSupportedException($"{nameof(DiffWith)} is not supported in Unity");
+            }
+    
+            public static uint Serialize(_51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468 data, bool isRefSimFrameValid, AbsoluteSimulationFrame referenceSimulationFrame, IOutProtocolBitStream bitStream, Logger logger)
+            {
+                if (bitStream.WriteMask(data.StoppedMask != 0))
+                {
+                    bitStream.WriteMaskBits(data.StoppedMask, 14);
+                }
+    
+                var mask = data.FieldsMask;
+    
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Walking;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Push;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Jumping;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Pull;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Hit;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.HitDown;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.HitSpecial;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Falling;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Grounded;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Idle;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.LookRight;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.LookLeft;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Running;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+                if (bitStream.WriteMask((mask & 0x01) != 0))
+                {
+    
+    
+                    var fieldValue = data.Dead;
+    
+
+    
+                    bitStream.WriteBool(fieldValue);
+                }
+    
+                mask >>= 1;
+    
+                return mask;
+            }
+    
+            public static _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468 Deserialize(AbsoluteSimulationFrame referenceSimulationFrame, InProtocolBitStream bitStream)
+            {
+                var stoppedMask = (uint)0;
+                if (bitStream.ReadMask())
+                {
+                    stoppedMask = bitStream.ReadMaskBits(14);
+                }
+    
+                var val = new _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468();
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Walking = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.WalkingMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Push = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.PushMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Jumping = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.JumpingMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Pull = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.PullMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Hit = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.HitMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.HitDown = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.HitDownMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.HitSpecial = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.HitSpecialMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Falling = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.FallingMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Grounded = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.GroundedMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Idle = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.IdleMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.LookRight = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.LookRightMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.LookLeft = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.LookLeftMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Running = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.RunningMask;
+                }
+                if (bitStream.ReadMask())
+                {
+    
+                    val.Dead = bitStream.ReadBool();
+                    val.FieldsMask |= _51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468.DeadMask;
+                }
+    
+                val.StoppedMask = stoppedMask;
+    
+                return val;
+            }
+    
+    
+            public override string ToString()
+            {
+                return $"_51cdf3dcde9a6f84eb066de443294e8e_3090149323553755468(" +
+                    $" Walking: { this.Walking }" +
+                    $" Push: { this.Push }" +
+                    $" Jumping: { this.Jumping }" +
+                    $" Pull: { this.Pull }" +
+                    $" Hit: { this.Hit }" +
+                    $" HitDown: { this.HitDown }" +
+                    $" HitSpecial: { this.HitSpecial }" +
+                    $" Falling: { this.Falling }" +
+                    $" Grounded: { this.Grounded }" +
+                    $" Idle: { this.Idle }" +
+                    $" LookRight: { this.LookRight }" +
+                    $" LookLeft: { this.LookLeft }" +
+                    $" Running: { this.Running }" +
+                    $" Dead: { this.Dead }" +
+                    $" Mask: { System.Convert.ToString(FieldsMask, 2).PadLeft(14, '0') }, " +
+                    $"Stopped: { System.Convert.ToString(StoppedMask, 2).PadLeft(14, '0') })";
+            }
+        }
         public struct _55399f6c7e06e4f4f8e2fab984748c5f_6668688970381495914 : ICoherenceComponentData
         {
             public void ResetFrame(AbsoluteSimulationFrame frame)
@@ -10492,7 +11039,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 58;
+            public uint GetComponentType() => 59;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -10698,7 +11245,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 59;
+            public uint GetComponentType() => 60;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -10904,7 +11451,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 60;
+            public uint GetComponentType() => 61;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11110,7 +11657,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 61;
+            public uint GetComponentType() => 62;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11311,7 +11858,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 62;
+            public uint GetComponentType() => 63;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -11460,7 +12007,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 63;
+            public uint GetComponentType() => 64;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -11619,7 +12166,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 64;
+            public uint GetComponentType() => 65;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -11815,7 +12362,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 65;
+            public uint GetComponentType() => 66;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -11974,7 +12521,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 66;
+            public uint GetComponentType() => 67;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12180,7 +12727,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 67;
+            public uint GetComponentType() => 68;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12386,7 +12933,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 68;
+            public uint GetComponentType() => 69;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12592,7 +13139,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 69;
+            public uint GetComponentType() => 70;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -12788,7 +13335,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 70;
+            public uint GetComponentType() => 71;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -12937,7 +13484,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 71;
+            public uint GetComponentType() => 72;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -13086,7 +13633,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 72;
+            public uint GetComponentType() => 73;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -13235,7 +13782,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 73;
+            public uint GetComponentType() => 74;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -13394,7 +13941,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 74;
+            public uint GetComponentType() => 75;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -13600,7 +14147,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 75;
+            public uint GetComponentType() => 76;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -13806,7 +14353,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 76;
+            public uint GetComponentType() => 77;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -14002,7 +14549,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 77;
+            public uint GetComponentType() => 78;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -14161,7 +14708,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 78;
+            public uint GetComponentType() => 79;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -14372,7 +14919,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 79;
+            public uint GetComponentType() => 80;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -14578,7 +15125,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 80;
+            public uint GetComponentType() => 81;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -14774,7 +15321,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 81;
+            public uint GetComponentType() => 82;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -14923,7 +15470,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 82;
+            public uint GetComponentType() => 83;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -15072,7 +15619,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 83;
+            public uint GetComponentType() => 84;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -15231,7 +15778,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 84;
+            public uint GetComponentType() => 85;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -15437,7 +15984,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 85;
+            public uint GetComponentType() => 86;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -15633,7 +16180,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 86;
+            public uint GetComponentType() => 87;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -15792,7 +16339,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 87;
+            public uint GetComponentType() => 88;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -15988,7 +16535,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 88;
+            public uint GetComponentType() => 89;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -16137,7 +16684,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 89;
+            public uint GetComponentType() => 90;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -16296,7 +16843,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 90;
+            public uint GetComponentType() => 91;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -16492,7 +17039,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 91;
+            public uint GetComponentType() => 92;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -16651,7 +17198,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 92;
+            public uint GetComponentType() => 93;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -16857,7 +17404,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 93;
+            public uint GetComponentType() => 94;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17063,7 +17610,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 94;
+            public uint GetComponentType() => 95;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17269,7 +17816,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 95;
+            public uint GetComponentType() => 96;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17475,7 +18022,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 96;
+            public uint GetComponentType() => 97;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -17671,7 +18218,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 97;
+            public uint GetComponentType() => 98;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -17820,7 +18367,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 98;
+            public uint GetComponentType() => 99;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -17979,7 +18526,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 99;
+            public uint GetComponentType() => 100;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -18175,7 +18722,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 100;
+            public uint GetComponentType() => 101;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -18334,7 +18881,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 101;
+            public uint GetComponentType() => 102;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -18595,7 +19142,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 102;
+            public uint GetComponentType() => 103;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000011111111111111;
@@ -19087,7 +19634,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 103;
+            public uint GetComponentType() => 104;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19293,7 +19840,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 104;
+            public uint GetComponentType() => 105;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19499,7 +20046,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 105;
+            public uint GetComponentType() => 106;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19705,7 +20252,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 106;
+            public uint GetComponentType() => 107;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -19901,7 +20448,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 107;
+            public uint GetComponentType() => 108;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -20060,7 +20607,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 108;
+            public uint GetComponentType() => 109;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20256,7 +20803,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 109;
+            public uint GetComponentType() => 110;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -20415,7 +20962,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 110;
+            public uint GetComponentType() => 111;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20611,7 +21158,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 111;
+            public uint GetComponentType() => 112;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -20770,7 +21317,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 112;
+            public uint GetComponentType() => 113;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -20976,7 +21523,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 113;
+            public uint GetComponentType() => 114;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21182,7 +21729,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 114;
+            public uint GetComponentType() => 115;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21388,7 +21935,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 115;
+            public uint GetComponentType() => 116;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21594,7 +22141,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 116;
+            public uint GetComponentType() => 117;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -21805,7 +22352,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 117;
+            public uint GetComponentType() => 118;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -22001,7 +22548,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 118;
+            public uint GetComponentType() => 119;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -22150,7 +22697,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 119;
+            public uint GetComponentType() => 120;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -22309,7 +22856,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 120;
+            public uint GetComponentType() => 121;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -22515,7 +23062,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 121;
+            public uint GetComponentType() => 122;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -22711,7 +23258,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 122;
+            public uint GetComponentType() => 123;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -22870,7 +23417,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 123;
+            public uint GetComponentType() => 124;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -23066,7 +23613,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 124;
+            public uint GetComponentType() => 125;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -23225,7 +23772,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 125;
+            public uint GetComponentType() => 126;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -23426,7 +23973,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 126;
+            public uint GetComponentType() => 127;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -23575,7 +24122,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 127;
+            public uint GetComponentType() => 128;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -23724,7 +24271,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 128;
+            public uint GetComponentType() => 129;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -23883,7 +24430,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 129;
+            public uint GetComponentType() => 130;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -24089,7 +24636,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 130;
+            public uint GetComponentType() => 131;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -24285,7 +24832,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 131;
+            public uint GetComponentType() => 132;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -24434,7 +24981,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 132;
+            public uint GetComponentType() => 133;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -24593,7 +25140,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 133;
+            public uint GetComponentType() => 134;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -24789,7 +25336,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 134;
+            public uint GetComponentType() => 135;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -24948,7 +25495,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 135;
+            public uint GetComponentType() => 136;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -25144,7 +25691,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 136;
+            public uint GetComponentType() => 137;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -25293,7 +25840,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 137;
+            public uint GetComponentType() => 138;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -25442,7 +25989,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 138;
+            public uint GetComponentType() => 139;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -25601,7 +26148,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 139;
+            public uint GetComponentType() => 140;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -25807,7 +26354,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 140;
+            public uint GetComponentType() => 141;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -26008,7 +26555,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 141;
+            public uint GetComponentType() => 142;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -26157,7 +26704,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 142;
+            public uint GetComponentType() => 143;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -26316,7 +26863,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 143;
+            public uint GetComponentType() => 144;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -26522,7 +27069,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 144;
+            public uint GetComponentType() => 145;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -26728,7 +27275,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 145;
+            public uint GetComponentType() => 146;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -26934,7 +27481,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 146;
+            public uint GetComponentType() => 147;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -27140,7 +27687,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 147;
+            public uint GetComponentType() => 148;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -27346,7 +27893,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 148;
+            public uint GetComponentType() => 149;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -27552,7 +28099,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 149;
+            public uint GetComponentType() => 150;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -27758,7 +28305,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 150;
+            public uint GetComponentType() => 151;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -27954,7 +28501,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 151;
+            public uint GetComponentType() => 152;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -28113,7 +28660,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 152;
+            public uint GetComponentType() => 153;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -28319,7 +28866,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 153;
+            public uint GetComponentType() => 154;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -28515,7 +29062,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 154;
+            public uint GetComponentType() => 155;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -28664,7 +29211,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 155;
+            public uint GetComponentType() => 156;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -28813,7 +29360,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 156;
+            public uint GetComponentType() => 157;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -28972,7 +29519,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 157;
+            public uint GetComponentType() => 158;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -29178,7 +29725,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 158;
+            public uint GetComponentType() => 159;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -29384,7 +29931,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 159;
+            public uint GetComponentType() => 160;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -29590,7 +30137,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 160;
+            public uint GetComponentType() => 161;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -29796,7 +30343,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 161;
+            public uint GetComponentType() => 162;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -30002,7 +30549,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 162;
+            public uint GetComponentType() => 163;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -30198,7 +30745,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 163;
+            public uint GetComponentType() => 164;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -30357,7 +30904,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 164;
+            public uint GetComponentType() => 165;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;
@@ -30553,7 +31100,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 165;
+            public uint GetComponentType() => 166;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000001;
@@ -30712,7 +31259,7 @@ namespace Coherence.Generated
     
             public uint FieldsMask { get; set; }
             public uint StoppedMask { get; set; }
-            public uint GetComponentType() => 166;
+            public uint GetComponentType() => 167;
             public int PriorityLevel() => 100;
             public const int order = 0;
             public uint InitialFieldsMask() => 0b00000000000000000000000000000111;

@@ -491,9 +491,9 @@ MonoBehaviour:
   unsyncedNetworkEntityPriority: 0
   preserveChildren: 0
   bindings:
-  - rid: 896436628082655483
-  - rid: 896436628082655484
-  - rid: 896436628082655485
+  - rid: 896436628082655573
+  - rid: 896436628082655574
+  - rid: 896436628082655575
   scenePrefabInstanceUUID: 
   coherenceUUID: 
   assetVersion: 
@@ -507,17 +507,17 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 896436628082655483
+    - rid: 896436628082655573
       type: {class: PositionBinding, ns: Coherence.Toolkit.Bindings.TransformBindings,
         asm: Coherence.Toolkit}
       data:
         descriptor:
-          rid: 896436628082655486
+          rid: 896436628082655576
         routing: 0
         syncMode: 0
         isPredicted: 0
         predictionMode: 0
-        guid: b9e01f2a96ff48d3a6f38a01e7428d1c
+        guid: 8b423ac22e62423eb8d39c6618a9a444
         archetypeData:
           type: 7
           minRange: 0
@@ -533,16 +533,16 @@ MonoBehaviour:
         coherenceSync: {fileID: 8858466934951088482}
         _interpolationSettings: {fileID: 11400000, guid: ae4419d1d9a8643709bf5f6b90c584a5,
           type: 2}
-    - rid: 896436628082655484
+    - rid: 896436628082655574
       type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         descriptor:
-          rid: 896436628082655487
+          rid: 896436628082655577
         routing: 1
         syncMode: 0
         isPredicted: 0
         predictionMode: 0
-        guid: 23a82858596d4e7e8d22ab5ac2db5abf
+        guid: e72b475cc9cb4c1dbc40d23d465f8429
         archetypeData:
           type: 0
           minRange: 0
@@ -553,16 +553,16 @@ MonoBehaviour:
         unityComponent: {fileID: 86478979257883903}
         coherenceSync: {fileID: 8858466934951088482}
         _interpolationSettings: {fileID: 0}
-    - rid: 896436628082655485
+    - rid: 896436628082655575
       type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         descriptor:
-          rid: 896436628082655488
+          rid: 896436628082655578
         routing: 1
         syncMode: 0
         isPredicted: 0
         predictionMode: 0
-        guid: 04cf56ee8c124604a96eeb8fec89b3a9
+        guid: 28064e1d39ca4285a63567a7d20e232d
         archetypeData:
           type: 0
           minRange: 0
@@ -573,7 +573,7 @@ MonoBehaviour:
         unityComponent: {fileID: 86478979257883903}
         coherenceSync: {fileID: 8858466934951088482}
         _interpolationSettings: {fileID: 0}
-    - rid: 896436628082655486
+    - rid: 896436628082655576
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: position
@@ -594,7 +594,7 @@ MonoBehaviour:
             Coherence.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         oldName: 
         oldParameterAssemblyTypes: []
-    - rid: 896436628082655487
+    - rid: 896436628082655577
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: CmdLoseLevel
@@ -615,7 +615,7 @@ MonoBehaviour:
             Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         oldName: 
         oldParameterAssemblyTypes: []
-    - rid: 896436628082655488
+    - rid: 896436628082655578
       type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
       data:
         name: CmdWinLevel

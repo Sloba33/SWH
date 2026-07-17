@@ -36,9 +36,14 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
         EditorGUILayout.Space();
         EditorGUILayout.HelpBox(
             "Manual prereqs (do these in the scene first):\n" +
-            "  1. Put the whole player level (spawn point, obstacles, tiles, boundaries, collectibles, floor, frame...) under one GameObject.\n" +
+            "  1. Put the whole player level (spawn point, obstacles, tiles, boundaries, collectibles, floor, frame, spotlights...) under one GameObject.\n" +
             "  2. Duplicate the player Level GameObject; position/rotate the duplicate.\n" +
-            "  3. Wire the duplicate into LevelGoal.opponentLevel, and original into LevelGoal.playerLevel.",
+            "  3. Wire the duplicate into LevelGoal.opponentLevel, and original into LevelGoal.playerLevel.\n\n" +
+            "The level can use rocket, donut, soda cans, bomb collectibles, weapon collectibles.\n" +
+            "The level can use cardboard, concrete, metal obstacles.\n" +
+            "No spawned or programmatic falling of obstacles or collectibles is supported, anything that falls must be instantiated at a height and have the game object active\n" +
+            "Player default prefab must be set in GameManager and be a valid prefab working in single player.\n" +
+            "It's not safe to run the converter on a scene that has already been converted to multiplayer, it will try to rewire everything and may break the scene.\n",
             MessageType.Info);
         EditorGUILayout.Space();
         var scene = EditorSceneManager.GetActiveScene();
@@ -99,6 +104,7 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
 
             SwapLevelGoalSpawnableReferencesInPrefab(scene);
             AddDisconnectButton(scene, gm);
+            SetupReplayIdentity(playerLevel, opponentLevel);
         }
         catch (Exception ex)
         {
@@ -195,7 +201,17 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
         var networkedAsset = AssetDatabase.LoadAssetAtPath<GameObject>(networkedPath);
         if (networkedAsset == null)
         {
-            Debug.LogError($"{LogPrefix} Networked player prefab not found at '{networkedPath}'. Create the _Networked sibling and re-run.");
+            // Create the networked player variant next to the default prefab,
+            // following the Player_Male_Standard_Gameplay pattern (CoherenceSync
+            // + Transform position/rotation + all non-trigger Animator parameters).
+            networkedAsset = CreateNetworkedPrefabVariants.GetOrCreateNetworkedPlayerVariant(
+                (GameObject)defaultProp.objectReferenceValue, out bool created);
+            if (created)
+                Debug.Log($"{LogPrefix} Created networked player variant at '{networkedPath}'.");
+        }
+        if (networkedAsset == null)
+        {
+            Debug.LogError($"{LogPrefix} Networked player prefab not found at '{networkedPath}' and could not be created.");
             return;
         }
         var sync = networkedAsset.GetComponent<CoherenceSync>();
@@ -429,7 +445,20 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
                     var networkedAsset = !string.IsNullOrEmpty(networkedPath)
                         ? AssetDatabase.LoadAssetAtPath<GameObject>(networkedPath)
                         : null;
-                    if (networkedAsset != null)
+                    if (networkedAsset == null)
+                    {
+                        // No _Networked sibling yet — create it on demand from the
+                        // conversion descriptors (obstacles, bombs, collectibles…).
+                        // Null means the prefab is not a networkable type; those
+                        // are left alone as before.
+                        networkedAsset = CreateNetworkedPrefabVariants.GetOrCreateNetworkedVariant(source, out bool created);
+                        if (created)
+                            Debug.Log($"{LogPrefix}   created missing networked variant for '{sourceName}'.");
+                    }
+                    // networkedAsset == source means the original already carries a
+                    // CoherenceSync — nothing to replace (and replacing an instance
+                    // with its own prefab would wipe its overrides).
+                    if (networkedAsset != null && networkedAsset != source)
                     {
                         result.Add((go, networkedAsset, sourcePath));
                         return; // don't descend into a node we're about to replace
@@ -812,6 +841,42 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
     }
 
     // ---------- utilities ----------
+
+    // ---------- Step 9: replay identity (bot matches & take recording) ----------
+
+    /// <summary>
+    /// Sets up the state-replay identity system so the scene supports bot matches
+    /// and take recording out of the box: a ReplayScope on each level half, IDs
+    /// assigned deterministically, and the opponent half mirrored from the player
+    /// half so a replay recorded on one resolves onto the other. Idempotent —
+    /// existing scopes/IDs are preserved (ReplayIdTools keeps assigned ids).
+    /// </summary>
+    private static void SetupReplayIdentity(Transform playerLevel, Transform opponentLevel)
+    {
+        var playerScope = playerLevel.GetComponent<ReplayScope>();
+        if (playerScope == null)
+        {
+            playerScope = playerLevel.gameObject.AddComponent<ReplayScope>();
+            EditorUtility.SetDirty(playerLevel.gameObject);
+        }
+        var opponentScope = opponentLevel.GetComponent<ReplayScope>();
+        if (opponentScope == null)
+        {
+            opponentScope = opponentLevel.gameObject.AddComponent<ReplayScope>();
+            EditorUtility.SetDirty(opponentLevel.gameObject);
+        }
+
+        if (opponentScope.mirrorSource != playerScope)
+        {
+            opponentScope.mirrorSource = playerScope;
+            EditorUtility.SetDirty(opponentScope);
+        }
+
+        ReplayIdTools.AssignInScope(playerScope);
+        ReplayIdTools.AssignInScope(opponentScope);
+        ReplayIdTools.MirrorIds(playerScope, opponentScope);
+        Debug.Log($"{LogPrefix} Replay identity set up: scopes on both halves, ids assigned and mirrored.");
+    }
 
     private static string AppendNetworkedSuffix(string assetPath)
     {
