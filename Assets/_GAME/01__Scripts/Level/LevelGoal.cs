@@ -157,7 +157,17 @@ public class LevelGoal : MonoBehaviour
     private void Start()
     {
         coherenceSync = GetComponent<CoherenceSync>();
-        
+
+        // The win condition is "goal list empty", so only obstacles that actually
+        // count toward the goal may be in these lists. SP authoring already
+        // excludes scenery/tool types (cardboard etc.), but converted MP scenes
+        // historically wired in everything — which made the win unreachable when
+        // e.g. cardboard survived. Filtering here at runtime gives every mode
+        // (SP, real MP, bot match — the arbiter polls the opponent list) the
+        // exact same criteria and self-heals mis-authored scenes.
+        ObstaclesToDestroy_Player.RemoveAll(o => o == null || !o.CountsTowardLevelGoal);
+        ObstaclesToDestroy_Opponent.RemoveAll(o => o == null || !o.CountsTowardLevelGoal);
+
         if(GameManager.Instance.IsMultiplayer && !GameManager.Instance.IsBotMatch && !GameManager.Instance.IsReplayTakeSession)
         {
             GameManager.Instance.OnLocalPlayerSpawned += OnLocalPlayerSpawned;

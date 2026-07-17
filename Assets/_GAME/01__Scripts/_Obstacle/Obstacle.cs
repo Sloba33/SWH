@@ -129,6 +129,21 @@ public class Obstacle : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position + rightOffset_4, obstacleCheckerRadius);
     }
 
+    /// <summary>
+    /// Whether destroying this obstacle is part of completing the level. Scenery
+    /// and tool boxes (cardboard, concrete, metal) exist to be pushed, climbed or
+    /// smashed incidentally — they must never gate the win. Single source of
+    /// truth shared by the runtime win check (LevelGoal filters its goal lists
+    /// with it) and the editor authoring tools (SinglePlayerToMultiplayerConverter,
+    /// BatchSceneReplacer), so the criteria cannot diverge between modes again.
+    /// </summary>
+    public bool CountsTowardLevelGoal => TypeCountsTowardLevelGoal(obstacleType);
+
+    public static bool TypeCountsTowardLevelGoal(ObstacleType type) =>
+        type != ObstacleType.Cardboard &&
+        type != ObstacleType.Concrete &&
+        type != ObstacleType.Metal;
+
     public bool beingSucked;
 
     private void Start()

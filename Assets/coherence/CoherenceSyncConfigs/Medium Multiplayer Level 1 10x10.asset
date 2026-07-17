@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f4a509fd2f994fa391c0c78ea3f11, type: 3}
+  m_Name: Medium Multiplayer Level 1 10x10
+  m_EditorClassIdentifier: Coherence.Toolkit::Coherence.Toolkit.CoherenceSyncConfig
+  id: 8303c37f41e9c994e8c222f3506bbb77
+  selfId: b1eb1982764fc9243a5f0e73658a1112
+  editorTarget: {fileID: 1666522918167425380, guid: 8303c37f41e9c994e8c222f3506bbb77,
+    type: 3}
+  includeInSchema: 1
+  objectProvider:
+    rid: 896436628082655489
+  objectInstantiator:
+    rid: 896436628082655490
+  references:
+    version: 2
+    RefIds:
+    - rid: 896436628082655489
+      type: {class: DirectReferenceProvider, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data:
+        prefab: {fileID: 1666522918167425380, guid: 8303c37f41e9c994e8c222f3506bbb77,
+          type: 3}
+    - rid: 896436628082655490
+      type: {class: DefaultInstantiator, ns: Coherence.Toolkit, asm: Coherence.Toolkit}
+      data: 

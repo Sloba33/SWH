@@ -133,6 +133,14 @@ public class Settings : MonoBehaviour
     {
         bool isMultiplayer = GameManager.Instance != null && GameManager.Instance.IsMultiplayer;
         if (isMultiplayer && multiplayerPrefab != null) return multiplayerPrefab;
+        if (isMultiplayer)
+        {
+            // Loud, because it's otherwise invisible: several older Settings
+            // prefab variants were serialized before the multiplayer panel fields
+            // existed and silently fell back to SP screens in MP matches.
+            Debug.LogError("[Settings] Multiplayer match but the multiplayer end-screen prefab is NOT wired on this " +
+                           "scene's Settings — falling back to the single-player screen. Fix the Settings prefab.", this);
+        }
         return singlePlayerPrefab;
     }
 }

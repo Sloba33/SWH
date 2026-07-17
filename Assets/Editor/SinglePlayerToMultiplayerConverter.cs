@@ -508,18 +508,30 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
             return;
         }
 
-        // First pass: prune null/dangling entries left over from destroyed singleplayer obstacles.
+        // First pass: prune null/dangling entries left over from destroyed singleplayer
+        // obstacles, and any non-goal types (cardboard/concrete/metal — see
+        // Obstacle.CountsTowardLevelGoal) wired in by older converter runs: they
+        // must never gate the win.
         int pruned = 0;
+        int prunedNonGoal = 0;
         for (int i = list.arraySize - 1; i >= 0; i--)
         {
-            if (list.GetArrayElementAtIndex(i).objectReferenceValue == null)
+            var element = list.GetArrayElementAtIndex(i).objectReferenceValue as Obstacle;
+            if (element == null)
             {
                 list.DeleteArrayElementAtIndex(i);
                 pruned++;
             }
+            else if (!element.CountsTowardLevelGoal)
+            {
+                list.DeleteArrayElementAtIndex(i);
+                prunedNonGoal++;
+            }
         }
         if (pruned > 0)
             Debug.Log($"{LogPrefix} LevelGoal.{listProp}: pruned {pruned} null entries (dangling after replacement).");
+        if (prunedNonGoal > 0)
+            Debug.Log($"{LogPrefix} LevelGoal.{listProp}: pruned {prunedNonGoal} non-goal obstacles (cardboard/concrete/metal).");
 
         var existing = new HashSet<Obstacle>();
         for (int i = 0; i < list.arraySize; i++)
@@ -530,6 +542,7 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
 
         int added = 0;
         int skippedInactive = 0;
+        int skippedNonGoal = 0;
         foreach (var obs in underLevel)
         {
             if (obs == null) continue;
@@ -538,6 +551,12 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
             if (!obs.gameObject.activeInHierarchy)
             {
                 skippedInactive++;
+                continue;
+            }
+            // Scenery/tool boxes (cardboard etc.) never count toward the win.
+            if (!obs.CountsTowardLevelGoal)
+            {
+                skippedNonGoal++;
                 continue;
             }
             if (existing.Contains(obs)) continue;
@@ -550,6 +569,8 @@ public class SinglePlayerToMultiplayerConverter : EditorWindow
         so.ApplyModifiedProperties();
 
         string inactiveNote = skippedInactive > 0 ? $", skipped {skippedInactive} inactive (fixed-falling pool)" : "";
+        if (skippedNonGoal > 0)
+            inactiveNote += $", skipped {skippedNonGoal} non-goal (cardboard/concrete/metal)";
         if (added == 0)
             Debug.Log($"{LogPrefix} LevelGoal.{listProp}: all {existing.Count} active obstacles under {label} already wired{inactiveNote}.");
         else

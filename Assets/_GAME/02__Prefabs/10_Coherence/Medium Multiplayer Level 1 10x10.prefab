@@ -1,0 +1,638 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1666522918167425380
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8185172905809659175}
+  - component: {fileID: 86478979257883903}
+  - component: {fileID: 3095643990274261322}
+  - component: {fileID: 6887226285760854904}
+  - component: {fileID: 2237212013877652035}
+  - component: {fileID: 5998260892245733988}
+  - component: {fileID: 2773428970277306250}
+  - component: {fileID: 7236730399436338831}
+  - component: {fileID: 1623853177129034536}
+  - component: {fileID: 8858466934951088482}
+  m_Layer: 0
+  m_Name: Medium Multiplayer Level 1 10x10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8185172905809659175
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &86478979257883903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2b90cf8e7b6d4c4886b18cf8650c600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseBonusXP: 20
+  bonusXpMultiplier: 0
+  xp: 100
+  trophies: 15
+  BONUS_TROPHIES: 0
+  multiplayerTrophyWin: 5
+  multiplayerTrophyLoss: 5
+  levelProgress: {fileID: 0}
+  currentTime: 0
+  threeStarTime: 0
+  twoStarTime: 0
+  oneStarTime: 0
+  bonusTime: 0
+  tutorialDialogue: {fileID: 0}
+  useNewSpawnSystem: 0
+  enableBatchSpawning: 0
+  batchFrequencyRange: {x: 3, y: 5}
+  batchSizeRange: {x: 2, y: 3}
+  fixedFallingObstacles: []
+  fixedFallingBombs: []
+  fixedFallingCollectibles: []
+  SpawnFallingObstacles: 0
+  FallingObstacles: []
+  obstaclesToSpawn: 0
+  ObstacleSpawnFrequency: 0
+  TotalObstaclesSpawned: 0
+  delayBoxSpawn: 6
+  spawnedObstacles: []
+  minObstacleSpawnHeight: 16
+  maxObstacleSpawnHeight: 20
+  SpawnFallingBombs: 0
+  FallingBombs: []
+  bombsToSpawn: 0
+  delayBombSpawn: 10
+  bombSpawnFrequency: 5
+  minBombSpawnHeight: 10
+  maxBombSpawnHeight: 15
+  SpawnFallingCollectibles: 0
+  FallingCollectibles: []
+  collectiblesToSpawn: 0
+  delayCollectibleSpawn: 10
+  collectibleSpawnFreqency: 5
+  minCollectibleSpawnHeight: 10
+  maxCollectibleSpawnHeight: 15
+  ObstaclesToDestroy_Player: []
+  ObstaclesToDestroy_Opponent: []
+  obstacleTypes: 
+  DualLevel: 0
+  Tutorial: 0
+  FinalTutorial: 0
+  IsIntroLevel: 0
+  pullButton: {fileID: 0}
+  jumpButton: {fileID: 0}
+  hit: {fileID: 0}
+  hitDown: {fileID: 0}
+  pullHint: {fileID: 0}
+  jumpHint: {fileID: 0}
+  hitHint: {fileID: 0}
+  hitDownHint: {fileID: 0}
+  joystickHint: {fileID: 0}
+  joystickHintJump: {fileID: 0}
+  bombCount: 1
+  bombs: 0
+  weapons: 0
+  pull: 0
+  jump: 0
+  ObstacleCounter: 0
+  ObstacleTotal: 0
+  levelType: 0
+  playerSideFallingObstacles: []
+  AISideFallingObstacles: []
+  dualBoxSpawnDelay: 7
+  fillPercentage: 0
+  bombUniversalPrefab: {fileID: 0}
+  bombUniversal: {fileID: 0}
+  correctObstacle: {fileID: 0}
+  isTimeFrozen: 0
+  shouldIgnoreBonusStars: 0
+  shouldHaveFasterEnergyRecharge: 0
+  playerLevel: {fileID: 0}
+  opponentLevel: {fileID: 0}
+  starsEarned: 0
+  currentStep: 0
+  tutorialBridges:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  tutorialBarriers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  tutorialSpotlights:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  nextStepStarted: 0
+  ListOfGoalLists:
+    list:
+    - list:
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+    - list:
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+    - list:
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+    - list:
+      - {fileID: 0}
+      - {fileID: 0}
+    - list:
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+    - list:
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+--- !u!114 &3095643990274261322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 7a081c69f660f0f42b345070cdcc07bb, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 86478979257883903}
+        m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
+        m_MethodName: TurnOnPullEvent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6887226285760854904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 11311e78b68494441b2f55ba27c1e480, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 86478979257883903}
+        m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
+        m_MethodName: TurnOnJumpEvent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2237212013877652035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: f85bf0b847c14864987e12e7acf72fe6, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 86478979257883903}
+        m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
+        m_MethodName: TurnOnHitEvent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5998260892245733988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: a1b3f12837b49bc42a2019ca174c7ee0, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 86478979257883903}
+        m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
+        m_MethodName: ToggleHitOn
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2773428970277306250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 87b314de9acae6e489798dd3ef204770, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 86478979257883903}
+        m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
+        m_MethodName: ToggleHitOff
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7236730399436338831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 903e299299dc6804589b38eecb6210bf, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 86478979257883903}
+        m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
+        m_MethodName: ToggleHitDownOn
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1623853177129034536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8118a7ac8d08b48982a16b479335cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: e1d3a10120a67e444b38bb64089050b2, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 86478979257883903}
+        m_TargetAssemblyTypeName: LevelGoal, Assembly-CSharp
+        m_MethodName: ToggleHitDownOff
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &8858466934951088482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666522918167425380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff62c046a053f416a8dc48ad6483a25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Coherence.Toolkit::Coherence.Toolkit.CoherenceSync
+  OnAuthorityRequest:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNetworkedInstantiation:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBeforeNetworkedInstantiation:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNetworkedDestruction:
+    m_PersistentCalls:
+      m_Calls: []
+  OnStateRemote:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputRemote:
+    m_PersistentCalls:
+      m_Calls: []
+  OnStateAuthority:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputAuthority:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAuthorityRequestRejected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAuthTransferComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNetworkedParentChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputSimulatorConnected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody2DPositionUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody3DPositionUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody2DRotationUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRigidbody3DRotationUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  coherenceSyncConfig: {fileID: 11400000, guid: b1eb1982764fc9243a5f0e73658a1112,
+    type: 2}
+  archetype:
+    lodLevels:
+    - distance: 0
+    boundComponents:
+    - component: {fileID: 8185172905809659175}
+      lodStepsActive: 1
+    - component: {fileID: 86478979257883903}
+      lodStepsActive: 1
+    - component: {fileID: 3095643990274261322}
+      lodStepsActive: 1
+    - component: {fileID: 6887226285760854904}
+      lodStepsActive: 1
+    - component: {fileID: 2237212013877652035}
+      lodStepsActive: 1
+    - component: {fileID: 5998260892245733988}
+      lodStepsActive: 1
+    - component: {fileID: 2773428970277306250}
+      lodStepsActive: 1
+    - component: {fileID: 7236730399436338831}
+      lodStepsActive: 1
+    - component: {fileID: 1623853177129034536}
+      lodStepsActive: 1
+    GeneratesArchetypeDefinition: 0
+  interpolationLocation: 1
+  RigidbodyUpdateMode: 0
+  bakedScriptType: Coherence.Generated.CoherenceSync_8303c37f41e9c994e8c222f3506bbb77,
+    Assembly-CSharp
+  isGlobal: 0
+  synchronizeParent: 1
+  approveAuthorityTransferRequests: 1
+  simulationType: 0
+  authorityTransferConfig: -1
+  orphanedBehavior: 0
+  lifetimeType: 0
+  uniquenessType: 1
+  replacementStrategy: 0
+  unsyncedNetworkEntityPriority: 0
+  preserveChildren: 0
+  bindings:
+  - rid: 896436628082655483
+  - rid: 896436628082655484
+  - rid: 896436628082655485
+  scenePrefabInstanceUUID: 
+  coherenceUUID: 
+  assetVersion: 
+  coherenceTag: 
+  componentActions: []
+  floatingOriginMode: 0
+  floatingOriginParentedMode: 1
+  synchronizationChannel: Default
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 896436628082655483
+      type: {class: PositionBinding, ns: Coherence.Toolkit.Bindings.TransformBindings,
+        asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 896436628082655486
+        routing: 0
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: b9e01f2a96ff48d3a6f38a01e7428d1c
+        archetypeData:
+          type: 7
+          minRange: 0
+          maxRange: 0
+          sampleRate: 20
+          floatCompression: 0
+          fields:
+          - type: 7
+            bits: 32
+            precision: 0.001
+            floatCompression: 0
+        unityComponent: {fileID: 8185172905809659175}
+        coherenceSync: {fileID: 8858466934951088482}
+        _interpolationSettings: {fileID: 11400000, guid: ae4419d1d9a8643709bf5f6b90c584a5,
+          type: 2}
+    - rid: 896436628082655484
+      type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 896436628082655487
+        routing: 1
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: 23a82858596d4e7e8d22ab5ac2db5abf
+        archetypeData:
+          type: 0
+          minRange: 0
+          maxRange: 0
+          sampleRate: 20
+          floatCompression: 0
+          fields: []
+        unityComponent: {fileID: 86478979257883903}
+        coherenceSync: {fileID: 8858466934951088482}
+        _interpolationSettings: {fileID: 0}
+    - rid: 896436628082655485
+      type: {class: CommandBinding, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        descriptor:
+          rid: 896436628082655488
+        routing: 1
+        syncMode: 0
+        isPredicted: 0
+        predictionMode: 0
+        guid: 04cf56ee8c124604a96eeb8fec89b3a9
+        archetypeData:
+          type: 0
+          minRange: 0
+          maxRange: 0
+          sampleRate: 20
+          floatCompression: 0
+          fields: []
+        unityComponent: {fileID: 86478979257883903}
+        coherenceSync: {fileID: 8858466934951088482}
+        _interpolationSettings: {fileID: 0}
+    - rid: 896436628082655486
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: position
+        monoAssemblyType: UnityEngine.Vector3, UnityEngine
+        required: 1
+        enforcesLODingWhenFieldsOverriden: 1
+        valueSyncCallbackName: 
+        memberType: 64
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.TransformBindings.PositionBinding,
+            Coherence.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
+    - rid: 896436628082655487
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: CmdLoseLevel
+        monoAssemblyType: 
+        required: 1
+        enforcesLODingWhenFieldsOverriden: 0
+        valueSyncCallbackName: 
+        memberType: 8
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: LevelGoal, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.CommandBinding, Coherence.Toolkit,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
+    - rid: 896436628082655488
+      type: {class: Descriptor, ns: Coherence.Toolkit.Bindings, asm: Coherence.Toolkit}
+      data:
+        name: CmdWinLevel
+        monoAssemblyType: 
+        required: 1
+        enforcesLODingWhenFieldsOverriden: 0
+        valueSyncCallbackName: 
+        memberType: 8
+        parameterAssemblyTypes: []
+        ownerType:
+          assemblyQualifiedName: LevelGoal, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        defaultSyncMode: 0
+        CustomData:
+          rid: -2
+        bindingType:
+          assemblyQualifiedName: Coherence.Toolkit.Bindings.CommandBinding, Coherence.Toolkit,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        oldName: 
+        oldParameterAssemblyTypes: []
