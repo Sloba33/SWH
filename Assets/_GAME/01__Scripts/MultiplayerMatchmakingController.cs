@@ -54,9 +54,12 @@ public class MultiplayerMatchmakingController : MonoBehaviour
     [SerializeField] private string botReplaysResourcesFolder = "BotReplays";
 
     [Header("Testing")]
-    [Tooltip("Skip Coherence matchmaking entirely and start a bot match immediately with a random replay. " +
+    [Tooltip("Skip Coherence matchmaking entirely and start a bot match immediately. " +
              "For iterating from this scene without waiting out the fallback timeout. Leave OFF in production.")]
     [SerializeField] private bool debugInstantBotMatch;
+    [Tooltip("Optional: the exact replay the instant bot match plays against. When empty, a random replay " +
+             "is picked from the Resources folder (same as the production fallback).")]
+    [SerializeField] private StateReplay debugReplayOverride;
 
     [Header("Navigation")]
     [SerializeField] private SceneReference mainMenuScene;
@@ -110,12 +113,30 @@ public class MultiplayerMatchmakingController : MonoBehaviour
 
     /// <summary>
     /// Testing shortcut: start a bot match right now, no Coherence involved.
-    /// Returns false (falling through to normal matchmaking) when no usable
-    /// replay exists.
+    /// Plays the override replay when one is assigned (and loadable), otherwise a
+    /// random one. Returns false (falling through to normal matchmaking) when no
+    /// usable replay exists.
     /// </summary>
     private bool TryStartInstantBotMatch()
     {
-        StateReplay replay = PickRandomBotReplay();
+        StateReplay replay = null;
+        if (debugReplayOverride != null)
+        {
+            if (debugReplayOverride.scene != null &&
+                debugReplayOverride.scene.UnsafeReason == SceneReferenceUnsafeReason.None)
+            {
+                replay = debugReplayOverride;
+            }
+            else
+            {
+                Debug.LogWarning($"[Matchmaking] debugReplayOverride '{debugReplayOverride.name}' has no loadable scene " +
+                                 "(unassigned or not in Build Settings) — falling back to a random replay.", debugReplayOverride);
+            }
+        }
+        if (replay == null)
+        {
+            replay = PickRandomBotReplay();
+        }
         if (replay == null)
         {
             Debug.LogWarning("[Matchmaking] debugInstantBotMatch is on but no usable replay was found — running normal matchmaking.");
