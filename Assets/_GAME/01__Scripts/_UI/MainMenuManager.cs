@@ -402,9 +402,7 @@ public class MainMenuManager : MonoBehaviour
             }
         }
 
-        // Wait for the animation to complete before deactivating the panel
-        // IMPORTANT: Adjust this wait time to exactly match your "SettingsFadeOut" animation duration.
-        // You can get this programmatically using AnimatorStateInfo if your animations change.
+      
         yield return new WaitForSeconds(0.2f); // Existing wait time, confirm it matches your animation!
 
         settingsPanel.SetActive(false);
@@ -414,16 +412,10 @@ public class MainMenuManager : MonoBehaviour
     // NEW: Generic coroutine to wait for settings panel animations
     private IEnumerator WaitForSettingsAnimation(bool isOpening)
     {
-        // You might get the actual animation length from the Animator:
-        // AnimatorStateInfo stateInfo = settingsPanel.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-        // yield return new WaitForSeconds(stateInfo.length);
+  
+        yield return new WaitForSeconds(0.2f); 
 
-        // For simplicity, using a hardcoded time that matches your animation duration.
-        // Adjust this to the actual duration of your "SettingsFadeIn" animation.
-        yield return new WaitForSeconds(0.2f); // Example duration, ensure it matches your animation
 
-        // In OpenSettings, we set settingsPanel.SetActive(true) immediately.
-        // The _isSettingsAnimating flag ensures no new clicks interfere until animation is done.
         _isSettingsAnimating = false;
     }
     [SerializeField] private SceneLoader sceneLoader;
@@ -443,15 +435,12 @@ public class MainMenuManager : MonoBehaviour
 
         int currentLevel = PlayerPrefs.GetInt("Level", 0); // Get current level, default to 0 if not set
 
-        // If the player hasn't completed all intro levels yet (Level < 3),
-        // the work button should behave as it did before (load the next sequential level).
         if (currentLevel < 3)
         {
             if (sceneLoader != null)
             {
-                // Call the existing method to load the next job/level automatically.
-                // This assumes your SceneLoader.cs has a public method LoadNextJob()
-                // that handles the logic of loading PlayerPrefs.GetInt("Level") + 3.
+                
+                
                 sceneLoader.LoadNextJob();
             }
             else

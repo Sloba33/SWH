@@ -54,7 +54,7 @@ public class TrophyRoadButton : MonoBehaviour
         this.trophyRoadData = trophyRoadData;
         parent = parentPanel;
         gameObject.name = TrophyRequirement.ToString();
-        // button.onClick.AddListener(() => ShowReward(trophyRoadData));
+
         if (audioclip == null) Debug.Log("Audio CLIP IS NULL");
         else
         {

@@ -24,6 +24,7 @@ public class ImageGalleryDataSO : ScriptableObject
             if (backgroundSprites.ContainsKey(reward.rewardType))
             {
                 reward.backgroundSprite = backgroundSprites[reward.rewardType];
+                reward.backgroundSprite = backgroundSprites[reward.rewardType];
             }
         }
     }

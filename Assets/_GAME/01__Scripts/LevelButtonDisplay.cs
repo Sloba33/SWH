@@ -19,7 +19,7 @@ public class LevelButtonDisplay : MonoBehaviour
                 starImages[i].fillAmount = 1f;
         }
 
-        bool bonusEarned = PlayerPrefs.GetInt(levelSceneName + "_Bonus", 0) == 1;
+        bool bonusEarned = PlayerPrefs.GetInt(levelSceneName + "_Stars", 0) == 1;
         if (bonusIcon != null) bonusIcon.SetActive(bonusEarned);
     }
 }

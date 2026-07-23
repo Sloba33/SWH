@@ -399,7 +399,7 @@ public class WinScreen : MonoBehaviour
             PlayerPrefs.SetInt(levelKey, starsEarned);
         }
         starsEarnedTotal = starsEarned;
-
+        PlayerPrefs.SetInt("StarsTotal", PlayerPrefs.GetInt(levelKey) + PlayerPrefs.GetInt("StarsTotal"));
         PlayerPrefs.Save();
     }
     public int starsEarnedTotal;
