@@ -297,7 +297,7 @@ public class TrophyRoadButton : MonoBehaviour
     public IEnumerator SpawnGemPanelCoroutine()
     {
         ClaimPanel cPanel = Instantiate(claimPanel, parent);
-        cPanel.SetTextAndImage("x50", trophyRoadData.gemSprite_Medium, trophyRoadData.backgroundPink);
+        cPanel.SetTextAndImage("x100", trophyRoadData.gemSprite_Medium, trophyRoadData.backgroundPink);
         audioSource.clip = trophyRoadData.audioClipGems;
         cPanel.button.onClick.AddListener(SpawnMoneyPanel);
         yield return new WaitForSeconds(0.2f);
@@ -311,7 +311,7 @@ public class TrophyRoadButton : MonoBehaviour
     public IEnumerator SpawnMoneyPanelCoroutine()
     {
         ClaimPanel thirdClaimPanel = Instantiate(claimPanel, parent);
-        thirdClaimPanel.SetTextAndImage("x150", trophyRoadData.moneySprite_Large, trophyRoadData.backgroundGreen);
+        thirdClaimPanel.SetTextAndImage("x300", trophyRoadData.moneySprite_Large, trophyRoadData.backgroundGreen);
         audioSource.clip = trophyRoadData.audioClipGold;
         yield return new WaitForSeconds(0.2f);
         audioSource.Play();
