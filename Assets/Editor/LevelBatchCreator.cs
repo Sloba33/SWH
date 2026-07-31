@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
-using System.IO; // <-- This is required for Path.GetFileNameWithoutExtension
+using System.IO;
+using System.Linq;
 
 public class LevelBatchCreator : EditorWindow
 {
@@ -37,71 +38,58 @@ public class LevelBatchCreator : EditorWindow
             Debug.Log($"📁 Created folder: {saveFolderPath}");
         }
 
-        // ⚠️ Optimization: Get build scenes *once* before the loop.
-        EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
+        // Get build scenes just to validate
+        var buildScenes = EditorBuildSettings.scenes
+            .Where(s => s.enabled)
+            .ToList();
+
+        if (buildScenes.Count == 0)
+        {
+            Debug.LogError("❌ No enabled scenes found in Build Settings!");
+            return;
+        }
 
         for (int i = 0; i < amountToCreate; i++)
         {
             int currentLevelNumber = startingLevelNumber + i;
             int displayNumber = startingDisplayNumber + i;
 
-            // 1. Create the instance
+            // Create the instance
             Level newLevel = ScriptableObject.CreateInstance<Level>();
 
-            // 2. Set Level Number
+            // Set Level Number
             newLevel.levelNumber = currentLevelNumber;
             
-            // 3. Set Build Index (Logic from your OnEnable)
-            newLevel.sceneBuildIndex = currentLevelNumber + 2;
+            // Set build index directly: level number + 2
+            int targetBuildIndex = currentLevelNumber + 2;
+            newLevel.sceneBuildIndex = targetBuildIndex;
 
-            
-            // 🔴 === 4. THIS IS THE COPIED LOGIC FROM YOUR LevelEditor.cs === 🔴
-            
-            string scenePath = null;
-            int currentBuildIndex = newLevel.sceneBuildIndex; // Use the index we just set
-
-            // Find the scene path from the build settings
-            for (int j = 0; j < buildScenes.Length; j++)
+            // Verify the scene exists at that index
+            if (targetBuildIndex < buildScenes.Count)
             {
-                // Check if the scene is enabled and the index matches
-                if (buildScenes[j].enabled && j == currentBuildIndex)
-                {
-                    scenePath = buildScenes[j].path;
-                    break; // Found it, stop looping
-                }
-            }
-
-            // Set the sceneName based on what was found
-            if (!string.IsNullOrEmpty(scenePath))
-            {
-                newLevel.sceneName = Path.GetFileNameWithoutExtension(scenePath);
+                string scenePath = buildScenes[targetBuildIndex].path;
+                string sceneName = Path.GetFileNameWithoutExtension(scenePath);
+                Debug.Log($"✅ Level {currentLevelNumber} → Scene '{sceneName}' at build index {targetBuildIndex}");
             }
             else
             {
-                newLevel.sceneName = "N/A (Not in Build Settings)";
-                // Log a warning for this specific level
-                Debug.LogWarning($"LevelBatchCreator: Level asset for level number {currentLevelNumber}: Scene with build index {currentBuildIndex} is NOT found or enabled in Build Settings.");
+                Debug.LogError($"❌ Level {currentLevelNumber}: No scene at build index {targetBuildIndex}! Only {buildScenes.Count} scenes in build settings.");
             }
-            // 🔴 === END OF COPIED LOGIC === 🔴
-            
 
-            // 5. Set up file path
+            // Setup file path
             string cleanPrefix = namePrefix.TrimEnd();
             string assetName = $"{cleanPrefix} - {displayNumber}";
             string assetPath = $"{saveFolderPath}/{assetName}.asset";
 
-            // 6. Create the asset
+            // Create the asset
             AssetDatabase.CreateAsset(newLevel, assetPath);
             EditorUtility.SetDirty(newLevel);
             
-            // This log will now correctly show all fields
-            Debug.Log($"✅ Created: {assetName}  →  LevelNumber: {newLevel.levelNumber}, SceneIndex: {newLevel.sceneBuildIndex}, SceneName: '{newLevel.sceneName}'");
+            Debug.Log($"✅ Created: {assetName}");
         }
 
-        // 7. Save and refresh ONCE (much faster)
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-
         Debug.Log($"🎯 Successfully created {amountToCreate} levels starting from {startingLevelNumber}");
     }
 }
