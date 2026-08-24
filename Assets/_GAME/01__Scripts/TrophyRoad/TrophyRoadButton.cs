@@ -20,7 +20,7 @@ public class TrophyRoadButton : MonoBehaviour
     public TrophyRoadData trophyRoadData;
     public Sprite characterPortraitSprite;
     [SerializeField] AudioSource audioSource;
-    public UIShiny uiShiny;
+    public UIEffect uiShiny;
     [Header("Tween Settings")]
     [SerializeField] float speed;
     [SerializeField] float scale;
@@ -39,7 +39,7 @@ public class TrophyRoadButton : MonoBehaviour
             amountText.text = description;
         }
         else amountText.text = "x" + amount.ToString();
-        uiShiny = GetComponent<UIShiny>();
+        uiShiny = GetComponent<UIEffect>();
         rewardImage.sprite = rewardSprite;
         this.manager = manager;
         backgroundSprite = bgSprite;

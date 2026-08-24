@@ -127,7 +127,11 @@ public class LevelGoal : MonoBehaviour
             if (tutorialHandler != null)
                 tutorialHandler.shouldGuide = true;
         }
-
+        if (!Tutorial && !IsIntroLevel)
+        {
+            AnalyticsManager.Instance?.LevelStarted();
+            FacebookInit.LogEvent("level started");
+        }
         FindAndAddTilesToList();
         AddObstaclesToInitialCounts();
         // PopulateGoalObstaclePrefabs();
@@ -208,7 +212,7 @@ public class LevelGoal : MonoBehaviour
             CheckForMissingObstaclesAndSpawn(typeColorPair.Item1, typeColorPair.Item2);
         }
 
-        CheckForSingleColorSpawnOpportunity();
+        // CheckForSingleColorSpawnOpportunity();
         // Clear the queue for the next frame
         _obstaclesDestroyedThisFrame.Clear();
         Debug.Log("ProcessDestroyedObstaclesInternal: Finished processing batch and cleared queue.");
@@ -355,7 +359,7 @@ public class LevelGoal : MonoBehaviour
         if (Tutorial && settings != null && !settings.gameWon && !settings.gameLost)
             return;
 
-        if (isTimeFrozen) return;
+        if (isTimeFrozen || paused) return;
         currentTime += Time.deltaTime;
 
         if (settings != null && settings.timerText != null)
@@ -363,6 +367,11 @@ public class LevelGoal : MonoBehaviour
             settings.timerText.text = currentTime.ToString("F1");
             UpdateTimerColor();
         }
+    }
+    public bool paused;
+    public void PauseTimer(bool flag)
+    {
+        paused = flag;
     }
     private void UpdateTimerColor()
     {
@@ -898,7 +907,13 @@ public class LevelGoal : MonoBehaviour
         }
         PlayerPrefs.SetInt("LastRunTrophyReward", trophyDifference);
         PlayerPrefs.Save();
-
+        AnalyticsManager.Instance?.LevelCompleted(
+                    starsEarned,
+                    newTrophies,
+                    currentTime,
+                    trophyDifference
+                );
+        FacebookInit.LogEvent("level completed, stars : " + starsEarned + "new trophies : " + newTrophies + " currentTime " + currentTime + "  trophy difference :" + trophyDifference);
     }
 
     public IEnumerator WinTutorial(float delay)
@@ -919,6 +934,8 @@ public class LevelGoal : MonoBehaviour
 
         PlayerPrefs.Save();
 
+        AnalyticsManager.Instance?.TutorialCompleted();
+        FacebookInit.LogEvent("tutorial completed");
         // if (GameFlowManager.Instance != null)
         // {
         //     GameFlowManager.Instance.LoadScene("01_MainMenu");

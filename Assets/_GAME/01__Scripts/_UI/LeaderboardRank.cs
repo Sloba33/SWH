@@ -9,7 +9,7 @@ public class LeaderboardRank : MonoBehaviour
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI trophiesText;
     public TextMeshProUGUI rankText;
-
+    public Image fieldBackground;
 
     public void Clear()
     {
@@ -29,11 +29,15 @@ public class LeaderboardRank : MonoBehaviour
         trophiesText.text = "";
         rankText.text = "";
         transform.GetComponent<Image>().enabled = false;
-        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, GetComponent<RectTransform>().sizeDelta.y/5);
+        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, GetComponent<RectTransform>().sizeDelta.y / 5);
         for (int i = 0; i < transform.childCount; i++)
         {
             Image img = transform.GetChild(i).GetComponent<Image>();
             if (img != null) img.enabled = false;
         }
+    }
+    public void SetFieldColorToDefault()
+    {
+        fieldBackground.color = Color.white;
     }
 }

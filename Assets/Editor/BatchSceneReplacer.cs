@@ -26,6 +26,9 @@ public class BatchSceneReplacer : EditorWindow
     public bool ShouldFixDefaultZoom;
     public bool AddBackToMainMenuButton;
 
+    // --- NEW: Reorder Settings Toggle ---
+    public bool ShouldReorderSettings = false; // New toggle
+
     // --- NEW: Star Time Toggles & Lists ---
     public bool ShouldFixStarTimes;
     public List<float> threeStarTimes = new();
@@ -162,6 +165,9 @@ public class BatchSceneReplacer : EditorWindow
         // --- Back to Main Menu Button ---
         AddBackToMainMenuButton = EditorGUILayout.Toggle("Add Back to Main Menu Button", AddBackToMainMenuButton);
 
+        // --- NEW: Reorder Settings Toggle ---
+        ShouldReorderSettings = EditorGUILayout.Toggle("Reorder SP_Settings as Last Child", ShouldReorderSettings);
+
         // ==========================================
         // --- NEW: STAR TIME AUTOMATION UI ---
         // ==========================================
@@ -283,7 +289,6 @@ public class BatchSceneReplacer : EditorWindow
         so.ApplyModifiedProperties();
     }
 
-    // Helper method to parse text from Excel/CSV
     // Helper method to parse text from Excel (Handles mm:ss format)
     private void ParseTimesFromText()
     {
@@ -408,7 +413,35 @@ public class BatchSceneReplacer : EditorWindow
                         newSettings.transform.rotation = rot;
                         Undo.DestroyObjectImmediate(oldSettings);
                         modified = true;
+                        newSettings.transform.SetAsLastSibling();
                     }
+                }
+            }
+
+
+            if (ShouldReorderSettings)
+            {
+                string settingsName = UseCustomSettingsName ? SettingsObjectName : "SP_Settings";
+                GameObject settingsObject = FindAnyObjectByType<Settings>().gameObject;
+                settingsName = settingsObject.name;
+
+                if (settingsObject != null)
+                {
+                    Transform parent = settingsObject.transform.parent;
+                    if (parent != null)
+                    {
+                        settingsObject.transform.SetAsLastSibling();
+                        modified = true;
+                        Debug.Log($"✅ Reordered {settingsName} as last child in scene '{scene.name}'");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"⚠️ {settingsName} has no parent in scene '{scene.name}', cannot reorder.");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"⚠️ {settingsName} not found in scene '{scene.name}', cannot reorder.");
                 }
             }
 
@@ -504,7 +537,7 @@ public class BatchSceneReplacer : EditorWindow
                             float originalThreeStar = levelGoal.threeStarTime;
 
                             levelGoal.threeStarTime = targetThreeStar;
-                            levelGoal.twoStarTime = Mathf.Ceil(targetThreeStar*2);
+                            levelGoal.twoStarTime = Mathf.Ceil(targetThreeStar * 1.5f);
                             levelGoal.oneStarTime = defaultOneStarTime;
 
                             EditorUtility.SetDirty(levelGoal);

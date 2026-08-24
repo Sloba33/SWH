@@ -97,13 +97,13 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
         PlayerPrefs.SetInt("Toby", 1);
         Application.targetFrameRate = 60;
 
-        if (Application.isMobilePlatform)
-        {
-            int wid = Screen.width;
-            int hei = Screen.height;
-            QualitySettings.vSyncCount = 0;
-            Screen.SetResolution(wid, hei, FullScreenMode.ExclusiveFullScreen, new RefreshRate() { numerator = 60, denominator = 1 });
-        }
+        // if (Application.isMobilePlatform)
+        // {
+        //     int wid = Screen.width;
+        //     int hei = Screen.height;
+        //     QualitySettings.vSyncCount = 0;
+        //     Screen.SetResolution(wid, hei, FullScreenMode.ExclusiveFullScreen, new RefreshRate() { numerator = 60, denominator = 1 });
+        // }
 
         for (int i = 0; i < customizationPanelManager.colorButtonManagers.Count; i++)
         {
@@ -246,7 +246,7 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
             Destroy(currentWeapon);
             currentWeapon = Instantiate(previouslyEquippedWeapon.weaponToSpawn.GetComponent<Weapon>().WeaponStandard, currentCharacter.weaponsInHand);
             currentWeapon.SetActive(true);
-            
+
             if (weaponItemManager != null) weaponItemManager.SetWeaponStats(previouslyEquippedWeapon);
             else Debug.LogError("WIM is null");
         }
@@ -798,6 +798,8 @@ public class CharacterManager : GloballyAccessibleBase<CharacterManager>
                 levelUpParticle.Play();
             }
             else levelUpParticle.Play();
+            AnalyticsManager.Instance?.CurrencySpent("cash", upgradeCostCoins, "character_upgrade",  currentCharacter.characterStats.characterName);
+            // AnalyticsManager.Instance?.CharacterUpgraded(characterID, statName, newLevel, "cash", cost);
         }
         CheckIfUpgradesAreAffordable();
         CheckIfCharactersAreUpgradeable();

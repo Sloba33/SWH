@@ -22,11 +22,11 @@ public class BattlePassButton : MonoBehaviour
     private Sprite backgroundSprite, itemSprite;
     private Transform parent;
     public AudioSource audioSource;
-    public UIShiny uiShiny;
+    public UIEffect uiShiny;
 
     public void Initialize(int level, string description, Sprite sprite, string claimTextString, bool isFree, BattlePassManager manager, Sprite bgSprite, Transform parentPanel, AudioClip audioClip)
     {
-        uiShiny = GetComponent<UIShiny>();
+        uiShiny = GetComponent<UIEffect>();
         Level = level;
         IsFree = isFree;
         descriptionText.text = "x" + $"{description}";

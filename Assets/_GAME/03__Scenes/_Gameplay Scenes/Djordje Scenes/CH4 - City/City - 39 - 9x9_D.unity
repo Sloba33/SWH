@@ -2556,6 +2556,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2577,9 +2579,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1318119975
 MeshFilter:
@@ -3990,6 +3994,7 @@ MonoBehaviour:
   obstaclesToFreeze: []
   collectibleDatabase: {fileID: 0}
   CollectibleSpawned: 0
+  ShouldHaveSkipButton: 1
   Testing: 1
   fragScaleFactor: 1
 --- !u!4 &1959335801
@@ -4575,6 +4580,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -4872,6 +4878,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6381,6 +6388,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6464,9 +6472,9 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: 7f95ec5a538d2c4479aaf6489d8a482e,
     type: 3}
   currentTime: 0
-  threeStarTime: 0
-  twoStarTime: 0
-  oneStarTime: 0
+  threeStarTime: 180
+  twoStarTime: 270
+  oneStarTime: 5000
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
@@ -6573,6 +6581,9 @@ MonoBehaviour:
   correctObstacle: {fileID: 0}
   bonusUnlocked: 0
   isTimeFrozen: 0
+  shouldIgnoreBonusStars: 0
+  shouldHaveFasterEnergyRecharge: 0
+  paused: 0
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []
@@ -7481,6 +7492,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -8417,6 +8429,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -9112,6 +9125,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -9829,6 +9843,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0

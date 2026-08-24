@@ -154,7 +154,7 @@ public class GallerySlotPrefab : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         if (imageGallery != null)
         {
-            imageGallery.ClaimGalleryReward(levelProgressIndex, this, 5, 50);
+            imageGallery.ClaimGalleryReward(levelProgressIndex, this, 3, 30);
         }
     }
 }

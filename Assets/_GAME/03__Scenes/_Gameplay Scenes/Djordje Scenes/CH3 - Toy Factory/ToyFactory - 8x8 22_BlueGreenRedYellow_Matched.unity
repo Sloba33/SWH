@@ -2220,6 +2220,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2241,9 +2243,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1318119975
 MeshFilter:
@@ -3311,9 +3315,9 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: fd2b628ec69960340bed43f0290a9a26,
     type: 3}
   currentTime: 0
-  threeStarTime: 0
-  twoStarTime: 0
-  oneStarTime: 0
+  threeStarTime: 63
+  twoStarTime: 95
+  oneStarTime: 5000
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
@@ -3428,6 +3432,7 @@ MonoBehaviour:
   isTimeFrozen: 0
   shouldIgnoreBonusStars: 0
   shouldHaveFasterEnergyRecharge: 0
+  paused: 0
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []
@@ -3489,8 +3494,8 @@ RectTransform:
   - {fileID: 2089206877}
   - {fileID: 1609147263}
   - {fileID: 690355044}
-  - {fileID: 2095339500}
   - {fileID: 518909385}
+  - {fileID: 2095339500}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3795,6 +3800,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0

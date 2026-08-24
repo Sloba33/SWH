@@ -1,66 +1,118 @@
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace MStudio
 {
     [InitializeOnLoad]
     public class StyleHierarchy
     {
-        static string[] dataArray;//Find ColorPalette GUID
-        static string path;//Get ColorPalette(ScriptableObject) path
-        static ColorPalette colorPalette;
+        private static string[] dataArray;
+        private static string path;
+        private static ColorPalette colorPalette;
+        private static Dictionary<char, ColorDesign> designCache;
+        private static Dictionary<char, GUIStyle> styleCache;
+        private static bool isInitialized = false;
 
         static StyleHierarchy()
         {
+            Initialize();
+            
+            // Use Unity 6000 specific API if on Unity 6, otherwise fallback to standard integer API
+            #if UNITY_6000_0_OR_NEWER
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyWindowByEntityId;
+            #else
+            EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindow;
+            #endif
+            
+            EditorApplication.projectChanged += OnProjectChanged;
+        }
+
+        private static void Initialize()
+        {
             dataArray = AssetDatabase.FindAssets("t:ColorPalette");
+            designCache = new Dictionary<char, ColorDesign>();
+            styleCache = new Dictionary<char, GUIStyle>();
 
             if (dataArray.Length >= 1)
-            {    //We have only one color palette, so we use dataArray[0] to get the path of the file
+            {
                 path = AssetDatabase.GUIDToAssetPath(dataArray[0]);
-
                 colorPalette = AssetDatabase.LoadAssetAtPath<ColorPalette>(path);
-
-                EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindow;
+                
+                if (colorPalette != null)
+                {
+                    foreach (var design in colorPalette.colorDesigns)
+                    {
+                        if (!string.IsNullOrEmpty(design.keyChar) && !designCache.ContainsKey(design.keyChar[0]))
+                        {
+                            designCache.Add(design.keyChar[0], design);
+                            
+                            styleCache.Add(design.keyChar[0], new GUIStyle
+                            {
+                                alignment = design.textAlignment,
+                                fontStyle = design.fontStyle,
+                                normal = new GUIStyleState()
+                                {
+                                    textColor = design.textColor,
+                                }
+                            });
+                        }
+                    }
+                    isInitialized = true;
+                }
+                else
+                {
+                    Debug.LogWarning("[StyleHierarchy] ColorPalette not found at path: " + path);
+                    isInitialized = false;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[StyleHierarchy] No ColorPalette asset found in the project.");
+                isInitialized = false;
             }
         }
 
+        private static void OnProjectChanged()
+        {
+            Initialize();
+        }
+
+        #if UNITY_6000_0_OR_NEWER
+        // Unity 6+ uses the strongly typed EntityId struct
+        private static void OnHierarchyWindowByEntityId(EntityId entityId, Rect selectionRect)
+        {
+            GameObject instance = EditorUtility.EntityIdToObject(entityId) as GameObject;
+            ProcessHierarchyItem(instance, selectionRect);
+        }
+        #else
+        // Older Unity versions use standard integer IDs
         private static void OnHierarchyWindow(int instanceID, Rect selectionRect)
         {
-            //To make sure there is no error on the first time the tool imported in project
-            if (dataArray.Length == 0) return;
+            GameObject instance = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            ProcessHierarchyItem(instance, selectionRect);
+        }
+        #endif
 
-            UnityEngine.Object instance = EditorUtility.InstanceIDToObject(instanceID);
+        // Now strictly handles the GameObject rather than trying to resolve the ID manually
+        private static void ProcessHierarchyItem(GameObject instance, Rect selectionRect)
+        {
+            if (!isInitialized || colorPalette == null || designCache.Count == 0 || instance == null)
+                return;
 
-            if (instance != null)
+            string instanceName = instance.name;
+            if (string.IsNullOrEmpty(instanceName))
+                return;
+
+            char firstChar = instanceName[0];
+            
+            if (designCache.TryGetValue(firstChar, out ColorDesign design) && 
+                styleCache.TryGetValue(firstChar, out GUIStyle style))
             {
-                for (int i = 0; i < colorPalette.colorDesigns.Count; i++)
-                {
-                    var design = colorPalette.colorDesigns[i];
-
-                    //Check if the name of each gameObject is begin with keyChar in colorDesigns list.
-                    if (instance.name.StartsWith(design.keyChar))
-                    {
-                        //Remove the symbol(keyChar) from the name.
-                        string newName = instance.name.Substring(design.keyChar.Length);
-                        //Draw a rectangle as a background, and set the color.
-                        EditorGUI.DrawRect(selectionRect, design.backgroundColor);
-
-                        //Create a new GUIStyle to match the desing in colorDesigns list.
-                        GUIStyle newStyle = new GUIStyle
-                        {
-                            alignment = design.textAlignment,
-                            fontStyle = design.fontStyle,
-                            normal = new GUIStyleState()
-                            {
-                                textColor = design.textColor,
-                            }
-                        };
-
-                        //Draw a label to show the name in upper letters and newStyle.
-                        //If you don't like all capital latter, you can remove ".ToUpper()".
-                        EditorGUI.LabelField(selectionRect, newName.ToUpper(), newStyle);
-                    }
-                }
+                string newName = instanceName.Length > 1 ? instanceName.Substring(1) : "";
+                
+                EditorGUI.DrawRect(selectionRect, design.backgroundColor);
+                EditorGUI.LabelField(selectionRect, newName.ToUpper(), style);
             }
         }
     }

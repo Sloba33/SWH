@@ -429,7 +429,17 @@ public class PlayerObstacleController : MonoBehaviour
 
         _anim.SetBool("Push", true);
         _anim.SetBool("Idle", false);
-        AudioManager.Instance.PlayObstacleSound_Move(pushObstacle.obstacleAudioType, transform.position);
+        if (pushObstacle.obstacleAudioType != ObstacleAudioType.Plastic)
+        {
+
+            AudioManager.Instance.PlayObstacleSound_Move(pushObstacle.obstacleAudioType, transform.position);
+        }
+        else
+        {
+            AudioManager.Instance.PlayObstacleSound_Move(ObstacleAudioType.Wood, transform.position);
+
+        }
+        
     }
 
     private IEnumerator CoordinatedPushMovement()
@@ -480,7 +490,7 @@ public class PlayerObstacleController : MonoBehaviour
     {
         if (lockMidAirPush)
         {
-            Debug.LogWarning("[StopPush] Prevented push stop — lockMidAirPush active");
+            // Debug.LogWarning("[StopPush] Prevented push stop — lockMidAirPush active");
             return;
         }
         if (!playerController.AI)
@@ -550,7 +560,7 @@ public class PlayerObstacleController : MonoBehaviour
                 if (!collectibleItem.isCollected)
                 {
                     collectibleItem.Collect(playerController);
-                    collectibleItem.isCollected=true;
+                    collectibleItem.isCollected = true;
                 }
             }
         }

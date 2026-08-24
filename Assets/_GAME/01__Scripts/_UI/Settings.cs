@@ -14,10 +14,12 @@ public class Settings : MonoBehaviour
     public CameraController cameraController;
     public bool gameWon, gameLost;
     public Sprite temporarySprite;
+    private LevelGoal levelGoal;
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(0.5f);
         cameraController = FindAnyObjectByType<CameraController>();
+        levelGoal = FindAnyObjectByType<LevelGoal>();
         rotateLeft.onClick.AddListener(() =>
                {
                    cameraController.RotateRight();
@@ -79,7 +81,11 @@ public class Settings : MonoBehaviour
         rotateLeft.gameObject.SetActive(false);
         rotateRight.gameObject.SetActive(false);
         FindObjectOfType<PlayerControls>().gameObject.SetActive(false);
-        timerText.gameObject.SetActive(false);
+        levelGoal = FindAnyObjectByType<LevelGoal>();
+        if (levelGoal != null)
+            levelGoal.PauseTimer(true);
+        else
+            timerText.gameObject.SetActive(false);
     }
     public void ActivateLosePanel()
     {

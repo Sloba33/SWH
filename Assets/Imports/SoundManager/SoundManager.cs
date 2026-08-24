@@ -480,7 +480,7 @@ public class SoundManager : MonoBehaviour
             {
                 if (!source.gameObject.name.StartsWith("PersistedBySoundManager-"))
                 {
-                    source.gameObject.name = "PersistedBySoundManager-" + source.gameObject.name + "-" + source.gameObject.GetInstanceID();
+                    source.gameObject.name = "PersistedBySoundManager-" + source.gameObject.name + "-" + source.gameObject.GetEntityId();
                 }
                 source.gameObject.transform.parent = null;
                 GameObject.DontDestroyOnLoad(source.gameObject);

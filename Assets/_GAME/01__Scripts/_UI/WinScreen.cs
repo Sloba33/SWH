@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Coffee.UIExtensions;
 
-
 public class WinScreen : MonoBehaviour
 {
     private UIFitToParent uiFitToParent;
@@ -35,7 +34,6 @@ public class WinScreen : MonoBehaviour
     public Transform playerGameObject;
     public UIParticle uIParticle;
     public GameObject endChapterScreen;
-
 
     private void Start()
     {
@@ -204,92 +202,8 @@ public class WinScreen : MonoBehaviour
         PlayerPrefs.SetInt(currentLevelName + "_beaten", 1);
         PlayerPrefs.Save();
     }
-    private string FormatTime(float timeInSeconds)
-    {
-        int minutes = Mathf.FloorToInt(timeInSeconds / 60F);
-        int seconds = Mathf.FloorToInt(timeInSeconds % 60F);
-        return string.Format("{0:00}:{1:00}", minutes, seconds);
-    }
-    private bool CheckIfLevelIsBeaten()
-    {
 
-        {
-            string currentLevelName = SceneManager.GetActiveScene().name;
-
-            // Check if this level has been beaten before
-            if (PlayerPrefs.GetInt(currentLevelName + "_beaten", 0) == 0)
-            {
-                // This is the first time this level is beaten, grant rewards!
-                Debug.Log("Level " + currentLevelName + " beaten for the first time! Granting rewards.");
-                // Grant your rewards here (e.g., coins, XP, unlocks)
-
-
-                return false;
-            }
-            else
-            {
-                // This level has been beaten before, it's a replay. No new rewards.
-                Debug.Log("Level " + currentLevelName + " replayed. No new rewards.");
-                return true;
-            }
-
-            // ... (any other logic for level completion, like loading next scene)
-        }
-
-    }
-    private Vector3 originalScale;
-    public IEnumerator MoveAndScalePlayerEmoteObject()
-    {
-        yield return new WaitForSeconds(1.5f); // Wait for animation
-
-        if (playerGameObject != null)
-        {
-            float screenWidth = Screen.width;
-            float targetX = screenWidth * 0.32f;
-            Vector3 currentPosition = playerGameObject.position;
-            Vector3 targetPosition = new Vector3(targetX, currentPosition.y, currentPosition.z);
-            Vector3 targetScale = originalScale * 0.75f; // Half the original scale
-
-            // Use smooth movement and scaling with DOTween (in parallel)
-            playerGameObject.DOMove(targetPosition, 1f).SetEase(Ease.OutQuad).Play(); // Add easing if you want
-
-            playerGameObject.DOScale(targetScale, 1f).SetEase(Ease.OutQuad).Play(); // Add easing if you want
-
-
-        }
-        else
-        {
-            Debug.LogError("playerGameObject is not assigned!");
-
-        }
-
-    }
-
-    public List<QuestType> uniqueQuestType = new();
-    public List<QuestData> uniqueQuestData = new();
-    private IEnumerator SpawnQuestProgressPrefabs(List<QuestData> questDataList)
-    {
-
-        foreach (QuestData questData in questDataList)
-        {
-            if (!uniqueQuestType.Contains(questData.questType))
-            {
-                uniqueQuestType.Add(questData.questType);
-                uniqueQuestData.Add(questData);
-            }
-            else Debug.Log("We already have this tpye of quest");
-        }
-        yield return new WaitForSeconds(0.3f);
-        int length = (uniqueQuestData.Count) >= 3 ? 3 : uniqueQuestData.Count;
-        for (int i = 0; i < length; i++)
-        {
-            yield return new WaitForSeconds(0.3f);
-            GameObject questPanel = Instantiate(questPanelPrefab, parentPanel.transform);
-            questPanel.GetComponent<Quest>().questData = uniqueQuestData[i];
-            questPanel.transform.DOPunchScale(new Vector3(questPanel.transform.localScale.x, questPanel.transform.localScale.y, questPanel.transform.localScale.z), 0.3f, 5, 1).Play();
-        }
-
-    }
+    // In GenerateGains - ADD ANALYTICS CALL AT THE END
     public IEnumerator GenerateGains(int xpGains, int trophyGains)
     {
         Debug.Log("Generating gains and proceednig");
@@ -401,6 +315,103 @@ public class WinScreen : MonoBehaviour
         starsEarnedTotal = starsEarned;
         PlayerPrefs.SetInt("StarsTotal", PlayerPrefs.GetInt(levelKey) + PlayerPrefs.GetInt("StarsTotal"));
         PlayerPrefs.Save();
+
+        // ADD ANALYTICS: Currency earned from level
+        if (xpGains > 0)
+        {
+            AnalyticsManager.Instance?.CurrencyEarned("xp", xpGains, "level_reward");
+        }
+        if (trophyGains > 0)
+        {
+            AnalyticsManager.Instance?.CurrencyEarned("trophies", trophyGains, "level_reward");
+        }
+    }
+
+    private string FormatTime(float timeInSeconds)
+    {
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60F);
+        int seconds = Mathf.FloorToInt(timeInSeconds % 60F);
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+    private bool CheckIfLevelIsBeaten()
+    {
+
+        {
+            string currentLevelName = SceneManager.GetActiveScene().name;
+
+            // Check if this level has been beaten before
+            if (PlayerPrefs.GetInt(currentLevelName + "_beaten", 0) == 0)
+            {
+                // This is the first time this level is beaten, grant rewards!
+                Debug.Log("Level " + currentLevelName + " beaten for the first time! Granting rewards.");
+                // Grant your rewards here (e.g., coins, XP, unlocks)
+
+
+                return false;
+            }
+            else
+            {
+                // This level has been beaten before, it's a replay. No new rewards.
+                Debug.Log("Level " + currentLevelName + " replayed. No new rewards.");
+                return true;
+            }
+
+            // ... (any other logic for level completion, like loading next scene)
+        }
+
+    }
+    private Vector3 originalScale;
+    public IEnumerator MoveAndScalePlayerEmoteObject()
+    {
+        yield return new WaitForSeconds(1.5f); // Wait for animation
+
+        if (playerGameObject != null)
+        {
+            float screenWidth = Screen.width;
+            float targetX = screenWidth * 0.32f;
+            Vector3 currentPosition = playerGameObject.position;
+            Vector3 targetPosition = new Vector3(targetX, currentPosition.y, currentPosition.z);
+            Vector3 targetScale = originalScale * 0.75f; // Half the original scale
+
+            // Use smooth movement and scaling with DOTween (in parallel)
+            playerGameObject.DOMove(targetPosition, 1f).SetEase(Ease.OutQuad).Play(); // Add easing if you want
+
+            playerGameObject.DOScale(targetScale, 1f).SetEase(Ease.OutQuad).Play(); // Add easing if you want
+
+
+        }
+        else
+        {
+            Debug.LogError("playerGameObject is not assigned!");
+
+        }
+
+    }
+
+    public List<QuestType> uniqueQuestType = new();
+    public List<QuestData> uniqueQuestData = new();
+    private IEnumerator SpawnQuestProgressPrefabs(List<QuestData> questDataList)
+    {
+
+        foreach (QuestData questData in questDataList)
+        {
+            if (!uniqueQuestType.Contains(questData.questType))
+            {
+                uniqueQuestType.Add(questData.questType);
+                uniqueQuestData.Add(questData);
+            }
+            else Debug.Log("We already have this tpye of quest");
+        }
+        yield return new WaitForSeconds(0.3f);
+        int length = (uniqueQuestData.Count) >= 3 ? 3 : uniqueQuestData.Count;
+        for (int i = 0; i < length; i++)
+        {
+            yield return new WaitForSeconds(0.3f);
+            GameObject questPanel = Instantiate(questPanelPrefab, parentPanel.transform);
+            questPanel.GetComponent<Quest>().questData = uniqueQuestData[i];
+            questPanel.transform.DOPunchScale(new Vector3(questPanel.transform.localScale.x, questPanel.transform.localScale.y, questPanel.transform.localScale.z), 0.3f, 5, 1).Play();
+        }
+
     }
     public int starsEarnedTotal;
     public void Proceed()

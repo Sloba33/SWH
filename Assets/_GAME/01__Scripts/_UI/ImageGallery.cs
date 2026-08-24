@@ -658,7 +658,8 @@ public class ImageGallery : MonoBehaviour
         claimedGalleryRewards.Add(levelProgressIndex);
         SaveClaimedGalleryRewards();
 
-        awarder.AwardCurrencyManual(50, gallerySlot.xpPile, gallerySlot.xpPile, gallerySlot.xpPile.GetComponent<RectTransform>());
+        awarder.AwardCurrencyManual(xpGain, gallerySlot.xpPile, gallerySlot.xpPile, gallerySlot.xpPile.GetComponent<RectTransform>());
+        Debug.Log("awarding " + xpGain + " XP to player from GallerySlotPrefab at index " + levelProgressIndex);
 
         gallerySlot.isClaimed = true;
 
@@ -671,11 +672,6 @@ public class ImageGallery : MonoBehaviour
 
         lastUnclaimedCheckFrame = -1;
         UpdateGalleryButtonGlow();
-    }
-    [NaughtyAttributes.Button("Test")]
-    public void Test()
-    {
-        Debug.Log("Test");
     }
     private bool IsGalleryRewardClaimed(int index)
     {

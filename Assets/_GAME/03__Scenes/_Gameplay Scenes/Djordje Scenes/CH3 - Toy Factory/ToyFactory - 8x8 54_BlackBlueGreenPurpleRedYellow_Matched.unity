@@ -1776,7 +1776,7 @@ PrefabInstance:
     - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5774177290733508112, guid: 5b76e532431e08f4eb84b05d86cc4700,
         type: 3}
@@ -2745,7 +2745,7 @@ Transform:
   m_GameObject: {fileID: 1099247583}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2930,6 +2930,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2951,9 +2953,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1318119975
 MeshFilter:
@@ -4511,9 +4515,9 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: 8f80cb5bfc346a64ea62f96211bda6ab,
     type: 3}
   currentTime: 0
-  threeStarTime: 8
-  twoStarTime: 0
-  oneStarTime: 0
+  threeStarTime: 110
+  twoStarTime: 150
+  oneStarTime: 5000
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
@@ -4624,6 +4628,7 @@ MonoBehaviour:
   isTimeFrozen: 0
   shouldIgnoreBonusStars: 0
   shouldHaveFasterEnergyRecharge: 0
+  paused: 0
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []
@@ -4685,8 +4690,8 @@ RectTransform:
   - {fileID: 2089206877}
   - {fileID: 1609147263}
   - {fileID: 690355044}
-  - {fileID: 1067447347}
   - {fileID: 300434873}
+  - {fileID: 1067447347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4991,6 +4996,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0

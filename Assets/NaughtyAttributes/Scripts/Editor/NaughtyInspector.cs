@@ -115,9 +115,11 @@ namespace NaughtyAttributes.Editor
                     continue;
                 }
 
+                // FIXED: Using GetEntityID() instead of GetInstanceID()
+                string entityId = target.GetEntityId().ToString();
                 if (!_foldouts.ContainsKey(group.Key))
                 {
-                    _foldouts[group.Key] = new SavedBool($"{target.GetInstanceID()}.{group.Key}", false);
+                    _foldouts[group.Key] = new SavedBool($"{entityId}.{group.Key}", false);
                 }
 
                 _foldouts[group.Key].Value = EditorGUILayout.Foldout(_foldouts[group.Key].Value, group.Key, true);

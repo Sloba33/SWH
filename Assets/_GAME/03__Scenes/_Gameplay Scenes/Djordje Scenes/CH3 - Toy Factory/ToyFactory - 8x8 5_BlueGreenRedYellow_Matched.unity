@@ -2022,10 +2022,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
+      propertyPath: oneStarTime
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: twoStarTime
+      value: 167
+      objectReference: {fileID: 0}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
       propertyPath: levelProgress
       value: 
       objectReference: {fileID: 4741343503558475765, guid: 1bb72d3409d304a4987f3bc9fc2806cf,
         type: 3}
+    - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
+        type: 3}
+      propertyPath: threeStarTime
+      value: 111
+      objectReference: {fileID: 0}
     - target: {fileID: 1130201766535890755, guid: 93d2c0f4f1546894eac6bb65d4c904eb,
         type: 3}
       propertyPath: ObstaclesToDestroy_Player.Array.size
@@ -3217,6 +3232,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3238,9 +3255,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1318119975
 MeshFilter:
@@ -3601,7 +3620,7 @@ PrefabInstance:
     - target: {fileID: 8469627572841131465, guid: c4c2d9d0826087b4eaa4d0b4f822b132,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000030517578
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8469627572841131465, guid: c4c2d9d0826087b4eaa4d0b4f822b132,
         type: 3}
@@ -4671,8 +4690,8 @@ RectTransform:
   - {fileID: 2089206877}
   - {fileID: 1609147263}
   - {fileID: 690355044}
-  - {fileID: 1546627268}
   - {fileID: 1708798157}
+  - {fileID: 1546627268}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4757,6 +4776,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0

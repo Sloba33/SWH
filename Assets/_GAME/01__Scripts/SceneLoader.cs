@@ -64,6 +64,7 @@ public class SceneLoader : MonoBehaviour
 
     private void Start()
     {
+        Screen.SetResolution ((int)Screen.width, (int)Screen.height, true);
         int level = PlayerPrefs.GetInt("Level", 0);
         // PlayerPrefs.SetInt("IsSeparateBuild", 1); // Setting for separate bui
         PlayerPrefs.SetInt("IsSeparateBuild", 0); // Setting for separate bui
@@ -214,6 +215,8 @@ public class SceneLoader : MonoBehaviour
     public void LoadMainMenu()
     {
         StartCoroutine(LoadLevelInternal(1));
+        AnalyticsManager.Instance?.LevelQuit("main_menu_button");
+        FacebookInit.LogEvent("main_menu_button");
     }
 
     public void LoadSpecificScene(int index)
@@ -229,12 +232,47 @@ public class SceneLoader : MonoBehaviour
     // --- Event Handler for Scene Loaded ---
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // This method is called after a scene has finished loading.
-        // We can safely deactivate the loading screen here, as the new scene is fully loaded and initialized.
+        // ---------------------------------------------------------
+        // Analytics
+        // ---------------------------------------------------------
+
+        if (scene.buildIndex >= 3)
+        {
+            int level = PlayerPrefs.GetInt("Level", 0);
+
+            // Temporary until we confirm your actual chapter/character storage.
+            int chapter = 1;
+            string character = "Character1";
+
+            if (AnalyticsManager.Instance != null)
+            {
+                AnalyticsManager.Instance.LevelStarted(
+
+                );
+
+                Debug.Log(
+                    $"[SceneLoader] level_start sent | Level: {level} | Scene: {scene.buildIndex}"
+                );
+                FacebookInit.LogEvent("level_started, level number: " + level);
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "[SceneLoader] AnalyticsManager.Instance is null!"
+                );
+            }
+        }
+
+        // ---------------------------------------------------------
+        // Loading screen
+        // ---------------------------------------------------------
+
         if (loadingScreen != null && loadingScreen.activeSelf)
         {
             loadingScreen.SetActive(false);
-            Debug.Log("Loading screen deactivated after loading scene: " + scene.name);
+            Debug.Log(
+                "Loading screen deactivated after loading scene: " + scene.name
+            );
         }
     }
 }

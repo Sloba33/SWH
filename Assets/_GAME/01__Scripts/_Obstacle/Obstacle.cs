@@ -143,7 +143,7 @@ public class Obstacle : MonoBehaviour
 
         if (obstacleMaterial == null)
         {
-            Debug.LogWarning("Object material not set.");
+            // Debug.LogWarning("Object material not set.");
         }
         else if (shouldBlink)
         {
@@ -315,8 +315,17 @@ public class Obstacle : MonoBehaviour
                     if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI)
                     {
                         Debug.Log("Playing obstacle sound move");
+                        //TEMPORARY FIX UNTIL WE GET OBSTACLE PLASTIC SOUND
+                        if (obstacleAudioType != ObstacleAudioType.Plastic)
+                        {
 
-                        AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
+                            AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
+                        }
+                        else
+                        {
+                            AudioManager.Instance.PlayObstacleSound_Move(ObstacleAudioType.Wood, transform.position);
+
+                        }
                     }
 
                     _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
@@ -343,7 +352,20 @@ public class Obstacle : MonoBehaviour
 
             _rb.MovePosition(transform.position + speed * Time.fixedDeltaTime * dir); /*this one doesn't get stuck in cyllinders*/
             // _playerRigidbody.MovePosition(_playerRigidbody.transform.position + dir * speed * Time.fixedDeltaTime); /*this one doesn't get stuck in cyllinders*/
-            if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI) AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
+            if (currentlyUsedPlayerConrtoller != null && !currentlyUsedPlayerConrtoller.AI)
+            {
+                if (obstacleAudioType != ObstacleAudioType.Plastic)
+                {
+                    AudioManager.Instance.PlayObstacleSound_Move(obstacleAudioType, transform.position);
+                }
+                else
+                {
+                    AudioManager.Instance.PlayObstacleSound_Move(ObstacleAudioType.Wood, transform.position);
+
+                }
+
+            }
+
             // CheckThreeOfAKind();
             controllerCleared = false;
         }

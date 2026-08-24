@@ -11,7 +11,7 @@ public class Leaderboard : MonoBehaviour
 {
     public GameObject leaderboardPanel;
     private readonly List<GameObject> spawnedRanks = new();
-    [SerializeField] private int maxEntries = 100;
+    [SerializeField] private int maxEntries;
     public Button leaderboardButton;
     public GameObject leaderboardRankPrefab;
     public Transform contentPanel;
@@ -21,6 +21,13 @@ public class Leaderboard : MonoBehaviour
 
     void Start()
     {
+        Debug.Log(
+       $"[Leaderboard] START | " +
+       $"Object={gameObject.name} | " +
+       $"InstanceID={GetEntityId()} | " +
+       $"Scene={gameObject.scene.name} | " +
+       $"maxEntries={maxEntries}"
+   );
         if (FirebaseInit.IsReady)
             Init();
         else
@@ -37,23 +44,13 @@ public class Leaderboard : MonoBehaviour
 
     private void ClearLeaderboardUI()
     {
-        foreach (var go in spawnedRanks)
-        {
-            if (go != null)
-                Destroy(go);
-        }
-        spawnedRanks.Clear();
-
-        if (extraRankObject != null)
-        {
-            Destroy(extraRankObject);
-            extraRankObject = null;
-        }
-
         foreach (Transform child in contentPanel)
         {
             Destroy(child.gameObject);
         }
+
+        spawnedRanks.Clear();
+        extraRankObject = null;
     }
 
     [NaughtyAttributes.Button("Hello")]
@@ -62,76 +59,104 @@ public class Leaderboard : MonoBehaviour
         LoadTopPlayers(maxEntries);
     }
 
-  private void LoadTopPlayers(int count)
-{
-    if (db == null)
+    private void LoadTopPlayers(int count)
     {
-        Debug.LogWarning("[Leaderboard] DB not ready");
-        return;
-    }
+        if (db == null)
+        {
+            Debug.LogWarning("[Leaderboard] DB not ready");
+            return;
+        }
 
-    // TEMPORARY: Remove ordering and limiting to test
-    db.Child("leaderboard")
-      .GetValueAsync()  // Just get everything
-      .ContinueWithOnMainThread(task =>
-      {
-          if (task.IsFaulted)
+        // TEMPORARY: Remove ordering and limiting to test
+        db.Child("leaderboard")
+          .GetValueAsync()  // Just get everything
+          .ContinueWithOnMainThread(task =>
           {
-              Debug.LogError($"[Leaderboard] Load failed: {task.Exception}");
-              return;
-          }
+              if (task.IsFaulted)
+              {
+                  Debug.LogError($"[Leaderboard] Load failed: {task.Exception}");
+                  return;
+              }
 
-          DataSnapshot snapshot = task.Result;
-          
-          if (!snapshot.Exists)  // This should now be false
-          {
-              Debug.LogWarning("[Leaderboard] No data found");
-              return;
-          }
+              DataSnapshot snapshot = task.Result;
 
-          Debug.Log($"[Leaderboard] Found {snapshot.ChildrenCount} entries");
-          
-          ClearLeaderboardUI();
+              if (!snapshot.Exists)  // This should now be false
+              {
+                  Debug.LogWarning("[Leaderboard] No data found");
+                  return;
+              }
 
-          var entries = new List<DataSnapshot>();
+              Debug.Log($"[Leaderboard] Found {snapshot.ChildrenCount} entries");
 
-          foreach (var child in snapshot.Children)
-          {
-              if (!child.HasChild("trophies") || !child.HasChild("name"))
-                  continue;
-              entries.Add(child);
-          }
+              ClearLeaderboardUI();
 
-          // Sort locally instead of using OrderByChild
-          entries.Sort((a, b) =>
-          {
-              int aVal = int.Parse(a.Child("trophies").Value.ToString());
-              int bVal = int.Parse(b.Child("trophies").Value.ToString());
-              return bVal.CompareTo(aVal);
+              var entries = new List<DataSnapshot>();
+
+              foreach (var child in snapshot.Children)
+              {
+                  if (!child.HasChild("trophies") || !child.HasChild("name"))
+                      continue;
+                  entries.Add(child);
+              }
+
+              // Sort locally instead of using OrderByChild
+              entries.Sort((a, b) =>
+              {
+                  int aVal = int.Parse(a.Child("trophies").Value.ToString());
+                  int bVal = int.Parse(b.Child("trophies").Value.ToString());
+                  return bVal.CompareTo(aVal);
+              });
+
+              Debug.Log(
+    $"[Leaderboard] Before limit | " +
+    $"entries={entries.Count} | " +
+    $"maxEntries={maxEntries}"
+);
+
+              int finalCount = Mathf.Min(entries.Count, count);
+
+              Debug.Log(
+                  $"[Leaderboard] Displaying top {finalCount} players"
+              );
+
+              for (int i = 0; i < finalCount; i++)
+              {
+                  string playerName = entries[i].Child("name").Value.ToString();
+                  int trophies = int.Parse(entries[i].Child("trophies").Value.ToString());
+                  int rank = i + 1;
+
+                  GameObject go = Instantiate(leaderboardRankPrefab, contentPanel);
+                  LeaderboardRank rankUI = go.GetComponent<LeaderboardRank>();
+                  rankUI.Set(playerName, trophies, rank);
+                  spawnedRanks.Add(go);
+
+                  go.name = $"Rank_{rank}_{playerName}";
+                  Debug.Log(
+    $"[Leaderboard] Created {go.name}, " +
+    $"localPosition={go.transform.localPosition}, " +
+    $"rect={go.GetComponent<RectTransform>().rect}"
+);
+              }
+              Debug.Log($"[Leaderboard] Spawned ranks: {spawnedRanks.Count}");
+              Debug.Log($"[Leaderboard] Content children: {contentPanel.childCount}");
+              Debug.Log($"[Leaderboard] Content size: {contentPanel.GetComponent<RectTransform>().rect.size}");
+
+
+              Debug.Log($"[Leaderboard] Content size AFTER rebuild: " +
+                        $"{contentPanel.GetComponent<RectTransform>().rect.size}");
+              if (entries.Count > 0)
+              {
+                  extraRankObject = Instantiate(leaderboardRankPrefab, contentPanel);
+
+                  extraRankObject.GetComponent<LeaderboardRank>().SetAsExtra();
+              }
+              Canvas.ForceUpdateCanvases();
+              LayoutRebuilder.ForceRebuildLayoutImmediate(
+                  contentPanel.GetComponent<RectTransform>()
+              );
+
           });
-
-          int finalCount = Mathf.Min(entries.Count, maxEntries);
-          Debug.Log($"[Leaderboard] Displaying top {finalCount} players");
-
-          for (int i = 0; i < finalCount; i++)
-          {
-              string playerName = entries[i].Child("name").Value.ToString();
-              int trophies = int.Parse(entries[i].Child("trophies").Value.ToString());
-              int rank = i + 1;
-
-              GameObject go = Instantiate(leaderboardRankPrefab, contentPanel);
-              LeaderboardRank rankUI = go.GetComponent<LeaderboardRank>();
-              rankUI.Set(playerName, trophies, rank);
-              spawnedRanks.Add(go);
-          }
-          
-          if (entries.Count > 0)
-          {
-              extraRankObject = Instantiate(leaderboardRankPrefab, contentPanel);
-              extraRankObject.GetComponent<LeaderboardRank>().SetAsExtra();
-          }
-      });
-}
+    }
     [Button("Debug All Leaderboard Data")]
 
     public void DebugAllLeaderboardData()
@@ -250,7 +275,92 @@ public class Leaderboard : MonoBehaviour
               personalRank.Set("Unranked", 0, 0);
           });
     }
+    public void RefreshLeaderboard()
+    {
+        if (db == null)
+        {
+            Debug.LogWarning("[Leaderboard] DB not ready");
+            return;
+        }
 
+        Debug.Log("[Leaderboard] Refreshing...");
+
+        db.Child("leaderboard")
+          .GetValueAsync()
+          .ContinueWithOnMainThread(task =>
+          {
+              if (task.IsFaulted)
+              {
+                  Debug.LogError($"[Leaderboard] Refresh failed: {task.Exception}");
+                  return;
+              }
+
+              if (task.IsCanceled)
+              {
+                  Debug.LogWarning("[Leaderboard] Refresh canceled");
+                  return;
+              }
+
+              DataSnapshot snapshot = task.Result;
+
+              if (!snapshot.Exists)
+              {
+                  Debug.LogWarning("[Leaderboard] No leaderboard data");
+                  return;
+              }
+
+              var entries = new List<DataSnapshot>();
+
+              foreach (var child in snapshot.Children)
+              {
+                  if (!child.HasChild("trophies") || !child.HasChild("name"))
+                      continue;
+
+                  entries.Add(child);
+              }
+
+              entries.Sort((a, b) =>
+              {
+                  int aVal = int.Parse(a.Child("trophies").Value.ToString());
+                  int bVal = int.Parse(b.Child("trophies").Value.ToString());
+                  return bVal.CompareTo(aVal);
+              });
+
+              ClearLeaderboardUI();
+
+              int finalCount = Mathf.Min(entries.Count, maxEntries);
+
+              for (int i = 0; i < finalCount; i++)
+              {
+                  string playerName = entries[i].Child("name").Value.ToString();
+                  int trophies = int.Parse(entries[i].Child("trophies").Value.ToString());
+
+                  GameObject go = Instantiate(leaderboardRankPrefab, contentPanel);
+
+                  LeaderboardRank rankUI = go.GetComponent<LeaderboardRank>();
+                  rankUI.Set(playerName, trophies, i + 1);
+
+                  spawnedRanks.Add(go);
+              }
+
+              if (entries.Count > 0)
+              {
+                  extraRankObject = Instantiate(leaderboardRankPrefab, contentPanel);
+                  extraRankObject.name = "ExtraRank";
+                  extraRankObject.GetComponent<LeaderboardRank>().SetAsExtra();
+              }
+
+              LoadPersonalRank();
+
+              Debug.Log($"[Leaderboard] Refresh complete. Showing {finalCount} players.");
+              Debug.Log(
+    $"[Leaderboard] REFRESH | " +
+    $"Object={gameObject.name} | " +
+    $"InstanceID={GetEntityId()} | " +
+    $"maxEntries={maxEntries}"
+);
+          });
+    }
     public void CloseLeaderboard()
     {
         ClearLeaderboardUI();

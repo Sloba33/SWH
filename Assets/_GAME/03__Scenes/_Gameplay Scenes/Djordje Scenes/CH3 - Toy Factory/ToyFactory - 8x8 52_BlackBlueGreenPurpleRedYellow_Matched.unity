@@ -2565,7 +2565,7 @@ Transform:
   m_GameObject: {fileID: 1099247583}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2873,6 +2873,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2894,9 +2896,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1318119975
 MeshFilter:
@@ -4426,9 +4430,9 @@ MonoBehaviour:
   levelProgress: {fileID: 4741343503558475765, guid: e946b8c2d71902643a218c3c0b64a584,
     type: 3}
   currentTime: 0
-  threeStarTime: 0
-  twoStarTime: 0
-  oneStarTime: 0
+  threeStarTime: 90
+  twoStarTime: 130
+  oneStarTime: 5000
   bonusTime: 22
   tutorialDialogue: {fileID: 0}
   useNewSpawnSystem: 0
@@ -4549,6 +4553,7 @@ MonoBehaviour:
   isTimeFrozen: 0
   shouldIgnoreBonusStars: 0
   shouldHaveFasterEnergyRecharge: 0
+  paused: 0
   starsEarned: 0
   currentStep: 0
   tutorialBridges: []
@@ -4610,8 +4615,8 @@ RectTransform:
   - {fileID: 2089206877}
   - {fileID: 1609147263}
   - {fileID: 690355044}
-  - {fileID: 1618228892}
   - {fileID: 1243543159}
+  - {fileID: 1618228892}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4916,6 +4921,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0

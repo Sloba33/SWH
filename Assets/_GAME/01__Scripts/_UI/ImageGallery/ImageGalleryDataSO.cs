@@ -39,7 +39,7 @@ public class ImageGalleryDataSO : ScriptableObject
         {
             // Default amount
             if (reward.amount == 0)
-                reward.amount = 50;
+                reward.amount = 30;
 
             // Auto-assign sprites
             if (rewardSprites.TryGetValue(reward.rewardType, out Sprite rewardSpr))

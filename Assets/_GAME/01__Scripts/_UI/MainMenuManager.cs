@@ -402,7 +402,7 @@ public class MainMenuManager : MonoBehaviour
             }
         }
 
-      
+
         yield return new WaitForSeconds(0.2f); // Existing wait time, confirm it matches your animation!
 
         settingsPanel.SetActive(false);
@@ -412,8 +412,8 @@ public class MainMenuManager : MonoBehaviour
     // NEW: Generic coroutine to wait for settings panel animations
     private IEnumerator WaitForSettingsAnimation(bool isOpening)
     {
-  
-        yield return new WaitForSeconds(0.2f); 
+
+        yield return new WaitForSeconds(0.2f);
 
 
         _isSettingsAnimating = false;
@@ -439,8 +439,8 @@ public class MainMenuManager : MonoBehaviour
         {
             if (sceneLoader != null)
             {
-                
-                
+
+
                 sceneLoader.LoadNextJob();
             }
             else
@@ -499,5 +499,6 @@ public class MainMenuManager : MonoBehaviour
     {
         PlayerPrefs.Save();
         Application.Quit();
+        AnalyticsManager.Instance?.LevelQuit("quit_button");
     }
 }

@@ -140,13 +140,13 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
 
-        if (Application.isMobilePlatform)
-        {
-            int wid = Screen.width;
-            int hei = Screen.height;
-            QualitySettings.vSyncCount = 0;
-            Screen.SetResolution(wid, hei, FullScreenMode.ExclusiveFullScreen, new RefreshRate() { numerator = 60, denominator = 1 });
-        }
+        // if (Application.isMobilePlatform)
+        // {
+        //     int wid = Screen.width;
+        //     int hei = Screen.height;
+        //     QualitySettings.vSyncCount = 0;
+        //     Screen.SetResolution(wid, hei, FullScreenMode.ExclusiveFullScreen, new RefreshRate() { numerator = 60, denominator = 1 });
+        // }
         start = true;
 
         levelGoal = FindFirstObjectByType<LevelGoal>();

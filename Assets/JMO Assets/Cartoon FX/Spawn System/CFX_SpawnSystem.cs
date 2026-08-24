@@ -24,7 +24,7 @@ public class CFX_SpawnSystem : MonoBehaviour
 	/// </param>
 	static public GameObject GetNextObject(GameObject sourceObj, bool activateObject = true)
 	{
-		int uniqueId = sourceObj.GetInstanceID();
+		string uniqueId = GetAssetId(sourceObj);
 		
 		if(!instance.poolCursors.ContainsKey(uniqueId))
 		{
@@ -98,12 +98,28 @@ public class CFX_SpawnSystem : MonoBehaviour
 	public bool hideObjectsInHierarchy;
 	
 	private bool allObjectsLoaded;
-	private Dictionary<int,List<GameObject>> instantiatedObjects = new Dictionary<int, List<GameObject>>();
-	private Dictionary<int,int> poolCursors = new Dictionary<int, int>();
+	private Dictionary<string,List<GameObject>> instantiatedObjects = new Dictionary<string, List<GameObject>>();
+	private Dictionary<string,int> poolCursors = new Dictionary<string, int>();
+	
+	// Helper method to get a persistent identifier for a GameObject
+	private static string GetAssetId(GameObject obj)
+	{
+		#if UNITY_EDITOR
+		// In Editor, use the asset's GUID
+		string assetPath = UnityEditor.AssetDatabase.GetAssetPath(obj);
+		if (!string.IsNullOrEmpty(assetPath))
+		{
+			return UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
+		}
+		#endif
+		
+		// Fallback: combine name and instance ID (though this isn't perfect)
+		return obj.name + "_" + obj.GetEntityId();
+	}
 	
 	private void addObjectToPool(GameObject sourceObject, int number)
 	{
-		int uniqueId = sourceObject.GetInstanceID();
+		string uniqueId = GetAssetId(sourceObject);
 				
 		//Add new entry if it doesn't exist
 		if(!instantiatedObjects.ContainsKey(uniqueId))
@@ -145,7 +161,7 @@ public class CFX_SpawnSystem : MonoBehaviour
 	
 	private void removeObjectsFromPool(GameObject sourceObject)
 	{
-		int uniqueId = sourceObject.GetInstanceID();
+		string uniqueId = GetAssetId(sourceObject);
 		
 		if(!instantiatedObjects.ContainsKey(uniqueId))
 		{
