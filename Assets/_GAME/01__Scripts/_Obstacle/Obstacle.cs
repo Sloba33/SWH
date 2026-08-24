@@ -505,7 +505,7 @@ public class Obstacle : MonoBehaviour
                 if (obstacleFallPS != null && transform.position.y < 1)
                 {
 
-                    ps = Instantiate(obstacleFallPS, transform.position - new Vector3(0, 0.5f, 0), obstacleFallPS.transform.rotation);
+                    ps = Instantiate(obstacleFallPS, transform.position - new Vector3(0, 0.4f, 0), obstacleFallPS.transform.rotation);
                     ps.gameObject.name = "fall particle object";
                 }
             }
