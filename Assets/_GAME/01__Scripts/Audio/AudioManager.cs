@@ -126,6 +126,9 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
         }
     }
 
+    private Dictionary<ObstacleAudioType, float> lastDestructionSoundTime = new Dictionary<ObstacleAudioType, float>();
+    private float typeCooldown = 0.15f; // Cooldown per type
+
     public void PlayObstacleSound_Destruction(ObstacleAudioType type, Vector3 position)
     {
         if (!obstacleDestruction_AudioClips.TryGetValue(type, out AudioClipSO clip))
@@ -133,7 +136,20 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
             Debug.LogWarning($"No audio clip found for obstacle destruction type {type}.");
             return;
         }
-        // PlaySound3D(clip, position);
+
+        // Check cooldown for this specific type
+        if (lastDestructionSoundTime.TryGetValue(type, out float lastPlayTime))
+        {
+            if (Time.time - lastPlayTime < typeCooldown)
+            {
+                Debug.Log($"Skipping {type} sound - on cooldown");
+                return;
+            }
+        }
+
+        // Update last play time for this type
+        lastDestructionSoundTime[type] = Time.time;
+
         PlaySound2D(clip);
         Debug.Log($"Playing: {clip.name}");
     }
@@ -364,11 +380,11 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
         audioSourcePool.Enqueue(audioSource);
     }
 
-    
+
     private AudioSource loopedAudioSource, loopedObstacleAudioSource;
     public void PlaySound(int index)
     {
-        
+
         if (!SoundAudioSources[index].isPlaying)
         {
             SoundAudioSources[index].PlayOneShotSoundManaged(SoundAudioSources[index].clip);
@@ -383,9 +399,9 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
     {
         if (obstacleAudioType == ObstacleAudioType.Wood)
         {
-         
+
             SoundAudioSources[0].PlayOneShotSoundManaged(SoundAudioSources[0].clip);
-           
+
         }
         else if (obstacleAudioType == ObstacleAudioType.Concrete)
         {

@@ -136,6 +136,7 @@ public class CameraController : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
+        if(playerController == null) return;
         if (!playerController.AI && MAT1 != null && MAT2 != null)
         {
 

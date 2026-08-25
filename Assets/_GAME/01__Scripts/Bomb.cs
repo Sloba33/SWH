@@ -100,7 +100,7 @@ public class Bomb : MonoBehaviour
                         // You can tweak duration/intensity here
                         DOTween.To(() => noise.m_AmplitudeGain,
                                    x => noise.m_AmplitudeGain = x,
-                                   1f, 0.5f) // Rise to full strength
+                                   1.5f, 0.5f) // Rise to full strength
                                .SetEase(Ease.OutQuad).Play() // Smooth start, quick peak
                                .OnComplete(() =>
                                {
