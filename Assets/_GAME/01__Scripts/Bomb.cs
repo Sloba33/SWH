@@ -21,6 +21,7 @@ public class Bomb : MonoBehaviour
     public BoxCollider boxCollider;
     public float time = 3f;
     public ParticleSystem explosionParticle;
+    public BoxCollider radiusTriggerCollider;
     [SerializeField] private MeshRenderer mesh;
 
     bool Grounded;

@@ -61,33 +61,35 @@ public class Obstacle : MonoBehaviour
     public void SphereFlags()
     {
         Physics.SyncTransforms();
-        obstacleForward = Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_1, obstacleCheckerRadius, _obstacleForward, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_2, obstacleCheckerRadius, _obstacleForward, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_3, obstacleCheckerRadius, _obstacleForward, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_4, obstacleCheckerRadius, _obstacleForward, _groundMask) > 0;
-        obstacleBack = Physics.OverlapSphereNonAlloc(transform.position + backOffset_1, obstacleCheckerRadius, _obstacleBack, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + backOffset_2, obstacleCheckerRadius, _obstacleBack, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + backOffset_3, obstacleCheckerRadius, _obstacleBack, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + backOffset_4, obstacleCheckerRadius, _obstacleBack, _groundMask) > 0;
-        obstacleLeft = Physics.OverlapSphereNonAlloc(transform.position + leftOffset_1, obstacleCheckerRadius, _obstacleLeft, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + leftOffset_2, obstacleCheckerRadius, _obstacleLeft, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + leftOffset_3, obstacleCheckerRadius, _obstacleLeft, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + leftOffset_4, obstacleCheckerRadius, _obstacleLeft, _groundMask) > 0;
-        obstacleRight = Physics.OverlapSphereNonAlloc(transform.position + rightOffset_1, obstacleCheckerRadius, _obstacleRight, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + rightOffset_2, obstacleCheckerRadius, _obstacleRight, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + rightOffset_3, obstacleCheckerRadius, _obstacleRight, _groundMask) > 0 || Physics.OverlapSphereNonAlloc(transform.position + rightOffset_4, obstacleCheckerRadius, _obstacleRight, _groundMask) > 0;
-        obstacleUp = Physics.OverlapSphereNonAlloc(transform.position + new Vector3(upSphereDistance, upOffset, 0f), obstacleCheckerRadius, _obstacleUp, _groundMask) > 0;
-        if (_obstacleForward[0] == gameObject)
-        {
-            _obstacleForward[0] = null;
-        }
-        if (_obstacleBack[0] == gameObject)
-        {
-            _obstacleBack[0] = null;
-        }
-        if (_obstacleLeft[0] == gameObject)
-        {
-            _obstacleLeft[0] = null;
-        }
-        if (_obstacleRight[0] == gameObject)
-        {
-            _obstacleRight[0] = null;
-        }
-        if (_obstacleUp[0] == gameObject)
-        {
-            _obstacleUp[0] = null;
-        }
 
+        // Create a layer mask that excludes the BombTrigger layer ONLY for obstacle detection
+        int bombTriggerLayer = LayerMask.NameToLayer("BombTrigger");
+        LayerMask detectionMask = _groundMask & ~(1 << bombTriggerLayer); // Remove BombTrigger from the mask
 
+        // Use detectionMask for all obstacle checks
+        obstacleForward = Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_1, obstacleCheckerRadius, _obstacleForward, detectionMask) > 0 ||
+                           Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_2, obstacleCheckerRadius, _obstacleForward, detectionMask) > 0 ||
+                           Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_3, obstacleCheckerRadius, _obstacleForward, detectionMask) > 0 ||
+                           Physics.OverlapSphereNonAlloc(transform.position + forwardOffset_4, obstacleCheckerRadius, _obstacleForward, detectionMask) > 0;
+
+        obstacleBack = Physics.OverlapSphereNonAlloc(transform.position + backOffset_1, obstacleCheckerRadius, _obstacleBack, detectionMask) > 0 ||
+                        Physics.OverlapSphereNonAlloc(transform.position + backOffset_2, obstacleCheckerRadius, _obstacleBack, detectionMask) > 0 ||
+                        Physics.OverlapSphereNonAlloc(transform.position + backOffset_3, obstacleCheckerRadius, _obstacleBack, detectionMask) > 0 ||
+                        Physics.OverlapSphereNonAlloc(transform.position + backOffset_4, obstacleCheckerRadius, _obstacleBack, detectionMask) > 0;
+
+        obstacleLeft = Physics.OverlapSphereNonAlloc(transform.position + leftOffset_1, obstacleCheckerRadius, _obstacleLeft, detectionMask) > 0 ||
+                        Physics.OverlapSphereNonAlloc(transform.position + leftOffset_2, obstacleCheckerRadius, _obstacleLeft, detectionMask) > 0 ||
+                        Physics.OverlapSphereNonAlloc(transform.position + leftOffset_3, obstacleCheckerRadius, _obstacleLeft, detectionMask) > 0 ||
+                        Physics.OverlapSphereNonAlloc(transform.position + leftOffset_4, obstacleCheckerRadius, _obstacleLeft, detectionMask) > 0;
+
+        obstacleRight = Physics.OverlapSphereNonAlloc(transform.position + rightOffset_1, obstacleCheckerRadius, _obstacleRight, detectionMask) > 0 ||
+                         Physics.OverlapSphereNonAlloc(transform.position + rightOffset_2, obstacleCheckerRadius, _obstacleRight, detectionMask) > 0 ||
+                         Physics.OverlapSphereNonAlloc(transform.position + rightOffset_3, obstacleCheckerRadius, _obstacleRight, detectionMask) > 0 ||
+                         Physics.OverlapSphereNonAlloc(transform.position + rightOffset_4, obstacleCheckerRadius, _obstacleRight, detectionMask) > 0;
+
+        obstacleUp = Physics.OverlapSphereNonAlloc(transform.position + new Vector3(upSphereDistance, upOffset, 0f), obstacleCheckerRadius, _obstacleUp, detectionMask) > 0;
+
+        // ... rest of your existing filtering code for self-reference
     }
 
     public float fallRayDistance;
