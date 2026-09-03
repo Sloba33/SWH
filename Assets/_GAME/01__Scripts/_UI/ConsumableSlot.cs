@@ -19,6 +19,7 @@ public class ConsumableSlot : MonoBehaviour
         btn = GetComponent<Button>();
         img = GetComponent<Image>();
     }
+    
     public void SetConsumable(CollectibleItem collectibleItem)
     {
         ci = collectibleItem;

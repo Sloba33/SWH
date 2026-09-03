@@ -38,7 +38,6 @@ public class LevelBatchCreator : EditorWindow
             Debug.Log($"📁 Created folder: {saveFolderPath}");
         }
 
-        // Get build scenes just to validate
         var buildScenes = EditorBuildSettings.scenes
             .Where(s => s.enabled)
             .ToList();
@@ -54,17 +53,16 @@ public class LevelBatchCreator : EditorWindow
             int currentLevelNumber = startingLevelNumber + i;
             int displayNumber = startingDisplayNumber + i;
 
-            // Create the instance
             Level newLevel = ScriptableObject.CreateInstance<Level>();
 
-            // Set Level Number
-            newLevel.levelNumber = currentLevelNumber;
-            
-            // Set build index directly: level number + 2
-            int targetBuildIndex = currentLevelNumber + 2;
-            newLevel.sceneBuildIndex = targetBuildIndex;
+            // ✅ FIX: Use SerializedObject to set values
+            SerializedObject so = new SerializedObject(newLevel);
+            so.FindProperty("levelNumber").intValue = currentLevelNumber;
+            so.FindProperty("sceneBuildIndex").intValue = currentLevelNumber + 2;
+            so.ApplyModifiedProperties();
 
             // Verify the scene exists at that index
+            int targetBuildIndex = currentLevelNumber + 2;
             if (targetBuildIndex < buildScenes.Count)
             {
                 string scenePath = buildScenes[targetBuildIndex].path;
@@ -76,20 +74,22 @@ public class LevelBatchCreator : EditorWindow
                 Debug.LogError($"❌ Level {currentLevelNumber}: No scene at build index {targetBuildIndex}! Only {buildScenes.Count} scenes in build settings.");
             }
 
-            // Setup file path
             string cleanPrefix = namePrefix.TrimEnd();
             string assetName = $"{cleanPrefix} - {displayNumber}";
             string assetPath = $"{saveFolderPath}/{assetName}.asset";
 
-            // Create the asset
             AssetDatabase.CreateAsset(newLevel, assetPath);
             EditorUtility.SetDirty(newLevel);
-            
+
             Debug.Log($"✅ Created: {assetName}");
         }
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+
+        // ✅ FIX: Force reimport all assets in the folder
+        AssetDatabase.ImportAsset(saveFolderPath, ImportAssetOptions.ForceUpdate);
+
         Debug.Log($"🎯 Successfully created {amountToCreate} levels starting from {startingLevelNumber}");
     }
 }

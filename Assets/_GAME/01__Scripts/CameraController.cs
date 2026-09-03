@@ -128,7 +128,8 @@ public class CameraController : MonoBehaviour
 
         // mat1_color_illusive = new Color(mat1Color.r, mat1Color.g, mat1Color.b, 0);
         // mat2_color_illusive = new Color(mat2Color.r, mat2Color.g, mat2Color.b, 0);
-        // if (!playerController.AI) { ZoomIn(); ZoomIn(); }       
+        // if (!playerController.AI) { ZoomIn(); ZoomIn(); }    
+        startYPosition = FindObjectOfType<Player>().transform.position.y;
     }
     private IEnumerator ZoomOutForFallingLevel()
     {
@@ -136,7 +137,7 @@ public class CameraController : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
-        if(playerController == null) return;
+        if (playerController == null) return;
         if (!playerController.AI && MAT1 != null && MAT2 != null)
         {
 
@@ -377,8 +378,9 @@ public class CameraController : MonoBehaviour
     {
         mainCamera.orthographic = !mainCamera.orthographic;
     }
-    public float fallThresholdY = -3f;
+    public float fallThresholdY = -1.5f;
     private bool hasFallen = false;
+    private float startYPosition;
 
     private CinemachineVirtualCamera vcam;
 
@@ -386,19 +388,41 @@ public class CameraController : MonoBehaviour
 
     private void HandlePlayerFall()
     {
+        if (hasFallen) return;
         hasFallen = true;
 
-        // Create a dummy target at the player's current position
+        // CRITICAL: Create target at player's CURRENT position
         GameObject fallCamTarget = new GameObject("FallCamTarget");
-        fallCamTarget.transform.position = transform.position; // player position at fall
+        fallCamTarget.transform.position = transform.position; // NOT transform.position + offset
 
         if (vcMain != null)
         {
+            // Immediately switch camera
             vcMain.Follow = fallCamTarget.transform;
             vcMain.LookAt = fallCamTarget.transform;
+            vcMain.Priority = 100; // Force active
         }
 
-        Debug.Log("Player fell off platform. Camera now locked to dummy target.");
-        StartCoroutine(playerController.GetComponent<Player>().LoseLevel(1.25f));
+        // Disable player controls immediately
+        playerController = FindObjectOfType<PlayerController>();
+        PlayerMovement playerMovement = FindObjectOfType<PlayerMovement>();
+
+        if (playerController != null)
+        {
+            playerController.enabled = false;
+
+            Player player = playerController.GetComponent<Player>();
+            if (player != null)
+            {
+                StartCoroutine(player.LoseLevel(1.25f));
+            }
+        }
+
+        if (playerMovement != null)
+        {
+            playerMovement.enabled = false;
+        }
+
+        Debug.Log("💀 Player fell - camera locked instantly!");
     }
 }

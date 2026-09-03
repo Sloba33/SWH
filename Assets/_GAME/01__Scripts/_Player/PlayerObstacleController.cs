@@ -439,7 +439,7 @@ public class PlayerObstacleController : MonoBehaviour
             AudioManager.Instance.PlayObstacleSound_Move(ObstacleAudioType.Wood, transform.position);
 
         }
-        
+
     }
 
     private IEnumerator CoordinatedPushMovement()
@@ -695,7 +695,7 @@ public class PlayerObstacleController : MonoBehaviour
         // --- REMOVED THIS LINE ---
         // _rb.MovePosition(_rb.transform.position + pullDirection * speed * Time.fixedDeltaTime);
     }
-    void StopPull()
+    public void StopPull()
     {
         if (!playerController.AI)
             AudioManager.Instance.StopObstacleSound_Move();

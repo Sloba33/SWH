@@ -381,74 +381,121 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    public void AddConsumable(CollectibleItem collectibleItem) //
+    public void AddConsumable(CollectibleItem collectibleItem)
     {
-        if (collectibleItem == null || !collectibleItem.isConsumable) return; // Safety check
+        if (collectibleItem == null || !collectibleItem.isConsumable) return;
 
-        bool slotFound = false; //
+        BombCollectible bombCollectible = collectibleItem.GetComponent<BombCollectible>();
+        if (bombCollectible == null) return;
 
-        // Check for an existing active slot with the same type or a universal type
-        for (int i = 0; i < consumableSlots.Count; i++) //
+        ObstacleColor newBombColor = bombCollectible.bombColor;
+        bool slotFound = false;
+
+        // FIRST: Check for an existing slot with EXACT same color (excluding Universal)
+        for (int i = 0; i < consumableSlots.Count; i++)
         {
-            if (consumableSlots[i].gameObject.activeSelf && (consumableSlots[i].obstacleColor == collectibleItem.GetComponent<BombCollectible>().bombColor || consumableSlots[i].obstacleColor == ObstacleColor.Universal)) //
+            if (consumableSlots[i].gameObject.activeSelf && consumableSlots[i].obstacleColor == newBombColor)
             {
-                consumableSlots[i].SetConsumable(collectibleItem); //
-                Debug.Log("Added bomb to existing slot : " + collectibleItem.name + " to slot :" + consumableSlots[i].name + " with bomb prefab : " + consumableSlots[i].bombPrefab.gameObject); //
-
-                if (consumableSlots[i].counter <= 1) //
-                {
-                    consumableSlots[i].counterText.text = ""; //
-                    consumableSlots[i].bombBackgroundImage.enabled = false; //
-                    Debug.Log("Turning off"); //
-                }
-                else if (consumableSlots[i].counter > 1) //
-                {
-                    consumableSlots[i].bombBackgroundImage.enabled = true; //
-                }
-
-                slotFound = true; //
-                break; //
+                // Found a slot with the same color
+                consumableSlots[i].SetConsumable(collectibleItem);
+                UpdateSlotUI(consumableSlots[i]);
+                slotFound = true;
+                Debug.Log($"Added bomb to existing slot: {collectibleItem.name} (Color: {newBombColor}) to slot: {consumableSlots[i].name}");
+                break;
             }
         }
 
-        // If no active slot found, look for an inactive slot to activate and add the consumable
-        if (!slotFound) //
+        // SECOND: If no exact color match, check for an empty slot OR a Universal slot
+        if (!slotFound)
         {
-            for (int i = 0; i < consumableSlots.Count; i++) //
+            for (int i = 0; i < consumableSlots.Count; i++)
             {
-                if (!consumableSlots[i].gameObject.activeSelf) //
+                ConsumableSlot slot = consumableSlots[i];
+
+                // Check if slot is inactive (empty slot)
+                if (!slot.gameObject.activeSelf)
                 {
-                    ConsumableSlot slot = consumableSlots[i]; //
-                    slot.gameObject.SetActive(true); //
-                    slot.transform.DOShakeScale(0.2f, 0.5f, 2, 10f, false).Play();
-                    slot.SetConsumable(collectibleItem); //
-
-                    EventTrigger.Entry bomb = new EventTrigger.Entry(); //
-                    bomb.eventID = EventTriggerType.PointerDown; //
-                    bomb.callback.AddListener((data) => { OnPointerDownDelegateBomb((PointerEventData)data, slot.bombPrefab.gameObject, slot); }); //
-                    if (slot.btn != null && slot.btn.GetComponent<EventTrigger>() != null) // Safety check
-                    {
-                        slot.btn.GetComponent<EventTrigger>().triggers.Add(bomb); //
-                    }
-
-                    Debug.Log("Added bomb to new slot : " + collectibleItem.name + " to slot :" + slot.name + " with bomb prefab : " + slot.bombPrefab.gameObject); //
-
-                    if (slot.counter <= 1) //
-                    {
-                        if (slot.counterText != null) slot.counterText.text = ""; //
-                        if (slot.bombBackgroundImage != null) slot.bombBackgroundImage.enabled = false; //
-                        Debug.Log("Turning off"); //
-                    }
-                    else if (slot.counter > 1) //
-                    {
-                        if (slot.bombBackgroundImage != null) slot.bombBackgroundImage.enabled = true; //
-                    }
-                    break; //
+                    // Use this empty slot
+                    slot.gameObject.SetActive(true);
+                    AnimateIconPop(slot);
+                    slot.SetConsumable(collectibleItem);
+                    SetupBombButton(slot);
+                    UpdateSlotUI(slot);
+                    slotFound = true;
+                    Debug.Log($"Added bomb to new slot: {collectibleItem.name} (Color: {newBombColor}) to slot: {slot.name}");
+                    break;
                 }
             }
+        }
+
+        // THIRD: If no empty slot, try to find a Universal slot (only as last resort)
+        if (!slotFound)
+        {
+            for (int i = 0; i < consumableSlots.Count; i++)
+            {
+                ConsumableSlot slot = consumableSlots[i];
+                if (slot.gameObject.activeSelf && slot.obstacleColor == ObstacleColor.Universal)
+                {
+                    // Found a Universal slot - only use if the new bomb is NOT Universal
+                    if (newBombColor != ObstacleColor.Universal)
+                    {
+                        // Check if the Universal slot can be overwritten
+                        // Option 1: Replace the Universal bomb with the colored one
+                        slot.SetConsumable(collectibleItem);
+                        SetupBombButton(slot);
+                        UpdateSlotUI(slot);
+                        slotFound = true;
+                        Debug.Log($"Replaced Universal slot with colored bomb: {collectibleItem.name} (Color: {newBombColor})");
+                        break;
+                    }
+                    else
+                    {
+                        // If the new bomb is also Universal, combine them
+                        slot.SetConsumable(collectibleItem);
+                        UpdateSlotUI(slot);
+                        slotFound = true;
+                        Debug.Log($"Added Universal bomb to Universal slot: {collectibleItem.name}");
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If still no slot found, log warning
+        if (!slotFound)
+        {
+            Debug.LogWarning($"No available slot for bomb: {collectibleItem.name} (Color: {newBombColor})");
         }
     }
 
+    // Helper method to update slot UI
+    private void UpdateSlotUI(ConsumableSlot slot)
+    {
+        if (slot.counter <= 1)
+        {
+            if (slot.counterText != null) slot.counterText.text = "";
+            if (slot.bombBackgroundImage != null) slot.bombBackgroundImage.enabled = false;
+        }
+        else if (slot.counter > 1)
+        {
+            if (slot.counterText != null) slot.counterText.text = slot.counter.ToString();
+            if (slot.bombBackgroundImage != null) slot.bombBackgroundImage.enabled = true;
+        }
+    }
+
+    // Helper method to setup bomb button events
+    private void SetupBombButton(ConsumableSlot slot)
+    {
+        EventTrigger.Entry bomb = new EventTrigger.Entry();
+        bomb.eventID = EventTriggerType.PointerDown;
+        bomb.callback.AddListener((data) => { OnPointerDownDelegateBomb((PointerEventData)data, slot.bombPrefab.gameObject, slot); });
+
+        if (slot.btn != null && slot.btn.GetComponent<EventTrigger>() != null)
+        {
+            slot.btn.GetComponent<EventTrigger>().triggers.Clear(); // Clear any old listeners
+            slot.btn.GetComponent<EventTrigger>().triggers.Add(bomb);
+        }
+    }
     public void RemoveBomb(ConsumableSlot consumableSlot) //
     {
         if (consumableSlot == null) { Debug.LogError("ConsumableSlot is null for bomb removal."); return; } // Safety check
@@ -476,4 +523,19 @@ public class PlayerControls : MonoBehaviour
             consumableSlot.ClearSlot(); //
         }
     }
+    private void AnimateIconPop(ConsumableSlot slot)
+    {
+        // Get the icon image from the slot's button
+        Image iconImage = slot.btn?.GetComponent<Image>();
+        if (iconImage != null)
+        {
+            // Store the original scale
+            Vector3 originalScale = iconImage.transform.localScale;
+
+            // Scale up from original, then back
+            iconImage.transform.DOScale(originalScale * 1.2f, 0.15f)
+                .OnComplete(() => iconImage.transform.DOScale(originalScale, 0.15f)).Play();
+        }
+    }
+
 }

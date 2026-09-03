@@ -89,7 +89,11 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
         obstacleMove_AudioClips = new Dictionary<ObstacleAudioType, AudioClipSO>();
         player_AudioClips = new Dictionary<string, AudioClipSO>();
         ui_AudioClips = new Dictionary<string, AudioClipSO>();
-
+        if (audioDatabase == null || audioDatabase.audioClips == null)
+        {
+            Debug.LogError("[AM] AudioDatabase is not assigned or has no clips!");
+            return;
+        }
         foreach (var clip in audioDatabase.audioClips)
         {
             switch (clip.category)
@@ -131,12 +135,19 @@ public class AudioManager : GloballyAccessibleBase<AudioManager>
 
     public void PlayObstacleSound_Destruction(ObstacleAudioType type, Vector3 position)
     {
+        Debug.Log($"[AM] Dictionary is null? {obstacleDestruction_AudioClips == null}");
         if (!obstacleDestruction_AudioClips.TryGetValue(type, out AudioClipSO clip))
         {
             Debug.LogWarning($"No audio clip found for obstacle destruction type {type}.");
             return;
         }
 
+        // Add this null check
+        if (clip == null)
+        {
+            Debug.LogWarning($"Audio clip is null for type {type}.");
+            return;
+        }
         // Check cooldown for this specific type
         if (lastDestructionSoundTime.TryGetValue(type, out float lastPlayTime))
         {

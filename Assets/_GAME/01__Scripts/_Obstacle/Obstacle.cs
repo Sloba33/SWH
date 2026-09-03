@@ -51,7 +51,8 @@ public class Obstacle : MonoBehaviour
     [SerializeField] private LayerMask _obstacleMask;
     public bool isMoving;
     public bool Moving;
-
+    [Header("Initial Position")]
+    [HideInInspector] public Vector3 initialPosition;
     public bool CheckObstaclesAround(Vector3 dir)
     {
         if (!MoveOverride)
@@ -125,6 +126,7 @@ public class Obstacle : MonoBehaviour
 
     private void Start()
     {
+        initialPosition = transform.position;
         controllerCleared = true;
 
         FallTimer = 0f;

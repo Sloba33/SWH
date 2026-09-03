@@ -20,6 +20,7 @@ public class DailyRewardManager : MonoBehaviour
     private const string CurrentRewardIndexKey = "CurrentRewardIndex";
     private TimeSpan timeUntilNextClaim;
     public List<DailyReward> dailyRewards = new();
+    public Sprite dailyAvailableIcon, dailyUnavailableIcon;
 
     [SerializeField] private TMPro.TextMeshProUGUI moneyText;
     [SerializeField] private TMPro.TextMeshProUGUI coinText;
@@ -54,6 +55,7 @@ public class DailyRewardManager : MonoBehaviour
             parentPanel);
             UpdateRewardButtons();
             rewardInstance.name = rewardInstance.name + i.ToString();
+            rewardInstance.GetComponent<DailyReward>().dayText.text = "Day " + (i + 1).ToString();
             Debug.Log("Instantiating object with name : " + rewardInstance.name);
         }
 
@@ -139,9 +141,8 @@ public class DailyRewardManager : MonoBehaviour
 
     public void ClaimReward()
     {
-        if (!IsRewardClaimed(currentRewardIndex))
+        if (!IsRewardClaimed(currentRewardIndex) && DateTime.Now >= nextClaimTime)
         {
-
             lastClaimTime = DateTime.Now;
             GrantReward(dailyRewardData.dailyLoginRewards[currentRewardIndex]);
             rewardButtons[currentRewardIndex].timerText.gameObject.SetActive(false);
@@ -149,21 +150,19 @@ public class DailyRewardManager : MonoBehaviour
             currentRewardIndex++;
             UpdateRewardButtons();
             SaveProgress();
-        }
 
-        // Highlight the next reward the player can claim
-        if (currentRewardIndex < dailyRewardData.dailyLoginRewards.Count)
-        {
-            Debug.Log("More shit to claim");
-            // Assuming that the reward prefab has a way to highlight or mark the next claimable reward
-            Transform nextReward = rewardsContainer.GetChild(currentRewardIndex);
-            DailyReward nextDailyReward = nextReward.GetComponent<DailyReward>();
-            if (nextDailyReward != null)
+            // Update the icon after claiming
+            Image rewardButtonImage = GameObject.Find("DailyRewardButton")?.GetComponent<Image>();
+            if (rewardButtonImage != null)
             {
-                nextDailyReward.nextClaimTime = DateTime.Parse(PlayerPrefs.GetString(NextClaimTimeKey, DateTime.MinValue.ToString()));
-                nextDailyReward.timerText.text = (nextDailyReward.nextClaimTime - DateTime.Now).ToString();
+                UpdateRewardButtonIcon(rewardButtonImage);
             }
-            // nextReward.GetComponent<DailyReward>().SetClaimable(true);
+
+            // If all rewards are claimed, update icon to unavailable
+            if (AreAllRewardsClaimed())
+            {
+                Debug.Log("🏆 All daily rewards claimed!");
+            }
         }
     }
     TimeSpan remainingTime;
@@ -250,5 +249,36 @@ public class DailyRewardManager : MonoBehaviour
                 break;
 
         }
+    }
+    // Update the main menu button icon
+    public void UpdateRewardButtonIcon(Image buttonImage)
+    {
+        if (buttonImage == null) return;
+
+        if (IsRewardAvailable())
+        {
+            buttonImage.sprite = dailyAvailableIcon;
+            buttonImage.color = Color.white; // Fully visible
+            Debug.Log("🎁 Daily reward available - showing available icon");
+        }
+        else
+        {
+            buttonImage.sprite = dailyUnavailableIcon;
+            buttonImage.color = new Color(1f, 1f, 1f, 0.5f); // Slightly faded if unavailable
+            Debug.Log("⏳ Daily reward unavailable - showing unavailable icon");
+        }
+    }
+
+    // Check if reward is available
+    public bool IsRewardAvailable()
+    {
+        // Check if reward is not claimed AND time is up
+        return !IsRewardClaimed(currentRewardIndex) && DateTime.Now >= nextClaimTime;
+    }
+
+    // Check if all rewards are claimed
+    public bool AreAllRewardsClaimed()
+    {
+        return currentRewardIndex >= dailyRewardData.dailyLoginRewards.Count;
     }
 }
